@@ -14,7 +14,7 @@ Attributes:\n\
 	t (int): t\n\
 	timestamp (int): current timestamp\n\
 	points_fitted (int): number of datapoints that entered the 'fit' case\n\
-	points_forgot (int): number of datapoints that entered the 'frogot kernel' case\n\
+	points_forgot (int): number of datapoints that entered the 'forgot kernel' case\n\
 	points_merged (int): number of datapoints that entered the 'merged kernel' case"
 #define BATCH_ONLINE_CLUSTER_DOC \
 "Process a chunk of datapoints all at once\n\
