@@ -12,7 +12,7 @@ Args:\n\
 	q (int): Maximum number of micro clusters to use, which controls how many microclusters are kept
 	(a total q MicroClusters to maintain at any moments --from the paper)  
 	t (int): Multiplier for the Cluster radius,(the maximal boundary factor,calculated by the 
-	  RMS deviation of the data points in Mp from the centroid. in the paper), 
+	  RMS deviation of the data points in Mp from the centroid in the paper), 
 	which controls how large the radius of a microcluster is to  allow new instances to be appended
 
 Attributes:\n\
@@ -30,7 +30,7 @@ const double MIN_VARIANCE = 1e-50;
 
 typedef std::vector<double> Point;
 
-class Kernel{
+class Microclusters{
 public:
 	double t;
 	unsigned int q;
@@ -43,9 +43,9 @@ public:
 
 	Point center;
 
-	Kernel(Point& datapoint,long timestamp, double t, unsigned int q);
+	Microclusters(Point& datapoint,long timestamp, double t, unsigned int q);
 	void insert(Point& datapoint,long timestamp);
-	void add(Kernel& other);
+	void add(Microclusters& other);
 	double get_relevance_stamp();
 	double get_mu_time();
 	double get_sigma_time();

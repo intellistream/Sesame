@@ -1,5 +1,5 @@
 #pragma once
-#include "kernel.h"
+#include "microcluster.h"
 #include <vector>
 #include <cmath>
 #include <cassert>
@@ -12,7 +12,7 @@ double distance(Point& a,Point& b);
 
 class CluStream{
 public:
-	std::vector<Kernel> kernels;
+	std::vector<Microclusters> microclusters;
 	int time_window;
 	int m;
 	int t;

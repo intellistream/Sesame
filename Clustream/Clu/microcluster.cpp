@@ -1,6 +1,6 @@
-#include "kernel.h"
+#include "microcluster.h"
 
-Kernel::Kernel(Point& datapoint,long timestamp, double t, unsigned int m):ls(datapoint.size()),ss(datapoint.size()){
+Microclusters::Microclusters(Point& datapoint,long timestamp, double t, unsigned int m):ls(datapoint.size()),ss(datapoint.size()){
 	this->t=t;
 	this->q=q;
 	n=1;
@@ -13,7 +13,7 @@ Kernel::Kernel(Point& datapoint,long timestamp, double t, unsigned int m):ls(dat
 	sst=timestamp*timestamp;
 	center=get_center();
 }
-void Kernel::insert(Point& datapoint,long timestamp){
+void Microclusters::insert(Point& datapoint,long timestamp){
 	n++;
 	for(int i=0;i<datapoint.size();i++){
 		double data=datapoint[i];
@@ -24,7 +24,7 @@ void Kernel::insert(Point& datapoint,long timestamp){
 	sst+=timestamp*timestamp;
 	center=get_center();
 }
-void Kernel::add(Kernel& other){
+void Microclusters::add(Microclusters& other){
 	n+=other.n;
 	for(int i=0;i<other.ls.size();i++){
 		ls[i]+=other.ls[i];
@@ -34,27 +34,27 @@ void Kernel::add(Kernel& other){
 	sst+=other.sst;
 	center=get_center();
 }
-double Kernel::get_relevance_stamp(){
+double Microclusters::get_relevance_stamp(){
 	if(n<(2*q))
 		return get_mu_time();
 	return get_mu_time() + get_sigma_time() * get_quantile( ((double)q)/(2*n) );
 }
-double Kernel::get_mu_time(){
+double Microclusters::get_mu_time(){
 	return lst/n;
 }
-double Kernel::get_sigma_time(){
+double Microclusters::get_sigma_time(){
 	return sqrt(sst/n - (lst/n)*(lst/n));
 }
-double Kernel::get_quantile(double z){
+double Microclusters::get_quantile(double z){
 	assert( z >= 0 && z <= 1 );
 	return sqrt( 2 ) * inverse_error( 2*z - 1 );
 }
-double Kernel::get_radius(){
+double Microclusters::get_radius(){
 	if(n==1)
 		return 0;
 	return get_deviation()*RADIUS_FACTOR;
 }
-double Kernel::get_deviation(){
+double Microclusters::get_deviation(){
 	Point variance=get_variance_vector();
 	double sum_of_deviation=0;
 	for(int i=0;i<variance.size();i++){
@@ -62,7 +62,7 @@ double Kernel::get_deviation(){
 	}
 	return sum_of_deviation/variance.size();
 }
-Point Kernel::get_center(){
+Point Microclusters::get_center(){
 	if(n==1)
 		return ls;
 	Point ans(ls.size());
@@ -71,7 +71,7 @@ Point Kernel::get_center(){
 	}
 	return ans;
 }
-double Kernel::get_inclusion_probability(Point& datapoint){
+double Microclusters::get_inclusion_probability(Point& datapoint){
 	if(n==1){
 		double distance=0;
 		for(int i=0;i<ls.size();i++){
@@ -91,7 +91,7 @@ double Kernel::get_inclusion_probability(Point& datapoint){
 			return 1;
 	}
 }
-Point Kernel::get_variance_vector(){
+Point Microclusters::get_variance_vector(){
 	Point ans(ls.size());
 	for(int i=0;i<ls.size();i++){
 		double linear_sum=ls[i];
@@ -108,7 +108,7 @@ Point Kernel::get_variance_vector(){
 	}
 	return ans;
 }
-double Kernel::calc_normalized_distance(Point& point){
+double Microclusters::calc_normalized_distance(Point& point){
 	// variance=get_variance_vector();
 	double ans=0;
 
@@ -118,7 +118,7 @@ double Kernel::calc_normalized_distance(Point& point){
 	}
 	return sqrt(ans);
 }
-double Kernel::inverse_error(double x){
+double Microclusters::inverse_error(double x){
 	double z = sqrt(M_PI) * x;
 	double res = (z) / 2;
 
