@@ -14,9 +14,9 @@ class CluStream{
 public:
 	std::vector<Microclusters> microclusters;
 	int time_window;
-	int m;
+	int q;
 	int t;
 
-	CluStream(int h,int m,int t);
+	CluStream(int h,int q,int t);
 	void offline_cluster(DataPoint& datapoint,long timestamp);
 };
