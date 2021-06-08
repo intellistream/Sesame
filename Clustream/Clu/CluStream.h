@@ -8,7 +8,7 @@
 
 const double double_max=std::numeric_limits<double>::max();
 
-double distance(Point& a,Point& b);
+double distance(DataPoint& a,DataPoint& b);
 
 class CluStream{
 public:
@@ -18,5 +18,5 @@ public:
 	int t;
 
 	CluStream(int h,int m,int t);
-	void offline_cluster(Point& datapoint,long timestamp);
+	void offline_cluster(DataPoint& datapoint,long timestamp);
 };

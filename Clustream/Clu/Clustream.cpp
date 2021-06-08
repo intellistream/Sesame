@@ -5,7 +5,7 @@ CluStream::CluStream(int h,int m,int t){
 	this->m=m;
 	this->t=t;
 }
-void CluStream::offline_cluster(Point& datapoint,long timestamp){
+void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 	// 0. Initialize
 	if(microclusters.size()!=m){
 		microclusters.push_back(Microclusters(datapoint,timestamp,t,m));
@@ -27,7 +27,7 @@ void CluStream::offline_cluster(Point& datapoint,long timestamp){
 			// Special case: estimate radius by determining the distance to the
 			// next closest cluster
 			radius = double_max;
-			Point center = closest_kernel->center;
+			DataPoint center = closest_kernel->center;
 			for ( int i = 0; i < microclusters.size(); i++ ) { //O(n)
 				if ( &microclusters[i] == closest_kernel ) {
 					continue;
@@ -64,7 +64,7 @@ void CluStream::offline_cluster(Point& datapoint,long timestamp){
 		int closest_b = 0;
 		min_distance = double_max;
 		for ( int i = 0; i < microclusters.size(); i++ ) { //O(n(n+1)/2)
-			Point center_a = microclusters[i].center;
+			DataPoint center_a = microclusters[i].center;
 			for ( int j = i + 1; j < microclusters.size(); j++ ) {
 				double dist = distance( center_a, microclusters[j].center );
 				if ( dist < min_distance ) {
@@ -79,7 +79,7 @@ void CluStream::offline_cluster(Point& datapoint,long timestamp){
 		microclusters[closest_b] = Microclusters( datapoint, timestamp, t,  m );
 }
 
-double distance(Point& a,Point& b){
+double distance(DataPoint& a,DataPoint& b){
 	double ans=0;
 	for(int i=0;i<a.size();i++){
 		double diff=b[i]-a[i];
