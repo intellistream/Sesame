@@ -28,7 +28,7 @@ const double RADIUS_FACTOR = 1.8;
 const double EPSILON = 0.00005;
 const double MIN_VARIANCE = 1e-50;
 
-typedef std::vector<double> Point;
+typedef std::vector<double> DataPoint; //define data point vector [xi1,xi2,...,xid] in double 
 
 class Microclusters{
 public:
@@ -36,15 +36,15 @@ public:
 	unsigned int q;
 
 	unsigned int n;
-	Point ls;
-	Point ss;
+	DataPoint ls;
+	DataPoint ss;
 	double lst;
 	double sst;
 
-	Point center;
+	DataPoint center;
 
-	Microclusters(Point& datapoint,long timestamp, double t, unsigned int q);
-	void insert(Point& datapoint,long timestamp);
+	Microclusters(DataPoint& datapoint,long timestamp, double t, unsigned int q);
+	void insert(DataPoint& datapoint,long timestamp);
 	void add(Microclusters& other);
 	double get_relevance_stamp();
 	double get_mu_time();
@@ -52,10 +52,10 @@ public:
 	double get_quantile(double z);
 	double get_radius();
 	double get_deviation();
-	Point get_center();
-	double get_inclusion_probability(Point& datapoint);
-	Point get_variance_vector();
-	double calc_normalized_distance(Point& datapoint);
+	DataPoint get_center();
+	double get_inclusion_probability(DataPoint& datapoint);
+	DataPoint get_variance_vector();
+	double calc_normalized_distance(DataPoint& datapoint);
 	double inverse_error(double x);
 };
 

@@ -1,6 +1,6 @@
 #include "microcluster.h"
 
-Microclusters::Microclusters(Point& datapoint,long timestamp, double t, unsigned int m):ls(datapoint.size()),ss(datapoint.size()){
+Microclusters::Microclusters(DataPoint& datapoint,long timestamp, double t, unsigned int m):ls(datapoint.size()),ss(datapoint.size()){
 	this->t=t;
 	this->q=q;
 	n=1;
@@ -13,7 +13,7 @@ Microclusters::Microclusters(Point& datapoint,long timestamp, double t, unsigned
 	sst=timestamp*timestamp;
 	center=get_center();
 }
-void Microclusters::insert(Point& datapoint,long timestamp){
+void Microclusters::insert(DataPoint& datapoint,long timestamp){
 	n++;
 	for(int i=0;i<datapoint.size();i++){
 		double data=datapoint[i];
@@ -55,23 +55,23 @@ double Microclusters::get_radius(){
 	return get_deviation()*RADIUS_FACTOR;
 }
 double Microclusters::get_deviation(){
-	Point variance=get_variance_vector();
+	DataPoint variance=get_variance_vector();
 	double sum_of_deviation=0;
 	for(int i=0;i<variance.size();i++){
 		sum_of_deviation+=sqrt(variance[i]);
 	}
 	return sum_of_deviation/variance.size();
 }
-Point Microclusters::get_center(){
+DataPoint Microclusters::get_center(){
 	if(n==1)
 		return ls;
-	Point ans(ls.size());
+	DataPoint ans(ls.size());
 	for(int i=0;i<ls.size();i++){
 		ans[i]=ls[i]/n;
 	}
 	return ans;
 }
-double Microclusters::get_inclusion_probability(Point& datapoint){
+double Microclusters::get_inclusion_probability(DataPoint& datapoint){
 	if(n==1){
 		double distance=0;
 		for(int i=0;i<ls.size();i++){
@@ -91,8 +91,8 @@ double Microclusters::get_inclusion_probability(Point& datapoint){
 			return 1;
 	}
 }
-Point Microclusters::get_variance_vector(){
-	Point ans(ls.size());
+DataPoint Microclusters::get_variance_vector(){
+	DataPoint ans(ls.size());
 	for(int i=0;i<ls.size();i++){
 		double linear_sum=ls[i];
 		double squared_sum=ss[i];
@@ -108,7 +108,7 @@ Point Microclusters::get_variance_vector(){
 	}
 	return ans;
 }
-double Microclusters::calc_normalized_distance(Point& point){
+double Microclusters::calc_normalized_distance(DataPoint& point){
 	// variance=get_variance_vector();
 	double ans=0;
 
