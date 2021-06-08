@@ -4,16 +4,19 @@ Microclusters::Microclusters(DataPoint& datapoint,long timestamp, double t, unsi
 	this->t=t;
 	this->q=q;
 	n=1;
-	for(int i=0;i<datapoint.size();i++){
+	for(int i=0;i<datapoint.size();i++){//iterate on every dimension in the data point
 		double data=datapoint[i];
 		ls[i]=data;
 		ss[i]=data*data;
 	}
 	lst=timestamp;
 	sst=timestamp*timestamp;
-	center=get_center();
+	centroid=get_centroid();
 }
-void Microclusters::insert(DataPoint& datapoint,long timestamp){
+/*
+ *insert a new data point from input data stream(test data sets)
+ */
+void Microclusters::insert(DataPoint& datapoint,long timestamp){ 
 	n++;
 	for(int i=0;i<datapoint.size();i++){
 		double data=datapoint[i];
@@ -22,9 +25,9 @@ void Microclusters::insert(DataPoint& datapoint,long timestamp){
 	}
 	lst+=timestamp;
 	sst+=timestamp*timestamp;
-	center=get_center();
+	centroid=get_centroid();
 }
-void Microclusters::add(Microclusters& other){
+void Microclusters::add(Microclusters& other){//merge two microclusters
 	n+=other.n;
 	for(int i=0;i<other.ls.size();i++){
 		ls[i]+=other.ls[i];
@@ -32,8 +35,10 @@ void Microclusters::add(Microclusters& other){
 	}
 	lst+=other.lst;
 	sst+=other.sst;
-	center=get_center();
+	centroid=get_centroid();
 }
+
+
 double Microclusters::get_relevance_stamp(){
 	if(n<(2*q))
 		return get_mu_time();
@@ -62,7 +67,7 @@ double Microclusters::get_deviation(){
 	}
 	return sum_of_deviation/variance.size();
 }
-DataPoint Microclusters::get_center(){
+DataPoint Microclusters::get_centroid(){
 	if(n==1)
 		return ls;
 	DataPoint ans(ls.size());
@@ -112,8 +117,8 @@ double Microclusters::calc_normalized_distance(DataPoint& point){
 	// variance=get_variance_vector();
 	double ans=0;
 
-	for(int i=0;i<center.size();i++){
-		double diff=center[i]-point[i];
+	for(int i=0;i<centroid.size();i++){
+		double diff=centroid[i]-point[i];
 		ans+=(diff*diff); // variance[i];
 	}
 	return sqrt(ans);

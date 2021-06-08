@@ -1,21 +1,21 @@
 #include "clustream.h"
  #include "algorithm"
 CluStream::CluStream(int h,int m,int t){
-	time_window=h;
-	this->m=m;
+	time_window=h;//time horizon of window
+	this->q=q;
 	this->t=t;
 }
 void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 	// 0. Initialize
-	if(microclusters.size()!=m){
-		microclusters.push_back(Microclusters(datapoint,timestamp,t,m));
+	if(microclusters.size()!=q){
+		microclusters.push_back(Microclusters(datapoint,timestamp,t,q));
 		return;
 	}
 	// 1. Determine closest kernel
 	Microclusters* closest_kernel = NULL;
 	double min_distance = double_max;
 	for ( int i = 0; i < microclusters.size(); i++ ) { //O(n)
-		double dist = distance(datapoint, microclusters[i].center);
+		double dist = distance(datapoint, microclusters[i].centroid);
 		if ( dist < min_distance ) {
 			closest_kernel = &microclusters[i];
 			min_distance = dist;
@@ -27,13 +27,13 @@ void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 			// Special case: estimate radius by determining the distance to the
 			// next closest cluster
 			radius = double_max;
-			DataPoint center = closest_kernel->center;
+			DataPoint centroid = closest_kernel->centroid;
 			for ( int i = 0; i < microclusters.size(); i++ ) { //O(n)
 				if ( &microclusters[i] == closest_kernel ) {
 					continue;
 				}
 
-				double dist = distance(microclusters[i].center, center );
+				double dist = distance(microclusters[i].centroid, centroid );
 				radius = std::min( dist, radius );
 			}
 		} else {
@@ -54,7 +54,7 @@ void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 		// 3.1 Try to forget old kernels
 		for ( int i = 0; i < microclusters.size(); i++ ) {
 			if ( microclusters[i].get_relevance_stamp() < threshold ) {
-				microclusters[i] = Microclusters( datapoint, timestamp, t, m );
+				microclusters[i] = Microclusters( datapoint, timestamp, t, q );
 				printf("%ld forgot kernel\n",timestamp);
 				return;
 			}
@@ -64,9 +64,9 @@ void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 		int closest_b = 0;
 		min_distance = double_max;
 		for ( int i = 0; i < microclusters.size(); i++ ) { //O(n(n+1)/2)
-			DataPoint center_a = microclusters[i].center;
+			DataPoint center_a = microclusters[i].centroid;
 			for ( int j = i + 1; j < microclusters.size(); j++ ) {
-				double dist = distance( center_a, microclusters[j].center );
+				double dist = distance( center_a, microclusters[j].centroid );
 				if ( dist < min_distance ) {
 					min_distance = dist;
 					closest_a = i;
@@ -76,9 +76,9 @@ void CluStream::offline_cluster(DataPoint& datapoint,long timestamp){
 		}
 		printf("%ld merged kernel\n",timestamp);
 		microclusters[closest_a].add( microclusters[closest_b] );
-		microclusters[closest_b] = Microclusters( datapoint, timestamp, t,  m );
+		microclusters[closest_b] = Microclusters( datapoint, timestamp, t,  q );
 }
-
+//distance(a,b)= sqrt((a1-b1)^2+(a2-b2)^2+...+(ad-bd)^2) d: number of dimensions in a and b
 double distance(DataPoint& a,DataPoint& b){
 	double ans=0;
 	for(int i=0;i<a.size();i++){

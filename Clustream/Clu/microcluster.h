@@ -34,14 +34,13 @@ class Microclusters{
 public:
 	double t;
 	unsigned int q;
+	unsigned int n; //number of data point in the clusters
+	DataPoint ls;//  the sum of the data values for each dimension 
+	DataPoint ss;// the sum of the squares of  the data values for each dimension
+	double lst; //  the sum of the time stamps Ti~... Tin
+	double sst;//the sum of the squares of the time stamps  Til... Tin
 
-	unsigned int n;
-	DataPoint ls;
-	DataPoint ss;
-	double lst;
-	double sst;
-
-	DataPoint center;
+	DataPoint centroid;
 
 	Microclusters(DataPoint& datapoint,long timestamp, double t, unsigned int q);
 	void insert(DataPoint& datapoint,long timestamp);
@@ -52,7 +51,7 @@ public:
 	double get_quantile(double z);
 	double get_radius();
 	double get_deviation();
-	DataPoint get_center();
+	DataPoint get_centroid();
 	double get_inclusion_probability(DataPoint& datapoint);
 	DataPoint get_variance_vector();
 	double calc_normalized_distance(DataPoint& datapoint);
