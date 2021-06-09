@@ -1,0 +1,12 @@
+//
+// Created by Shuhao Zhang on 9/6/21.
+//
+
+#ifndef ONLINEMLBENCHMARK_SRC_OFFLINECLUSTERING_DBSCAN_HPP_
+#define ONLINEMLBENCHMARK_SRC_OFFLINECLUSTERING_DBSCAN_HPP_
+
+#include "OfflineClustering.hpp"
+
+class DBScan : OfflineClustering{};
+
+#endif // ONLINEMLBENCHMARK_SRC_OFFLINECLUSTERING_DBSCAN_HPP_

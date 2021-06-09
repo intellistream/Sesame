@@ -1,0 +1,11 @@
+//
+// Created by Shuhao Zhang on 9/6/21.
+//
+
+#ifndef ONLINEMLBENCHMARK_SRC_SUMMARIZATION_MICROCLUSTERS_HPP_
+#define ONLINEMLBENCHMARK_SRC_SUMMARIZATION_MICROCLUSTERS_HPP_
+
+#include "Summarization.hpp"
+class MicroClusters : Summarization {};
+
+#endif // ONLINEMLBENCHMARK_SRC_SUMMARIZATION_MICROCLUSTERS_HPP_

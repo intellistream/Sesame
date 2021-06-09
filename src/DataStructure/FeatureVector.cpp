@@ -31,3 +31,6 @@ which extend BIRCH CFs with two additional temporal features:
 LST: sum of the timestamps
 SST: sum of squares of the timestamps
 */
+#include "DataStructure.hpp"
+
+class FeatureVector : DataStructure {};

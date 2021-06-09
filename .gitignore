@@ -1,2 +1,4 @@
-/cmake-build-release/CMakeFiles/
 /cmake-build-release/
+/cmake-build-debug/
+/src/DataStructure/cmake-build-release/
+/src/DataStructure/cmake-build-debug/
