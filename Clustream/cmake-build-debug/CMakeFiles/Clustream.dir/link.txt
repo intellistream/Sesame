@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\Clustream.dir/objects.a
+D:\MinGW\mingw32\bin\ar.exe cr CMakeFiles\Clustream.dir/objects.a @CMakeFiles\Clustream.dir\objects1.rsp
+D:\MinGW\mingw32\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\Clustream.dir/objects.a -Wl,--no-whole-archive -o Clustream.exe -Wl,--out-implib,libClustream.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Clustream.dir\linklibs.rsp
