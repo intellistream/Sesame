@@ -9,5 +9,7 @@
 *.xml
 .idea/
 *.iml
-*.DS_Store
+.DS_Store
+/practice/Clustream/cmake-build-debug/
+
 
