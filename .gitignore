@@ -7,7 +7,6 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 *.xml
-cmake-build-debug/
 .idea/
 *.iml
 *.DS_Store
