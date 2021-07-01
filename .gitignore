@@ -6,8 +6,9 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-*.DS_Store
 *.xml
 cmake-build-debug/
 .idea/
 *.iml
+*.DS_Store
+
