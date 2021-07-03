@@ -1,5 +1,9 @@
 # StreamKM++
 
+## Noted  
+please install the following plugin in order top read the math formula
+https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima/related
+
 ## Input:
 
 **./stream    filename    n     k    d     c     outputfile     seed**
@@ -65,7 +69,7 @@ $cost_{v}$: Equals to $cost(P_{v}, q_{v})$
 
 **(3) Example**
 
-![s](s.png)
+![coresetConstruction](doc/coresetConstruction.svg)
 
 **(4) Streaming Method**
 
@@ -117,7 +121,7 @@ While(i<length){
 
 The concrete process is shown as follows:
 
-![Bucket](../Downloads/Bucket.svg)
+![Bucket](doc/Bucket.svg)
 
 <u>**(3) Get final coreset from the buckets after the streaming process:**</u>
 
