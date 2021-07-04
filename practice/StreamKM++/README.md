@@ -42,7 +42,7 @@ https://www.cnblogs.com/yixuan-xu/p/6272208.html
 
 #### **Coreset Construction:**
 
-依据$\mathrm{d}(x, C)=\min _{c \in C} \mathrm{~d}(x, c)$, $\operatorname{cost}(P, C)=\sum_{x \in P} \mathrm{~d}^{2}(x, C)$以及$P=\frac{\mathrm{d}^{2}(p, S)}{\operatorname{cost}(P, S)}$ 按照上面的seeding步骤随机筛选出聚类中心$S=\left\{q_{1}, q_{2}, \ldots, q_{m}\right\}$, 设置距离阈值r，从输入点集中找到针对每一个$P_{i}$对应的邻居点集$Q_{i}$，将$S$中每个点对应的权重函数$w_{i}$设置$|Q_{i}|$, 从而构建coreset结构 $C_{i}=w_{i}\times q_{i}$
+依据 $\operatorname{cost}(P, C)=\sum_{x \in P} \mathrm{~d}^{2}(x, C)$以及$P=\frac{\mathrm{d}^{2}(p, S)}{\operatorname{cost}(P, S)}$ 按照上面的seeding步骤随机筛选出聚类中心$S=\left\{q_{1}, q_{2}, \ldots, q_{m}\right\}$, 设置距离阈值r，从输入点集中找到针对每一个$P_{i}$对应的邻居点集$Q_{i}$，将$S$中每个点对应的权重函数$w_{i}$设置$|Q_{i}|$, 从而构建coreset结构 $C_{i}=w_{i}\times q_{i}$
 
 #### **Coreset Tree:**
 $\mathrm{d}(x, C)=\min _{c \in C} \mathrm{~d}(x, c)$
