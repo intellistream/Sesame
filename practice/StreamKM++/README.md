@@ -72,7 +72,7 @@ $cost_{v}$: Equals to $cost(P_{v}, q_{v})$
 
 **(4) Streaming Method**
 
-So here is the flowchart of the streaming method used in StreamKM++**(merge and reduce)**, the coreset construction process doesn't start until both of the buckets $B_{0}$ and $ B_{i}$ are full. Thus actually this algorithm will construct coreset tree of size $m$  with total $\left\lceil\log _{2}\left(\frac{n}{m}\right)+1\right\rceil$ times. **【Meaning that StreamKM++ cannot handle concept drift in real time】**After constructing the final coreset tree, all of the nodes in the final tree will be the clustering center. Finally we conduct Kmeans++ on those $m$ point data and extract $k$ clustering center.
+So here is the flowchart of the streaming method used in StreamKM++**(merge and reduce)**, the coreset construction process doesn't start until both of the buckets $B_{0}$ and $ B_{i}$ are full. Thus actually this algorithm will construct coreset tree of size $m$  with total $\left\lceil\log _{2}\left(\frac{n}{m}\right)+1\right\rceil$ times. **【Meaning that StreamKM++ cannot handle concept drift in real time】** After constructing the final coreset tree, all of the nodes in the final tree will be the clustering center. Finally we conduct Kmeans++ on those $m$ point data and extract $k$ clustering center.
 
 ```flow
 graph TD
