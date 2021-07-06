@@ -1,5 +1,5 @@
-#ifndef TREECORESET_H
-#define TREECORESET_H
+#ifndef TREECORESET_HPP
+#define TREECORESET_HPP
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

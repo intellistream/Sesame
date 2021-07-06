@@ -7,6 +7,48 @@ Without any warranty!
 #include "kMeansUtilityFunctions.hpp"
 
 /**
+* @Author: tuidan
+* @Description: randomly choose clustering center(of size k) from input points with weight w(int/long/double/float...)
+* @Param: points weights array, size of the input points, size of the clustering centers
+* @Return: selected clustering center index array
+* @date: 2021/7/6
+*/
+template <class T>
+int* randomlyChooseFromWeights(T weights, int n, int k){
+    double sum = 0;
+    int* index =  new int[k]
+    double* probability = new double[n];
+    // weights normalization
+    for(T el : weights) sum += (double)el;
+    for(int i = 0; i < n; i++) probability[i] = (double)weights[i] / sum;
+    sort(probability, probability+n);
+
+    //generate random seed
+    default_random_engine e;
+    uniform_real_distribution<double> u(0.0, 1.0);
+    for (int i = 0; i < k; i++){
+        for(int j = 0; j < n; j++){
+            if(probability[j] >= u(e)) index[i] = j;
+        }
+    }
+    return index;
+}
+
+/**
+* @Author: tuidan
+* @Description: select points from input using given index
+* @Param: points array, index array, size of the index array
+* @Return: selected points
+* @date: 2021/7/6
+*/
+template <class T>
+T* selectPointsFromIndex(T* points, int* index, int k){
+    T* selected_points = new T[k];
+    for(int i = 0; i < k; i++) selected_points[i] = points[index[i]];
+    return selected_points;
+}
+
+/**
 debug function to print a set of points
 **/
 void printPoints(int n,struct point * points){

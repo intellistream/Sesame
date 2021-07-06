@@ -1,5 +1,5 @@
-#ifndef LLYODPLUSPLUS_H
-#define LLYODPLUSPLUS_H
+#ifndef LLYODPLUSPLUS_HPP
+#define LLYODPLUSPLUS_HPP
 
 #include <stdio.h>
 #include <stdlib.h>
