@@ -1,10 +1,5 @@
-/********
-Copyright 2008 by Marcel R. Ackermann, Christiane Lammersen, Marcus Maertens, Christoph Raupach, 
-Christian Sohler, Kamil Swierkot
-
-Without any warranty!
-
-*/
+#ifndef POINT_HPP
+#define POINT_HPP
 #include "Point.hpp"
 
 /**

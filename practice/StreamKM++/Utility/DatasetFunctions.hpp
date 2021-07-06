@@ -6,8 +6,8 @@
  *  - added functions to save centers in old format(separated by a ',') and Liadan format
  * */
 
-#ifndef DATASETFUNCTIONS_H
-#define DATASETFUNCTIONS_H
+#ifndef DATASETFUNCTIONS_HPP
+#define DATASETFUNCTIONS_HPP
 
 #include <stdio.h>
 #include <stdlib.h>

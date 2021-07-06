@@ -12,6 +12,18 @@ debug function to print a set of points
 void printPoints(int n,struct point * points);
 
 /**
+randomly choose clustering center(of size k) from input points with weight w
+**/
+template <class T>
+int* randomlyChooseFromWeights(T weights, int n, int k);
+
+/**
+select points from input using given index
+**/
+template <class T>
+T* selectPointsFromIndex(T* points, int* index, int k);
+
+/**
 computes the target function for the given pointarray points[] (of size n) with the given array of
 centres centres[] (of size k)
 **/

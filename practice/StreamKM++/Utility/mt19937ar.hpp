@@ -1,5 +1,5 @@
-#ifndef MT19937_H
-#define MT19937_H
+#ifndef MT19937_HPP
+#define MT19937_HPP
 
 #include <stdio.h>
 
