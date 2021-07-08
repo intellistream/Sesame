@@ -73,8 +73,6 @@ seed must be an integer and it will be used to seed the random number generator.
 
 int main(int argc, char * argv[]) {
 
-
-
     FILE *in;
     struct point *points;
     int length;
@@ -83,12 +81,7 @@ int main(int argc, char * argv[]) {
     int coresetsize;
     char * filename;
     char * outputfile;
-
-
     int seed;
-
-
-
     if(argc != 8){
         printf("streaming.out filename n k d coresetsize outputfile seed\n");
         return 0;
