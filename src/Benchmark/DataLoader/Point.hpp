@@ -1,11 +1,9 @@
 //
 // Created by tuidan on 2021/7/8.
 //
-#include<bits/stdc++.h>
+#include <cstdio>
 #ifndef ONLINEMLBENCHMARK_POINT_HPP
 #define ONLINEMLBENCHMARK_POINT_HPP
-
-#endif //ONLINEMLBENCHMARK_POINT_H
 
 class Point{
 private:
@@ -14,14 +12,17 @@ private:
     double* feature;
     int clusteringCenter;  // using index to identify
 public:
-    point(int index, double weight, double* feature, int featureLength);
+    void Initialization(int index, double weight,int featureLength);
     int getIndex();
     void setIndex(int index);
     double getWeight();
     void setWeight(double weight);
     double getFeatureItem(int index);
     void setFeatureItem(double feature, int index);
+    void setFeatureLength(int length);
     int getClusteringCenter();
     void setClusteringCenter(int index);
+    double *getFeatures();
 };
 
+#endif //ONLINEMLBENCHMARK_POINT_H

@@ -10,8 +10,6 @@
 #ifndef ONLINEMLBENCHMARK_STREAMGENERATOR_HPP
 #define ONLINEMLBENCHMARK_STREAMGENERATOR_HPP
 
-#endif //ONLINEMLBENCHMARK_STREAMGENERATOR_H
-
 pthread_cond_t qready=PTHREAD_COND_INITIALIZER;   //cond
 pthread_mutex_t qlock=PTHREAD_MUTEX_INITIALIZER;  //mutex
 
@@ -22,3 +20,5 @@ void *DataShoot(void *arg);
 void *RunningAlgorithm(void *arg);
 
 int ThreadManager();
+
+#endif //ONLINEMLBENCHMARK_STREAMGENERATOR_H

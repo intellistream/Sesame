@@ -3,12 +3,12 @@
 //
 #include "Point.hpp"
 
-Point::point(int index, double weight, double* dimension, int featureLength){
+
+void Point::Initialization(int index, double weight, int featureLength){
     this->index = index;
     this->weight = weight;
-    this->feature = new double[this->featureLength];
-    for(int i = 0; i < featureLength; i++) this->feature[i] = dimension[i];
-    this->clusteringCenter = dimension[featureLength];
+    this->feature = new double[featureLength];
+    this->clusteringCenter = NULL;
 }
 
 int Point::getIndex() {
@@ -41,4 +41,12 @@ int Point::getClusteringCenter() {
 
 void Point::setClusteringCenter(int index) {
     this->clusteringCenter = index;
+}
+
+void Point::setFeatureLength(int length) {
+    this->feature = new double[length];
+}
+
+double *Point::getFeatures() {
+    return this->feature;
 }
