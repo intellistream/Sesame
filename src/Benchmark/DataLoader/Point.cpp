@@ -4,10 +4,11 @@
 #include "Point.hpp"
 
 
-void Point::Initialization(int index, double weight, int featureLength){
+void Point::Initialization(int index, double weight, int featureLength, double cost){
     this->index = index;
     this->weight = weight;
     this->feature = new double[featureLength];
+    this->cost = cost;
     this->clusteringCenter = NULL;
 }
 
@@ -49,4 +50,12 @@ void Point::setFeatureLength(int length) {
 
 double *Point::getFeatures() {
     return this->feature;
+}
+
+void Point::setCost(double c) {
+    this->cost = c;
+}
+
+double Point::getCost() {
+    return this->cost;
 }

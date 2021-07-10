@@ -5,30 +5,28 @@
 #ifndef ONLINEMLBENCHMARK_CORESETTREE_HPP_
 #define ONLINEMLBENCHMARK_CORESETTREE_HPP_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "Point.hpp"
-#include "../Utility/mt19937ar.hpp"
-#include "../OfflineClustering/kMeansUtilityFunctions.hpp"
-
-#define TRUE 1
-#define FALSE 0
-
+#include "../../Benchmark/DataLoader/Point.hpp"
+#include "../../Utility/RandomGenerator.hpp"
+#include "../OfflineClustering/KMeans.hpp"
+#include "../../Utility/Macro.hpp"
 
 /**
-datastructure representing a node within a tree
+DataStructure representing a node within a tree
 **/
+
 struct treeNode {
     //number of points in this node
     int n;
 
     //array with pointers on points
-    struct point ** points;
+    Point * points;
 
     //pointer on the centre of the treenode
-    struct point * centre;
+    Point centre;
 
     //pointer on the left childnode
     struct treeNode * lc;
@@ -47,8 +45,7 @@ struct treeNode {
 /**
 Constructs a coreset of size k from the union of setA and setB
 **/
-void unionTreeCoreset(int k,int n_1,int n_2,int d, struct point * setA,struct point * setB,struct point * centres);
+void unionTreeCoreset(int k,int n_1,int n_2,int d,  Point * setA, Point * setB, Point * centres, int dimensionx);
 
-#endif
 
 #endif //ONLINEMLBENCHMARK_CORESETTREE_H

@@ -10,9 +10,12 @@ private:
     int index; // 1,2,3,4,5....
     double weight; // considering the outdated effect
     double* feature;
+    double cost;
     int clusteringCenter;  // using index to identify
 public:
-    void Initialization(int index, double weight,int featureLength);
+    void Initialization(int index, double weight,int featureLength, double cost);
+    void setCost(double c);
+    double getCost();
     int getIndex();
     void setIndex(int index);
     double getWeight();

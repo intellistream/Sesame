@@ -11,83 +11,72 @@ Without any warranty!
 /**
 computes the hypothetical cost if the node would be split with new centers centreA, centreB
 **/
-double treeNodeSplitCost(struct treeNode * node, struct point * centreA, struct point * centreB){
+double treeNodeSplitCost(struct treeNode * node, Point centreA, Point centreB, int dimension){
     //loop counter variable
     int i;
-
     //stores the cost
     double sum = 0.0;
-
     for(i=0;i<node->n;i++){
         //loop counter variable
         int l;
-
         //stores the distance between p and centreA
         double distanceA = 0.0;
-
-        for(l=0;l<node->points[i]->dimension;l++){
+        for(l=0;l< dimension;l++){
             //centroid coordinate of the point
             double centroidCoordinatePoint;
-            if(node->points[i]->weight != 0.0){
-                centroidCoordinatePoint = node->points[i]->coordinates[l] / node->points[i]->weight;
+            if(node->points[i].getWeight() != 0.0){
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
             } else {
-                centroidCoordinatePoint = node->points[i]->coordinates[l];
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l);
             }
             //centroid coordinate of the centre
             double centroidCoordinateCentre;
-            if(centreA->weight != 0.0){
-                centroidCoordinateCentre = centreA->coordinates[l] / centreA->weight;
+            if(centreA.getWeight() != 0.0){
+                centroidCoordinateCentre = centreA.getFeatureItem(l) / centreA.getWeight();
             } else {
-                centroidCoordinateCentre = centreA->coordinates[l];
+                centroidCoordinateCentre = centreA.getFeatureItem(l);
             }
-
             distanceA += (centroidCoordinatePoint-centroidCoordinateCentre) *
                          (centroidCoordinatePoint-centroidCoordinateCentre) ;
         }
-
         //stores the distance between p and centreB
         double distanceB = 0.0;
-
-        for(l=0;l<node->points[i]->dimension;l++){
+        for(l=0;l < dimension;l++){
             //centroid coordinate of the point
             double centroidCoordinatePoint;
-            if(node->points[i]->weight != 0.0){
-                centroidCoordinatePoint = node->points[i]->coordinates[l] / node->points[i]->weight;
+            if(node->points[i].getWeight() != 0.0){
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
             } else {
-                centroidCoordinatePoint = node->points[i]->coordinates[l];
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l);
             }
             //centroid coordinate of the centre
             double centroidCoordinateCentre;
-            if(centreB->weight != 0.0){
-                centroidCoordinateCentre = centreB->coordinates[l] / centreB->weight;
+            if(centreB.getWeight() != 0.0){
+                centroidCoordinateCentre = centreB.getFeatureItem(l) / centreB.getWeight();
             } else {
-                centroidCoordinateCentre = centreB->coordinates[l];
+                centroidCoordinateCentre = centreB.getFeatureItem(l);
             }
 
             distanceB += (centroidCoordinatePoint-centroidCoordinateCentre) *
                          (centroidCoordinatePoint-centroidCoordinateCentre) ;
         }
-
         //add the cost of the closest centre to the sum
         if(distanceA < distanceB){
-            sum += distanceA*node->points[i]->weight;
+            sum += distanceA*node->points[i].getWeight();
         } else {
-            sum += distanceB*node->points[i]->weight;
+            sum += distanceB*node->points[i].getWeight();
         }
-
     }
-
     //return the total cost
     return sum;
-
 }
 
 
 /**
 computes the cost of point p with the centre of treenode node
 **/
-double treeNodeCostOfPoint(struct treeNode * node, struct point * p){
-    if(p->weight == 0.0){
+double treeNodeCostOfPoint(struct treeNode * node, Point p, int dimension){
+    if(p.getWeight() == 0.0){
         return 0.0;
     }
 
@@ -97,26 +86,26 @@ double treeNodeCostOfPoint(struct treeNode * node, struct point * p){
     //loop counter variable
     int l;
 
-    for(l=0;l<p->dimension;l++){
+    for(l=0;l<dimension;l++){
         //centroid coordinate of the point
         double centroidCoordinatePoint;
         if(p->weight != 0.0){
-            centroidCoordinatePoint = p->coordinates[l] / p->weight;
+            centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
         } else {
-            centroidCoordinatePoint = p->coordinates[l];
+            centroidCoordinatePoint = p.getFeatureItem(l);
         }
         //centroid coordinate of the centre
         double centroidCoordinateCentre;
-        if(node->centre->weight != 0.0){
-            centroidCoordinateCentre = node->centre->coordinates[l] / node->centre->weight;
+        if(node->centre.getWeight() != 0.0){
+            centroidCoordinateCentre = node->centre.getFeatureItem(l) / node->centre.getWeight();
         } else {
-            centroidCoordinateCentre = node->centre->coordinates[l];
+            centroidCoordinateCentre = node->centre.getFeatureItem(l);
         }
         distance += (centroidCoordinatePoint-centroidCoordinateCentre) *
                     (centroidCoordinatePoint-centroidCoordinateCentre) ;
 
     }
-    return distance * p->weight;
+    return distance * p.getWeight();
 }
 
 
@@ -129,7 +118,7 @@ Computes the target function value of the n points of the treenode. Differs from
 
 3. stores the cost in the treenode
 **/
-void treeNodeTargetFunctionValue(struct treeNode * node){
+void treeNodeTargetFunctionValue(struct treeNode * node, int dimension){
     //loop counter variable
     int i;
 
@@ -143,27 +132,27 @@ void treeNodeTargetFunctionValue(struct treeNode * node){
         //loop counter variable
         int l;
 
-        for(l=0;l<node->points[i]->dimension;l++){
+        for(l=0;l<dimension;l++){
             //centroid coordinate of the point
             double centroidCoordinatePoint;
-            if(node->points[i]->weight != 0.0){
-                centroidCoordinatePoint = node->points[i]->coordinates[l] / node->points[i]->weight;
+            if(node->points[i].getWeight() != 0.0){
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
             } else {
-                centroidCoordinatePoint = node->points[i]->coordinates[l];
+                centroidCoordinatePoint = node->points[i].getFeatureItem(l);
             }
             //centroid coordinate of the centre
             double centroidCoordinateCentre;
-            if(node->centre->weight != 0.0){
-                centroidCoordinateCentre = node->centre->coordinates[l] / node->centre->weight;
+            if(node->centre.getWeight() != 0.0){
+                centroidCoordinateCentre = node->centre.getFeatureItem(l) / node->centre.getWeight();
             } else {
-                centroidCoordinateCentre = node->centre->coordinates[l];
+                centroidCoordinateCentre = node->centre.getFeatureItem(l);
             }
             distance += (centroidCoordinatePoint-centroidCoordinateCentre) *
                         (centroidCoordinatePoint-centroidCoordinateCentre) ;
 
         }
 
-        sum += distance*node->points[i]->weight;
+        sum += distance*node->points[i].getWeight();
     }
 
 
@@ -173,7 +162,7 @@ void treeNodeTargetFunctionValue(struct treeNode * node){
 /**
 initalizes root as a treenode with the union of setA and setB as pointset and centre as centre
 **/
-void constructRoot(struct treeNode * root, struct point * setA, struct point * setB,int n_1,int n_2, struct point * centre, int centreIndex){
+void constructRoot(struct treeNode * root, Point * setA, Point * setB,int n_1,int n_2, Point centre, int centreIndex, int dimension){
     //loop counter variable
     int i;
 
@@ -183,16 +172,16 @@ void constructRoot(struct treeNode * root, struct point * setA, struct point * s
     root->rc     	= NULL;
 
     //array with points to the points
-    root->points = (struct point **)malloc(sizeof(struct point *)*(n_1+n_2));
+    root->points = new Point[n_1 + n_2];
     root->n = n_1 + n_2;
 
     for(i=0;i<root->n;i++){
         if(i < n_1){
-            root->points[i] = &setA[i];
-            root->points[i]->centreIndex = centreIndex;
+            root->points[i] = setA[i];
+            root->points[i].setClusteringCenter(centreIndex);
         } else {
-            root->points[i] = &setB[i-n_1];
-            root->points[i]->centreIndex = centreIndex;
+            root->points[i] = setB[i-n_1];
+            root->points[i].setClusteringCenter(centreIndex);
         }
     }
 
@@ -200,7 +189,7 @@ void constructRoot(struct treeNode * root, struct point * setA, struct point * s
     root->centre = centre;
 
     //calculate costs
-    treeNodeTargetFunctionValue(root);
+    treeNodeTargetFunctionValue(root, dimension);
 }
 
 /**
@@ -278,7 +267,7 @@ struct point * chooseCentre(struct treeNode * node){
 
             sum += treeNodeCostOfPoint(node,node->points[i]) / node->cost;
             if(sum >= random){
-                if(node->points[i]->weight == 0.0){
+                if(node->points[i].getWeight() == 0.0){
                     printf("ERROR: CHOOSEN DUMMY NODE THOUGH OTHER AVAILABLE \n");
                     return NULL;
                 }
@@ -301,7 +290,7 @@ struct point * chooseCentre(struct treeNode * node){
 /**
 returns the next centre
 **/
-struct point * determineClosestCentre(struct point * p, struct point * centreA, struct point * centreB){
+struct point * determineClosestCentre(Point p, Point centreA, Point centreB, int dimension){
 
     //loop counter variable
     int l;
@@ -309,20 +298,20 @@ struct point * determineClosestCentre(struct point * p, struct point * centreA, 
     //stores the distance between p and centreA
     double distanceA = 0.0;
 
-    for(l=0;l<p->dimension;l++){
+    for(l=0;l<dimension;l++){
         //centroid coordinate of the point
         double centroidCoordinatePoint;
-        if(p->weight != 0.0){
-            centroidCoordinatePoint = p->coordinates[l] / p->weight;
+        if(p.getWeight() != 0.0){
+            centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
         } else {
-            centroidCoordinatePoint = p->coordinates[l];
+            centroidCoordinatePoint = p.getFeatureItem(l);
         }
         //centroid coordinate of the centre
         double centroidCoordinateCentre;
-        if(centreA->weight != 0.0){
-            centroidCoordinateCentre = centreA->coordinates[l] / centreA->weight;
+        if(centreA.getWeight() != 0.0){
+            centroidCoordinateCentre = centreA.getFeatureItem(l) / centreA.getWeight();
         } else {
-            centroidCoordinateCentre = centreA->coordinates[l];
+            centroidCoordinateCentre = centreA.getFeatureItem(l);
         }
 
         distanceA += (centroidCoordinatePoint-centroidCoordinateCentre) *
@@ -332,20 +321,20 @@ struct point * determineClosestCentre(struct point * p, struct point * centreA, 
     //stores the distance between p and centreB
     double distanceB = 0.0;
 
-    for(l=0;l<p->dimension;l++){
+    for(l=0;l<dimension;l++){
         //centroid coordinate of the point
         double centroidCoordinatePoint;
-        if(p->weight != 0.0){
-            centroidCoordinatePoint = p->coordinates[l] / p->weight;
+        if(p.getWeight() != 0.0){
+            centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
         } else {
-            centroidCoordinatePoint = p->coordinates[l];
+            centroidCoordinatePoint = p.getFeatureItem(l);
         }
         //centroid coordinate of the centre
         double centroidCoordinateCentre;
-        if(centreB->weight != 0.0){
-            centroidCoordinateCentre = centreB->coordinates[l] / centreB->weight;
+        if(centreB.getWeight() != 0.0){
+            centroidCoordinateCentre = centreB.getFeatureItem(l) / centreB.getWeight();
         } else {
-            centroidCoordinateCentre = centreB->coordinates[l];
+            centroidCoordinateCentre = centreB.getFeatureItem(l);
         }
 
         distanceB += (centroidCoordinatePoint-centroidCoordinateCentre) *
@@ -363,7 +352,7 @@ struct point * determineClosestCentre(struct point * p, struct point * centreA, 
 /**
 splits the parent node and creates two child nodes (one with the old centre and one with the new one)
 **/
-void split(struct treeNode * parent,struct point * newCentre,int newCentreIndex){
+void split(struct treeNode * parent, Point newCentre,int newCentreIndex){
 
     //loop counter variable
     int i;
@@ -384,10 +373,10 @@ void split(struct treeNode * parent,struct point * newCentre,int newCentreIndex)
     //2. initalizes the arrays for the pointer
 
     //array for pointer on the points belonging to the old centre
-    struct point ** oldPoints = (struct point **)malloc(nOld * sizeof(struct point *));
+    struct point ** oldPoints = new Point[Old];
 
     //array for pointer on the points belonging to the new centre
-    struct point ** newPoints = (struct point **)malloc(nNew * sizeof(struct point *));
+    struct point ** newPoints = new Point[nNew];
 
     int indexOld = 0;
     int indexNew = 0;
@@ -491,7 +480,7 @@ void freeTree(struct treeNode * root){
 /**
 Constructs a coreset of size k from the union of setA and setB
 **/
-void unionTreeCoreset(int k,int n_1,int n_2,int d, struct point * setA,struct point * setB,struct point * centres) {
+void unionTreeCoreset(int k,int n_1,int n_2,int d, Point * setA, Point * setB, Point * centres, int dimension) {
     printf("Computing coreset...\n");
     //total number of points
     int n = n_1+n_2;
@@ -506,33 +495,31 @@ void unionTreeCoreset(int k,int n_1,int n_2,int d, struct point * setA,struct po
 
     //copy the choosen point
     if(j < n_1){
-        copyPointWithoutInit(&setA[j],&centres[choosenPoints]);
+        copyPointWithoutInit(setA[j],centres[choosenPoints]);
     } else {
         j = j - n_1;
-        copyPointWithoutInit(&setB[j],&centres[choosenPoints]);
+        copyPointWithoutInit(setB[j],centres[choosenPoints]);
     }
     struct treeNode * root = (struct treeNode *)malloc(sizeof(struct treeNode));
-    constructRoot(root,setA,setB,n_1,n_2,&centres[choosenPoints],choosenPoints);
+    constructRoot(root,setA,setB,n_1,n_2,centres[choosenPoints],choosenPoints);
     choosenPoints = 1;
 
     //choose the remaining points
     while(choosenPoints < k){
         if(root->cost > 0.0){
             struct treeNode * leaf = selectNode(root);
-            struct point * centre = chooseCentre(leaf);
+            Point centre = chooseCentre(leaf);
             split(leaf,centre,choosenPoints);
-            copyPointWithoutInit(centre,&centres[choosenPoints]);
+            copyPointWithoutInit(centre,centres[choosenPoints]);
         } else {
             //create a dummy point
-            copyPointWithoutInit(root->centre,&centres[choosenPoints]);
+            copyPointWithoutInit(root->centre,centres[choosenPoints]);
             int l;
-            for(l=0;l<root->centre->dimension;l++){
-                centres[choosenPoints].coordinates[l] = -1 * 1000000;
+            for(l=0;l<dimension;l++){
+                centres[choosenPoints].getFeatureItem(l) = -1 * 1000000;
             }
-            centres[choosenPoints].id = -1;
-            centres[choosenPoints].weight = 0.0;
-            centres[choosenPoints].squareSum = 0.0;
-
+            centres[choosenPoints].setIndex(-1);
+            centres[choosenPoints].setWeight(0.0);
         }
 
         choosenPoints++;
@@ -547,27 +534,25 @@ void unionTreeCoreset(int k,int n_1,int n_2,int d, struct point * setA,struct po
 
         if(i < n_1) {
 
-            int index = setA[i].centreIndex;
-            if(centres[index].id != setA[i].id){
-                centres[index].weight += setA[i].weight;
-                centres[index].squareSum += setA[i].squareSum;
+            int index = setA[i].getClusteringCenter();
+            if(centres[index].getIndex() != setA[i].getIndex()){
+                centres[index].getWeight() += setA[i].getWeight();
                 int l;
-                for(l=0;l<centres[index].dimension;l++){
-                    if(setA[i].weight != 0.0){
-                        centres[index].coordinates[l] += setA[i].coordinates[l];
+                for(l=0;l<dimension;l++){
+                    if(setA[i].getWeight() != 0.0){
+                        centres[index].getFeatureItem(l) += setA[i].getFeatureItem(l);
                     }
                 }
             }
         } else {
 
-            int index = setB[i-n_1].centreIndex;
-            if(centres[index].id != setB[i-n_1].id){
-                centres[index].weight += setB[i-n_1].weight;
-                centres[index].squareSum += setB[i-n_1].squareSum;
+            int index = setB[i-n_1].getClusteringCenter();
+            if(centres[index].id != setB[i-n_1].getIndex()){
+                centres[index].getWeight() += setB[i-n_1].getWeight();
                 int l;
-                for(l=0;l<centres[index].dimension;l++){
-                    if(setB[i-n_1].weight != 0.0){
-                        centres[index].coordinates[l] += setB[i-n_1].coordinates[l];
+                for(l=0;l<dimension;l++){
+                    if(setB[i-n_1].getWeight() != 0.0){
+                        centres[index].getFeatureItem(l) += setB[i-n_1].getFeatureItem(l);
                     }
                 }
             }
