@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-using std::string;
+using namespace std;
 
 /**
 * @Description: store the while input data after data processing, one data point, one dataloader

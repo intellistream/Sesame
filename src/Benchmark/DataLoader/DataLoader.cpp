@@ -3,8 +3,6 @@
 //
 #include "DataLoader.hpp"
 
-using namespace std;
-
 DataLoader::DataLoader(int n, bool flag, int an) {
     this->pointNumber = n;
     this->isCleaned = flag;
@@ -71,8 +69,8 @@ bool DataLoader::dataPreprocessing(Point * points) {
 Point *DataLoader::createPoints(string *dataLine) {
     Point points[this->getPointNumber()];
     for(int i = 0; i < dataLine->length(); i++){
-        if(this->getIsClustered()) points[i].Initialization(i + 1,1, this->getAttributeNumber()-2);
-        else points[i].Initialization(i + 1, 1, this->getAttributeNumber()-1);
+        if(this->getIsClustered()) points[i].Initialization(i + 1,1, this->getAttributeNumber()-2, 0);
+        else points[i].Initialization(i + 1, 1, this->getAttributeNumber()-1, 0);
         char * charData  = new char[10000];
         strcpy(charData,dataLine[i].c_str());
         // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
@@ -93,8 +91,6 @@ Point *DataLoader::createPoints(string *dataLine) {
     }
     return points;
 }
-
-
 
 
 int main(){

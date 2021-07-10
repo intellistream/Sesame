@@ -7,6 +7,6 @@
 
 #include "OfflineClustering.hpp"
 
-class DBScan : OfflineClustering{};
+class DBScan{};
 
 #endif // ONLINEMLBENCHMARK_SRC_OFFLINECLUSTERING_DBSCAN_HPP_
