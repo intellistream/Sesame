@@ -16,6 +16,6 @@ int main(int argc, char **argv) {
   BenchmarkUtils::parseArgs(argc, argv, &cmd_params);
 
   //Load datasets.
-
+  BenchmarkUtils::loadData();
 }
 

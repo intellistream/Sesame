@@ -89,5 +89,8 @@ void BenchmarkUtils::print_help(char *string) {
   SESAME_ERROR("Usage: " << string << " [options]");
   SESAME_ERROR(" Available options: ");
 }
+void BenchmarkUtils::loadData() {
+
+}
 
 
