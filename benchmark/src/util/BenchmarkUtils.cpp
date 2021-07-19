@@ -57,6 +57,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t *cmd_params) {
       case 'S': cmd_params->seed = atoi(optarg);
         SESAME_INFO("configure cmd_params->seed: " << cmd_params->seed);
         break;
+      case 'o': cmd_params->outputPath = optarg;
+        SESAME_INFO("configure output path: " << cmd_params->outputPath);
+        break;
       default:break;
     }
   }
@@ -74,6 +77,7 @@ void BenchmarkUtils::defaultParam(param_t *cmd_params) {
   cmd_params->clusterNumber = 54;
   cmd_params->dimension = 20;
   cmd_params->coresetSize = 10;
+  cmd_params->outputPath = "results.txt";
 }
 
 /* command line handling functions */

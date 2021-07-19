@@ -15,6 +15,7 @@ struct param_t {
   int dimension;
   int coresetSize;
   int seed;
+  std::string outputPath;
 };
 
 class BenchmarkUtils {
