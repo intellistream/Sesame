@@ -56,6 +56,15 @@ else (LOG4CXX_FOUND)
     message(STATUS "sudo apt-get install -y liblog4cxx-dev")
 endif (LOG4CXX_FOUND)
 
+# Print all used include directories
+message(STATUS "INCLUDE_DIRS:")
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach (dir ${dirs})
+    message(STATUS "  - ${dir}")
+endforeach ()
+
+message(STATUS " Libraries: ${LIBRARIES}")
+
 # Add Source Code
 add_subdirectory(src)
 
@@ -65,15 +74,10 @@ get_header_sesame(sesame_HEADER_FILES)
 add_library(sesame SHARED ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(sesame PUBLIC "include")
 target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(sesame PUBLIC ${LIBRARIES})
 
 #Add benchmarks with command
 add_subdirectory(benchmark)
 
 install(DIRECTORY "include" DESTINATION "/sesame" COMPONENT SESAME)
 
-# Print all used include directories
-message(STATUS "INCLUDE_DIRS:")
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach (dir ${dirs})
-    message(STATUS "  - ${dir}")
-endforeach ()

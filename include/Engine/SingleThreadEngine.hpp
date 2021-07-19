@@ -7,30 +7,22 @@
 #include <cstdio>
 #include <iostream>
 #include <cstdlib>
+#include <Engine/Engine.hpp>
 
 using namespace std;
 
-struct param_t{
-  int pointNumber;
-  int clusterNumber;
-  int dimension;
-  int coreSize;
-  int seed;
-};
-
-class Executor{
+class SingleThreadEngine : Engine {
  private:
   param_t cmd_params;
-  char * intputPath;
-  char * outputPath;
+  char *intputPath;
+  char *outputPath;
  public:
-  Executor();
+  SingleThreadEngine();
   param_t getParam();
   void parse_args(int argc, char **argv);
   bool runAlgorithm();
   void run();
 
 };
-
 
 #endif //SESAME_INCLUDE_Engine_SINGLETHREADENGINE_H_
