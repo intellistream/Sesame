@@ -1,2 +1,4 @@
+add_subdirectory(Algorithm)
 add_subdirectory(APIs)
 add_subdirectory(Engine)
+add_subdirectory(Utils)
