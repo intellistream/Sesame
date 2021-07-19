@@ -9,7 +9,7 @@ struct param_t {
   int pointNumber;
   int clusterNumber;
   int dimension;
-  int coreSize;
+  int coresetSize;
   int seed;
 };
 

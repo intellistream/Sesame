@@ -20,7 +20,7 @@ void SingleThreadEngine::parse_args(int argc, char **argv) {
     this->cmd_params.pointNumber = atoi(argv[1]);
     this->cmd_params.clusterNumber = atoi(argv[2]);
     this->cmd_params.dimension = atoi(argv[3]);
-    this->cmd_params.coreSize = atoi(argv[4]);
+    this->cmd_params.coresetSize = atoi(argv[4]);
     this->cmd_params.seed = atoi(argv[5]);
   }
 }
