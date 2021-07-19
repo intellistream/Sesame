@@ -1,8 +1,8 @@
-cmake_minimum_required (VERSION 3.0)
-project (OnlineMLBenchmark)
-
+add_source_sesame(
+        Algorithm.cpp
+)
+add_subdirectory(ConceptDrift)
 add_subdirectory(DataStructure)
 add_subdirectory(OfflineClustering)
 add_subdirectory(OutlierDetection)
-add_subdirectory(Summarization)
 add_subdirectory(WindowModel)
