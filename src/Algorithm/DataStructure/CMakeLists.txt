@@ -1,5 +1,3 @@
-cmake_minimum_required (VERSION 3.0)
-project (OnlineMLBenchmark)
+add_source_sesame(
 
-file(GLOB DataStructure_src *.cpp)
-add_library(DataStructure ${DataStructure_src})
+)
