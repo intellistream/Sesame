@@ -83,7 +83,7 @@ void BenchmarkUtils::defaultParam(param_t *cmd_params) {
   cmd_params->coresetSize = 10;
   string home = getenv("HOME");
   cmd_params->inputPath = home + "/datasets/new.txt";
-  cout << "Default Input Data Directory: " << cmd_params->inputPath << endl;
+  SESAME_INFO("Default Input Data Directory: " + cmd_params->inputPath);
   cmd_params->outputPath = "results.txt";
   cmd_params->algoName = "StreamKMeans";
 }

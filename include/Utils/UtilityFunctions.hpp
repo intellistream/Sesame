@@ -4,7 +4,7 @@
 
 #ifndef SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_
 #define SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_
-#include <filesystem>
+#include <string>
 /* Period parameters */
 #define N 624
 #define M 397
@@ -19,7 +19,7 @@ Determines when Lloyd terminates (should be between 0 and 1)
 #define THRESHOLD 1.000
 
 
-
+namespace SESAME {
 class UtilityFunctions {
 
  public:
@@ -28,6 +28,6 @@ class UtilityFunctions {
   static int genrand_int32();
   static void init_genrand(unsigned long s);
   static double genrand_real3();
-  static std::string getDir();
-};
+//  static std::string getDir();
+};}
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

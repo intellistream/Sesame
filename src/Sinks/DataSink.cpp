@@ -2,7 +2,7 @@
 // Created by Shuhao Zhang on 20/07/2021.
 //
 
-#include "Sinks/DataSink.hpp"
+#include <Sinks/DataSink.hpp>
 
 // Store the results
 void SESAME::DataSink::store(std::string outputPath, int numberOfCenters, int dimension, Point *centers) {
