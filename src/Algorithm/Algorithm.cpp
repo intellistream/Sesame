@@ -11,7 +11,7 @@ using namespace std;
 static int seed;
 
 /**
- * Construct the algorithm here..
+ * run the algorithm
  * TODO: make it more generic to include more types of algorithms. Currently, it only fits StreamKMeans.
  * It is expected to have many duplications when more algorithms are added.
  * @param algoName
@@ -20,12 +20,12 @@ static int seed;
  * @param coresetSize
  * @param clusterNumber
  */
-Point *SESAME::Algorithm::create(Point *input,
-                                 const string &algoName,
-                                 int pointNumber,
-                                 int dimension,
-                                 int coresetSize,
-                                 int clusterNumber) {
+Point *SESAME::Algorithm::run(Point *input,
+                              const string &algoName,
+                              int pointNumber,
+                              int dimension,
+                              int coresetSize,
+                              int clusterNumber) {
 
   if (algoName == "StreamKMeans") {
 
@@ -76,5 +76,5 @@ void SESAME::Algorithm::initManager(SESAME::LandmarkWindow::Bucketmanager *manag
   for (i = 0; i < manager->numberOfBuckets; i++) {
     LandmarkWindow::initBucket(&(manager->buckets[i]), d, maxsize);
   }
-  SESAME_INFO("Created manager with " << manager->numberOfBuckets<< " buckets of dimension: " << d);
+  SESAME_INFO("Created manager with " << manager->numberOfBuckets << " buckets of dimension: " << d);
 }
