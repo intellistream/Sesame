@@ -2,7 +2,7 @@
 // Created by Shuhao Zhang on 20/07/2021.
 //
 
-#include "Utils/UtilityFunctions.hpp"
+#include <Utils/UtilityFunctions.hpp>
 
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti; /* mti==N+1 means mt[N] is not initialized */
