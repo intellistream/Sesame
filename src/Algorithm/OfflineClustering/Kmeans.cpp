@@ -140,14 +140,14 @@ Point *SESAME::KMeans::chooseRandomCentres(int k, int n, int d, Point *points) {
 
   }
 
-  cout << "random centres:" << endl;
+  SESAME_INFO("random centres:");
   for (i = 0; i < k; i++) {
-    cout << i << "(";
+    SESAME_INFO(to_string(i)+"(");
     int l = 0;
     for (l = 0; l < centres[i].getDimension(); l++) {
-      cout << centres[i].getFeatureItem(l) / centres[i].getWeight();
+      SESAME_INFO(centres[i].getFeatureItem(l) / centres[i].getWeight());
     }
-    cout << ")" << endl;
+    SESAME_INFO( ")" );
   }
 
   return centres;

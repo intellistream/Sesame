@@ -7,10 +7,10 @@
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti; /* mti==N+1 means mt[N] is not initialized */
 
-int UtilityFunctions::genrand_int31() {
+int SESAME::UtilityFunctions::genrand_int31() {
   return (long) (genrand_int32() >> 1);
 }
-int UtilityFunctions::genrand_int32() {
+int SESAME::UtilityFunctions::genrand_int32() {
   unsigned long y;
   static unsigned long mag01[2] = {0x0UL, MATRIX_A};
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
@@ -45,7 +45,7 @@ int UtilityFunctions::genrand_int32() {
 
   return y;
 }
-UtilityFunctions::UtilityFunctions() {
+SESAME::UtilityFunctions::UtilityFunctions() {
   mti = N + 1; /* mti==N+1 means mt[N] is not initialized */
 }
 
@@ -53,7 +53,7 @@ UtilityFunctions::UtilityFunctions() {
  * initializes mt[N] with a seed
  * @param s
  */
-void UtilityFunctions::init_genrand(unsigned long s) {
+void SESAME::UtilityFunctions::init_genrand(unsigned long s) {
   /* initializes mt[N] with a seed */
   mt[0] = s & 0xffffffffUL;
   for (mti = 1; mti < N; mti++) {
@@ -72,10 +72,11 @@ void UtilityFunctions::init_genrand(unsigned long s) {
  *  generates a random number on (0,1)-real-interval
  * @return
  */
-double UtilityFunctions::genrand_real3() {
+double SESAME::UtilityFunctions::genrand_real3() {
   return (((double) genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
-std::string UtilityFunctions::getDir() {
-  return std::filesystem::current_path();
-}
+//std::string SESAME::UtilityFunctions::getDir() {
+//  return filesystem::current_path();
+//}
+
