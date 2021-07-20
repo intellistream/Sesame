@@ -6,6 +6,8 @@
  */
 #include <util/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
+
+using namespace std;
 int main(int argc, char **argv) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
@@ -16,6 +18,13 @@ int main(int argc, char **argv) {
   BenchmarkUtils::parseArgs(argc, argv, &cmd_params);
 
   //Load datasets.
-  BenchmarkUtils::loadData();
+  string *data = BenchmarkUtils::loadData(&cmd_params);
+
+  //Run algorithm.
+  BenchmarkUtils::runBenchmark(&cmd_params, data);
+
+  //Evaluate results.
+  //TODO.
+
 }
 

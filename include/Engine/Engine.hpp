@@ -5,14 +5,6 @@
 #ifndef SESAME_INCLUDE_ENGINE_ENGINE_HPP_
 #define SESAME_INCLUDE_ENGINE_ENGINE_HPP_
 
-struct param_t {
-  int pointNumber;
-  int clusterNumber;
-  int dimension;
-  int coresetSize;
-  int seed;
-};
-
 class Engine{
 
 };

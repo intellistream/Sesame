@@ -5,9 +5,12 @@
 #ifndef ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 #define ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 
-#include <cstdio>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdio>
 #include <cstdlib>
+#include <getopt.h>
 
 struct param_t {
   int pointNumber;
@@ -15,7 +18,9 @@ struct param_t {
   int dimension;
   int coresetSize;
   int seed;
+  std::string inputPath;
   std::string outputPath;
+  std::string algoName;
 };
 
 class BenchmarkUtils {
@@ -23,7 +28,8 @@ class BenchmarkUtils {
   static void parseArgs(int argc, char **argv, param_t *cmd_params);
   static void defaultParam(param_t *cmd_params);
   static void print_help(char *string);
-  static void loadData();
+  static std::string * loadData(param_t *cmd_params);
+  static void runBenchmark(param_t *cmd_params, std::string *input);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

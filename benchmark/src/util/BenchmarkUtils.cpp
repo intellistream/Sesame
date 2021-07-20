@@ -4,7 +4,10 @@
 
 #include <util/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
-#include <getopt.h>
+#include <Sources/DataSource.hpp>
+#include <Algorithm/Algorithm.hpp>
+
+using namespace std;
 void BenchmarkUtils::parseArgs(int argc, char **argv, param_t *cmd_params) {
 
   int c;
@@ -77,20 +80,54 @@ void BenchmarkUtils::defaultParam(param_t *cmd_params) {
   cmd_params->clusterNumber = 54;
   cmd_params->dimension = 20;
   cmd_params->coresetSize = 10;
+  string home = getenv("HOME");
+  cmd_params->inputPath = home + "/datasets/new.txt";
+  cout << "Default Input Data Directory: " << cmd_params->inputPath << endl;
   cmd_params->outputPath = "results.txt";
+  cmd_params->algoName = "StreamKMeans";
 }
 
 /* command line handling functions */
 /**
- * TODO: @WangXin.
+ * TODO: Make it clear @WangXin.
  * @param string
  */
 void BenchmarkUtils::print_help(char *string) {
   SESAME_ERROR("Usage: " << string << " [options]");
   SESAME_ERROR(" Available options: ");
 }
-void BenchmarkUtils::loadData() {
 
+string *BenchmarkUtils::loadData(param_t *cmd_params) {
+  string *data = new string[cmd_params->pointNumber];
+  ifstream infile;
+  infile.open(cmd_params->inputPath);
+  SESAME_INFO("Read from the file...");
+  for (int i = 0; i < cmd_params->pointNumber; i++)
+    getline(infile, data[i]);
+  SESAME_INFO("Complete reading from the file...");
+  infile.close();
+  return data;
+}
+
+/**
+ * TODO: data type should not be exposed to users, change the logic here to hide it.
+ * @param cmd_params
+ * @param input
+ */
+void BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
+  //Pass input file as a string to DataSource.
+  Point *data = SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, input);
+  SESAME_INFO("Finished Loading Input Data");
+
+  //Construct algorithm
+  //TODO: this is too specific to one algorithm, e.g., coresetSize is not generically useful, make it generic in future @wangxin
+  SESAME::Algorithm::create(
+      data,
+      cmd_params->algoName,
+      cmd_params->pointNumber,
+      cmd_params->dimension,
+      cmd_params->coresetSize,
+      cmd_params->clusterNumber);
 }
 
 
