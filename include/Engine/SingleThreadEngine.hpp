@@ -13,12 +13,11 @@ using namespace std;
 
 class SingleThreadEngine : Engine {
  private:
-  param_t cmd_params;
+
   char *intputPath;
   char *outputPath;
  public:
   SingleThreadEngine();
-  param_t getParam();
   void parse_args(int argc, char **argv);
   bool runAlgorithm();
   void run();

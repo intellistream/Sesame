@@ -79,9 +79,6 @@ void Point::copyFromPoint(Point source) {
   this->weight = source.getWeight();
   this->cost = source.getCost();
   this->clusteringCenter = source.getClusteringCenter();
-  if (source.getDimension() != 54) {
-    int a = 1;
-  }
   for (int i = 0; i < source.getDimension(); i++) {
     this->feature[i] = source.getFeatureItem(i);
   }
