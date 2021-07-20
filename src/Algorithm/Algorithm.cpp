@@ -29,7 +29,6 @@ Point *SESAME::Algorithm::run(Point *input,
                               int clusterNumber) {
 
   if (algoName == "StreamKMeans") {
-
     UtilityFunctions::init_genrand(seed);
     auto *manager = (LandmarkWindow::Bucketmanager *) malloc(sizeof(LandmarkWindow::Bucketmanager));
     initManager(manager, pointNumber, dimension, coresetSize);
