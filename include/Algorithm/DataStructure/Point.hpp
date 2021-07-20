@@ -4,13 +4,15 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
-class Point {
+#include "DataStructure.hpp"
+
+class Point : public DataStructure {
  private:
   int index; // 1,2,3,4,5....
   double weight; // considering the outdated effect
   double *feature;
   double cost;
-  int dimension; // feature Length
+  // feature Length
   int clusteringCenter;  // using index to identify
  public:
   Point();
@@ -21,8 +23,6 @@ class Point {
   void setIndex(int index);
   double getWeight();
   void setWeight(double weight);
-  int getDimension();
-  void setDimension(int d);
   double getFeatureItem(int index);
   void setFeatureItem(double feature, int index);
   int getClusteringCenter();

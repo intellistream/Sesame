@@ -1,4 +1,5 @@
 add_source_sesame(
-        CoresetTree.cpp
         Point.cpp
+        CoresetTree.cpp
+        DataStructure.cpp
 )

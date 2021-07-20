@@ -4,12 +4,13 @@
 
 #include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Utils/UtilityFunctions.hpp>
+#include <Utils/Logger.hpp>
 
 /**
 kMeans++ algorithm for n points of dimension d with k centres
 **/
 Point *SESAME::KMeans::lloydPlusPlus(int k, int n, int d, Point *points, double *resultCost) {
-  cout << "starting kMeans++" << endl;
+  SESAME_INFO("starting kMeans++");
   //choose random centres
   Point *centres = chooseRandomCentres(k, n, d, points);
   double cost = targetFunctionValue(k, n, centres, points);

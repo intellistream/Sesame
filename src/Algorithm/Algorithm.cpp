@@ -6,6 +6,7 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
+
 using namespace std;
 
 static int seed;
@@ -34,10 +35,7 @@ Point *SESAME::Algorithm::run(Point *input,
     initManager(manager, pointNumber, dimension, coresetSize);
 
     // construct window
-    for (int i = 0; i < 14000; i++) {
-      if (input[i].getDimension() != 54 || i == 200) {
-        cout << 1;
-      }
+    for (int i = 0; i < pointNumber; i++) {
       LandmarkWindow::insertPoint(input[i], manager);
     }
 
