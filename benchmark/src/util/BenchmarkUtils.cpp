@@ -4,8 +4,9 @@
 
 #include <util/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
-#include <Sources/DataSource.hpp>
 #include <Algorithm/Algorithm.hpp>
+#include <Sources/DataSource.hpp>
+#include <Sinks/DataSink.hpp>
 
 using namespace std;
 void BenchmarkUtils::parseArgs(int argc, char **argv, param_t *cmd_params) {
@@ -114,20 +115,25 @@ string *BenchmarkUtils::loadData(param_t *cmd_params) {
  * @param cmd_params
  * @param input
  */
-void BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
+Point *BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
   //Pass input file as a string to DataSource.
-  Point *data = SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, input);
-  SESAME_INFO("Finished Loading Input Data");
+  Point points[cmd_params->pointNumber];
+  SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, input, points);
+  SESAME_INFO("Finished loading input data");
 
   //Construct algorithm
   //TODO: this is too specific to one algorithm, e.g., coresetSize is not generically useful, make it generic in future @wangxin
-  SESAME::Algorithm::create(
-      data,
+  return SESAME::Algorithm::run(
+      points,
       cmd_params->algoName,
       cmd_params->pointNumber,
       cmd_params->dimension,
       cmd_params->coresetSize,
       cmd_params->clusterNumber);
+}
+void BenchmarkUtils::evaluate(param_t *cmd_params, Point *results) {
+
+  SESAME::DataSink::store(cmd_params->outputPath, cmd_params->clusterNumber, cmd_params->dimension, results);
 }
 
 

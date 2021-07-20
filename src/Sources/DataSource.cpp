@@ -9,15 +9,15 @@
  * TODO: Remove the hard-coded part.
  * @param point_number
  * @param dimension
- * @param dataLine
+ * @param input
  * @return
  */
-Point *SESAME::DataSource::create(int point_number, int dimension, string *dataLine) {
-  Point points[point_number];
+void SESAME::DataSource::create(int point_number, int dimension, string *input, Point *points) {
+
   for (int i = 0; i < point_number; i++) {
     points[i].Initialization(i, 1, dimension, 0);
     char *charData = new char[10000];
-    strcpy(charData, dataLine[i].c_str());
+    strcpy(charData, input[i].c_str());
     // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
     const char *sep = " ";
     char *feature = strtok(charData, sep);
@@ -33,5 +33,4 @@ Point *SESAME::DataSource::create(int point_number, int dimension, string *dataL
       feature = strtok(nullptr, sep);
     }
   }
-  return points;
 }

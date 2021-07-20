@@ -29,10 +29,7 @@ void SESAME::LandmarkWindow::initManager(Bucketmanager *manager, int n, int d, i
 }
 
 void SESAME::LandmarkWindow::insertPoint(Point p, SESAME::LandmarkWindow::Bucketmanager *manager) {
-  if (p.getDimension() != 54) {
-    SESAME_ERROR("error");
-  }
-  //check if there is e   nough space in the first bucket
+  //check if there is enough space in the first bucket
   int cursize = manager->buckets[0].cursize;
   if (cursize >= manager->maxBucketsize) {
     printf("Bucket 0 full \n");

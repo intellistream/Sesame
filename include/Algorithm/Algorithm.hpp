@@ -10,12 +10,12 @@ namespace SESAME {
 
 class Algorithm {
  public:
-  static Point * create(Point *input,
-                        const string& algoName,
-                        int pointNumber,
-                        int dimension,
-                        int coresetSize,
-                        int clusterNumber);
+  static Point *run(Point *input,
+                    const string &algoName,
+                    int pointNumber,
+                    int dimension,
+                    int coresetSize,
+                    int clusterNumber);
   static void initManager(SESAME::LandmarkWindow::Bucketmanager *manager, int number, int dimension, int size);
 };
 

@@ -21,10 +21,10 @@ int main(int argc, char **argv) {
   string *data = BenchmarkUtils::loadData(&cmd_params);
 
   //Run algorithm.
-  BenchmarkUtils::runBenchmark(&cmd_params, data);
+  Point *results = BenchmarkUtils::runBenchmark(&cmd_params, data);
 
   //Evaluate results.
-  //TODO.
+  BenchmarkUtils::evaluate(&cmd_params, results);
 
 }
 

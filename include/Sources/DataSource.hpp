@@ -14,7 +14,7 @@ using namespace std;
 namespace SESAME {
 class DataSource {
  public:
-  static Point *create(int point_number, int dimension, string *input);
+  static void create(int point_number, int dimension, string *input, Point *points);
 
 };
 }
