@@ -57,14 +57,6 @@ double *Point::getFeatures() {
   return this->feature;
 }
 
-int Point::getDimension() {
-  return this->dimension;
-}
-
-void Point::setDimension(int d) {
-  this->dimension = d;
-}
-
 void Point::setCost(double c) {
   this->cost = c;
 }
