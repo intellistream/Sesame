@@ -1,16 +1,12 @@
-//
-// Created by Shuhao Zhang on 20/07/2021.
-//
-
 #include <Utils/UtilityFunctions.hpp>
 
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti; /* mti==N+1 means mt[N] is not initialized */
 
-int SESAME::UtilityFunctions::genrand_int31() {
-  return (long) (genrand_int32() >> 1);
+long SESAME::UtilityFunctions::genrand_int31() {
+  return  long(genrand_int32() >> 1);
 }
-int SESAME::UtilityFunctions::genrand_int32() {
+unsigned long  SESAME::UtilityFunctions::genrand_int32() {
   unsigned long y;
   static unsigned long mag01[2] = {0x0UL, MATRIX_A};
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
@@ -79,4 +75,3 @@ double SESAME::UtilityFunctions::genrand_real3() {
 //std::string SESAME::UtilityFunctions::getDir() {
 //  return filesystem::current_path();
 //}
-

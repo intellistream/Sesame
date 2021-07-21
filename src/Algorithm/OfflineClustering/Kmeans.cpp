@@ -51,10 +51,10 @@ Point *SESAME::KMeans::lloydPlusPlus(int k, int n, int d, Point *points, double 
 
     //calculate costs
     newCost = targetFunctionValue(k, n, centres, points);
-    printf("old cost:%f, new cost:%f \n", cost, newCost);
+    SESAME_INFO("old cost:"<< cost <<", new cost:"<< newCost <<" \n");
   } while (newCost < THRESHOLD * cost);
 
-  printf("Centres: \n");
+  SESAME_INFO("Centres: \n");
   int i = 0;
   for (i = 0; i < k; i++) {
     printf("(");
@@ -65,7 +65,7 @@ Point *SESAME::KMeans::lloydPlusPlus(int k, int n, int d, Point *points, double 
     printf(")\n");
   }
   *resultCost = newCost;
-  printf("kMeans++ finished\n");
+  SESAME_INFO("kMeans++ finished\n");
   return centres;
 }
 

@@ -17,6 +17,11 @@ class Algorithm {
                     int coresetSize,
                     int clusterNumber);
   static void initManager(SESAME::LandmarkWindow::Bucketmanager *manager, int number, int dimension, int size);
+  virtual void constructWindow();
+  virtual void constructDataStructure();
+  virtual void runOfflineClustering();
+  virtual void conceptDriftDetection();
+  virtual void conceptDriftAdaption();
 };
 
 }
