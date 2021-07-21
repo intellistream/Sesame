@@ -24,10 +24,11 @@ class UtilityFunctions {
 
  public:
     UtilityFunctions();
-  static int genrand_int31();
-  static int genrand_int32();
-  static void init_genrand(unsigned long s);
-  static double genrand_real3();
+    static void init_genrand(unsigned long s);
+    static double genrand_real3();
+    static long genrand_int31(void);
+    static unsigned long genrand_int32(void);
+
 //  static std::string getDir();
 };}
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

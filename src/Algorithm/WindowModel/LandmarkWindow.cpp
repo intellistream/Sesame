@@ -6,6 +6,7 @@
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/CoresetTree.hpp>
 
+
 void SESAME::LandmarkWindow::initBucket(SESAME::LandmarkWindow::Bucket *bucket, int d, int maxsize) {
   bucket->cursize = 0;
   bucket->points = new Point[maxsize];
@@ -25,14 +26,14 @@ void SESAME::LandmarkWindow::initManager(Bucketmanager *manager, int n, int d, i
   for (i = 0; i < manager->numberOfBuckets; i++) {
     initBucket(&(manager->buckets[i]), d, maxsize);
   }
-  printf("Created manager with %d buckets of dimension %d \n", manager->numberOfBuckets, d);
+  SESAME_INFO("Created manager with" << manager->numberOfBuckets << "buckets of dimension"<< d <<"\n");
 }
 
 void SESAME::LandmarkWindow::insertPoint(Point p, SESAME::LandmarkWindow::Bucketmanager *manager) {
   //check if there is enough space in the first bucket
   int cursize = manager->buckets[0].cursize;
   if (cursize >= manager->maxBucketsize) {
-    printf("Bucket 0 full \n");
+    SESAME_INFO("Bucket 0 full \n");
     //start spillover process
     int curbucket = 0;
     int nextbucket = 1;
@@ -51,7 +52,7 @@ void SESAME::LandmarkWindow::insertPoint(Point p, SESAME::LandmarkWindow::Bucket
       manager->buckets[curbucket].cursize = 0;
       cursize = 0;
     } else {
-      printf("Bucket %d full \n", nextbucket);
+      SESAME_INFO("Bucket "<< nextbucket << "full \n");
       //copy bucket to spillover and continue
       int i;
       for (i = 0; i < manager->maxBucketsize; i++) {
@@ -66,7 +67,7 @@ void SESAME::LandmarkWindow::insertPoint(Point p, SESAME::LandmarkWindow::Bucket
       as long as the next bucket is full output the coreset to the spillover of the next bucket
       */
       while (manager->buckets[nextbucket].cursize == manager->maxBucketsize) {
-        printf("Bucket %d full \n", nextbucket);
+        SESAME_INFO("Bucket "<< nextbucket << "full \n");
         SESAME::CoresetTree::unionTreeCoreset(manager->maxBucketsize, manager->maxBucketsize,
                                               manager->maxBucketsize,
                                               manager->buckets[curbucket].points, manager->buckets[curbucket].spillover,
