@@ -4,7 +4,7 @@
 
 #include <util/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
-#include <Algorithm/Algorithm.hpp>
+#include <Algorithm/Modular.hpp>
 #include <Sources/DataSource.hpp>
 #include <Sinks/DataSink.hpp>
 
@@ -82,7 +82,7 @@ void BenchmarkUtils::defaultParam(param_t *cmd_params) {
   cmd_params->dimension = 20;
   cmd_params->coresetSize = 10;
   string home = getenv("HOME");
-  cmd_params->inputPath = home + "/datasets/new.txt";
+  cmd_params->inputPath = home + "/tuidan/Database/Sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params->inputPath);
   cmd_params->outputPath = "results.txt";
   cmd_params->algoName = "StreamKMeans";
@@ -123,7 +123,7 @@ Point *BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
 
   //Construct algorithm
   //TODO: this is too specific to one algorithm, e.g., coresetSize is not generically useful, make it generic in future @wangxin
-  return SESAME::Algorithm::run(
+  return SESAME::Modular::run(
       points,
       cmd_params->algoName,
       cmd_params->pointNumber,

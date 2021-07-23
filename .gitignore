@@ -16,3 +16,5 @@
 /cmake-build-release/
 /benchmark/cmake-build-debug/
 /benchmark/cmake-build-release/
+/cmake-build-debug*
+/cmake-build-release*
