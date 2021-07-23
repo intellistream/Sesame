@@ -1,6 +1,7 @@
 add_source_sesame(
-        Algorithm.cpp
+        Modular.cpp
         StreamKM.cpp
+        Algorithm.cpp
 )
 add_subdirectory(ConceptDrift)
 add_subdirectory(DataStructure)

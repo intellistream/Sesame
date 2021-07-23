@@ -13,7 +13,6 @@ void SESAME::CoresetTree::unionTreeCoreset(int k, int n_1, int n_2, Point *setA,
   //choose the first centre (each point has the same probability of being choosen)
   //stores, how many centres have been choosen yet
   int choosenPoints = 0;
-
   //only choose from the n-i points not already choosen
   int j = UtilityFunctions::genrand_int31() % (n - choosenPoints);
 
@@ -257,7 +256,7 @@ Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::treeNode *node) {
       sum += treeNodeCostOfPoint(node, node->points[i]) / node->cost;
       if (sum >= random) {
         if (node->points[i].getWeight() == 0.0) {
-          printf("ERROR: CHOOSEN DUMMY NODE THOUGH OTHER AVAILABLE \n");
+          SESAME_INFO("ERROR: CHOOSEN DUMMY NODE THOUGH OTHER AVAILABLE \n");
           return bestCentre;
         }
         double curCost = treeNodeSplitCost(node, node->centre, node->points[i]);
@@ -411,7 +410,7 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::treeNode *parent, Point new
       oldPoints[indexOld] = parent->points[i];
       indexOld++;
     } else {
-      printf("ERROR !!! NO CENTER NEAREST !! \n");
+      SESAME_INFO("ERROR !!! NO CENTER NEAREST !! \n");
     }
   }
 
