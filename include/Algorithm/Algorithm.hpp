@@ -1,27 +1,22 @@
 //
-// Created by Shuhao Zhang on 19/07/2021.
+// Created by tuidan on 2021/7/22.
 //
 
+#ifndef SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
+#define SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
 #include <Algorithm/DataStructure/Point.hpp>
-#include <string>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-using namespace std;
-namespace SESAME {
 
+namespace SESAME {
+template<class T>
 class Algorithm {
  public:
-  static Point *run(Point *input,
-                    const string &algoName,
-                    int pointNumber,
-                    int dimension,
-                    int coresetSize,
-                    int clusterNumber);
-  static void initManager(SESAME::LandmarkWindow::Bucketmanager *manager, int number, int dimension, int size);
-  virtual void constructWindow();
-  virtual void constructDataStructure();
-  virtual void runOfflineClustering();
-  virtual void conceptDriftDetection();
-  virtual void conceptDriftAdaption();
+  Algorithm() = default;
+  virtual ~Algorithm() = default;
+  virtual void runOfflineClustering(int clusterNumber, int coresetSize, int dimension,
+                                    Point *streamingCoreset, Point *centresStreamingCoreset) = 0;
+  virtual void initialWindow(T *manager, int pointNumber, int dimension, int coresetSize, int seed) = 0;
+  virtual void buildTimeWindow(int pointNumber, Point *p, Point *streamingCoreset, T *manager) = 0;
 };
-
 }
+
+#endif //SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
