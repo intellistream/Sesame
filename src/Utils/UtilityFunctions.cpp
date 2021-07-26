@@ -4,9 +4,9 @@ static unsigned long mt[N]; /* the array for the state vector  */
 static int mti; /* mti==N+1 means mt[N] is not initialized */
 
 long SESAME::UtilityFunctions::genrand_int31() {
-  return  long(genrand_int32() >> 1);
+  return long(genrand_int32() >> 1);
 }
-unsigned long  SESAME::UtilityFunctions::genrand_int32() {
+unsigned long SESAME::UtilityFunctions::genrand_int32() {
   unsigned long y;
   static unsigned long mag01[2] = {0x0UL, MATRIX_A};
   /* mag01[x] = x * MATRIX_A  for x=0,1 */

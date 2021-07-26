@@ -1,5 +1,4 @@
 add_source_sesame(
-        Modular.cpp
         StreamKM.cpp
         Algorithm.cpp
 )

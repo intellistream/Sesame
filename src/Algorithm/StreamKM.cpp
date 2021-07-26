@@ -8,9 +8,21 @@
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
 
-SESAME::StreamKM::StreamKM() = default;
-
-void SESAME::StreamKM::runOfflineClustering(int clusterNumber, int coresetSize, int dimension, Point *streamingCoreset, Point * centresStreamingCoreset) {
+SESAME::StreamKM::StreamKM(int clusterNumber) {
+  this->manager = new LandmarkWindow::Bucketmanager;
+  this->streamingCoreset = new Point[10];
+  this->centresStreamingCoreset = new Point[clusterNumber];
+}
+SESAME::StreamKM::~StreamKM() {
+  delete (this->manager);
+  delete (this->streamingCoreset);
+  delete (this->centresStreamingCoreset);
+}
+void SESAME::StreamKM::runOfflineClustering(int clusterNumber,
+                                            int coresetSize,
+                                            int dimension,
+                                            Point *streamingCoreset,
+                                            Point *centresStreamingCoreset) {
   double minCost = 0.0;
   double curCost = 0.0;
   KMeans km;
@@ -35,7 +47,8 @@ void SESAME::StreamKM::runOfflineClustering(int clusterNumber, int coresetSize, 
 */
 
 void SESAME::StreamKM::initialWindow(LandmarkWindow::Bucketmanager *manager,
-                                     int pointNumber,int dimension, int coresetSize, int seed) {
+                                     int pointNumber, int dimension, int coresetSize, int seed) {
+
   UtilityFunctions::init_genrand(seed);
   manager->numberOfBuckets = ceil(log((double) pointNumber / (double) coresetSize) / log(2)) + 2;
   manager->maxBucketsize = coresetSize;
@@ -53,11 +66,15 @@ void SESAME::StreamKM::initialWindow(LandmarkWindow::Bucketmanager *manager,
 * @Param:
 * @Return:
 */
-void SESAME::StreamKM::buildTimeWindow(int pointNumber, Point *p, Point *streamingCoreset, SESAME::LandmarkWindow::Bucketmanager *manager) {
+void SESAME::StreamKM::buildTimeWindow(int pointNumber,
+                                       Point *p,
+                                       Point *streamingCoreset,
+                                       SESAME::LandmarkWindow::Bucketmanager *manager) {
   for (int i = 0; i < pointNumber; i++) {
     LandmarkWindow::insertPoint(p[i], manager);
   }
   streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
 }
+
 
 

@@ -5,17 +5,20 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
 #include <Algorithm/DataStructure/Point.hpp>
-
+#include <string>
+using namespace std;
 namespace SESAME {
 template<class T>
 class Algorithm {
  public:
+  Point *centresStreamingCoreset;
   Algorithm() = default;
   virtual ~Algorithm() = default;
   virtual void runOfflineClustering(int clusterNumber, int coresetSize, int dimension,
                                     Point *streamingCoreset, Point *centresStreamingCoreset) = 0;
   virtual void initialWindow(T *manager, int pointNumber, int dimension, int coresetSize, int seed) = 0;
   virtual void buildTimeWindow(int pointNumber, Point *p, Point *streamingCoreset, T *manager) = 0;
+
 };
 }
 

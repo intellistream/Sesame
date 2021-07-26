@@ -13,5 +13,6 @@
 # limitations under the License.
 
 add_source_sesame(
+        Engine.cpp
         SingleThreadEngine.cpp
 )
