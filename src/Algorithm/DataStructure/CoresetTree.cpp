@@ -6,7 +6,12 @@
 #include <Utils/Logger.hpp>
 #include <Utils/UtilityFunctions.hpp>
 
-void SESAME::CoresetTree::unionTreeCoreset(int k, int n_1, int n_2, Point *setA, Point *setB, Point *centres) {
+void SESAME::CoresetTree::unionTreeCoreset(int k,
+                                           int n_1,
+                                           int n_2,
+                                           std::vector<Point> setA,
+                                           std::vector<Point> setB,
+                                           std::vector<Point> centres) {
   SESAME_INFO("Computing coreset...");
   //total number of points
   int n = n_1 + n_2;
@@ -23,14 +28,15 @@ void SESAME::CoresetTree::unionTreeCoreset(int k, int n_1, int n_2, Point *setA,
     j = j - n_1;
     setB[j], centres[choosenPoints].copyFromPoint(setB[j]);
   }
-  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
+//  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
+  TreeNode root;
   constructRoot(root, setA, setB, n_1, n_2, centres[choosenPoints], choosenPoints);
   choosenPoints = 1;
 
   //choose the remaining points
   while (choosenPoints < k) {
-    if (root->cost > 0.0) {
-      struct treeNode *leaf = selectNode(root);
+    if (root.cost > 0.0) {
+      struct TreeNode *leaf = selectNode(root);
       Point centre = chooseCentre(leaf);
       split(leaf, centre, choosenPoints);
       centres[choosenPoints].copyFromPoint(centre);
@@ -82,7 +88,7 @@ void SESAME::CoresetTree::unionTreeCoreset(int k, int n_1, int n_2, Point *setA,
     }
   }
 }
-void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::treeNode *root) {
+void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::TreeNode *root) {
   while (!treeFinished(root)) {
     if (root->lc == NULL && root->rc == NULL) {
       root = root->parent;
@@ -110,14 +116,14 @@ void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::treeNode *root) {
   free(root->points);
   free(root);
 }
-bool SESAME::CoresetTree::treeFinished(SESAME::CoresetTree::treeNode *root) {
+bool SESAME::CoresetTree::treeFinished(SESAME::CoresetTree::TreeNode *root) {
   if (root->parent == NULL && root->lc == NULL && root->rc == NULL) {
     return 1;
   } else {
     return 0;
   }
 }
-bool SESAME::CoresetTree::isLeaf(SESAME::CoresetTree::treeNode *node) {
+bool SESAME::CoresetTree::isLeaf(SESAME::CoresetTree::TreeNode *node) {
   if (node->lc == NULL && node->rc == NULL) {
     return 1;
   } else {
@@ -125,9 +131,9 @@ bool SESAME::CoresetTree::isLeaf(SESAME::CoresetTree::treeNode *node) {
   }
 }
 
-void SESAME::CoresetTree::constructRoot(treeNode *root,
-                                        Point *setA,
-                                        Point *setB,
+void SESAME::CoresetTree::constructRoot(TreeNode &root,
+                                        std::vector<Point> setA,
+                                        std::vector<Point> setB,
                                         int n_1,
                                         int n_2,
                                         Point centre,
@@ -136,71 +142,71 @@ void SESAME::CoresetTree::constructRoot(treeNode *root,
   int i;
 
   //the root has no parent and no child nodes in the beginning
-  root->parent = NULL;
-  root->lc = NULL;
-  root->rc = NULL;
+  root.parent = NULL;
+  root.lc = NULL;
+  root.rc = NULL;
 
   //array with points to the points
-  root->points = new Point[n_1 + n_2];
-  root->n = n_1 + n_2;
+  root.points = new Point[n_1 + n_2];
+  root.n = n_1 + n_2;
 
-  for (i = 0; i < root->n; i++) {
+  for (i = 0; i < root.n; i++) {
     if (i < n_1) {
-      root->points[i] = setA[i];
-      root->points[i].setClusteringCenter(centreIndex);
+      root.points[i] = setA[i];
+      root.points[i].setClusteringCenter(centreIndex);
     } else {
-      root->points[i] = setB[i - n_1];
-      root->points[i].setClusteringCenter(centreIndex);
+      root.points[i] = setB[i - n_1];
+      root.points[i].setClusteringCenter(centreIndex);
     }
   }
 
   //set the centre
-  root->centre = centre;
+  root.centre = centre;
 
   //calculate costs
   treeNodeTargetFunctionValue(root);
 
 }
-void SESAME::CoresetTree::treeNodeTargetFunctionValue(SESAME::CoresetTree::treeNode *node) {
+void SESAME::CoresetTree::treeNodeTargetFunctionValue(TreeNode &node) {
   //loop counter variable
   int i;
 
   //stores the cost
   double sum = 0.0;
 
-  for (i = 0; i < node->n; i++) {
+  for (i = 0; i < node.n; i++) {
     //stores the distance
     double distance = 0.0;
 
     //loop counter variable
     int l;
 
-    for (l = 0; l < node->points[i].getDimension(); l++) {
+    for (l = 0; l < node.points[i].getDimension(); l++) {
       //centroid coordinate of the point
       double centroidCoordinatePoint;
-      if (node->points[i].getWeight() != 0.0) {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
+      if (node.points[i].getWeight() != 0.0) {
+        centroidCoordinatePoint = node.points[i].getFeatureItem(l) / node.points[i].getWeight();
       } else {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l);
+        centroidCoordinatePoint = node.points[i].getFeatureItem(l);
       }
       //centroid coordinate of the centre
       double centroidCoordinateCentre;
-      if (node->centre.getWeight() != 0.0) {
-        centroidCoordinateCentre = node->centre.getFeatureItem(l) / node->centre.getWeight();
+      if (node.centre.getWeight() != 0.0) {
+        centroidCoordinateCentre = node.centre.getFeatureItem(l) / node.centre.getWeight();
       } else {
-        centroidCoordinateCentre = node->centre.getFeatureItem(l);
+        centroidCoordinateCentre = node.centre.getFeatureItem(l);
       }
       distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
           (centroidCoordinatePoint - centroidCoordinateCentre);
 
     }
 
-    sum += distance * node->points[i].getWeight();
+    sum += distance * node.points[i].getWeight();
   }
-  node->cost = sum;
+  node.cost = sum;
 }
 
-SESAME::CoresetTree::treeNode *SESAME::CoresetTree::selectNode(SESAME::CoresetTree::treeNode *root) {
+SESAME::CoresetTree::TreeNode *SESAME::CoresetTree::selectNode(SESAME::CoresetTree::TreeNode *root) {
 
   //random number between 0 and 1
   double random = UtilityFunctions::genrand_real3();
@@ -232,7 +238,7 @@ SESAME::CoresetTree::treeNode *SESAME::CoresetTree::selectNode(SESAME::CoresetTr
 /**
 * selects a new centre from the treenode (using the kMeans++ distribution)
 */
-Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::treeNode *node) {
+Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::TreeNode *node) {
 
   //How many times should we try to choose a centre ??
   int times = 3;
@@ -274,7 +280,7 @@ Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::treeNode *node) {
     return bestCentre;
   }
 }
-double SESAME::CoresetTree::treeNodeCostOfPoint(SESAME::CoresetTree::treeNode *node, Point p) {
+double SESAME::CoresetTree::treeNodeCostOfPoint(SESAME::CoresetTree::TreeNode *node, Point p) {
   if (p.getWeight() == 0.0) {
     return 0.0;
   }
@@ -309,7 +315,7 @@ double SESAME::CoresetTree::treeNodeCostOfPoint(SESAME::CoresetTree::treeNode *n
 /**
  *  computes the hypothetical cost if the node would be split with new centers centreA, centreB
 */
-double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::treeNode *node, Point centreA, Point centreB) {
+double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::TreeNode *node, Point centreA, Point centreB) {
   //loop counter variable
   int i;
   //stores the cost
@@ -372,7 +378,7 @@ double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::treeNode *nod
 /**
 splits the parent node and creates two child nodes (one with the old centre and one with the new one)
 **/
-void SESAME::CoresetTree::split(SESAME::CoresetTree::treeNode *parent, Point newCentre, int newCentreIndex) {
+void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point newCentre, int newCentreIndex) {
 
   //loop counter variable
   int i;
@@ -415,7 +421,7 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::treeNode *parent, Point new
   }
 
   //left child: old centre
-  struct treeNode *lc = (struct treeNode *) malloc(sizeof(struct treeNode));
+  struct TreeNode *lc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
   lc->centre = parent->centre;
   lc->points = oldPoints;
   lc->n = nOld;
@@ -427,7 +433,7 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::treeNode *parent, Point new
   treeNodeTargetFunctionValue(lc);
 
   //right child: new centre
-  struct treeNode *rc = (struct treeNode *) malloc(sizeof(struct treeNode));
+  struct TreeNode *rc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
   rc->centre = newCentre;
   rc->points = newPoints;
   rc->n = nNew;

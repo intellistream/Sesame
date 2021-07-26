@@ -12,6 +12,8 @@
 #include <cstdlib>
 #include <getopt.h>
 #include <Algorithm/DataStructure/Point.hpp>
+#include <memory>
+#include <vector>
 
 struct param_t {
   int pointNumber;
@@ -26,12 +28,13 @@ struct param_t {
 
 class BenchmarkUtils {
  public:
-  static void parseArgs(int argc, char **argv, param_t *cmd_params);
-  static void defaultParam(param_t *cmd_params);
+  static void parseArgs(int argc, char **argv, param_t &cmd_params);
+  static void defaultParam(param_t &cmd_params);
   static void print_help(char *string);
-  static void loadData(param_t *cmd_params, Point *input);
-  static void runBenchmark(param_t *cmd_params, Point *input, Point *results);
-  static void evaluate(param_t *cmd_params, Point *input, Point *results);
+  static void loadData(param_t &cmd_params, std::vector<Point> &input);
+  static void runBenchmark(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output);
+  static void evaluate(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output);
+  static void store(param_t cmd_params, std::vector<Point> &output);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

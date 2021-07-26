@@ -8,73 +8,59 @@
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
 
-SESAME::StreamKM::StreamKM(int clusterNumber) {
-  this->manager = new LandmarkWindow::Bucketmanager;
-  this->streamingCoreset = new Point[10];
-  this->centresStreamingCoreset = new Point[clusterNumber];
-}
-SESAME::StreamKM::~StreamKM() {
-  delete (this->manager);
-  delete (this->streamingCoreset);
-  delete (this->centresStreamingCoreset);
-}
-void SESAME::StreamKM::runOfflineClustering(int clusterNumber,
-                                            int coresetSize,
-                                            int dimension,
-                                            Point *streamingCoreset,
-                                            Point *centresStreamingCoreset) {
-  double minCost = 0.0;
-  double curCost = 0.0;
-  KMeans km;
-  centresStreamingCoreset =
-      km.lloydPlusPlus(clusterNumber, coresetSize, dimension, streamingCoreset, &minCost);
-  curCost = minCost;
-
-  for (int i = 1; i < 5; i++) {
-    Point *tmpCentresStreamingCoreset =
-        km.lloydPlusPlus(clusterNumber, coresetSize, dimension, streamingCoreset, &curCost);
-    if (curCost < minCost) {
-      minCost = curCost;
-      centresStreamingCoreset = tmpCentresStreamingCoreset;
-    }
-  }
+SESAME::StreamKM::StreamKM() {
+  this->window = std::make_shared<LandmarkWindow>();
 }
 
 /**
-* @Description: initial the window setting: window_size, window_number
-* @Param: 
-* @Return:
-*/
-
-void SESAME::StreamKM::initialWindow(LandmarkWindow::Bucketmanager *manager,
-                                     int pointNumber, int dimension, int coresetSize, int seed) {
+ * @Description: initial the window setting: window_size, window_number
+ * @param pointNumber
+ * @param dimension
+ * @param coresetSize
+ * @param seed
+ */
+void SESAME::StreamKM::initialWindow(int pointNumber, int dimension, int coresetSize, int seed) {
 
   UtilityFunctions::init_genrand(seed);
-  manager->numberOfBuckets = ceil(log((double) pointNumber / (double) coresetSize) / log(2)) + 2;
-  manager->maxBucketsize = coresetSize;
-  manager->buckets =
-      (struct LandmarkWindow::Bucket *) malloc(manager->numberOfBuckets * sizeof(LandmarkWindow::Bucket));
-  int i;
-  for (i = 0; i < manager->numberOfBuckets; i++) {
-    LandmarkWindow::initBucket(&(manager->buckets[i]), dimension, coresetSize);
-  }
-  SESAME_INFO("Created manager with " << manager->numberOfBuckets << " buckets of dimension: " << dimension);
+  this->window->bucketManager.numberOfBuckets = ceil(log((double) pointNumber / (double) coresetSize) / log(2)) + 2;
+  this->window->bucketManager.maxBucketsize = coresetSize;
+  this->window->initBucket(dimension, coresetSize);
+  SESAME_INFO(
+      "Created manager with " << this->window->bucketManager.numberOfBuckets << " buckets of dimension: " << dimension);
 }
 
-/**
+/*
 * @Description: build the landmark window, insert the data point and construct the coreset tree.
 * @Param:
 * @Return:
 */
 void SESAME::StreamKM::buildTimeWindow(int pointNumber,
-                                       Point *p,
-                                       Point *streamingCoreset,
-                                       SESAME::LandmarkWindow::Bucketmanager *manager) {
+                                       vector<Point> &input) {
   for (int i = 0; i < pointNumber; i++) {
-    LandmarkWindow::insertPoint(p[i], manager);
+    this->window->insertPoint(input[i]);
   }
-  streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
+  this->window->getCoresetFromManager();//streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
 }
 
-
+//
+//void SESAME::StreamKM::runOfflineClustering(int clusterNumber,
+//                                            int coresetSize,
+//                                            int dimension,
+//                                            vector<Point> &output) {
+//  double minCost = 0.0;
+//  double curCost = 0.0;
+//  KMeans km;
+//  centresStreamingCoreset =
+//      km.lloydPlusPlus(clusterNumber, coresetSize, dimension, streamingCoreset, &minCost);
+//  curCost = minCost;
+//
+//  for (int i = 1; i < 5; i++) {
+//    Point *tmpCentresStreamingCoreset =
+//        km.lloydPlusPlus(clusterNumber, coresetSize, dimension, streamingCoreset, &curCost);
+//    if (curCost < minCost) {
+//      minCost = curCost;
+//      centresStreamingCoreset = tmpCentresStreamingCoreset;
+//    }
+//  }
+//}
 

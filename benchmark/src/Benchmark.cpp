@@ -14,20 +14,22 @@ int main(int argc, char **argv) {
 
   //Parse parameters.
   param_t cmd_params;
-  BenchmarkUtils::defaultParam(&cmd_params);
-  BenchmarkUtils::parseArgs(argc, argv, &cmd_params);
+  BenchmarkUtils::defaultParam(cmd_params);
+  BenchmarkUtils::parseArgs(argc, argv, cmd_params);
 
-  Point *input = NULL;
-  Point *results = NULL;
+  std::vector<Point> input;
+  std::vector<Point> results;
 
   //Load input.
-  BenchmarkUtils::loadData(&cmd_params, input);
+  BenchmarkUtils::loadData(cmd_params, input);
 
   //Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(&cmd_params, input, results);
+  BenchmarkUtils::runBenchmark(cmd_params, input, results);
 
   //Evaluate results against input.
-  BenchmarkUtils::evaluate(&cmd_params, input, results);
+  BenchmarkUtils::evaluate(cmd_params, input, results);
 
+  //Store results.
+  BenchmarkUtils::store(cmd_params, results);
 }
 

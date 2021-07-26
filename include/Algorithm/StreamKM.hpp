@@ -8,24 +8,28 @@
 #ifndef SESAME_SRC_ALGORITHM_STREAMKM_HPP_
 #define SESAME_SRC_ALGORITHM_STREAMKM_HPP_
 
+#include <Algorithm/WindowModel/LandmarkWindow.hpp>
 namespace SESAME {
-class StreamKM : public Algorithm<LandmarkWindow::Bucketmanager> {
+class StreamKM : public Algorithm {
 
  public:
   // initialize
-  LandmarkWindow::Bucketmanager *manager;
-  Point *streamingCoreset;
+  LandmarkWindowPtr window;
+  Point streamingCoreset;
 
-  StreamKM(int cluster_number);
+  StreamKM();
   ~StreamKM();
 
-  void initialWindow(LandmarkWindow::Bucketmanager *manager, int pointNumber,
+  void initialWindow(int pointNumber,
                      int dimension, int coresetSize, int seed) override;
-  void buildTimeWindow(int pointNumber, Point *p, Point *streamingCoreset,
-                       LandmarkWindow::Bucketmanager *manager) override;
-  void runOfflineClustering(int clusterNumber, int coresetSize, int dimension,
-                            Point *streamingCoreset, Point *centresStreamingCoreset) override;
+  void buildTimeWindow(int pointNumber, vector<Point> &input) override;
+  void runOfflineClustering(int clusterNumber, int coresetSize,
+                            int dimension, vector<Point> &output) override;
+
 };
+
+typedef std::shared_ptr<StreamKM> StreamKMAlgorithmPtr;
+
 }
 
 #endif //SESAME_SRC_ALGORITHM_STREAMKM_HPP_

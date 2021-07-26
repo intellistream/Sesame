@@ -3,6 +3,7 @@
 //
 
 #include <Sources/DataSource.hpp>
+#include <vector>
 
 /**
  * Create input data points.
@@ -12,7 +13,7 @@
  * @param input
  * @return
  */
-void SESAME::DataSource::create(int point_number, int dimension, string *input, Point *points) {
+void SESAME::DataSource::create(int point_number, int dimension, string *input, std::vector<Point> &points) {
 
   for (int i = 0; i < point_number; i++) {
     points[i].Initialization(i, 1, dimension, 0);

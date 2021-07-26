@@ -1,0 +1,40 @@
+//
+// Created by Shuhao Zhang on 26/07/2021.
+//
+
+#ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_TREENODE_HPP_
+#define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_TREENODE_HPP_
+
+#include <Algorithm/DataStructure/Point.hpp>
+#include <memory>
+
+namespace SESAME {
+
+class TreeNode;
+typedef std::shared_ptr<TreeNode> TreeNodePtr;
+
+class TreeNode {
+  //number of points in this node
+  int n;
+
+  //array with pointers on points
+  std::vector<Point> points;
+
+  //pointer on the centre of the treenode
+  Point centre;
+
+  //pointer on the left childnode
+  TreeNodePtr lc;
+
+  //pointer on the right childnode
+  TreeNodePtr rc;
+
+  //pointer on the parent node
+  TreeNodePtr parent;
+
+  //cost of the treenode
+  double cost;
+};
+}
+
+#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_TREENODE_HPP_

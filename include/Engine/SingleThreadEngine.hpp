@@ -11,18 +11,20 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/StreamKM.hpp>
+#include <vector>
 using namespace std;
 
 namespace SESAME {
 class SingleThreadEngine : SESAME::Engine {
  public:
   SingleThreadEngine();
-  Point *runAlgorithm(Point *input,
-                      const string &algoName,
-                      int pointNumber,
-                      int dimension,
-                      int coresetSize,
-                      int clusterNumber);
+  void runAlgorithm(vector<Point> &input,
+                    vector<Point> &output,
+                    AlgorithmPtr algo,
+                    int pointNumber,
+                    int dimension,
+                    int coresetSize,
+                    int clusterNumber);
 
 };
 }

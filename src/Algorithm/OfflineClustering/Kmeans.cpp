@@ -112,11 +112,9 @@ Point *SESAME::KMeans::chooseRandomCentres(int k, int n, int d, Point *points) {
     int pos = -1;
 
     do {
-
       random = UtilityFunctions::genrand_real3();
       sum = 0.0;
       pos = -1;
-
       for (j = 0; j < n; j++) {
         sum = sum + points[j].getCost();
         if (random <= sum / cost) {
