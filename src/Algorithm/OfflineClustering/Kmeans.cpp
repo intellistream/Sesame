@@ -51,7 +51,7 @@ Point *SESAME::KMeans::lloydPlusPlus(int k, int n, int d, Point *points, double 
 
     //calculate costs
     newCost = targetFunctionValue(k, n, centres, points);
-    SESAME_INFO("old cost:"<< cost <<", new cost:"<< newCost <<" \n");
+    SESAME_INFO("old cost:" << cost << ", new cost:" << newCost << " \n");
   } while (newCost < THRESHOLD * cost);
 
   SESAME_INFO("Centres: \n");
@@ -142,12 +142,12 @@ Point *SESAME::KMeans::chooseRandomCentres(int k, int n, int d, Point *points) {
 
   SESAME_INFO("random centres:");
   for (i = 0; i < k; i++) {
-    SESAME_INFO(to_string(i)+"(");
+    SESAME_INFO(to_string(i) + "(");
     int l = 0;
     for (l = 0; l < centres[i].getDimension(); l++) {
       SESAME_INFO(centres[i].getFeatureItem(l) / centres[i].getWeight());
     }
-    SESAME_INFO( ")" );
+    SESAME_INFO(")");
   }
 
   return centres;

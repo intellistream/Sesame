@@ -4,9 +4,9 @@
 
 #include <util/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
-#include <Algorithm/Modular.hpp>
 #include <Sources/DataSource.hpp>
 #include <Sinks/DataSink.hpp>
+#include <Engine/SingleThreadEngine.hpp>
 
 using namespace std;
 void BenchmarkUtils::parseArgs(int argc, char **argv, param_t *cmd_params) {
@@ -121,15 +121,12 @@ Point *BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
   SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, input, points);
   SESAME_INFO("Finished loading input data");
 
-  //Construct algorithm
-  //TODO: this is too specific to one algorithm, e.g., coresetSize is not generically useful, make it generic in future @wangxin
-  return SESAME::Modular::run(
-      points,
-      cmd_params->algoName,
-      cmd_params->pointNumber,
-      cmd_params->dimension,
-      cmd_params->coresetSize,
-      cmd_params->clusterNumber);
+  return SESAME::SingleThreadEngine().runAlgorithm(points,
+                                                   cmd_params->algoName,
+                                                   cmd_params->pointNumber,
+                                                   cmd_params->dimension,
+                                                   cmd_params->coresetSize,
+                                                   cmd_params->clusterNumber);
 }
 void BenchmarkUtils::evaluate(param_t *cmd_params, Point *results) {
 

@@ -19,16 +19,16 @@ Determines when Lloyd terminates (should be between 0 and 1)
 */
 #define THRESHOLD 1.000
 
-
 namespace SESAME {
 class UtilityFunctions {
 
  public:
-    UtilityFunctions();
-    static void init_genrand(unsigned long s);
-    static double genrand_real3();
-    static long genrand_int31(void);
-    static unsigned long genrand_int32(void);
+  UtilityFunctions();
+  static void init_genrand(unsigned long s);
+  static double genrand_real3();
+  static long genrand_int31(void);
+  static unsigned long genrand_int32(void);
 //    static std::string getDir();
-};}
+};
+}
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_
