@@ -98,7 +98,8 @@ void BenchmarkUtils::print_help(char *string) {
   SESAME_ERROR(" Available options: ");
 }
 
-string *BenchmarkUtils::loadData(param_t *cmd_params) {
+void BenchmarkUtils::loadData(param_t *cmd_params, Point *input) {
+  //Pass input file as a string to DataSource.
   string *data = new string[cmd_params->pointNumber];
   ifstream infile;
   infile.open(cmd_params->inputPath);
@@ -107,7 +108,10 @@ string *BenchmarkUtils::loadData(param_t *cmd_params) {
     getline(infile, data[i]);
   SESAME_INFO("Complete reading from the file...");
   infile.close();
-  return data;
+
+  input = new Point[cmd_params->pointNumber];
+  SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, data, input);
+  SESAME_INFO("Finished loading input data");
 }
 
 /**
@@ -115,22 +119,19 @@ string *BenchmarkUtils::loadData(param_t *cmd_params) {
  * @param cmd_params
  * @param input
  */
-Point *BenchmarkUtils::runBenchmark(param_t *cmd_params, std::string *input) {
-  //Pass input file as a string to DataSource.
-  Point points[cmd_params->pointNumber];
-  SESAME::DataSource::create(cmd_params->pointNumber, cmd_params->dimension, input, points);
-  SESAME_INFO("Finished loading input data");
-
-  return SESAME::SingleThreadEngine().runAlgorithm(points,
-                                                   cmd_params->algoName,
-                                                   cmd_params->pointNumber,
-                                                   cmd_params->dimension,
-                                                   cmd_params->coresetSize,
-                                                   cmd_params->clusterNumber);
+void BenchmarkUtils::runBenchmark(param_t *cmd_params, Point *input, Point *results) {
+  results = SESAME::SingleThreadEngine().runAlgorithm(input,
+                                                      cmd_params->algoName,
+                                                      cmd_params->pointNumber,
+                                                      cmd_params->dimension,
+                                                      cmd_params->coresetSize,
+                                                      cmd_params->clusterNumber);
 }
-void BenchmarkUtils::evaluate(param_t *cmd_params, Point *results) {
+
+void BenchmarkUtils::evaluate(param_t *cmd_params, Point *input, Point *results) {
 
   SESAME::DataSink::store(cmd_params->outputPath, cmd_params->clusterNumber, cmd_params->dimension, results);
+  SESAME::DataSink::SSE(cmd_params->pointNumber, cmd_params->clusterNumber, cmd_params->dimension, input, results);
 }
 
 
