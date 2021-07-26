@@ -17,14 +17,17 @@ int main(int argc, char **argv) {
   BenchmarkUtils::defaultParam(&cmd_params);
   BenchmarkUtils::parseArgs(argc, argv, &cmd_params);
 
-  //Load datasets.
-  string *data = BenchmarkUtils::loadData(&cmd_params);
+  Point *input = NULL;
+  Point *results = NULL;
 
-  //Run algorithm.
-  Point *results = BenchmarkUtils::runBenchmark(&cmd_params, data);
+  //Load input.
+  BenchmarkUtils::loadData(&cmd_params, input);
 
-  //Evaluate results.
-  BenchmarkUtils::evaluate(&cmd_params, results);
+  //Run algorithm producing results.
+  BenchmarkUtils::runBenchmark(&cmd_params, input, results);
+
+  //Evaluate results against input.
+  BenchmarkUtils::evaluate(&cmd_params, input, results);
 
 }
 

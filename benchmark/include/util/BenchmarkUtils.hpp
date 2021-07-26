@@ -29,9 +29,9 @@ class BenchmarkUtils {
   static void parseArgs(int argc, char **argv, param_t *cmd_params);
   static void defaultParam(param_t *cmd_params);
   static void print_help(char *string);
-  static std::string *loadData(param_t *cmd_params);
-  static Point *runBenchmark(param_t *cmd_params, std::string *input);
-  static void evaluate(param_t *cmd_params, Point *results);
+  static void loadData(param_t *cmd_params, Point *input);
+  static void runBenchmark(param_t *cmd_params, Point *input, Point *results);
+  static void evaluate(param_t *cmd_params, Point *input, Point *results);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

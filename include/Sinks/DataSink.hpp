@@ -12,6 +12,7 @@ class DataSink {
 
  public:
   static void store(std::string outputPath, int numberOfCenters, int dimension, Point *centers);
+  static void SSE(int numberOfPoints, int numberOfCenters, int dimention, Point *inputs, Point *results);
 };
 }
 #endif //SESAME_INCLUDE_SINKS_DATASINK_HPP_
