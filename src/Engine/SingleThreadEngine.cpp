@@ -5,6 +5,9 @@
 #include <Engine/SingleThreadEngine.hpp>
 using namespace std;
 static int seed;
+
+SESAME::SingleThreadEngine::SingleThreadEngine() = default;
+
 /**
  * run the algorithm
  * TODO: make it more generic to include more types of algorithms. Currently, it only fits StreamKMeans.
@@ -15,28 +18,21 @@ static int seed;
  * @param coresetSize
  * @param clusterNumber
  */
-Point *SESAME::SingleThreadEngine::runAlgorithm(Point *input,
-                                                const string &algoName,
-                                                int pointNumber,
-                                                int dimension,
-                                                int coresetSize,
-                                                int clusterNumber) {
-  if (algoName == "StreamKMeans") {
-    auto *al = new StreamKM(clusterNumber);
 
-    // initialize window model
-    al->initialWindow(al->manager, pointNumber, dimension, coresetSize, seed);
+void SESAME::SingleThreadEngine::runAlgorithm(vector<Point> &input,
+                                              vector<Point> &output,
+                                              AlgorithmPtr algo,
+                                              int pointNumber,
+                                              int dimension,
+                                              int coresetSize,
+                                              int clusterNumber) {
 
-    // build window model
-    al->buildTimeWindow(pointNumber, input, al->streamingCoreset, al->manager);
+  // initialize window model
+  algo->initialWindow(pointNumber, dimension, coresetSize, seed);
 
-    // run offline clustering
-    al->runOfflineClustering(clusterNumber, coresetSize, dimension, al->streamingCoreset, al->centresStreamingCoreset);
-
-    return al->centresStreamingCoreset;
-  }
-  throw std::invalid_argument("Unsupported");
-}
-SESAME::SingleThreadEngine::SingleThreadEngine() {
-
+  // build window model
+  algo->buildTimeWindow(pointNumber, input);
+//
+//  // run offline clustering
+//  algo.runOfflineClustering(clusterNumber, coresetSize, dimension, output);
 }

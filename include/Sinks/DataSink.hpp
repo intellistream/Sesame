@@ -6,13 +6,13 @@
 #define SESAME_INCLUDE_SINKS_DATASINK_HPP_
 #include <string>
 #include <Algorithm/DataStructure/Point.hpp>
+#include <vector>
 namespace SESAME {
 
 class DataSink {
 
  public:
-  static void store(std::string outputPath, int numberOfCenters, int dimension, Point *centers);
-  static void SSE(int numberOfPoints, int numberOfCenters, int dimention, Point *inputs, Point *results);
+  static void store(std::string outputPath, int numberOfCenters, int dimension, std::vector<Point> &centers);
 };
 }
 #endif //SESAME_INCLUDE_SINKS_DATASINK_HPP_

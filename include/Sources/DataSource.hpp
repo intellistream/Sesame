@@ -8,13 +8,14 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <string>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 
 namespace SESAME {
 class DataSource {
  public:
-  static void create(int point_number, int dimension, string *input, Point *points);
+  static void create(int point_number, int dimension, string *input, std::vector<Point> &points);
 
 };
 }

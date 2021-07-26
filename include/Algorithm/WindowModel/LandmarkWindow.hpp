@@ -10,41 +10,46 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <memory>
+#include <vector>
 
 namespace SESAME {
+class LandmarkWindow;
+typedef std::shared_ptr<LandmarkWindow> LandmarkWindowPtr;
+
 class LandmarkWindow {
  public:
-  /**
+/**
 datastructure representing a single bucket
 **/
   struct Bucket {
     int cursize;
-    Point *points;
-    Point *spillover;
+    std::vector<Point> points;
+    std::vector<Point> spillover;
   };
+
 /**
 datastructure for managing all O(log(n)) buckets
 **/
   struct Bucketmanager {
     int numberOfBuckets;
     int maxBucketsize;
-    struct Bucket *buckets;
+    std::vector<Bucket> buckets; //    struct Bucket *buckets;
   };
 
-/**
-initializes a bucket
-**/
-  static void initBucket(Bucket *bucket, int d, int maxsize);
+  Bucketmanager bucketManager;
 
   /**
-initializes a bucketmanager for n points with bucketsize maxsize and dimension d
-**/
-  static void initManager(Bucketmanager *manager, int n, int d, int maxsize);
+   * initialize buckets in the bucket manager.
+   * @param dimension
+   * @param coresetSize
+   */
+  void initBucket(int dimension, int coresetSize);
 
 /**
 inserts a single point into the bucketmanager
 **/
-  static void insertPoint(Point p, struct Bucketmanager *manager);
+  void insertPoint(Point p);
 
 /**
 It may happen that the manager is not full (since n is not always a power of 2). In this case we extract the coreset
@@ -58,7 +63,7 @@ Case2: the last bucket is not full
 
 this operation should only be called after the streaming process is finished
 **/
-  static Point *getCoresetFromManager(SESAME::LandmarkWindow::Bucketmanager *manager);
+  Point *getCoresetFromManager();
 };
 }
 
