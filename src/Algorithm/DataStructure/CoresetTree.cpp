@@ -5,13 +5,14 @@
 #include <Algorithm/DataStructure/CoresetTree.hpp>
 #include <Utils/Logger.hpp>
 #include <Utils/UtilityFunctions.hpp>
+#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
 void SESAME::CoresetTree::unionTreeCoreset(int k,
                                            int n_1,
                                            int n_2,
-                                           std::vector<Point> setA,
-                                           std::vector<Point> setB,
-                                           std::vector<Point> centres) {
+                                           std::vector<PointPtr> &setA,
+                                           std::vector<PointPtr> &setB,
+                                           std::vector<PointPtr> &centres) {
   SESAME_INFO("Computing coreset...");
   //total number of points
   int n = n_1 + n_2;
@@ -23,32 +24,32 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
   //copy the choosen point
   if (j < n_1) {
-    setA[j], centres[choosenPoints].copyFromPoint(setA[j]);
+    setA[j], centres[choosenPoints] = setA[j]->copy();//TODO: ???? why re-set setA[j]?
   } else {
     j = j - n_1;
-    setB[j], centres[choosenPoints].copyFromPoint(setB[j]);
+    setB[j], centres[choosenPoints] = setB[j]->copy();//TODO: ???? why re-set setB[j]?
   }
 //  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
-  TreeNode root;
+  TreeNodePtr root = DataStructureFactory::createTreeNode();
   constructRoot(root, setA, setB, n_1, n_2, centres[choosenPoints], choosenPoints);
   choosenPoints = 1;
 
   //choose the remaining points
   while (choosenPoints < k) {
-    if (root.cost > 0.0) {
-      struct TreeNode *leaf = selectNode(root);
-      Point centre = chooseCentre(leaf);
+    if (root->cost > 0.0) {
+      TreeNodePtr leaf = selectNode(root);
+      PointPtr centre = chooseCentre(leaf);
       split(leaf, centre, choosenPoints);
-      centres[choosenPoints].copyFromPoint(centre);
+      centres[choosenPoints] = centre->copy();
     } else {
       //create a dummy point
-      centres[choosenPoints].copyFromPoint(root->centre);
+      centres[choosenPoints] = root->centre->copy();
       int l;
-      for (l = 0; l < centres[choosenPoints].getDimension(); l++) {
-        centres[choosenPoints].setFeatureItem(-1 * 1000000, l);
+      for (l = 0; l < centres[choosenPoints]->getDimension(); l++) {
+        centres[choosenPoints]->setFeatureItem(-1 * 1000000, l);
       }
-      centres[choosenPoints].setIndex(-1);
-      centres[choosenPoints].setWeight(0.0);
+      centres[choosenPoints]->setIndex(-1);
+      centres[choosenPoints]->setWeight(0.0);
     }
 
     choosenPoints++;
@@ -63,32 +64,33 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
     if (i < n_1) {
 
-      int index = setA[i].getClusteringCenter();
-      if (centres[index].getIndex() != setA[i].getIndex()) {
-        centres[index].setWeight(setA[i].getWeight());
+      int index = setA[i]->getClusteringCenter();
+      if (centres[index]->getIndex() != setA[i]->getIndex()) {
+        centres[index]->setWeight(setA[i]->getWeight());
         int l;
-        for (l = 0; l < setA[i].getDimension(); l++) {
-          if (setA[i].getWeight() != 0.0) {
-            centres[index].setFeatureItem(setA[i].getFeatureItem(l) + centres[index].getFeatureItem(l), l);
+        for (l = 0; l < setA[i]->getDimension(); l++) {
+          if (setA[i]->getWeight() != 0.0) {
+            centres[index]->setFeatureItem(setA[i]->getFeatureItem(l) + centres[index]->getFeatureItem(l), l);
           }
         }
       }
     } else {
 
-      int index = setB[i - n_1].getClusteringCenter();
-      if (centres[index].getIndex() != setB[i - n_1].getIndex()) {
-        centres[index].setWeight(setB[i - n_1].getWeight());
+      int index = setB[i - n_1]->getClusteringCenter();
+      if (centres[index]->getIndex() != setB[i - n_1]->getIndex()) {
+        centres[index]->setWeight(setB[i - n_1]->getWeight());
         int l;
-        for (l = 0; l < setB[i - n_1].getDimension(); l++) {
-          if (setB[i - n_1].getWeight() != 0.0) {
-            centres[index].setFeatureItem(setB[i - n_1].getFeatureItem(l) + centres[index].getFeatureItem(l), l);
+        for (l = 0; l < setB[i - n_1]->getDimension(); l++) {
+          if (setB[i - n_1]->getWeight() != 0.0) {
+            centres[index]->setFeatureItem(setB[i - n_1]->getFeatureItem(l) + centres[index]->getFeatureItem(l), l);
           }
         }
       }
     }
   }
 }
-void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::TreeNode *root) {
+
+void SESAME::CoresetTree::freeTree(TreeNodePtr root) {
   while (!treeFinished(root)) {
     if (root->lc == NULL && root->rc == NULL) {
       root = root->parent;
@@ -96,8 +98,8 @@ void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::TreeNode *root) {
       //Schau ob rc ein Blatt ist
       if (isLeaf(root->rc)) {
         //Gebe rechtes Kind frei
-        free(root->rc->points);
-        free(root->rc);
+        root->rc->points.clear();
+        DataStructureFactory::clearTreeNode(root->rc);
         root->rc = NULL;
       } else {
         //Fahre mit rechtem Kind fort
@@ -105,25 +107,26 @@ void SESAME::CoresetTree::freeTree(SESAME::CoresetTree::TreeNode *root) {
       }
     } else if (root->lc != NULL) {
       if (isLeaf(root->lc)) {
-        free(root->lc->points);
-        free(root->lc);
+        root->lc->points.clear();
+        DataStructureFactory::clearTreeNode(root->lc);
         root->lc = NULL;
       } else {
         root = root->lc;
       }
     }
   }
-  free(root->points);
-  free(root);
+  root->points.clear();
+  root.reset();
 }
-bool SESAME::CoresetTree::treeFinished(SESAME::CoresetTree::TreeNode *root) {
+
+bool SESAME::CoresetTree::treeFinished(TreeNodePtr root) {
   if (root->parent == NULL && root->lc == NULL && root->rc == NULL) {
     return 1;
   } else {
     return 0;
   }
 }
-bool SESAME::CoresetTree::isLeaf(SESAME::CoresetTree::TreeNode *node) {
+bool SESAME::CoresetTree::isLeaf(TreeNodePtr node) {
   if (node->lc == NULL && node->rc == NULL) {
     return 1;
   } else {
@@ -131,82 +134,81 @@ bool SESAME::CoresetTree::isLeaf(SESAME::CoresetTree::TreeNode *node) {
   }
 }
 
-void SESAME::CoresetTree::constructRoot(TreeNode &root,
-                                        std::vector<Point> setA,
-                                        std::vector<Point> setB,
+void SESAME::CoresetTree::constructRoot(TreeNodePtr root,
+                                        std::vector<PointPtr> &setA,
+                                        std::vector<PointPtr> &setB,
                                         int n_1,
                                         int n_2,
-                                        Point centre,
+                                        PointPtr centre,
                                         int centreIndex) {
   //loop counter variable
   int i;
-
   //the root has no parent and no child nodes in the beginning
-  root.parent = NULL;
-  root.lc = NULL;
-  root.rc = NULL;
+  root->parent = NULL;
+  root->lc = NULL;
+  root->rc = NULL;
 
   //array with points to the points
-  root.points = new Point[n_1 + n_2];
-  root.n = n_1 + n_2;
+  //root->points= new Point[n_1 + n_2];
+  root->n = n_1 + n_2;
 
-  for (i = 0; i < root.n; i++) {
+  for (i = 0; i < root->n; i++) {
     if (i < n_1) {
-      root.points[i] = setA[i];
-      root.points[i].setClusteringCenter(centreIndex);
+      root->points.push_back(setA[i]);
+//      root->points[i] = setA[i];
+      root->points[i]->setClusteringCenter(centreIndex);
     } else {
-      root.points[i] = setB[i - n_1];
-      root.points[i].setClusteringCenter(centreIndex);
+      root->points.push_back(setB[i - n_1]);
+      root->points[i]->setClusteringCenter(centreIndex);
     }
   }
 
   //set the centre
-  root.centre = centre;
+  root->centre = centre;
 
   //calculate costs
   treeNodeTargetFunctionValue(root);
 
 }
-void SESAME::CoresetTree::treeNodeTargetFunctionValue(TreeNode &node) {
+void SESAME::CoresetTree::treeNodeTargetFunctionValue(TreeNodePtr node) {
   //loop counter variable
   int i;
 
   //stores the cost
   double sum = 0.0;
 
-  for (i = 0; i < node.n; i++) {
+  for (i = 0; i < node->n; i++) {
     //stores the distance
     double distance = 0.0;
 
     //loop counter variable
     int l;
 
-    for (l = 0; l < node.points[i].getDimension(); l++) {
+    for (l = 0; l < node->points[i]->getDimension(); l++) {
       //centroid coordinate of the point
       double centroidCoordinatePoint;
-      if (node.points[i].getWeight() != 0.0) {
-        centroidCoordinatePoint = node.points[i].getFeatureItem(l) / node.points[i].getWeight();
+      if (node->points[i]->getWeight() != 0.0) {
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l) / node->points[i]->getWeight();
       } else {
-        centroidCoordinatePoint = node.points[i].getFeatureItem(l);
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l);
       }
       //centroid coordinate of the centre
       double centroidCoordinateCentre;
-      if (node.centre.getWeight() != 0.0) {
-        centroidCoordinateCentre = node.centre.getFeatureItem(l) / node.centre.getWeight();
+      if (node->centre->getWeight() != 0.0) {
+        centroidCoordinateCentre = node->centre->getFeatureItem(l) / node->centre->getWeight();
       } else {
-        centroidCoordinateCentre = node.centre.getFeatureItem(l);
+        centroidCoordinateCentre = node->centre->getFeatureItem(l);
       }
       distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
           (centroidCoordinatePoint - centroidCoordinateCentre);
 
     }
-
-    sum += distance * node.points[i].getWeight();
+    sum += distance * node->points[i]->getWeight();
   }
-  node.cost = sum;
+  node->cost = sum;
 }
 
-SESAME::CoresetTree::TreeNode *SESAME::CoresetTree::selectNode(SESAME::CoresetTree::TreeNode *root) {
+SESAME::TreeNodePtr SESAME::CoresetTree::selectNode(TreeNodePtr root) {
 
   //random number between 0 and 1
   double random = UtilityFunctions::genrand_real3();
@@ -236,16 +238,17 @@ SESAME::CoresetTree::TreeNode *SESAME::CoresetTree::selectNode(SESAME::CoresetTr
 }
 
 /**
-* selects a new centre from the treenode (using the kMeans++ distribution)
+ * selects a new centre from the treenode (using the kMeans++ distribution)
+ * TODO: Why hard-code??
 */
-Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::TreeNode *node) {
+SESAME::PointPtr SESAME::CoresetTree::chooseCentre(TreeNodePtr node) {
 
-  //How many times should we try to choose a centre ??
+  //TODO: How many times should we try to choose a centre ??
   int times = 3;
 
   //stores the nodecost if node is split with the best centre
   double minCost = node->cost;
-  Point bestCentre;
+  PointPtr bestCentre;
 
   //loop counter variable
   int i;
@@ -258,10 +261,9 @@ Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::TreeNode *node) {
     double random = UtilityFunctions::genrand_real3();
 
     for (i = 0; i < node->n; i++) {
-
       sum += treeNodeCostOfPoint(node, node->points[i]) / node->cost;
       if (sum >= random) {
-        if (node->points[i].getWeight() == 0.0) {
+        if (node->points[i]->getWeight() == 0.0) {
           SESAME_INFO("ERROR: CHOOSEN DUMMY NODE THOUGH OTHER AVAILABLE \n");
           return bestCentre;
         }
@@ -274,14 +276,14 @@ Point SESAME::CoresetTree::chooseCentre(SESAME::CoresetTree::TreeNode *node) {
       }
     }
   }
-  if (bestCentre.getIndex() == 0) {
+  if (bestCentre->getIndex() == 0) {
     return node->points[0];
   } else {
     return bestCentre;
   }
 }
-double SESAME::CoresetTree::treeNodeCostOfPoint(SESAME::CoresetTree::TreeNode *node, Point p) {
-  if (p.getWeight() == 0.0) {
+double SESAME::CoresetTree::treeNodeCostOfPoint(TreeNodePtr node, PointPtr p) {
+  if (p->getWeight() == 0.0) {
     return 0.0;
   }
 
@@ -291,31 +293,36 @@ double SESAME::CoresetTree::treeNodeCostOfPoint(SESAME::CoresetTree::TreeNode *n
   //loop counter variable
   int l;
 
-  for (l = 0; l < p.getDimension(); l++) {
-    //centroid coordinate of the point
+  for (l = 0; l < p->getDimension(); l++) {
+    //centroid coor->inate of the point
     double centroidCoordinatePoint;
-    if (p.getWeight() != 0.0) {
-      centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
+    if (p->getWeight() != 0.0) {
+      centroidCoordinatePoint = p->getFeatureItem(l) / p->getWeight();
     } else {
-      centroidCoordinatePoint = p.getFeatureItem(l);
+      centroidCoordinatePoint = p->getFeatureItem(l);
     }
     //centroid coordinate of the centre
     double centroidCoordinateCentre;
-    if (node->centre.getWeight() != 0.0) {
-      centroidCoordinateCentre = node->centre.getFeatureItem(l) / node->centre.getWeight();
+    if (node->centre->getWeight() != 0.0) {
+      centroidCoordinateCentre = node->centre->getFeatureItem(l) / node->centre->getWeight();
     } else {
-      centroidCoordinateCentre = node->centre.getFeatureItem(l);
+      centroidCoordinateCentre = node->centre->getFeatureItem(l);
     }
     distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
         (centroidCoordinatePoint - centroidCoordinateCentre);
 
   }
-  return distance * p.getWeight();
+  return distance * p->getWeight();
 }
+
 /**
- *  computes the hypothetical cost if the node would be split with new centers centreA, centreB
-*/
-double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::TreeNode *node, Point centreA, Point centreB) {
+ * computes the hypothetical cost if the node would be split with new centers centreA, centreB
+ * @param node
+ * @param centreA
+ * @param centreB
+ * @return
+ */
+double SESAME::CoresetTree::treeNodeSplitCost(TreeNodePtr node, PointPtr centreA, PointPtr centreB) {
   //loop counter variable
   int i;
   //stores the cost
@@ -325,40 +332,40 @@ double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::TreeNode *nod
     int l;
     //stores the distance between p and centreA
     double distanceA = 0.0;
-    for (l = 0; l < node->points[i].getDimension(); l++) {
+    for (l = 0; l < node->points[i]->getDimension(); l++) {
       //centroid coordinate of the point
       double centroidCoordinatePoint;
-      if (node->points[i].getWeight() != 0.0) {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
+      if (node->points[i]->getWeight() != 0.0) {
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l) / node->points[i]->getWeight();
       } else {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l);
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l);
       }
       //centroid coordinate of the centre
       double centroidCoordinateCentre;
-      if (centreA.getWeight() != 0.0) {
-        centroidCoordinateCentre = centreA.getFeatureItem(l) / centreA.getWeight();
+      if (centreA->getWeight() != 0.0) {
+        centroidCoordinateCentre = centreA->getFeatureItem(l) / centreA->getWeight();
       } else {
-        centroidCoordinateCentre = centreA.getFeatureItem(l);
+        centroidCoordinateCentre = centreA->getFeatureItem(l);
       }
       distanceA += (centroidCoordinatePoint - centroidCoordinateCentre) *
           (centroidCoordinatePoint - centroidCoordinateCentre);
     }
     //stores the distance between p and centreB
     double distanceB = 0.0;
-    for (l = 0; l < node->points[i].getDimension(); l++) {
+    for (l = 0; l < node->points[i]->getDimension(); l++) {
       //centroid coordinate of the point
       double centroidCoordinatePoint;
-      if (node->points[i].getWeight() != 0.0) {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l) / node->points[i].getWeight();
+      if (node->points[i]->getWeight() != 0.0) {
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l) / node->points[i]->getWeight();
       } else {
-        centroidCoordinatePoint = node->points[i].getFeatureItem(l);
+        centroidCoordinatePoint = node->points[i]->getFeatureItem(l);
       }
       //centroid coordinate of the centre
       double centroidCoordinateCentre;
-      if (centreB.getWeight() != 0.0) {
-        centroidCoordinateCentre = centreB.getFeatureItem(l) / centreB.getWeight();
+      if (centreB->getWeight() != 0.0) {
+        centroidCoordinateCentre = centreB->getFeatureItem(l) / centreB->getWeight();
       } else {
-        centroidCoordinateCentre = centreB.getFeatureItem(l);
+        centroidCoordinateCentre = centreB->getFeatureItem(l);
       }
 
       distanceB += (centroidCoordinatePoint - centroidCoordinateCentre) *
@@ -366,9 +373,9 @@ double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::TreeNode *nod
     }
     //add the cost of the closest centre to the sum
     if (distanceA < distanceB) {
-      sum += distanceA * node->points[i].getWeight();
+      sum += distanceA * node->points[i]->getWeight();
     } else {
-      sum += distanceB * node->points[i].getWeight();
+      sum += distanceB * node->points[i]->getWeight();
     }
   }
   //return the total cost
@@ -378,7 +385,7 @@ double SESAME::CoresetTree::treeNodeSplitCost(SESAME::CoresetTree::TreeNode *nod
 /**
 splits the parent node and creates two child nodes (one with the old centre and one with the new one)
 **/
-void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point newCentre, int newCentreIndex) {
+void SESAME::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre, int newCentreIndex) {
 
   //loop counter variable
   int i;
@@ -387,8 +394,8 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point new
   int nOld = 0;
   int nNew = 0;
   for (i = 0; i < parent->n; i++) {
-    Point centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
-    if (centre.getIndex() == newCentre.getIndex()) {
+    PointPtr centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
+    if (centre->getIndex() == newCentre->getIndex()) {
       nNew++;
     } else {
       nOld++;
@@ -398,21 +405,21 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point new
   //2. initalizes the arrays for the pointer
 
   //array for pointer on the points belonging to the old centre
-  Point *oldPoints = new Point[nOld];
+  std::vector<PointPtr> oldPoints;// = new Point[nOld];
 
   //array for pointer on the points belonging to the new centre
-  Point *newPoints = new Point[nNew];
+  std::vector<PointPtr> newPoints; //= new Point[nNew];
 
   int indexOld = 0;
   int indexNew = 0;
 
   for (i = 0; i < parent->n; i++) {
-    Point centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
-    if (centre.getIndex() == newCentre.getIndex()) {
-      newPoints[indexNew] = parent->points[i];
-      newPoints[indexNew].setClusteringCenter(newCentreIndex);
+    PointPtr centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
+    if (centre->getIndex() == newCentre->getIndex()) {
+      newPoints[indexNew] = parent->points[i]->copy();
+      newPoints[indexNew]->setClusteringCenter(newCentreIndex);
       indexNew++;
-    } else if (centre.getIndex() == parent->centre.getIndex()) {
+    } else if (centre->getIndex() == parent->centre->getIndex()) {
       oldPoints[indexOld] = parent->points[i];
       indexOld++;
     } else {
@@ -421,7 +428,8 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point new
   }
 
   //left child: old centre
-  struct TreeNode *lc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
+//  struct TreeNode *lc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
+  TreeNodePtr lc = DataStructureFactory::createTreeNode();
   lc->centre = parent->centre;
   lc->points = oldPoints;
   lc->n = nOld;
@@ -433,7 +441,8 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point new
   treeNodeTargetFunctionValue(lc);
 
   //right child: new centre
-  struct TreeNode *rc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
+//  struct TreeNode *rc = (struct TreeNode *) malloc(sizeof(struct TreeNode));
+  TreeNodePtr rc = DataStructureFactory::createTreeNode();
   rc->centre = newCentre;
   rc->points = newPoints;
   rc->n = nNew;
@@ -457,9 +466,13 @@ void SESAME::CoresetTree::split(SESAME::CoresetTree::TreeNode *parent, Point new
 }
 
 /**
-returns the next centre
-**/
-Point SESAME::CoresetTree::determineClosestCentre(Point p, Point centreA, Point centreB) {
+ * returns the next centre from A or B.
+ * @param point
+ * @param centreA
+ * @param centreB
+ * @return
+ */
+SESAME::PointPtr SESAME::CoresetTree::determineClosestCentre(PointPtr point, PointPtr centreA, PointPtr centreB) {
 
   //loop counter variable
   int l;
@@ -467,20 +480,20 @@ Point SESAME::CoresetTree::determineClosestCentre(Point p, Point centreA, Point 
   //stores the distance between p and centreA
   double distanceA = 0.0;
 
-  for (l = 0; l < p.getDimension(); l++) {
+  for (l = 0; l < point->getDimension(); l++) {
     //centroid coordinate of the point
     double centroidCoordinatePoint;
-    if (p.getWeight() != 0.0) {
-      centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
+    if (point->getWeight() != 0.0) {
+      centroidCoordinatePoint = point->getFeatureItem(l) / point->getWeight();
     } else {
-      centroidCoordinatePoint = p.getFeatureItem(l);
+      centroidCoordinatePoint = point->getFeatureItem(l);
     }
     //centroid coordinate of the centre
     double centroidCoordinateCentre;
-    if (centreA.getWeight() != 0.0) {
-      centroidCoordinateCentre = centreA.getFeatureItem(l) / centreA.getWeight();
+    if (centreA->getWeight() != 0.0) {
+      centroidCoordinateCentre = centreA->getFeatureItem(l) / centreA->getWeight();
     } else {
-      centroidCoordinateCentre = centreA.getFeatureItem(l);
+      centroidCoordinateCentre = centreA->getFeatureItem(l);
     }
 
     distanceA += (centroidCoordinatePoint - centroidCoordinateCentre) *
@@ -490,20 +503,20 @@ Point SESAME::CoresetTree::determineClosestCentre(Point p, Point centreA, Point 
   //stores the distance between p and centreB
   double distanceB = 0.0;
 
-  for (l = 0; l < p.getDimension(); l++) {
+  for (l = 0; l < point->getDimension(); l++) {
     //centroid coordinate of the point
     double centroidCoordinatePoint;
-    if (p.getWeight() != 0.0) {
-      centroidCoordinatePoint = p.getFeatureItem(l) / p.getWeight();
+    if (point->getWeight() != 0.0) {
+      centroidCoordinatePoint = point->getFeatureItem(l) / point->getWeight();
     } else {
-      centroidCoordinatePoint = p.getFeatureItem(l);
+      centroidCoordinatePoint = point->getFeatureItem(l);
     }
     //centroid coordinate of the centre
     double centroidCoordinateCentre;
-    if (centreB.getWeight() != 0.0) {
-      centroidCoordinateCentre = centreB.getFeatureItem(l) / centreB.getWeight();
+    if (centreB->getWeight() != 0.0) {
+      centroidCoordinateCentre = centreB->getFeatureItem(l) / centreB->getWeight();
     } else {
-      centroidCoordinateCentre = centreB.getFeatureItem(l);
+      centroidCoordinateCentre = centreB->getFeatureItem(l);
     }
 
     distanceB += (centroidCoordinatePoint - centroidCoordinateCentre) *

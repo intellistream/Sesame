@@ -12,7 +12,7 @@ namespace SESAME {
 class DataSink {
 
  public:
-  static void store(std::string outputPath, int numberOfCenters, int dimension, std::vector<Point> &centers);
+  static void store(std::string outputPath, int numberOfCenters, int dimension, const std::vector<PointPtr> &centers);
 };
 }
 #endif //SESAME_INCLUDE_SINKS_DATASINK_HPP_

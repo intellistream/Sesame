@@ -20,8 +20,8 @@ class Algorithm {
   virtual ~Algorithm() = default;
 
   virtual void initialWindow(int pointNumber, int dimension, int coresetSize, int seed) = 0;
-  virtual void buildTimeWindow(int pointNumber, std::vector<Point> &input) = 0;
-//  virtual void runOfflineClustering(int clusterNumber, int coresetSize, int dimension, vector<Point> &output) = 0;
+  virtual void buildTimeWindow(int pointNumber, const std::vector<PointPtr> &input) = 0;
+  virtual void runOfflineClustering(int clusterNumber, int coresetSize, int dimension, vector<PointPtr> &output) = 0;
 };
 }
 

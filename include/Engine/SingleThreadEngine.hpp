@@ -18,8 +18,8 @@ namespace SESAME {
 class SingleThreadEngine : SESAME::Engine {
  public:
   SingleThreadEngine();
-  void runAlgorithm(vector<Point> &input,
-                    vector<Point> &output,
+  void runAlgorithm(const vector<PointPtr> &input,
+                    vector<PointPtr> &output,
                     AlgorithmPtr algo,
                     int pointNumber,
                     int dimension,

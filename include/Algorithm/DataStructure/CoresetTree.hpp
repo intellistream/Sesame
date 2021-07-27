@@ -12,40 +12,44 @@
 #include <vector>
 
 namespace SESAME {
+class CoresetTree;
+typedef std::shared_ptr<CoresetTree> CoresetTreePtr;
 
 class CoresetTree {
 
  public:
 
+  /**
+ * initalizes root as a treenode with the union of setA and setB as pointset and centre as centre
+ * @param root
+ * @param setA
+ * @param setB
+ * @param n_1
+ * @param n_2
+ * @param centre
+ * @param centreIndex
+ */
+  void constructRoot(TreeNodePtr root,
+                     std::vector<PointPtr> &setA,
+                     std::vector<PointPtr> &setB,
+                     int n_1,
+                     int n_2,
+                     PointPtr centre,
+                     int centreIndex);
+
 /**
 Constructs a coreset of size k from the union of setA and setB
 **/
-  static void unionTreeCoreset(int k,
-                               int n_1,
-                               int n_2,
-                               std::vector<Point> setA,
-                               std::vector<Point> setB,
-                               std::vector<Point> centres);
-  static void freeTree(TreeNode *root);
-  static bool treeFinished(TreeNode *root);
-  static bool isLeaf(TreeNode *node);
-  /**
-   * initalizes root as a treenode with the union of setA and setB as pointset and centre as centre
-   * @param root
-   * @param setA
-   * @param setB
-   * @param n_1
-   * @param n_2
-   * @param centre
-   * @param centreIndex
-   */
-  static void constructRoot(TreeNode &root,
-                            std::vector<Point> setA,
-                            std::vector<Point> setB,
-                            int n_1,
-                            int n_2,
-                            Point centre,
-                            int centreIndex);
+  void unionTreeCoreset(int k,
+                        int n_1,
+                        int n_2,
+                        std::vector<PointPtr> &setA,
+                        std::vector<PointPtr> &setB,
+                        std::vector<PointPtr> &centres);
+  void freeTree(TreeNodePtr root);
+  bool treeFinished(TreeNodePtr root);
+  bool isLeaf(TreeNodePtr node);
+
   /**
    * Computes the target function value of the n points of the treenode. Differs from the function "targetFunctionValue" in three things:
    * 1. only the centre of the treenode is used as a centre
@@ -53,17 +57,17 @@ Constructs a coreset of size k from the union of setA and setB
    * 3. stores the cost in the treenode
    * @param node
    */
-  static void treeNodeTargetFunctionValue(TreeNode &node);
+  void treeNodeTargetFunctionValue(TreeNodePtr node);
 
   /**
   selects a leaf node (using the kMeans++ distribution)
   **/
-  static TreeNode *selectNode(TreeNode &root);
-  static Point chooseCentre(TreeNode &node);
-  static double treeNodeCostOfPoint(TreeNode &node, Point p);
-  static double treeNodeSplitCost(TreeNode *node, Point CenterA, Point CenterB);
-  static void split(TreeNode *parent, Point newCentre, int newCentreIndex);
-  static Point determineClosestCentre(Point p, Point centreA, Point centreB);
+  TreeNodePtr selectNode(TreeNodePtr root);
+  PointPtr chooseCentre(TreeNodePtr node);
+  double treeNodeCostOfPoint(TreeNodePtr node, PointPtr p);
+  double treeNodeSplitCost(TreeNodePtr node, PointPtr CenterA, PointPtr CenterB);
+  void split(TreeNodePtr parent, PointPtr newCentre, int newCentreIndex);
+  PointPtr determineClosestCentre(PointPtr point, PointPtr centreA, PointPtr centreB);
 };
 
 }

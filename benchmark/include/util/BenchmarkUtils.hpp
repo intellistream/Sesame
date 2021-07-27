@@ -28,13 +28,17 @@ struct param_t {
 
 class BenchmarkUtils {
  public:
+  static void print_help(char *string);
   static void parseArgs(int argc, char **argv, param_t &cmd_params);
   static void defaultParam(param_t &cmd_params);
-  static void print_help(char *string);
-  static void loadData(param_t &cmd_params, std::vector<Point> &input);
-  static void runBenchmark(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output);
-  static void evaluate(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output);
-  static void store(param_t cmd_params, std::vector<Point> &output);
+  static void loadData(param_t &cmd_params, std::vector<SESAME::PointPtr> &input);
+  static void runBenchmark(param_t &cmd_params,
+                           const std::vector<SESAME::PointPtr> &input,
+                           std::vector<SESAME::PointPtr> &output);
+  static void evaluate(param_t &cmd_params,
+                       const std::vector<SESAME::PointPtr> &input,
+                       const std::vector<SESAME::PointPtr> &output);
+  static void store(param_t &cmd_params, const std::vector<SESAME::PointPtr> &output);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

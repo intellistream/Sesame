@@ -5,7 +5,7 @@
 #include <cmath>
 #include <Utils/Logger.hpp>
 
-double getDistance(Point *inputs, Point *centres, int dimension) {
+double getDistance(SESAME::PointPtr inputs, SESAME::PointPtr centres, int dimension) {
   int i;
   double f = 0.0;
   for (i = 0; i < dimension; i++) {
@@ -17,15 +17,15 @@ double getDistance(Point *inputs, Point *centres, int dimension) {
 void SESAME::Evaluation::euclideanCost(int numberOfPoints,
                                        int numberOfCenters,
                                        int dimention,
-                                       std::vector<Point> &inputs,
-                                       std::vector<Point> &results) {
+                                       const std::vector<PointPtr> &inputs,
+                                       const std::vector<PointPtr> &results) {
   double mincost = 0.0;
   double kmeansoverall = 0.0;
   double distance = 0.0;
   for (int i = 0; i < numberOfPoints; i++) {
-    mincost = getDistance(&inputs[i], &results[0], dimention);
+    mincost = getDistance(inputs[i], results[0], dimention);
     for (int j = 0; j < numberOfCenters; j++) {     // looking for the nearest center
-      distance = getDistance(&inputs[i], &results[j], dimention); //
+      distance = getDistance(inputs[i], results[j], dimention); //
       if (distance < mincost)
         mincost = distance;
     }

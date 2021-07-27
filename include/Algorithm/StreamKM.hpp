@@ -9,27 +9,25 @@
 #define SESAME_SRC_ALGORITHM_STREAMKM_HPP_
 
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
+#include <Algorithm/OfflineClustering/KMeans.hpp>
 namespace SESAME {
 class StreamKM : public Algorithm {
 
  public:
   // initialize
   LandmarkWindowPtr window;
-  Point streamingCoreset;
-
+  std::vector<PointPtr> streamingCoreset;//intermediate results.
+  KMeans km;//used for offline processing.
   StreamKM();
   ~StreamKM();
 
   void initialWindow(int pointNumber,
                      int dimension, int coresetSize, int seed) override;
-  void buildTimeWindow(int pointNumber, vector<Point> &input) override;
+  void buildTimeWindow(int pointNumber, const vector<PointPtr> &input) override;
   void runOfflineClustering(int clusterNumber, int coresetSize,
-                            int dimension, vector<Point> &output) override;
+                            int dimension, vector<PointPtr> &output) override;
 
 };
-
-typedef std::shared_ptr<StreamKM> StreamKMAlgorithmPtr;
-
 }
 
 #endif //SESAME_SRC_ALGORITHM_STREAMKM_HPP_

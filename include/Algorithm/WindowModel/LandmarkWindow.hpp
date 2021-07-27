@@ -5,27 +5,29 @@
 #ifndef SESAME_SRC_ALGORITHM_WINDOWMODEL_LANDMARKWINDOW_HPP_
 #define SESAME_SRC_ALGORITHM_WINDOWMODEL_LANDMARKWINDOW_HPP_
 
-#include <Algorithm/DataStructure/Point.hpp>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <Algorithm/DataStructure/Point.hpp>
+#include <Algorithm/DataStructure/CoresetTree.hpp>
+#include <Algorithm/WindowModel/Window.hpp>
 
 namespace SESAME {
 class LandmarkWindow;
 typedef std::shared_ptr<LandmarkWindow> LandmarkWindowPtr;
 
-class LandmarkWindow {
+class LandmarkWindow : Window {
  public:
 /**
 datastructure representing a single bucket
 **/
   struct Bucket {
     int cursize;
-    std::vector<Point> points;
-    std::vector<Point> spillover;
+    std::vector<PointPtr> points;
+    std::vector<PointPtr> spillover;
   };
 
 /**
@@ -39,6 +41,7 @@ datastructure for managing all O(log(n)) buckets
 
   Bucketmanager bucketManager;
 
+  SESAME::CoresetTreePtr tree;
   /**
    * initialize buckets in the bucket manager.
    * @param dimension
@@ -49,7 +52,7 @@ datastructure for managing all O(log(n)) buckets
 /**
 inserts a single point into the bucketmanager
 **/
-  void insertPoint(Point p);
+  void insertPoint(PointPtr point);
 
 /**
 It may happen that the manager is not full (since n is not always a power of 2). In this case we extract the coreset
@@ -63,7 +66,7 @@ Case2: the last bucket is not full
 
 this operation should only be called after the streaming process is finished
 **/
-  Point *getCoresetFromManager();
+  std::vector<PointPtr> getCoresetFromManager(); // https://stackoverflow.com/questions/15704565/efficient-way-to-return-a-stdvector-in-c
 };
 }
 

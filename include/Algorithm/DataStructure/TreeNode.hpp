@@ -7,6 +7,7 @@
 
 #include <Algorithm/DataStructure/Point.hpp>
 #include <memory>
+#include <vector>
 
 namespace SESAME {
 
@@ -14,14 +15,15 @@ class TreeNode;
 typedef std::shared_ptr<TreeNode> TreeNodePtr;
 
 class TreeNode {
+ public:
   //number of points in this node
   int n;
 
   //array with pointers on points
-  std::vector<Point> points;
+  std::vector<PointPtr> points;
 
   //pointer on the centre of the treenode
-  Point centre;
+  PointPtr centre;
 
   //pointer on the left childnode
   TreeNodePtr lc;

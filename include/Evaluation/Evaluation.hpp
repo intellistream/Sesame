@@ -12,8 +12,8 @@ class Evaluation {
   static void euclideanCost(int numberOfPoints,
                             int numberOfCenters,
                             int dimention,
-                            std::vector<Point> &inputs,
-                            std::vector<Point> &results);//EuclideanCost, defined in StreamKM++: A clustering algorithm for data streams
+                            const std::vector<PointPtr> &inputs,
+                            const std::vector<PointPtr> &results);//EuclideanCost, defined in StreamKM++: A clustering algorithm for data streams
 
 };
 
