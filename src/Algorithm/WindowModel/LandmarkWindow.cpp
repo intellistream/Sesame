@@ -5,25 +5,32 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/CoresetTree.hpp>
+#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
+/**
+ * TODO: seems not meaningful? @Wangxin
+ * @param dimension
+ * @param coresetSize
+ */
 void SESAME::LandmarkWindow::initBucket(int dimension, int coresetSize) {
   int i;
   for (i = 0; i < this->bucketManager.numberOfBuckets; i++) {
-    this->bucketManager.buckets.emplace_back();
-    this->bucketManager.buckets[i].cursize = 0;
+    Bucket bucket;
+    bucket.cursize = 0;
     int i;
     for (i = 0; i < coresetSize; i++) {
-      this->bucketManager.buckets[i].points[i].Initialization(-1, 1, dimension, 0);
-      this->bucketManager.buckets[i].spillover[i].Initialization(-1, 1, dimension, 0);
+      bucket.points.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
+      bucket.spillover.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
     }
+    this->bucketManager.buckets.push_back(bucket);
   }
 }
 
-void SESAME::LandmarkWindow::insertPoint(Point p) {
+void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
   //check if there is enough space in the first bucket
   int cursize = this->bucketManager.buckets[0].cursize;
   if (cursize >= this->bucketManager.maxBucketsize) {
-    SESAME_INFO("Bucket 0 full \n");
+    SESAME_INFO("Bucket 0 full");
     //start spillover process
     int curbucket = 0;
     int nextbucket = 1;
@@ -33,8 +40,7 @@ void SESAME::LandmarkWindow::insertPoint(Point p) {
       //copy the bucket
       int i;
       for (i = 0; i < this->bucketManager.maxBucketsize; i++) {
-        this->bucketManager.buckets[nextbucket].points[i].copyFromPoint(this->bucketManager.buckets[curbucket].points[i]);
-
+        this->bucketManager.buckets[nextbucket].points.push_back(this->bucketManager.buckets[curbucket].points[i]->copy());
       }
       //bucket is now full
       this->bucketManager.buckets[nextbucket].cursize = this->bucketManager.maxBucketsize;
@@ -42,12 +48,11 @@ void SESAME::LandmarkWindow::insertPoint(Point p) {
       this->bucketManager.buckets[curbucket].cursize = 0;
       cursize = 0;
     } else {
-      SESAME_INFO("Bucket " << nextbucket << "full \n");
+      SESAME_INFO("Bucket " << nextbucket << "full");
       //copy bucket to spillover and continue
       int i;
       for (i = 0; i < this->bucketManager.maxBucketsize; i++) {
-        this->bucketManager.buckets[nextbucket].spillover[i].copyFromPoint(this->bucketManager.buckets[curbucket].points[i]);
-
+        this->bucketManager.buckets[nextbucket].spillover.push_back(this->bucketManager.buckets[curbucket].points[i]->copy());
       }
       this->bucketManager.buckets[0].cursize = 0;
       cursize = 0;
@@ -57,32 +62,32 @@ void SESAME::LandmarkWindow::insertPoint(Point p) {
       as long as the next bucket is full output the coreset to the spillover of the next bucket
       */
       while (this->bucketManager.buckets[nextbucket].cursize == this->bucketManager.maxBucketsize) {
-        SESAME_INFO("Bucket " << nextbucket << "full \n");
-        SESAME::CoresetTree::unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                              this->bucketManager.maxBucketsize,
-                                              this->bucketManager.maxBucketsize,
-                                              this->bucketManager.buckets[curbucket].points,
-                                              this->bucketManager.buckets[curbucket].spillover,
-                                              this->bucketManager.buckets[nextbucket].spillover);
+        SESAME_INFO("Bucket " << nextbucket << "full");
+        this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
+                                     this->bucketManager.maxBucketsize,
+                                     this->bucketManager.maxBucketsize,
+                                     this->bucketManager.buckets[curbucket].points,
+                                     this->bucketManager.buckets[curbucket].spillover,
+                                     this->bucketManager.buckets[nextbucket].spillover);
         // here we store the m constructed coreset points into spillover of the next bucket
         // bucket now empty
         this->bucketManager.buckets[curbucket].cursize = 0;
         curbucket++;
         nextbucket++;
       }
-      SESAME::CoresetTree::unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                            this->bucketManager.maxBucketsize,
-                                            this->bucketManager.maxBucketsize,
-                                            this->bucketManager.buckets[curbucket].points,
-                                            this->bucketManager.buckets[curbucket].spillover,
-                                            this->bucketManager.buckets[nextbucket].points);
+      this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
+                                   this->bucketManager.maxBucketsize,
+                                   this->bucketManager.maxBucketsize,
+                                   this->bucketManager.buckets[curbucket].points,
+                                   this->bucketManager.buckets[curbucket].spillover,
+                                   this->bucketManager.buckets[nextbucket].points);
       this->bucketManager.buckets[curbucket].cursize = 0;
       this->bucketManager.buckets[nextbucket].cursize = this->bucketManager.maxBucketsize;
     }
 
   }
   //insert point into the first bucket
-  this->bucketManager.buckets[0].points[cursize].copyFromPoint(p);
+  this->bucketManager.buckets[0].points.at(cursize) = point->copy();//   .copy(point);
   this->bucketManager.buckets[0].cursize++;
 }
 /**
@@ -97,8 +102,8 @@ Case2: the last bucket is not full
 
 this operation should only be called after the streaming process is finished
 **/
-Point *SESAME::LandmarkWindow::getCoresetFromManager() {
-  Point *coreset;
+std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager() {
+  std::vector<SESAME::PointPtr> coreset;
   int i = 0;
   if (this->bucketManager.buckets[this->bucketManager.numberOfBuckets - 1].cursize
       == this->bucketManager.maxBucketsize) {
@@ -117,12 +122,12 @@ Point *SESAME::LandmarkWindow::getCoresetFromManager() {
     for (j = i + 1; j < this->bucketManager.numberOfBuckets; j++) {
       if (this->bucketManager.buckets[j].cursize != 0) {
         //output the coreset into the spillover of bucket j
-        SESAME::CoresetTree::unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                              this->bucketManager.maxBucketsize,
-                                              this->bucketManager.maxBucketsize,
-                                              this->bucketManager.buckets[j].points,
-                                              coreset,
-                                              this->bucketManager.buckets[j].spillover);
+        this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
+                                     this->bucketManager.maxBucketsize,
+                                     this->bucketManager.maxBucketsize,
+                                     this->bucketManager.buckets[j].points,
+                                     coreset,
+                                     this->bucketManager.buckets[j].spillover);
         coreset = this->bucketManager.buckets[j].spillover;
       }
     }

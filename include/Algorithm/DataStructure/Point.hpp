@@ -5,36 +5,36 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
 #include <memory>
-#include <Algorithm/DataStructure/DataStructure.hpp>
 #include <vector>
 
 namespace SESAME {
 class Point;
 typedef std::shared_ptr<Point> PointPtr;
 
-class Point : public DataStructure {
+class Point {
  private:
   int index; // 1,2,3,4,5....
   double weight; // considering the outdated effect
-  std::vector<double> feature;
   double cost;
-  // feature Length
   int clusteringCenter;  // using index to identify
+  int dimension;// feature Length
+  std::vector<double> *feature;//TODO: need to think how to remove * here.
  public:
   Point();
-  void Initialization(int index, double weight, int dimension, double cost);
+  Point(int index, double weight, int dimension, double cost);
   void setCost(double c);
-  double getCost();
-  int getIndex();
+  double getCost() const;
+  int getIndex() const;
   void setIndex(int index);
-  double getWeight();
+  double getWeight() const;
   void setWeight(double weight);
-  double getFeatureItem(int index);
+  double getFeatureItem(int index) const;
   void setFeatureItem(double feature, int index);
-  int getClusteringCenter();
+  int getClusteringCenter() const;
   void setClusteringCenter(int index);
-  void copyFromPoint(Point source);
-  std::vector<double> getFeatures();
+  int getDimension() const;
+  void setDimension(int d);
+  SESAME::PointPtr copy();
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_

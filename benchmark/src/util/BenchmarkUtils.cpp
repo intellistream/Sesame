@@ -33,7 +33,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* Detect the end of the options. */
     if (c == -1)
       break;
-    switch (c) {
+    switch (c) {//TODO: change to string type in future. char is limited..
       case 0:
         /* If this option set a flag, do nothing else now. */
         if (long_options[option_index].flag != 0)
@@ -63,6 +63,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       case 'S': cmd_params.seed = atoi(optarg);
         SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
         break;
+      case 'i': cmd_params.inputPath = optarg;
+        SESAME_INFO("configure input path: " << cmd_params.inputPath);
+        break;
       case 'o': cmd_params.outputPath = optarg;
         SESAME_INFO("configure output path: " << cmd_params.outputPath);
         break;
@@ -80,11 +83,11 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 568592;
   cmd_params.pointNumber = 10;
-  cmd_params.clusterNumber = 54;
-  cmd_params.dimension = 20;
-  cmd_params.coresetSize = 10;
+  cmd_params.clusterNumber = 10;
+  cmd_params.dimension = 54;
+  cmd_params.coresetSize = 20;
   string home = getenv("HOME");
-  cmd_params.inputPath = home + "/tuidan/Database/Sesame/benchmark/datasets/new.txt";
+  cmd_params.inputPath = home + "/sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "StreamKMeans";
@@ -92,21 +95,24 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
 
 /* command line handling functions */
 /**
- * TODO: Make it clear @WangXin.
+ * TODO: Make it more useful @WangXin.
  * @param string
  */
 void BenchmarkUtils::print_help(char *string) {
   SESAME_ERROR("Usage: " << string << " [options]");
   SESAME_ERROR(" Available options: ");
 }
-void BenchmarkUtils::loadData(param_t &cmd_params, std::vector<Point> &input) {
+
+void BenchmarkUtils::loadData(param_t &cmd_params, vector<SESAME::PointPtr> &input) {
   //Pass input file as a string to DataSource.
-  string *data = new string[cmd_params.pointNumber];
+  std::vector<std::string> data;
   ifstream infile;
   infile.open(cmd_params.inputPath);
   SESAME_INFO("Read from the file...");
-  for (int i = 0; i < cmd_params.pointNumber; i++)
+  for (int i = 0; i < cmd_params.pointNumber; i++) {
+    data.emplace_back();
     getline(infile, data[i]);
+  }
   SESAME_INFO("Complete reading from the file...");
   infile.close();
   SESAME::DataSource::create(cmd_params.pointNumber, cmd_params.dimension, data, input);
@@ -118,7 +124,9 @@ void BenchmarkUtils::loadData(param_t &cmd_params, std::vector<Point> &input) {
  * @param cmd_params
  * @param input
  */
-void BenchmarkUtils::runBenchmark(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output) {
+void BenchmarkUtils::runBenchmark(param_t &cmd_params,
+                                  const vector<SESAME::PointPtr> &input,
+                                  vector<SESAME::PointPtr> &output) {
   SESAME::AlgorithmPtr algo =
       SESAME::AlgorithmFactory::create(cmd_params.algoName);
 
@@ -130,14 +138,16 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params, std::vector<Point> &input
                                             cmd_params.clusterNumber);
 }
 
-void BenchmarkUtils::evaluate(param_t &cmd_params, std::vector<Point> &input, std::vector<Point> &output) {
+void BenchmarkUtils::evaluate(param_t &cmd_params,
+                              const vector<SESAME::PointPtr> &input,
+                              const vector<SESAME::PointPtr> &output) {
   SESAME::Evaluation::euclideanCost(cmd_params.pointNumber,
                                     cmd_params.clusterNumber,
                                     cmd_params.dimension,
                                     input,
                                     output);
 }
-void BenchmarkUtils::store(param_t cmd_params, vector<Point> &output) {
+void BenchmarkUtils::store(param_t &cmd_params, const vector<SESAME::PointPtr> &output) {
   SESAME::DataSink::store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, output);
 }
 

@@ -19,8 +19,8 @@ SESAME::SingleThreadEngine::SingleThreadEngine() = default;
  * @param clusterNumber
  */
 
-void SESAME::SingleThreadEngine::runAlgorithm(vector<Point> &input,
-                                              vector<Point> &output,
+void SESAME::SingleThreadEngine::runAlgorithm(const vector<PointPtr> &input,
+                                              vector<PointPtr> &output,
                                               AlgorithmPtr algo,
                                               int pointNumber,
                                               int dimension,
@@ -32,7 +32,7 @@ void SESAME::SingleThreadEngine::runAlgorithm(vector<Point> &input,
 
   // build window model
   algo->buildTimeWindow(pointNumber, input);
-//
-//  // run offline clustering
-//  algo.runOfflineClustering(clusterNumber, coresetSize, dimension, output);
+
+  // run offline clustering
+  algo->runOfflineClustering(clusterNumber, coresetSize, dimension, output);
 }

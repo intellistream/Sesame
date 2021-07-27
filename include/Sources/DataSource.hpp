@@ -15,7 +15,7 @@ using namespace std;
 namespace SESAME {
 class DataSource {
  public:
-  static void create(int point_number, int dimension, string *input, std::vector<Point> &points);
+  static void create(int point_number, int dimension, vector<string> input, vector<PointPtr> &points);
 
 };
 }

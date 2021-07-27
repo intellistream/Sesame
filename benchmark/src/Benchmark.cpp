@@ -17,8 +17,8 @@ int main(int argc, char **argv) {
   BenchmarkUtils::defaultParam(cmd_params);
   BenchmarkUtils::parseArgs(argc, argv, cmd_params);
 
-  std::vector<Point> input;
-  std::vector<Point> results;
+  std::vector<SESAME::PointPtr> input;
+  std::vector<SESAME::PointPtr> results;
 
   //Load input.
   BenchmarkUtils::loadData(cmd_params, input);

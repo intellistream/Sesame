@@ -15,19 +15,19 @@ namespace SESAME {
 class KMeans : public SESAME::OfflineClustering {
  public:
   // Randomly chooses k centres with kMeans++ distribution
-  Point *chooseRandomCentres(int k, int n, int d, Point *points);
+  std::vector<SESAME::PointPtr> chooseRandomCentres(int k, int n, std::vector<PointPtr> &points);
 
   // kMeans++ algorithm for n points of dimension d with k centres
-  Point *lloydPlusPlus(int k, int n, int d, Point *points, double *resultCost);
+  std::vector<SESAME::PointPtr> lloydPlusPlus(int k, int n, int d, std::vector<PointPtr> &points, double *resultCost);
 
   // computes the target function for the given pointarray points[] (of size n) with the given array of centres centres[] (of size k)
-  double targetFunctionValue(int k, int n, Point *centres, Point *points);
+  double targetFunctionValue(int k, int n, std::vector<PointPtr> &centres, std::vector<PointPtr> &points);
 
   // Computes the index of the centre nearest to p with the given array of centres centres[] (of size k)
-  int determineClusterCentreKMeans(int k, Point p, Point *centres);
+  int determineClusterCentreKMeans(int k, PointPtr p, std::vector<PointPtr> &centres);
 
   // Computes the cost of point p with centre centre
-  double costOfPointToCenter(Point p, Point centre);
+  double costOfPointToCenter(PointPtr p, PointPtr centre);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_KMEANS_HPP_
