@@ -11,6 +11,14 @@
 #include <Algorithm/AlgorithmFactory.hpp>
 
 using namespace std;
+
+/**
+ * @Description: get the super parameters from the command line and store into the param_t structure
+ * @Param: argc: the first parameter of main function
+ * @Param: argv: the second parameter of main function
+ * @Param: cmd_params: the dataset attribute received from the command line such as p,c,d,s...
+ * @Return: void
+ */
 void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
 
   int c;
@@ -23,6 +31,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
             {"dimension", required_argument, 0, 'd'},
             {"coreset_size", required_argument, 0, 's'},
             {"seed", required_argument, 0, 'S'},
+//            {"input_path", required_argument, 0, 'i'},
+//            {"output_path", required_argument, 0, 'o'},
         };
     /* getopt_long stores the option index here. */
     int option_index = 0;
@@ -80,6 +90,11 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
   }
 }
 
+/**
+ * @Description: Set the default algorithm StreamKM++ and the default parameters to run the algorithm
+ * @Param: cmd_params: param_t &
+ * @Return: void
+ */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 568592;
   cmd_params.pointNumber = 10;
@@ -87,7 +102,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
   string home = getenv("HOME");
-  cmd_params.inputPath = home + "/sesame/benchmark/datasets/new.txt";
+  cmd_params.inputPath = home + "/database/Sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "StreamKMeans";
@@ -103,26 +118,38 @@ void BenchmarkUtils::print_help(char *string) {
   SESAME_ERROR(" Available options: ");
 }
 
+/**
+ * @Description: load data from the given dataset and convert the data format into the given point data structure
+ * @Param: cmd_params: the dataset attribute received from the command line such as p,c,d,s...
+ * @Param: input: the vector to store the point list from the dataset
+ * @Return: void
+ */
 void BenchmarkUtils::loadData(param_t &cmd_params, vector<SESAME::PointPtr> &input) {
-  //Pass input file as a string to DataSource.
+  // Pass input file as a string to DataSource.
   std::vector<std::string> data;
   ifstream infile;
   infile.open(cmd_params.inputPath);
   SESAME_INFO("Read from the file...");
+
+  // insert the data once per line into the string vector, every string element represents a data line
   for (int i = 0; i < cmd_params.pointNumber; i++) {
     data.emplace_back();
     getline(infile, data[i]);
   }
   SESAME_INFO("Complete reading from the file...");
   infile.close();
+
+  // convert the string format into point vector, every string represents a point
   SESAME::DataSource::create(cmd_params.pointNumber, cmd_params.dimension, data, input);
   SESAME_INFO("Finished loading input data");
 }
 
 /**
  * TODO: data type should not be exposed to users, change the logic here to hide it.
- * @param cmd_params
- * @param input
+ * @Description: assemble the modules and run the benchmark according to different algorithm.
+ * @param: cmd_params
+ * @param: input: the input point vector(clustering center attribute is GT)
+ * @param: output: the output point vector(set computed clustering result in clustering center attribute)
  */
 void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                   const vector<SESAME::PointPtr> &input,
@@ -138,6 +165,12 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                             cmd_params.clusterNumber);
 }
 
+/**
+ * @Description: evaluate the output point result using some metrics
+ * @Param: cmd_params
+ * @Param: output
+ * @Return: void
+ */
 void BenchmarkUtils::evaluate(param_t &cmd_params,
                               const vector<SESAME::PointPtr> &input,
                               const vector<SESAME::PointPtr> &output) {
@@ -147,6 +180,12 @@ void BenchmarkUtils::evaluate(param_t &cmd_params,
                                     input,
                                     output);
 }
+
+/**
+ * @Description: store the final clustering result, also point format but the clustering center of each point has been set
+ * @Param: cmd_params; output
+ * @Return: void
+ */
 void BenchmarkUtils::store(param_t &cmd_params, const vector<SESAME::PointPtr> &output) {
   SESAME::DataSink::store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, output);
 }

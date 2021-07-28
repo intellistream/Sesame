@@ -8,7 +8,7 @@
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
 /**
- * kMeans++ algorithm for n points of dimension d with k centres
+ * KMeans++ algorithm for n points of dimension d with k centres
  * @param k
  * @param n
  * @param d

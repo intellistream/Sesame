@@ -7,10 +7,10 @@
 
 #include <memory>
 namespace SESAME {
-class Window;
-typedef std::shared_ptr<Window> WindowPtr;
+class WindowModel;
+typedef std::shared_ptr<WindowModel> WindowPtr;
 
-class Window {
+class WindowModel {
 
 };
 }

@@ -388,7 +388,7 @@ splits the parent node and creates two child nodes (one with the old centre and 
 void SESAME::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre, int newCentreIndex) {
 
   //loop counter variable
-  int i;
+  int i = 0;
 
   //1. Counts how many points belong to the new and how many points belong to the old centre
   int nOld = 0;
@@ -403,10 +403,11 @@ void SESAME::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre, int newC
   }
 
   //2. initalizes the arrays for the pointer
-
   //array for pointer on the points belonging to the old centre
   std::vector<PointPtr> oldPoints;// = new Point[nOld];
-
+//  for(i = 0; i < nOld; i++) {
+//
+//  }
   //array for pointer on the points belonging to the new centre
   std::vector<PointPtr> newPoints; //= new Point[nNew];
 
@@ -416,11 +417,11 @@ void SESAME::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre, int newC
   for (i = 0; i < parent->n; i++) {
     PointPtr centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
     if (centre->getIndex() == newCentre->getIndex()) {
-      newPoints[indexNew] = parent->points[i]->copy();
+      newPoints.push_back(parent->points[i]->copy());
       newPoints[indexNew]->setClusteringCenter(newCentreIndex);
       indexNew++;
     } else if (centre->getIndex() == parent->centre->getIndex()) {
-      oldPoints[indexOld] = parent->points[i];
+      oldPoints.push_back(parent->points[i]->copy());
       indexOld++;
     } else {
       SESAME_INFO("ERROR !!! NO CENTER NEAREST !! \n");
