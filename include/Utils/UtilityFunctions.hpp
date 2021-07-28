@@ -14,6 +14,8 @@
 #define LOWER_MASK 0x7fffffffUL /* least significant r bits */
 #define TRUE 1
 #define FALSE 0
+#define KMEANS_TIMES 5
+
 /*
 Determines when Lloyd terminates (should be between 0 and 1)
 */

@@ -9,126 +9,141 @@
 
 /**
  * TODO: seems not meaningful? @Wangxin
- * @param dimension
- * @param coresetSize
+ * @Description: create a blank window, initial the point in the window.
+ * @param: dimension
+ * @param: windowSize
  */
-void SESAME::LandmarkWindow::initBucket(int dimension, int coresetSize) {
-  int i;
-  for (i = 0; i < this->bucketManager.numberOfBuckets; i++) {
-    Bucket bucket;
-    bucket.cursize = 0;
-    int i;
-    for (i = 0; i < coresetSize; i++) {
-      bucket.points.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
-      bucket.spillover.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
+void SESAME::LandmarkWindow::initWindow(int dimension, int windowSize) {
+  int i,j;
+  for (i = 0; i < this->windowManager.numberOfWindow; i++) {
+    Window blankWindow;
+    blankWindow.cursize = 0;
+    for (j = 0; j < windowSize; j++) {
+      blankWindow.points.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
+      blankWindow.spillover.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
     }
-    this->bucketManager.buckets.push_back(bucket);
+    this->windowManager.windows.push_back(blankWindow);
   }
 }
 
-void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
-  //check if there is enough space in the first bucket
-  int cursize = this->bucketManager.buckets[0].cursize;
-  if (cursize >= this->bucketManager.maxBucketsize) {
-    SESAME_INFO("Bucket 0 full");
-    //start spillover process
-    int curbucket = 0;
-    int nextbucket = 1;
 
-    //check if the next bucket is empty
-    if (this->bucketManager.buckets[nextbucket].cursize == 0) {
-      //copy the bucket
+/**
+ * TODO: extract the incremental computation progress from the whole function. @Wangxin
+ * @Description: insert every data point into the time window. If both of the current original and spillover windows are
+ * full, construct a coreset tree using all data and store the computed results tree nodes into the next original window
+ * @Param: Point: the single point data
+ * @Return: void
+ */
+void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
+  //check if there is enough space in the first window
+  int cursize = this->windowManager.windows[0].cursize;
+  if (cursize >= this->windowManager.maxWindowSize) {
+    SESAME_INFO("Window 0 is full");
+    //start spillover process
+    int curWindow = 0;
+    int nextWindow = 1;
+
+    // check if the next window is empty
+    if (this->windowManager.windows[nextWindow].cursize == 0) {
+      SESAME_INFO("Window " << nextWindow << " is not full, move window " << curWindow << " points to window " << nextWindow);
+
+      // if empty, copy the window
       int i;
-      for (i = 0; i < this->bucketManager.maxBucketsize; i++) {
-        this->bucketManager.buckets[nextbucket].points.push_back(this->bucketManager.buckets[curbucket].points[i]->copy());
+      for (i = 0; i < this->windowManager.maxWindowSize; i++) {
+        this->windowManager.windows[nextWindow].points.push_back(this->windowManager.windows[curWindow].points[i]->copy());
       }
-      //bucket is now full
-      this->bucketManager.buckets[nextbucket].cursize = this->bucketManager.maxBucketsize;
-      //first bucket is now empty
-      this->bucketManager.buckets[curbucket].cursize = 0;
+      // window is now full
+      this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
+      // first window is now set empty
+      this->windowManager.windows[curWindow].cursize = 0;
       cursize = 0;
     } else {
-      SESAME_INFO("Bucket " << nextbucket << "full");
-      //copy bucket to spillover and continue
+
+      // if next window is full
+      SESAME_INFO("Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
+      //copy the points in the current window to the next spillover and continue
       int i;
-      for (i = 0; i < this->bucketManager.maxBucketsize; i++) {
-        this->bucketManager.buckets[nextbucket].spillover.push_back(this->bucketManager.buckets[curbucket].points[i]->copy());
+      for (i = 0; i < this->windowManager.maxWindowSize; i++) {
+        this->windowManager.windows[nextWindow].spillover.push_back(this->windowManager.windows[curWindow].points[i]->copy());
       }
-      this->bucketManager.buckets[0].cursize = 0;
+      this->windowManager.windows[0].cursize = 0;
       cursize = 0;
-      curbucket++;
-      nextbucket++;
-      /*
-      as long as the next bucket is full output the coreset to the spillover of the next bucket
-      */
-      while (this->bucketManager.buckets[nextbucket].cursize == this->bucketManager.maxBucketsize) {
-        SESAME_INFO("Bucket " << nextbucket << "full");
-        this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                     this->bucketManager.maxBucketsize,
-                                     this->bucketManager.maxBucketsize,
-                                     this->bucketManager.buckets[curbucket].points,
-                                     this->bucketManager.buckets[curbucket].spillover,
-                                     this->bucketManager.buckets[nextbucket].spillover);
-        // here we store the m constructed coreset points into spillover of the next bucket
-        // bucket now empty
-        this->bucketManager.buckets[curbucket].cursize = 0;
-        curbucket++;
-        nextbucket++;
+      curWindow++;
+      nextWindow++;
+
+      // as long as the next window is full output the coreset to the next spillover, using points in
+      // the next window and spillover
+      while (this->windowManager.windows[nextWindow].cursize == this->windowManager.maxWindowSize) {
+        SESAME_INFO("Window " << nextWindow << " is full, Continue! construct the coreset using points in window and spillover "<< curWindow << " and store it in the spillover " << nextWindow);
+        this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
+                                     this->windowManager.maxWindowSize,
+                                     this->windowManager.maxWindowSize,
+                                     this->windowManager.windows[curWindow].points,
+                                     this->windowManager.windows[curWindow].spillover,
+                                     this->windowManager.windows[nextWindow].spillover);
+        // here we store the m constructed coreset points into the next spillover
+        // current window now empty
+        this->windowManager.windows[curWindow].cursize = 0;
+        curWindow++;
+        nextWindow++;
       }
-      this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                   this->bucketManager.maxBucketsize,
-                                   this->bucketManager.maxBucketsize,
-                                   this->bucketManager.buckets[curbucket].points,
-                                   this->bucketManager.buckets[curbucket].spillover,
-                                   this->bucketManager.buckets[nextbucket].points);
-      this->bucketManager.buckets[curbucket].cursize = 0;
-      this->bucketManager.buckets[nextbucket].cursize = this->bucketManager.maxBucketsize;
+      SESAME_INFO("Window " << nextWindow << " is not full, End! construct the coreset using points in window and spillover "<< curWindow << " and store the it in the last spillover");
+      // if the next window is empty, just do the same operation and store the constructed coreset into
+      // the next spillover, now the next window is empty but next spillover is full
+      this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
+                                   this->windowManager.maxWindowSize,
+                                   this->windowManager.maxWindowSize,
+                                   this->windowManager.windows[curWindow].points,
+                                   this->windowManager.windows[curWindow].spillover,
+                                   this->windowManager.windows[nextWindow].points);
+      this->windowManager.windows[curWindow].cursize = 0;
+      this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
     }
 
   }
-  //insert point into the first bucket
-  this->bucketManager.buckets[0].points.at(cursize) = point->copy();//   .copy(point);
-  this->bucketManager.buckets[0].cursize++;
+  // if the first window is not full, just insert point into it
+  this->windowManager.windows[0].points.at(cursize) = point->copy();//   .copy(point);
+  this->windowManager.windows[0].cursize++;
 }
 /**
 It may happen that the manager is not full (since n is not always a power of 2). In this case we extract the coreset
-from the manager by computing a coreset of all nonempty buckets
+from the manager by computing a coreset of all nonempty windows
 
 Case 1: the last bucket is full
 => n is a power of 2 and we return the contents of the last bucket
 
 Case2: the last bucket is not full
-=> we compute a coreset of all nonempty buckets
+=> we compute a coreset of all nonempty windows
 
 this operation should only be called after the streaming process is finished
 **/
 std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager() {
   std::vector<SESAME::PointPtr> coreset;
   int i = 0;
-  if (this->bucketManager.buckets[this->bucketManager.numberOfBuckets - 1].cursize
-      == this->bucketManager.maxBucketsize) {
-    coreset = this->bucketManager.buckets[this->bucketManager.numberOfBuckets - 1].points;
+  if (this->windowManager.windows[this->windowManager.numberOfWindow - 1].cursize
+      == this->windowManager.maxWindowSize) {
+    coreset = this->windowManager.windows[this->windowManager.numberOfWindow - 1].points;
 
   } else {
     //find the first nonempty bucket
-    for (i = 0; i < this->bucketManager.numberOfBuckets; i++) {
-      if (this->bucketManager.buckets[i].cursize != 0) {
-        coreset = this->bucketManager.buckets[i].points;
+    for (i = 0; i < this->windowManager.numberOfWindow; i++) {
+      if (this->windowManager.windows[i].cursize != 0) {
+        coreset = this->windowManager.windows[i].points;
         break;
       }
     }
     //as long as there is a nonempty bucket compute a coreset
     int j;
-    for (j = i + 1; j < this->bucketManager.numberOfBuckets; j++) {
-      if (this->bucketManager.buckets[j].cursize != 0) {
+    for (j = i + 1; j < this->windowManager.numberOfWindow; j++) {
+      if (this->windowManager.windows[j].cursize != 0) {
         //output the coreset into the spillover of bucket j
-        this->tree->unionTreeCoreset(this->bucketManager.maxBucketsize,
-                                     this->bucketManager.maxBucketsize,
-                                     this->bucketManager.maxBucketsize,
-                                     this->bucketManager.buckets[j].points,
+        this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
+                                     this->windowManager.maxWindowSize,
+                                     this->windowManager.maxWindowSize,
+                                     this->windowManager.windows[j].points,
                                      coreset,
-                                     this->bucketManager.buckets[j].spillover);
-        coreset = this->bucketManager.buckets[j].spillover;
+                                     this->windowManager.windows[j].spillover);
+        coreset = this->windowManager.windows[j].spillover;
       }
     }
   }

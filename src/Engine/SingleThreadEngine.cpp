@@ -27,10 +27,10 @@ void SESAME::SingleThreadEngine::runAlgorithm(const vector<PointPtr> &input,
                                               int coresetSize,
                                               int clusterNumber) {
 
-  // initialize window model
+  // initialize Window model
   algo->initialWindow(pointNumber, dimension, coresetSize, seed);
 
-  // build window model
+  // build Window model
   algo->buildTimeWindow(pointNumber, input);
 
   // run offline clustering

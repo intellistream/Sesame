@@ -1,5 +1,5 @@
 add_source_sesame(
         LandmarkWindow.cpp
-        Window.cpp
+        WindowModel.cpp
         WindowFactory.cpp
 )
