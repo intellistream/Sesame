@@ -19,6 +19,8 @@ int main(int argc, char **argv) {
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
+  // input: i,w1,w2,...wn,C
+  // output: i,w1,w2,...wn,C
 
   //Load input.
   BenchmarkUtils::loadData(cmd_params, input);

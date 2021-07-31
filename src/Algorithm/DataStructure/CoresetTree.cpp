@@ -7,6 +7,7 @@
 #include <Utils/UtilityFunctions.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
+// TODO: convert it as general tree model
 void SESAME::CoresetTree::unionTreeCoreset(int k,
                                            int n_1,
                                            int n_2,
