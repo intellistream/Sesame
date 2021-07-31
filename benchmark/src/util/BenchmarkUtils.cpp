@@ -97,12 +97,12 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 568592;
-  cmd_params.pointNumber = 10;
+  cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
   string home = getenv("HOME");
-  cmd_params.inputPath = home + "/database/Sesame/benchmark/datasets/new.txt";
+  cmd_params.inputPath = home + "/Sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "StreamKMeans";
