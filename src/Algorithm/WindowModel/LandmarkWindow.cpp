@@ -50,7 +50,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // if empty, copy the window
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].points.push_back(this->windowManager.windows[curWindow].points[i]->copy());
+        this->windowManager.windows[nextWindow].points.at(i) = this->windowManager.windows[curWindow].points[i]->copy();
       }
       // window is now full
       this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
@@ -64,7 +64,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       //copy the points in the current window to the next spillover and continue
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].spillover.push_back(this->windowManager.windows[curWindow].points[i]->copy());
+        this->windowManager.windows[nextWindow].spillover.at(i) =this->windowManager.windows[curWindow].points[i]->copy();
       }
       this->windowManager.windows[0].cursize = 0;
       cursize = 0;
@@ -117,15 +117,17 @@ Case2: the last bucket is not full
 
 this operation should only be called after the streaming process is finished
 **/
-std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager() {
-  std::vector<SESAME::PointPtr> coreset;
+std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std::vector<PointPtr> & coreset) {
   int i = 0;
   if (this->windowManager.windows[this->windowManager.numberOfWindow - 1].cursize
       == this->windowManager.maxWindowSize) {
     coreset = this->windowManager.windows[this->windowManager.numberOfWindow - 1].points;
 
+  } else if(this->windowManager.windows[this->windowManager.numberOfWindow - 1].cursize == 0){
+    coreset = this->windowManager.windows[this->windowManager.numberOfWindow - 2].points;
   } else {
     //find the first nonempty bucket
+
     for (i = 0; i < this->windowManager.numberOfWindow; i++) {
       if (this->windowManager.windows[i].cursize != 0) {
         coreset = this->windowManager.windows[i].points;

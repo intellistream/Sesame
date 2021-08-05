@@ -66,7 +66,7 @@ Case2: the last bucket is not full
 
 this operation should only be called after the streaming process is finished
 **/
-  std::vector<PointPtr> getCoresetFromManager(); // https://stackoverflow.com/questions/15704565/efficient-way-to-return-a-stdvector-in-c
+  std::vector<PointPtr> getCoresetFromManager(std::vector<PointPtr> & coreset); // https://stackoverflow.com/questions/15704565/efficient-way-to-return-a-stdvector-in-c
 };
 }
 

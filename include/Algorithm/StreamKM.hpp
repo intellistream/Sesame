@@ -24,8 +24,7 @@ class StreamKM : public Algorithm {
   void initialWindow(int pointNumber,
                      int dimension, int windowSize, int seed) override;
   void buildTimeWindow(int pointNumber, const vector<PointPtr> &input) override;
-  void runOfflineClustering(int clusterNumber, int coresetSize,
-                            int dimension, vector<PointPtr> &output) override;
+  void runOfflineClustering(int clusterNumber, vector<PointPtr> &output) override;
 
 };
 }
