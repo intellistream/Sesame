@@ -38,8 +38,7 @@ void SESAME::StreamKM::buildTimeWindow(int pointNumber,
   for (int i = 0; i < pointNumber; i++) {
     this->window->insertPoint(input[i]);
   }
-  this->streamingCoreset =
-      this->window->getCoresetFromManager();//streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
+  this->window->getCoresetFromManager(this->streamingCoreset);//streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
 }
 
 /**
@@ -49,21 +48,22 @@ void SESAME::StreamKM::buildTimeWindow(int pointNumber,
  * @param dimension
  * @param output
  */
-void SESAME::StreamKM::runOfflineClustering(int clusterNumber, int coresetSize,
-                                            int dimension, vector<PointPtr> &output) {
-  double minCost = 0.0;
-  double curCost = 0.0;
-  output = this->km.lloydPlusPlus(clusterNumber, coresetSize, dimension, this->streamingCoreset, &minCost);
-  curCost = minCost;
-
-  for (int i = 1; i < KMEANS_TIMES; i++) {
-    vector<PointPtr> tmpCentresStreamingCoreset =
-        this->km.lloydPlusPlus(clusterNumber, coresetSize, dimension, this->streamingCoreset, &curCost);
-    if (curCost < minCost) {
-      minCost = curCost;
-      output = tmpCentresStreamingCoreset;
-    }
-  }
+void SESAME::StreamKM::runOfflineClustering(int clusterNumber,
+                                            vector<PointPtr> &output) {
+  int inputNumber = this->streamingCoreset.size();
+//  double minCost = 0.0;
+//  double curCost = 0.0;
+  this->km.runKMeans(clusterNumber, inputNumber, this->streamingCoreset, output, true);
+  //  curCost = minCost;
+//
+//  for (int i = 1; i < KMEANS_TIMES; i++) {
+//    vector<PointPtr> tmpCentresStreamingCoreset =
+//        this->km.lloydPlusPlus(clusterNumber, coresetSize, dimension, this->streamingCoreset, &curCost);
+//    if (curCost < minCost) {
+//      minCost = curCost;
+//      output = tmpCentresStreamingCoreset;
+//    }
+//  }
 }
 SESAME::StreamKM::StreamKM() {
 
