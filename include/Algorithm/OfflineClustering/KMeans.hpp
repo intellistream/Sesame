@@ -13,6 +13,7 @@
 #include <cmath>
 #include <Algorithm/DataStructure/Point.hpp>
 #include <Algorithm/OfflineClustering/OfflineClustering.hpp>
+#include <Utils/Logger.hpp>
 
 namespace SESAME {
 class KMeans : public SESAME::OfflineClustering {
