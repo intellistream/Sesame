@@ -34,5 +34,5 @@ void SESAME::SingleThreadEngine::runAlgorithm(const vector<PointPtr> &input,
   algo->buildTimeWindow(pointNumber, input);
 
   // run offline clustering
-  algo->runOfflineClustering(clusterNumber, output);
+  algo->runOfflineClustering(clusterNumber, input, output);
 }
