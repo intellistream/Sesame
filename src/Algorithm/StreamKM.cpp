@@ -48,12 +48,30 @@ void SESAME::StreamKM::buildTimeWindow(int pointNumber,
  * @param dimension
  * @param output
  */
-void SESAME::StreamKM::runOfflineClustering(int clusterNumber,
-                                            vector<PointPtr> &output) {
-  int inputNumber = this->streamingCoreset.size();
+void SESAME::StreamKM::runOfflineClustering(int clusterNumber,const std::vector<PointPtr> &input, vector<PointPtr> &output) {
+  int parNumber = this->streamingCoreset.size();
+  vector<PointPtr> centers;
+  vector<vector<PointPtr>> groups;
 //  double minCost = 0.0;
 //  double curCost = 0.0;
-  this->km.runKMeans(clusterNumber, inputNumber, this->streamingCoreset, output, true);
+  this->km.runKMeans(clusterNumber, parNumber, this->streamingCoreset, centers, true);
+  this->km.groupPointsByCenters((int)centers.size(), (int)input.size(),
+                                const_cast<vector<PointPtr> &>(input), centers, groups);
+
+  // print the clustering information
+  int cluster = 0;
+  for(int i = 0; i < groups.size(); i++) {
+    if(cluster != centers.at(i)->getClusteringCenter()) {
+      cluster = centers.at(i)->getClusteringCenter();
+      cout << endl << cluster <<" cluster: ";
+    }
+    for(int j = 0; j < groups[i].size(); j++) {
+      groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
+      cout << groups[i][j]->getIndex() << " ";
+      output.push_back(groups[i][j]);
+    }
+  }
+
   //  curCost = minCost;
 //
 //  for (int i = 1; i < KMEANS_TIMES; i++) {
