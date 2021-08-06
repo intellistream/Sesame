@@ -25,7 +25,7 @@ class Algorithm {
   // incremental computation
 
   // offline pass (optional)
-  virtual void runOfflineClustering(int clusterNumber, vector<PointPtr> &output) = 0;
+  virtual void runOfflineClustering(int clusterNumber,const std::vector<PointPtr> &input, std::vector<PointPtr> &output) = 0;
 };
 }
 
