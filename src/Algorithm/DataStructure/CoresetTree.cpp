@@ -14,8 +14,6 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
                                            std::vector<PointPtr> &setA,
                                            std::vector<PointPtr> &setB,
                                            std::vector<PointPtr> &centres) {
-
-
   SESAME_INFO("Computing coreset...");
   //total number of points
   int n = n_1 + n_2;
@@ -27,10 +25,10 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
   //copy the choosen point
   if (j < n_1) {
-    centres.push_back(setA[j]->copy());//TODO: ???? why re-set setA[j]?
+    setA[j], centres[choosenPoints] = setA[j]->copy();//TODO: ???? why re-set setA[j]?
   } else {
     j = j - n_1;
-    centres.push_back(setB[j]->copy());//TODO: ???? why re-set setB[j]?
+    setB[j], centres[choosenPoints] = setB[j]->copy();//TODO: ???? why re-set setB[j]?
   }
 //  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
   TreeNodePtr root = DataStructureFactory::createTreeNode();
@@ -43,10 +41,10 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
       TreeNodePtr leaf = selectNode(root);
       PointPtr centre = chooseCentre(leaf);
       split(leaf, centre, choosenPoints);
-      centres.push_back(centre->copy());
+      centres[choosenPoints] = centre->copy();
     } else {
       //create a dummy point
-      centres.push_back(root->centre->copy());
+      centres[choosenPoints] = root->centre->copy();
       int l;
       for (l = 0; l < centres[choosenPoints]->getDimension(); l++) {
         centres[choosenPoints]->setFeatureItem(-1 * 1000000, l);

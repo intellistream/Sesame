@@ -4,6 +4,7 @@
 
 #include <Engine/SingleThreadEngine.hpp>
 using namespace std;
+static int seed;
 
 SESAME::SingleThreadEngine::SingleThreadEngine() = default;
 
@@ -20,14 +21,18 @@ SESAME::SingleThreadEngine::SingleThreadEngine() = default;
 
 void SESAME::SingleThreadEngine::runAlgorithm(const vector<PointPtr> &input,
                                               vector<PointPtr> &output,
-                                              AlgorithmPtr algo) {
+                                              AlgorithmPtr algo,
+                                              int pointNumber,
+                                              int dimension,
+                                              int coresetSize,
+                                              int clusterNumber) {
 
   // initialize Window model
-  algo->initialWindow();
+  algo->initialWindow(pointNumber, dimension, coresetSize, seed);
 
   // build Window model
-  algo->buildTimeWindow(input);
+  algo->buildTimeWindow(pointNumber, input);
 
   // run offline clustering
-  algo->runOfflineClustering(input, output);
+  algo->runOfflineClustering(clusterNumber, coresetSize, dimension, output);
 }
