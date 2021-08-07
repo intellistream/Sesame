@@ -7,283 +7,266 @@
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
+
 /**
- * KMeans++ algorithm for n points of dimension d with k centres
- * @param k
- * @param n
- * @param d
- * @param points
- * @param resultCost
- * @return
+ * @Description: First step: select k elements randomly in input as initial clustering centers
  */
-std::vector<SESAME::PointPtr> SESAME::KMeans::lloydPlusPlus(int k,
-                                                            int n,
-                                                            int d,
-                                                            std::vector<PointPtr> &points,
-                                                            double *resultCost) {
-  SESAME_INFO("starting kMeans++");
-  //choose random centres
-  std::vector<SESAME::PointPtr> centres = chooseRandomCentres(k, n, points);
-  double cost = targetFunctionValue(k, n, centres, points);
-  double newCost = cost;
-  std::vector<PointPtr> massCentres; //= new Point[k];
-  double numberOfPoints[k];
 
-  do {
-    cost = newCost;
-    //reset centres of mass
-    int i = 0;
-    for (i = 0; i < k; i++) {
-      massCentres.push_back(DataStructureFactory::createPoint(0, 1.0, d, 0.0));
-      numberOfPoints[i] = 0.0;
+void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
+                         std::vector<PointPtr> &input, std::vector<PointPtr> &centers){
+  // init_genrand(10);
+  // put one point into the result
+
+  std::vector<int> indexs; // for unique
+  int id = SESAME::UtilityFunctions::genrand_int31() % numberOfInput;
+  indexs.push_back(input[id]->getIndex());
+  centers.push_back(input[id]->copy());
+  int c = 1; // count the number of element in center
+  // run the loop to insert the randomly selected indexes
+
+  while(c < numberOfCenters){
+    id = SESAME::UtilityFunctions::genrand_int31() % numberOfInput;
+    if(count(indexs.begin(), indexs.end(), id) == 0){
+      indexs.push_back(input[id]->getIndex());
+      centers.push_back(input[id]->copy());
+      c++;
     }
-    //compute centres of mass
-    for (i = 0; i < n; i++) {
-      int centre = determineClusterCentreKMeans(k, points[i], centres);
-      int l = 0;
-      for (l = 0; l < points[i]->getDimension(); l++) {
-        if (points[i]->getWeight() != 0.0)
-          massCentres[centre]->setFeatureItem(points[i]->getFeatureItem(l), l);
-      }
-      numberOfPoints[centre] += points[i]->getWeight();
-
-    }
-
-    //move centres
-    for (i = 0; i < k; i++) {
-      int l = 0;
-      for (l = 0; l < centres[i]->getDimension(); l++) {
-        centres[i]->setFeatureItem(massCentres[i]->getFeatureItem(l), l);
-        centres[i]->setWeight(numberOfPoints[i]);
-      }
-    }
-
-    //calculate costs
-    newCost = targetFunctionValue(k, n, centres, points);
-    SESAME_INFO("old cost:" << cost << ", new cost:" << newCost << " \n");
-  } while (newCost < THRESHOLD * cost);
-
-  SESAME_INFO("Centres: \n");
-  int i = 0;
-  for (i = 0; i < k; i++) {
-    printf("(");
-    int l = 0;
-    for (l = 0; l < centres[i]->getDimension(); l++) {
-      printf("%f,", centres[i]->getFeatureItem(l) / centres[i]->getWeight());
-    }
-    printf(")\n");
   }
-  *resultCost = newCost;
-  SESAME_INFO("kMeans++ finished\n");
-  return centres;
+
+  // print information
+  if(indexs.size() != numberOfCenters) SESAME_INFO( "ERROR!!! number of centers in indexs is not right!");
+  cout << "Randomly selected indexes:";
+  for(int index : indexs) {
+    cout << index << " ";
+  }
+  cout << endl;
 }
 
 /**
- * Randomly chooses k centres with kMeans++ distribution
- * @param k
- * @param n
- * @param d
- * @param points
- * @return
+ * @Description: select the k initial centers from the function determined by point weight
  */
-std::vector<SESAME::PointPtr> SESAME::KMeans::chooseRandomCentres(int k, int n, std::vector<PointPtr> &points) {
-  //array to store the choosen centres
-  std::vector<SESAME::PointPtr> centres; //= new Point[k];
 
-  //choose the first centre (each point has the same probability of being choosen)
-  int i = 0;
+void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfInput,
+                                             std::vector<PointPtr> &input, std::vector<PointPtr> &centers){
 
-  int next = 0;
-  int j = 0;
-  do {//only choose from the n-i points not already choosen
-    next = UtilityFunctions::genrand_int31() % (n - 1);
+  std::vector<int> indexs; // for unique
+  indexs.push_back(centers.at(0)->getIndex());
 
-    //check if the choosen point is not a dummy
-  } while (points[next]->getWeight() < 1);
-
-  //set j to next unchoosen point
-  j = next;
-  //copy the choosen point to the array
-//  centres[i]=Initialization(0, 1, d, 0);
-  centres.push_back(points[j]->copy());
-
-  //TODO: set the current centre for all points to the choosen centre??
-  for (i = 0; i < n; i++) {
-    points[i]->setClusteringCenter(0);
-    points[i]->setCost(costOfPointToCenter(points[i], centres[0]));
-  }
-  //choose centre 1 to k-1 with the kMeans++ distribution
-  for (i = 1; i < k; i++) {
-    double cost = 0.0;
-    for (j = 0; j < n; j++) {
-      cost += points[j]->getCost();
+  default_random_engine e(time(NULL));
+  uniform_real_distribution<double> u(0.0, 1.0);
+  cout << "KMeans++ randomly select indexes: ";
+  int times = 0;
+  while(times < numberOfCenters) {
+    double sum = 0;
+    vector<PointPtr> leftOver;
+    std::vector<double> weightSquare, probability;
+    for(int i = 0; i < numberOfInput; i++) {
+      if (count(indexs.begin(), indexs.end(), input.at(i)->getIndex()) == 0) {
+        leftOver.push_back(input.at(i)->copy());
+        double Min = calculateEluDistance(input.at(i), centers.at(0));
+        // Min is D(x)
+        for (int j = 1; j < centers.size(); j++) {
+          if (Min > calculateEluDistance(input.at(i), centers.at(j))) {
+            Min = calculateEluDistance(input.at(i), centers.at(j));
+          }
+        }
+        weightSquare.push_back(pow(Min, 2));
+        sum += pow(Min, 2);
+        // here we only need to store D2(x)
+      }
     }
 
-    double random = 0;
-    double sum = 0.0;
-    int pos = -1;
+    // calculate the weight of every other point(except centers)
+    for(double i : weightSquare) {
+      probability.push_back(i / sum);
+    }
 
-    do {
-      random = UtilityFunctions::genrand_real3();
-      sum = 0.0;
-      pos = -1;
-      for (j = 0; j < n; j++) {
-        sum = sum + points[j]->getCost();
-        if (random <= sum / cost) {
-          pos = j;
+    double left = 0, right = 0;
+    double r = u(e);
+    for(int i = 0; i < leftOver.size(); i++) {
+      right += probability.at(i);
+      if(r > left && r <= right) {
+        // cout << "randomly generate number: " << u(e) << endl;
+        if(count(indexs.begin(), indexs.end(), leftOver.at(i)->getIndex()) == 0){
+          indexs.push_back(leftOver.at(i)->getIndex());
+          centers.push_back(leftOver.at(i)->copy());
+          cout << leftOver.at(i)->getIndex() <<" ";
           break;
         }
       }
-
-    } while (points[pos]->getWeight() < 1);
-    //copy the choosen centre
-//    centres[i]->Initialization(0, 1, d, 0);
-    centres.push_back(points[pos]->copy());
-    //check which points are closest to the new centre
-    for (j = 0; j < n; j++) {
-      double newCost = costOfPointToCenter(points[j], centres[i]);
-      if (points[j]->getCost() > newCost) {
-        points[j]->setCost(newCost);
-        points[j]->setClusteringCenter(i);
-      }
+      left = right;
     }
-
+    times++;
   }
-
-  SESAME_INFO("random centres:");
-  for (i = 0; i < k; i++) {
-    SESAME_INFO(to_string(i) + "(");
-    int l = 0;
-    for (l = 0; l < centres[i]->getDimension(); l++) {
-      SESAME_INFO(centres[i]->getFeatureItem(l) / centres[i]->getWeight());
-    }
-    SESAME_INFO(")");
-  }
-
-  return centres;
+  cout << endl;
 }
 
 /**
- * Computes the index of the centre nearest to p with the given array of centres centres[] (of size k)
- * @param k
- * @param p
- * @param centres
- * @return
+ * @Description: Calculate norm2 distance from point to one of the center
  */
-int SESAME::KMeans::determineClusterCentreKMeans(int k, PointPtr p, std::vector<PointPtr> &centres) {
-  int index = 0;
-  double nearestCost = -1.0;
-  int j = 0;
-  for (j = 0; j < k; j++) {
-    double distance = 0.0;
-    int l = 0;
-    for (l = 0; l < p->getDimension(); l++) {
-      //Centroid coordinate of the point
-      double centroidCoordinatePoint;
-      if (p->getWeight() != 0.0) {
-        centroidCoordinatePoint = p->getFeatureItem(l) / p->getWeight();
-      } else {
-        centroidCoordinatePoint = p->getFeatureItem(l);
-      }
-      //Centroid coordinate of the centre
-      double centroidCoordinateCentre;
-      if (centres[j]->getFeatureItem(l) != 0.0) {
-        centroidCoordinateCentre = centres[j]->getFeatureItem(l) / centres[j]->getWeight();
-      } else {
-        centroidCoordinateCentre = centres[j]->getFeatureItem(l);
-      }
-      distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
-          (centroidCoordinatePoint - centroidCoordinateCentre);
-    }
 
-    if (nearestCost < 0 || distance < nearestCost) {
-      nearestCost = distance;
-      index = j;
-    }
+double SESAME::KMeans::calculateEluDistance(PointPtr &point, PointPtr &center) {
+  double dist = 0;
+  for(int i = 0; i < point->getDimension(); i++) {
+    dist += pow(point->getFeatureItem(i) - center->getFeatureItem(i), 2);
   }
-  return index;
+  dist = sqrt(dist);
+  return dist;
 }
 
 /**
- * computes the target function for the given pointarray points[] (of size n) with the given array of centres centres[] (of size k)
- * @param k
- * @param n
- * @param centres
- * @param points
- * @return
+ * @Description:  Calculate the new clustering center from groups
  */
-double SESAME::KMeans::targetFunctionValue(int k,
-                                           int n,
-                                           std::vector<PointPtr> &centres,
-                                           std::vector<PointPtr> &points) {
-  int i = 0;
-  double sum = 0.0;
-  for (i = 0; i < n; i++) {
-    double nearestCost = -1.0;
-    int j = 0;
-    for (j = 0; j < k; j++) {
-      double distance = 0.0;
-      int l = 0;
-      for (l = 0; l < points[i]->getDimension(); l++) {
-        //Centroid coordinate of the point
-        double centroidCoordinatePoint;
-        if (points[i]->getWeight() != 0.0) {
-          centroidCoordinatePoint = points[i]->getFeatureItem(l) / points[i]->getWeight();
-        } else {
-          centroidCoordinatePoint = points[i]->getFeatureItem(l);
-        }
-        //Centroid coordinate of the centre
-        double centroidCoordinateCentre;
-        if (centres[j]->getWeight() != 0.0) {
-          centroidCoordinateCentre = centres[j]->getFeatureItem(l) / centres[j]->getWeight();
-        } else {
-          centroidCoordinateCentre = centres[j]->getFeatureItem(l);
-        }
-        distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
-            (centroidCoordinatePoint - centroidCoordinateCentre);
 
+void SESAME::KMeans::calculateClusterCenter(PointPtr &center,std::vector<PointPtr> &group) {
+  for(int i = 0; i < center->getDimension(); i++) {
+    double sum = 0;
+    if(!group.empty()) {
+      for(auto & j : group) {
+        sum += j->getFeatureItem(i);
       }
-      if (nearestCost < 0 || distance < nearestCost) {
-        nearestCost = distance;
+      center->setFeatureItem(sum /double(group.size()), i);
+    }
+  }
+}
+
+/**
+ * @Description: Second Step: group every input points to the nearest centers
+ */
+
+void SESAME::KMeans::groupPointsByCenters(int numberOfCenters, int numberOfInput,
+                                          std::vector<PointPtr> &input, std::vector<PointPtr> &centers,
+                                          std::vector<std::vector<PointPtr>> &groups){
+
+  for(int i = 0; i < numberOfCenters; i++) {
+    std::vector<PointPtr> initial;
+    groups.push_back(initial);
+  }
+  int Id;
+  for(int i = 0; i < numberOfInput; i++) {
+    double Min = calculateEluDistance(input.at(i), centers.at(0));
+    Id = 0; // cluster_id that the point belongs to
+    for(int j = 1; j < numberOfCenters; j++) {
+      if(Min > calculateEluDistance(input.at(i), centers.at(j))) {
+        Id = j;
+        Min = calculateEluDistance(input.at(i), centers.at(j));
       }
     }
-    sum += nearestCost * points[i]->getWeight();
+    groups[Id].push_back(input.at(i));
   }
-  return sum;
+}
+
+/**
+ * @Description: Third Step: choose new clustering center from group points again
+ */
+
+void SESAME::KMeans::adjustClusteringCenters(std::vector<PointPtr> &centers,std::vector<std::vector<PointPtr>> &groups) {
+  for(int i = 0; i < groups.size(); i++) {
+    calculateClusterCenter(centers[i], groups[i]);
+  }
+}
+
+
+/**
+ * @Description: refresh group,replace the old one with the new one and clean up the new group
+ */
+
+void SESAME::KMeans::refreshGroup(std::vector<std::vector<PointPtr>> &oldGroups, std::vector<std::vector<PointPtr>> &newGroups) {
+  oldGroups.assign(newGroups.begin(), newGroups.end());
+  newGroups.clear();
+  std::vector<std::vector<PointPtr>> tmp;
+  newGroups.swap(tmp);
 }
 /**
-Computes the cost of point p with centre centre
-**/
-double SESAME::KMeans::costOfPointToCenter(PointPtr p, PointPtr centre) {
-  if (p->getWeight() == 0.0) {
-    return 0.0;
-  }
+ * @Description: if the old groups equals the new ones, set flagToStop to true to stop KMeans
+ */
 
-  //stores the distance between p and centre
-  double distance = 0.0;
-
-  //loop counter
-  int l;
-
-  for (l = 0; l < p->getDimension(); l++) {
-    //Centroid coordinate of the point
-    double centroidCoordinatePoint;
-    if (p->getWeight() != 0.0) {
-      centroidCoordinatePoint = p->getFeatureItem(l) / p->getWeight();
-    } else {
-      centroidCoordinatePoint = p->getFeatureItem(l);
+void SESAME::KMeans::checkStopStatus(bool &flag,std::vector<std::vector<PointPtr>> &oldGroups, std::vector<std::vector<PointPtr>> &newGroups) {
+  flag = true;
+  if(oldGroups.size() == newGroups.size()) {
+    for(int i = 0; i < oldGroups.size(); i++) {
+      if(oldGroups[i].size() == newGroups[i].size()) {
+        for(int j = 1; j < oldGroups[i].size(); j++) {
+          if(oldGroups[i][j]->getIndex() != newGroups[i][j]->getIndex()){
+            flag = false;
+          }
+        }
+      } else{
+        flag = false;
+      }
     }
-    //Centroid coordinate of the centre
-    double centroidCoordinateCentre;
-    if (centre->getWeight() != 0.0) {
-      centroidCoordinateCentre = centre->getFeatureItem(l) / centre->getWeight();
-    } else {
-      centroidCoordinateCentre = centre->getFeatureItem(l);
-    }
-    distance += (centroidCoordinatePoint - centroidCoordinateCentre) *
-        (centroidCoordinatePoint - centroidCoordinateCentre);
-
+  } else {
+    flag = false;
   }
-  return distance * p->getWeight();
+  if(!flag) {
+    SESAME_INFO("Point cluster need to be adjust, start a new iteration!" );
+  }
 }
 
+
+/**
+ * @Description: store the result into the output (clusteringCenter)
+ */
+
+void SESAME::KMeans::storeResult(std::vector<std::vector<PointPtr>> &groups, std::vector<PointPtr> &output) {
+  for(int i = 0; i < groups.size(); i++) {
+    for(int j = 0; j < groups[i].size(); j++) {
+      groups[i][j]->setClusteringCenter(i);
+      output.push_back(groups[i][j]->copy()); // point index start from 0
+    }
+  }
+}
+
+/**
+ * @Description: if KMeansPP is true, run KMeans++, if false, run KMeans
+ */
+
+void SESAME::KMeans::runKMeans(int numberOfCenters, int numberOfInput, std::vector<PointPtr> &input, std::vector<PointPtr> &output, bool KMeansPP){
+
+  std::vector<PointPtr> centers; // store the changing clustering centers
+  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+  bool flagToStop = false;
+
+  if(KMeansPP) {
+    // run the first step in KMeans++
+    SESAME_INFO("KMeans++ start!!!");
+    randomSelectCenters(1, numberOfInput, input, centers);
+    int resetCenter = numberOfCenters - 1;
+    selectCentersFromWeight(resetCenter, numberOfInput, input, centers);
+
+    // run the second step in KMeans++
+    groupPointsByCenters(numberOfCenters, numberOfInput, input, centers, oldGroups);
+
+  } else {
+    SESAME_INFO("KMeans start!!!");
+    // run the first step in KMeans
+    randomSelectCenters(numberOfCenters, numberOfInput, input, centers);
+
+    // run the second step in KMeans
+    groupPointsByCenters(numberOfCenters, numberOfInput, input, centers, oldGroups);
+  }
+
+
+  do{
+    // run the third step in KMeans
+    adjustClusteringCenters(centers, oldGroups);
+
+    // run the second step in KMeans
+    groupPointsByCenters(numberOfCenters, numberOfInput, input, centers, newGroups);
+
+    // check whether to stop
+    checkStopStatus(flagToStop, oldGroups, newGroups);
+
+    // refresh the groups, store newGroups in oldGroups and clean newGroups
+    refreshGroup(oldGroups, newGroups);
+
+  }while(!flagToStop);
+  if(KMeansPP) {
+    SESAME_INFO("KMeans++ finished!!!");
+  } else {
+    SESAME_INFO("KMeans finished!!!");
+  }
+
+  // store the result input output
+  storeResult(oldGroups, output);
+}
