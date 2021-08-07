@@ -25,9 +25,7 @@ class Algorithm {
   Algorithm() = default;
   virtual ~Algorithm() = default;
 
-//  virtual void setAlgorithmParameters(param_t &cmd_param) = 0;
-  virtual void initialWindow() = 0;
-  virtual void buildTimeWindow(const std::vector<PointPtr> &input) = 0;
+  virtual void runOnlineClustering(const std::vector<PointPtr> &input) = 0;
 
   // incremental computation
 

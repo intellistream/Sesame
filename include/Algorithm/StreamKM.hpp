@@ -28,9 +28,7 @@ class StreamKM : public Algorithm {
   StreamKM();
   ~StreamKM();
 
-//  void setAlgorithmParameters(param_t &cmd_param) override;
-  void initialWindow() override;
-  void buildTimeWindow(const vector<PointPtr> &input) override;
+  void runOnlineClustering(const vector<PointPtr> &input) override;
   void runOfflineClustering(const std::vector<PointPtr> &input, vector<PointPtr> &output) override;
 
 };
