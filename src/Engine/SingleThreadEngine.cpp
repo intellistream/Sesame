@@ -22,11 +22,9 @@ void SESAME::SingleThreadEngine::runAlgorithm(const vector<PointPtr> &input,
                                               vector<PointPtr> &output,
                                               AlgorithmPtr algo) {
 
-  // initialize Window model
-  algo->initialWindow();
 
-  // build Window model
-  algo->buildTimeWindow(input);
+  // run online clustering
+  algo->runOnlineClustering(input);
 
   // run offline clustering
   algo->runOfflineClustering(input, output);

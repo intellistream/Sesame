@@ -9,15 +9,15 @@
 #include <Utils/Logger.hpp>
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
-/**
- * @Description: initial the Window setting: window_size, window_number
- * @param pointNumber
- * @param dimension
- * @param coresetSize
- * @param seed
- */
-void SESAME::StreamKM::initialWindow() {
 
+/**
+ * @Description: build the landmark Window, insert the data point and construct the coreset tree if the window is full
+ * @Param:
+ * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
+ */
+void SESAME::StreamKM::runOnlineClustering(const vector<PointPtr> &input) {
+
+  // initial the landmark window
   UtilityFunctions::init_genrand(this->StreamKMParam.seed);
   this->window = WindowFactory::createLandmarkWindow();
   this->window->windowManager.numberOfWindow = ceil(log((double) this->StreamKMParam.pointNumber / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
@@ -26,14 +26,8 @@ void SESAME::StreamKM::initialWindow() {
   this->window->tree = DataStructureFactory::createCoresetTree();
   SESAME_INFO(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: " << this->StreamKMParam.dimension);
-}
 
-/**
- * @Description: build the landmark Window, insert the data point and construct the coreset tree if the window is full
- * @Param:
- * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
- */
-void SESAME::StreamKM::buildTimeWindow(const vector<PointPtr> &input) {
+  // insert data points into the window
   for (int i = 0; i < this->StreamKMParam.pointNumber; i++) {
     this->window->insertPoint(input[i]);
   }
@@ -59,6 +53,7 @@ void SESAME::StreamKM::runOfflineClustering(const std::vector<PointPtr> &input, 
 
   // print the clustering information
   int cluster = 0;
+  cout << cluster <<" cluster: ";
   for(int i = 0; i < groups.size(); i++) {
     if(cluster != centers.at(i)->getClusteringCenter()) {
       cluster = centers.at(i)->getClusteringCenter();
@@ -70,6 +65,7 @@ void SESAME::StreamKM::runOfflineClustering(const std::vector<PointPtr> &input, 
       output.push_back(groups[i][j]);
     }
   }
+  cout << endl;
 
   //  curCost = minCost;
 //
