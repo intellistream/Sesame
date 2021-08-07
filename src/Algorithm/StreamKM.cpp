@@ -22,7 +22,7 @@ void SESAME::StreamKM::initialWindow() {
   this->window = WindowFactory::createLandmarkWindow();
   this->window->windowManager.numberOfWindow = ceil(log((double) this->StreamKMParam.pointNumber / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
   this->window->windowManager.maxWindowSize = this->StreamKMParam.windowSize;
-  this->window->initWindow(this->StreamKMParam.dimension, this->StreamKMParam.windowSize);
+  this->window->initWindow();
   this->window->tree = DataStructureFactory::createCoresetTree();
   SESAME_INFO(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: " << this->StreamKMParam.dimension);
