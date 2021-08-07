@@ -22,7 +22,7 @@ typedef std::shared_ptr<LandmarkWindow> LandmarkWindowPtr;
 class LandmarkWindow : WindowModel {
  public:
 /**
-DataStructure representing a single bucket
+DataStructure representing a single window
 **/
   struct Window {
     int cursize;
@@ -43,11 +43,11 @@ datastructure for managing all O(log(n)) windows
 
   SESAME::CoresetTreePtr tree;
   /**
-   * initialize windows in the bucket manager.
+   * initialize windows in the window manager.
    * @param dimension
    * @param coresetSize
    */
-  void initWindow(int dimension, int windowSize);
+  void initWindow();
 
 /**
 inserts a single point into the bucketmanager
