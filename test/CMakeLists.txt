@@ -1,12 +1,4 @@
-# adding the Google_Tests_run target
-add_executable(Google_Tests_run
-        SystemTest.cpp
-        )
-
-# linking Google_Tests_run with sesame_lib which will be tested
-target_link_libraries(Google_Tests_run sesame gtest gtest_main gmock gmock_main)
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/datasets
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-gtest_discover_tests(Google_Tests_run)
+### Node Engine Tests ###
+add_executable(load-data-test "UnitTests/LoadDataTest.cpp")
+target_link_libraries(load-data-test sesame)
+add_test(NAME load-data-test COMMAND load-data-test)

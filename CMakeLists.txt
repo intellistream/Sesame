@@ -60,21 +60,18 @@ option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 if (ENABLE_UNIT_TESTS)
-    enable_testing()
-    # Google Test
-    include(FetchContent)
+# Google Test
+include(FetchContent)
 
-    FetchContent_Declare(
-            googletest
-            GIT_REPOSITORY https://github.com/google/googletest.git
-            GIT_TAG release-1.10.0
-    )
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.10.0
+)
 
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
-    include(GoogleTest)
-    find_package(GTest 1.10.0)
-endif ()
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+endif()
 
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")
