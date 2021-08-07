@@ -20,11 +20,7 @@ class SingleThreadEngine : SESAME::Engine {
   SingleThreadEngine();
   void runAlgorithm(const vector<PointPtr> &input,
                     vector<PointPtr> &output,
-                    AlgorithmPtr algo,
-                    int pointNumber,
-                    int dimension,
-                    int coresetSize,
-                    int clusterNumber);
+                    AlgorithmPtr algo);
 
 };
 }
