@@ -102,7 +102,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
   string home = getenv("HOME");
-  cmd_params.inputPath = "/home/ubuntu/database/Sesame/benchmark/datasets/new.txt";
+  cmd_params.inputPath = home + "/Sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "StreamKMeans";

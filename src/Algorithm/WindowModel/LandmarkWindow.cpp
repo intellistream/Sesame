@@ -13,19 +13,14 @@
  * @param: dimension
  * @param: windowSize
  */
-void SESAME::LandmarkWindow::initWindow(int dimension, int windowSize) {
-  int i,j;
+void SESAME::LandmarkWindow::initWindow() {
+  int i;
   for (i = 0; i < this->windowManager.numberOfWindow; i++) {
     Window blankWindow;
     blankWindow.cursize = 0;
-    for (j = 0; j < windowSize; j++) {
-      blankWindow.points.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
-      blankWindow.spillover.push_back(DataStructureFactory::createPoint(-1, 1, dimension, 0));
-    }
     this->windowManager.windows.push_back(blankWindow);
   }
 }
-
 
 /**
  * TODO: extract the incremental computation progress from the whole function. @Wangxin
@@ -50,7 +45,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // if empty, copy the window
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].points.at(i) = this->windowManager.windows[curWindow].points[i]->copy();
+        this->windowManager.windows[nextWindow].points.push_back(this->windowManager.windows[curWindow].points[i]->copy());
       }
       // window is now full
       this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
@@ -64,7 +59,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       //copy the points in the current window to the next spillover and continue
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].spillover.at(i) =this->windowManager.windows[curWindow].points[i]->copy();
+        this->windowManager.windows[nextWindow].spillover.push_back(this->windowManager.windows[curWindow].points[i]->copy());
       }
       this->windowManager.windows[0].cursize = 0;
       cursize = 0;
@@ -102,7 +97,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
 
   }
   // if the first window is not full, just insert point into it
-  this->windowManager.windows[0].points.at(cursize) = point->copy();//   .copy(point);
+  this->windowManager.windows[0].points.push_back(point->copy());//   .copy(point);
   this->windowManager.windows[0].cursize++;
 }
 /**
