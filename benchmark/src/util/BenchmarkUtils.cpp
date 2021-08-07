@@ -102,7 +102,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
   string home = getenv("HOME");
-  cmd_params.inputPath = home + "/Sesame/benchmark/datasets/new.txt";
+  cmd_params.inputPath = "/home/ubuntu/database/Sesame/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "StreamKMeans";
@@ -155,14 +155,15 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                   const vector<SESAME::PointPtr> &input,
                                   vector<SESAME::PointPtr> &output) {
   SESAME::AlgorithmPtr algo =
-      SESAME::AlgorithmFactory::create(cmd_params.algoName);
+      SESAME::AlgorithmFactory::create(cmd_params.algoName,
+                                       cmd_params.pointNumber,
+                                       cmd_params.clusterNumber,
+                                       cmd_params.dimension,
+                                       cmd_params.coresetSize,
+                                       cmd_params.seed);
 
   SESAME::SingleThreadEngine().runAlgorithm(input, output,
-                                            algo,
-                                            cmd_params.pointNumber,
-                                            cmd_params.dimension,
-                                            cmd_params.coresetSize,
-                                            cmd_params.clusterNumber);
+                                            algo);
 }
 
 /**
@@ -180,6 +181,7 @@ void BenchmarkUtils::evaluate(param_t &cmd_params,
                                     input,
                                     output);
 }
+
 
 /**
  * @Description: store the final clustering result, also point format but the clustering center of each point has been set

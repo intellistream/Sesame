@@ -10,7 +10,12 @@ namespace SESAME {
 class AlgorithmFactory {
 
  public:
-  static SESAME::AlgorithmPtr create(std::string algoName);
+  static SESAME::AlgorithmPtr create(std::string algoName,
+                                     int pointNumber,
+                                     int clusterNumber,
+                                     int dimension,
+                                     int coresetSize,
+                                     int seed);
 };
 }
 #endif //SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
