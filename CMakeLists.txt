@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
 # Custom CMake find instructions and macros
@@ -56,6 +56,23 @@ else (LOG4CXX_FOUND)
     message(STATUS "sudo apt-get install -y liblog4cxx-dev")
 endif (LOG4CXX_FOUND)
 
+option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
+message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
+
+if (ENABLE_UNIT_TESTS)
+# Google Test
+include(FetchContent)
+
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.10.0
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+endif()
+
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -78,6 +95,9 @@ target_link_libraries(sesame PUBLIC ${LIBRARIES})
 
 #Add benchmarks with command
 add_subdirectory(benchmark)
+
+#Add tests (based on GTest suits)
+add_subdirectory(test)
 
 install(DIRECTORY "include" DESTINATION "/sesame" COMPONENT SESAME)
 
