@@ -155,14 +155,15 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                   const vector<SESAME::PointPtr> &input,
                                   vector<SESAME::PointPtr> &output) {
   SESAME::AlgorithmPtr algo =
-      SESAME::AlgorithmFactory::create(cmd_params.algoName);
+      SESAME::AlgorithmFactory::create(cmd_params.algoName,
+                                       cmd_params.pointNumber,
+                                       cmd_params.clusterNumber,
+                                       cmd_params.dimension,
+                                       cmd_params.coresetSize,
+                                       cmd_params.seed);
 
   SESAME::SingleThreadEngine().runAlgorithm(input, output,
-                                            algo,
-                                            cmd_params.pointNumber,
-                                            cmd_params.dimension,
-                                            cmd_params.coresetSize,
-                                            cmd_params.clusterNumber);
+                                            algo);
 }
 
 /**
@@ -180,6 +181,7 @@ void BenchmarkUtils::evaluate(param_t &cmd_params,
                                     input,
                                     output);
 }
+
 
 /**
  * @Description: store the final clustering result, also point format but the clustering center of each point has been set
