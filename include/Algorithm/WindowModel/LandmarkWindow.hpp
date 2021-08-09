@@ -78,8 +78,12 @@ Pyramidal time frame: Taking snapshots of online Micro clusters in Clustream alg
 Data Structure representing all orders of snapshots
 **/
   SESAME::QueueOrderSnapshotPtr orderSnapShots;
-  int timeInterval; //time interval of pyramidal window
-  unsigned int currentOrder; //the biggest order T of snapshots
+  struct PyramidalWindow {
+    int timeInterval; //time interval of pyramidal window
+    unsigned int currentOrder; //the biggest order T of snapshots
+  };
+  PyramidalWindow pyramidalWindow;
+
 
 /**
  * @Description: init the pyramidal window, pass the value of startTime and
@@ -96,7 +100,7 @@ Data Structure representing all orders of snapshots
 * elapsedTime: the current elapsed time
 * @Return: void
 */
-  void pyramidalWindow(clock_t startTime,MicroClustersPtr microClusters);
+  void pyramidalWindowProcess(clock_t startTime,MicroClustersPtr microClusters);
 /**
    * @Description: this function stores snapshots into the pyramidal window data structure
    * @Param: currentOrder: the ith order  snapshots stored into

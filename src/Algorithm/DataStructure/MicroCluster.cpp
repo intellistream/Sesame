@@ -2,7 +2,7 @@
 // Created by Zhenyu on 2021/8/8.
 //
 #include<Algorithm/DataStructure/MicroCluster.hpp>
-
+#include <Utils/Logger.hpp>
 SESAME::MicroCluster::MicroCluster()
 {
 
@@ -11,8 +11,7 @@ SESAME::MicroCluster::MicroCluster()
   this->id.reserve(10);
 }
 SESAME::MicroCluster::MicroCluster(int dimension, int id)
-{
-
+{  ;
   this->dimension=dimension;
   clusterNum=0;
   this->id.insert(this->id.begin(),1,id);
@@ -26,20 +25,24 @@ SESAME::MicroCluster::~MicroCluster()
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
   clusterNum++;
+
   for (int i = 0;i < dimension;i++) {
     double data = datapoint->getFeatureItem(i);
-    CF1x[i] = data;
-    CF2x[i] = data * data;
+    CF1x.push_back(data);
+    CF2x.push_back(data * data);
   }
 
   CF1t=timestamp;
   CF2t=timestamp*timestamp;
+
   centroid=getCentroid();
+
 }
 //insert a new data point from input data stream
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
   clusterNum++;
+
   for(int i=0;i<dimension;i++)
   {
     double data=datapoint->getFeatureItem(i);
@@ -49,7 +52,10 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 
   CF1t+=timestamp;
   CF2t+=timestamp*timestamp;
+
   centroid=getCentroid();
+
+
 }
 
 //merge two micro-clusters
@@ -138,6 +144,7 @@ double SESAME::MicroCluster::getRadius(double radiusFactor){
     return 0;
   if(radiusFactor<=0)
     radiusFactor=1.8;
+
   return getDeviation()*radiusFactor;
 }
 
@@ -159,7 +166,7 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
     return CF1x;
   dataPoint dataObject;//double
   for(int i=0;i<dimension;i++){
-    dataObject[i]=CF1x[i]/clusterNum;
+    dataObject.push_back(CF1x[i]/clusterNum);
   }
   return dataObject;
 }
@@ -192,12 +199,13 @@ SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
   dataPoint datapoint;
 
   for(int i=0;i<dimension;i++){
-    double linear_sum=CF1x[i];
-    double squared_sum=CF2x[i];
-    double ave_lin_sum=			linear_sum/clusterNum;
-    double squared_ave_lin_sum=	ave_lin_sum*ave_lin_sum;
-    double squared_sum_squared=		squared_sum/clusterNum;
-    datapoint[i]=squared_sum_squared-squared_ave_lin_sum;
+    double linearSum=CF1x[i];
+    double squaredSum=CF2x[i];
+
+    double aveLinearSum=			linearSum/clusterNum;
+    double squaredAveLinearSum=	aveLinearSum*aveLinearSum;
+    double squaredSumSquared=		squaredSum/clusterNum;
+    datapoint.push_back(squaredSumSquared-squaredAveLinearSum);
 
     if(datapoint[i]<=0.0)
       datapoint[i]=MIN_VARIANCE;
@@ -211,7 +219,6 @@ SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
 double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint){
 
   double temp=0;
-
   for(int i=0;i<dimension;i++){
     double diff=centroid[i]-datapoint->getFeatureItem(i);
     temp+=(diff*diff);

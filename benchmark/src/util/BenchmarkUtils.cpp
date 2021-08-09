@@ -31,8 +31,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
             {"dimension", required_argument, 0, 'd'},
             {"coreset_size", required_argument, 0, 's'},
             {"seed", required_argument, 0, 'S'},
-
-            {"lastArrivingNum", required_argument, 0, 'l'},
+            {"lastArrivingNum", required_argument, 0, 'a'},
             {"timeWindow", required_argument, 0, 'T'},
             {"timeInterval", required_argument, 0, 't'},
             {"onlineClusterNumber", required_argument, 0, 'C'},
@@ -45,7 +44,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    c = getopt_long(argc, argv, "p:c:d:s:S:h",
+    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h",
                     long_options, &option_index);
 
     /* Detect the end of the options. */
@@ -82,7 +81,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
         SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
         break;
 
-      case 'l': cmd_params.seed = atoi(optarg);
+      case 'a': cmd_params.seed = atoi(optarg);
         SESAME_INFO("configure cmd_params.lastArrivingNum: " << cmd_params.lastArrivingNum);
         break;
       case 'T': cmd_params.seed = atoi(optarg);
@@ -134,17 +133,17 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
   cmd_params.lastArrivingNum=300;
-  cmd_params.timeWindow=40;
-  cmd_params.timeInterval=10;
+  cmd_params.timeWindow=35;
+  cmd_params.timeInterval=3;
   cmd_params.onlineClusterNumber=15;
-  cmd_params.radiusFactor=30;
-  cmd_params.initBuffer=3000;
-  cmd_params.offlineTimeWindow=1300;
+  cmd_params.radiusFactor=10;
+  cmd_params.initBuffer=300;
+  cmd_params.offlineTimeWindow=300;
   string home = getenv("HOME");
   cmd_params.inputPath =  "/mnt/d/SESAME/benchmark/datasets/new.txt";//home+"/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "StreamKMeans";
+  cmd_params.algoName = "CluStream";
 }
 
 /* command line handling functions */
@@ -199,7 +198,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                        cmd_params.clusterNumber,
                                        cmd_params.dimension,
                                        cmd_params.coresetSize,
-                                       cmd_params.seed ,
+                                       cmd_params.seed,
                                        cmd_params.lastArrivingNum,
                                        cmd_params.timeWindow,
                                        cmd_params.timeInterval,

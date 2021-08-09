@@ -40,6 +40,7 @@ if (algoName == "CluStream") {
     cluStream->CluStreamParam.radiusFactor=radiusFactor;
     cluStream->CluStreamParam.initBuffer=initBuffer;
     cluStream->CluStreamParam.offlineTimeWindow=offlineTimeWindow;
+
     return (SESAME::AlgorithmPtr) cluStream;
   }
   throw std::invalid_argument("Unsupported");

@@ -25,7 +25,6 @@ class MicroCluster {
 
   std::vector<int> id;
   dataPoint centroid;
-  //unsigned int m;// the last arriving m data object in micro clusters
   dataPoint CF1x;//  the sum of the data values for each dimension
   dataPoint CF2x;// the sum of the squares of  the data values for each dimension
   int CF1t; //  the sum of the time stamps Ti~... Tin

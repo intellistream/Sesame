@@ -156,11 +156,11 @@ std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std:
  */
 void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
 {
-
   for(int i=0;i<200;i++)
   {
-    orderSnapShots[i].reset(new ArrayQueue<Snapshot> (timeInterval+1));
+    orderSnapShots.push_back(std::make_shared<ArrayQueue<Snapshot>>(timeInterval+1));
   }
+  this->pyramidalWindow.currentOrder=0;
 }
 
 /**
@@ -170,26 +170,31 @@ void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
     * startTime: start time of algorithms
     * @Return: void
     */
-
-void SESAME::LandmarkWindow::pyramidalWindow(clock_t startTime,SESAME::MicroClustersPtr microClusters){
-  //int i=-1;
-  unsigned int i=0;
+//TODO Still need to debug
+void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::MicroClustersPtr microClusters){
+  int i=-1;
+ // unsigned int i=0;
   clock_t now= clock();
   int elapsedTime=(int)((now,startTime)/CLOCKS_PER_SEC);
-  //log a(T)=log c(T)/log c(a)
-  currentOrder= (int)(log(elapsedTime)/log(timeInterval));
+  if(elapsedTime>0)
+  this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
   //NOTE: snapshot when elapsed time =0 always add to the front of latest T order
-  while(i>=0)//++i>=0
+  while(++i>=0)//++i>=0
   {
-    std::cout<<i<<std::endl;
-    if(currentOrder>=i && elapsedTime%(int)(pow(timeInterval,i))==0)
+    if(this->pyramidalWindow.currentOrder>=i && elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i))==0)
     {
-      if(elapsedTime%(int)(pow(timeInterval,i+1))!=0)
+      if(elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i+1))!=0)
+      {
+        std::cout<<i<<std::endl;
         storeSnapshot(i,microClusters,elapsedTime);
+      }
+
+
     }
     else
       break;
-    i++;
+    if(i==10)
+      break;
   }
 }
 /**
@@ -206,7 +211,7 @@ void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,MicroClust
   Snapshot snapshot;
   snapshot.elapsedTime=elapsedTime;
   snapshot.microClusters=std::move(microClusters);
-  if(size==timeInterval+1)
+  if(size==this->pyramidalWindow.timeInterval+1)
   {
     orderSnapShots[currentOrder]->pop();
   }
