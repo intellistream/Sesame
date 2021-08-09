@@ -19,6 +19,9 @@ if (BUILD_BENCHMARKS)
     add_executable(benchmark "src/Benchmark.cpp")
     target_link_libraries(benchmark sesame)
     add_test(NAME benchmark COMMAND benchmark) # --benchmark_out=benchmark.log
+
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/datasets
+            DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     message("---Done building benchmarks")
 else (BUILD_BENCHMARKS)
     message("---Not building benchmarks!")
