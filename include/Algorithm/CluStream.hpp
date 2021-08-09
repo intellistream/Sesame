@@ -33,7 +33,7 @@ class CluStream: public Algorithm{
   CluStreamParameter CluStreamParam;
   KMeans km;//used for offline initialization
   LandmarkWindowPtr window;
-  std::vector <MicroClusterPtr>  microClusters;
+  std::vector <MicroCluster>  microClusters;
 
   long unsigned int pointsFitted;
   long unsigned int pointsForgot;
@@ -47,11 +47,11 @@ class CluStream: public Algorithm{
 
   void initOffline(vector<PointPtr> &initData, vector<PointPtr> &initialData);
   void incrementalCluster(PointPtr data);
-  double calRadius(MicroClusterPtr closestCluster);
-  void insertIntoCluster(PointPtr data,  MicroClusterPtr operateCluster);
+  double calRadius(MicroCluster &closestCluster);
+  void insertIntoCluster(PointPtr data,  MicroCluster &closestCluster);
   void deleteCreateCluster(PointPtr data);
   void MergeCreateCluster(PointPtr data);
-  void microClusterToPoint(MicroClustersPtr microClusters, vector<PointPtr> &points);
+  void microClusterToPoint(std::vector <MicroCluster> microClusters, vector<PointPtr> &points);
   static double distance(dataPoint a,dataPoint b,int dim);
 };
 

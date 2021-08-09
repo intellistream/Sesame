@@ -2,7 +2,7 @@
 // Created by Zhenyu on 2021/8/8.
 //
 #include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Utils/Logger.hpp>
+#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 SESAME::MicroCluster::MicroCluster()
 {
 
@@ -11,7 +11,7 @@ SESAME::MicroCluster::MicroCluster()
   this->id.reserve(10);
 }
 SESAME::MicroCluster::MicroCluster(int dimension, int id)
-{  ;
+{
   this->dimension=dimension;
   clusterNum=0;
   this->id.insert(this->id.begin(),1,id);
@@ -25,13 +25,11 @@ SESAME::MicroCluster::~MicroCluster()
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
   clusterNum++;
-
   for (int i = 0;i < dimension;i++) {
     double data = datapoint->getFeatureItem(i);
     CF1x.push_back(data);
     CF2x.push_back(data * data);
   }
-
   CF1t=timestamp;
   CF2t=timestamp*timestamp;
 
@@ -42,7 +40,6 @@ void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
   clusterNum++;
-
   for(int i=0;i<dimension;i++)
   {
     double data=datapoint->getFeatureItem(i);
@@ -59,40 +56,38 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 }
 
 //merge two micro-clusters
-void SESAME::MicroCluster::merge(MicroClusterPtr other){
-  clusterNum+=other->clusterNum;
+void SESAME::MicroCluster::merge(MicroCluster &other){
+  clusterNum+=other.clusterNum;
   for(int i=0;i<dimension;i++)// dimension can change to CF1x.size()
   {
-    CF1x[i]+=other->CF1x[i];
-    CF2x[i]+=other->CF2x[i];
+    CF1x[i]+=other.CF1x[i];
+    CF2x[i]+=other.CF2x[i];
   }
-  CF1t+=other->CF1t;
-  CF2t+=other->CF2t;
+  CF1t+=other.CF1t;
+  CF2t+=other.CF2t;
   updateId(other);
   centroid=getCentroid();
 }
 
 //Calculate the process of micro cluster N(Tc-h')
-SESAME::MicroClusterPtr SESAME::MicroCluster::substractClusterVector(MicroClusterPtr other)
+void SESAME::MicroCluster::substractClusterVector(MicroCluster &other)
 {
-  MicroClusterPtr Net_Tc_h;
-  Net_Tc_h->clusterNum=this->clusterNum-other->clusterNum;
+  this->clusterNum-=other.clusterNum;
   for(int i=0;i<dimension;i++)
   {
-    Net_Tc_h->CF1x[i]= this->CF1x[i]-other->CF1x[i];
-    Net_Tc_h->CF2x[i]=  this->CF2x[i]-other->CF2x[i];
+    CF1x[i]-=other.CF1x[i];
+    CF2x[i]-=other.CF2x[i];
   }
-  Net_Tc_h->CF1t= this->CF1t-other->CF1t;
-  Net_Tc_h->CF2t =this->CF2t-other->CF2t;
-  Net_Tc_h->centroid=getCentroid();
-  return Net_Tc_h;
+  this->CF1t-= other.CF1t;
+  this->CF2t-= other.CF2t;
+  this->centroid=getCentroid();
+
 }
-bool SESAME::MicroCluster::judgeMerge(MicroClusterPtr other)
+bool SESAME::MicroCluster::judgeMerge(MicroCluster &other)
 {   bool merge=true;
-  for(unsigned int i=0;i<other->id.size();i++)
+  for(unsigned int i=0;i<other.id.size();i++)
   {
-    auto iter=std::find(id.begin(), id.end(),other->id[i]);
-    if (iter==id.end())
+    if (std::find(id.begin(), id.end(), other.id[i])==id.end())
       merge=false;
   }
   return merge;
@@ -100,13 +95,14 @@ bool SESAME::MicroCluster::judgeMerge(MicroClusterPtr other)
 }
 
 //update id list of Micro cluster
-void SESAME::MicroCluster::updateId(MicroClusterPtr other)
+void SESAME::MicroCluster::updateId(MicroCluster &other)
 {
-  for(unsigned int i=0;i<other->id.size();i++)
+  for(unsigned int i=0;i<other.id.size();i++)
   {
-    this->id.push_back(other->id[i]);
+    this->id.push_back(other.id[i]);
   }
-  other->id.clear();
+  other.id.clear();
+  this->id.reserve(10);
 }
 
 //obtain relevance stamp of a cluster to judge whether it needs to be deleted

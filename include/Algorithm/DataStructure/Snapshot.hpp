@@ -19,25 +19,25 @@ namespace SESAME {
 class Snapshot;
 typedef std::shared_ptr<Snapshot> SnapshotPtr;
 
-typedef std::vector <MicroClusterPtr>  MicroClustersPtr;
-typedef std::shared_ptr<ArrayQueue<Snapshot>> QueueSnapshotPtr;
+typedef std::vector <MicroCluster>  MicroClusters;
+typedef std::vector<SnapshotPtr> QueueSnapshotPtr;
 typedef std::vector<QueueSnapshotPtr> QueueOrderSnapshotPtr;
 
 class Snapshot{
  public:
   int elapsedTime;
-  MicroClustersPtr  microClusters;
+  MicroClusters  microClusters;
 
   /**
   QueueSnapshotPtr: Data Structure representing order ith snapshots list
   QueueOrderSnapshotPtr: Data Structure representing orders
   **/
 
-  static MicroClustersPtr findSnapshot(QueueOrderSnapshotPtr orderSnapShots,
+  static SnapshotPtr findSnapshot(QueueOrderSnapshotPtr orderSnapShots,
                                        int landmarkTime ,int currentElapsedTime ,unsigned int currentOrder);
 
-  static MicroClustersPtr substractSnapshot(MicroClustersPtr snapshotCurrent,
-                                            MicroClustersPtr snapshotLandmark,unsigned int clusterNumber);
+  static SnapshotPtr substractSnapshot(SnapshotPtr snapshotCurrent,
+                                       SnapshotPtr snapshotLandmark,unsigned int clusterNumber);
 
 };
 }

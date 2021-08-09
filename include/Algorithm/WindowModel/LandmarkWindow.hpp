@@ -80,7 +80,7 @@ Data Structure representing all orders of snapshots
   SESAME::QueueOrderSnapshotPtr orderSnapShots;
   struct PyramidalWindow {
     int timeInterval; //time interval of pyramidal window
-    unsigned int currentOrder; //the biggest order T of snapshots
+    unsigned int currentOrder=0; //the biggest order T of snapshots
   };
   PyramidalWindow pyramidalWindow;
 
@@ -100,7 +100,7 @@ Data Structure representing all orders of snapshots
 * elapsedTime: the current elapsed time
 * @Return: void
 */
-  void pyramidalWindowProcess(clock_t startTime,MicroClustersPtr microClusters);
+  void pyramidalWindowProcess(clock_t startTime,MicroClusters microClusters);
 /**
    * @Description: this function stores snapshots into the pyramidal window data structure
    * @Param: currentOrder: the ith order  snapshots stored into
@@ -108,7 +108,7 @@ Data Structure representing all orders of snapshots
    * elapsedTime: the current elapsed time
    * @Return: void
    */
-  void storeSnapshot(unsigned  int currentOrder,MicroClustersPtr microClusters,int elapsedTime);
+  void storeSnapshot(unsigned  int currentOrder,MicroClusters microClusters,int elapsedTime);
   void clearPyramidalWindow();
 
 

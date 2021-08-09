@@ -124,18 +124,18 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     * @Return: void
     */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
-  cmd_params.pointNumber = 568592;
+  cmd_params.pointNumber = 15120;
   cmd_params.seed = 10;
-  cmd_params.clusterNumber = 10;
+  cmd_params.clusterNumber = 8;
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 100;
-  cmd_params.lastArrivingNum=30;
-  cmd_params.timeWindow=10;
+  cmd_params.lastArrivingNum=20;
+  cmd_params.timeWindow=3;
   cmd_params.timeInterval=2;
   cmd_params.onlineClusterNumber=15;
-  cmd_params.radiusFactor=10;
-  cmd_params.initBuffer=300;
-  cmd_params.offlineTimeWindow=50;
+  cmd_params.radiusFactor=60;
+  cmd_params.initBuffer=1000;
+  cmd_params.offlineTimeWindow=3;
   string home = getenv("HOME");
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
   //cmd_params.inputPath =  "/mnt/d/SESAME/benchmark/datasets/new.txt";//home+"/benchmark/datasets/new.txt";

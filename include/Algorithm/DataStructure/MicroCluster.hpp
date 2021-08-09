@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <cmath>
 #include <Algorithm/DataStructure/Point.hpp>
-#include <Algorithm/DataStructure/ArrayQueue.hpp>
 #include <cassert>
 #include <iostream>
 namespace SESAME {
@@ -38,9 +37,9 @@ class MicroCluster {
   ~MicroCluster();
   void init(PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);
-  void merge(MicroClusterPtr other);
-  MicroClusterPtr substractClusterVector(MicroClusterPtr other);
-  void updateId(MicroClusterPtr other);
+  void merge(MicroCluster &other);
+  void substractClusterVector(MicroCluster &other);
+  void updateId(MicroCluster &other);
   double getRelevanceStamp(int m) const;
   double getMutime() const;
   double getSigmaTime() const;
@@ -51,7 +50,7 @@ class MicroCluster {
   double getInclusionProbability(PointPtr datapoint,double radiusFactor);
   dataPoint getVarianceVector();
   double calCentroidDistance(PointPtr datapoint);
-  bool judgeMerge(MicroClusterPtr other);
+  bool judgeMerge(MicroCluster &other);
  private:
 
   static double inverseError(double x);
