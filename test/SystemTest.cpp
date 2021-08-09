@@ -1,22 +1,18 @@
+//
+// Created by shuhao zhang on 8/8/2021.
+//
 
-/**
- * @brief This is the main entry point of the entire program.
- * Users will typically access this file to use the stream clustering algorithm.
- * We use this as the entry point for benchmarking.
- */
+#include <gtest/gtest.h>
 #include <Utils/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
 
-using namespace std;
-
-int main(int argc, char **argv) {
+TEST(SystemTest, SampleRun) {
     //Setup Logs.
     setupLogging("benchmark.log", LOG_INFO);
 
     //Parse parameters.
     param_t cmd_params;
     BenchmarkUtils::defaultParam(cmd_params);
-    BenchmarkUtils::parseArgs(argc, argv, cmd_params);
 
     std::vector<SESAME::PointPtr> input;
     std::vector<SESAME::PointPtr> results;
@@ -34,5 +30,9 @@ int main(int argc, char **argv) {
 
     //Store results.
     BenchmarkUtils::store(cmd_params, results);
-}
 
+    //TODO: specify here what is the expected results after running the algorithm.
+    std::vector<SESAME::PointPtr> expected_results;
+
+//    EXPECT_EQ(results, expected_results);
+}
