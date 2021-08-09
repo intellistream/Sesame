@@ -5,7 +5,7 @@
 #include <Engine/SingleThreadEngine.hpp>
 #include <Evaluation/Evaluation.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
-
+#include <filesystem>
 using namespace std;
 
 /**
@@ -118,16 +118,17 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
 }
 
 /**
- * @Description: Set the default algorithm StreamKM++ and the default parameters to run the algorithm
- * @Param: cmd_params: param_t &
- * @Return: void
- */
+    * @Description: Set the default algorithm StreamKM++ and the default parameters to run the algorithm
+    *void -p 1000 -c 10 -d 54 -s 100 -S 10
+    * @Param: cmd_params: param_t &
+    * @Return: void
+    */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 568592;
   cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;
-  cmd_params.coresetSize = 20;
+  cmd_params.coresetSize = 100;
   cmd_params.lastArrivingNum=30;
   cmd_params.timeWindow=10;
   cmd_params.timeInterval=2;
@@ -136,7 +137,8 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.initBuffer=300;
   cmd_params.offlineTimeWindow=50;
   string home = getenv("HOME");
-  cmd_params.inputPath =  "/mnt/d/SESAME/benchmark/datasets/new.txt";//home+"/benchmark/datasets/new.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
+  //cmd_params.inputPath =  "/mnt/d/SESAME/benchmark/datasets/new.txt";//home+"/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "CluStream";
