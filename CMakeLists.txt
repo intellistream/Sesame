@@ -60,6 +60,7 @@ option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 if (ENABLE_UNIT_TESTS)
+    enable_testing()
     # Google Test
     include(FetchContent)
 
@@ -97,7 +98,6 @@ target_link_libraries(sesame PUBLIC ${LIBRARIES})
 add_subdirectory(benchmark)
 
 #Add tests (based on GTest suits)
-
 add_subdirectory(test)
 
 install(DIRECTORY "include" DESTINATION "/sesame" COMPONENT SESAME)
