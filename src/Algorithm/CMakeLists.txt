@@ -1,5 +1,6 @@
 add_source_sesame(
         StreamKM.cpp
+        CluStream.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
 )

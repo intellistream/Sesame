@@ -7,7 +7,8 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <Algorithm/DataStructure/TreeNode.hpp>
 #include <Algorithm/DataStructure/CoresetTree.hpp>
-
+#include <Algorithm/DataStructure/MicroCluster.hpp>
+#include <Algorithm/DataStructure/Snapshot.hpp>
 namespace SESAME {
 class DataStructureFactory {
 
@@ -21,6 +22,12 @@ class DataStructureFactory {
   static void clearTreeNode(TreeNodePtr treeNode);
   static CoresetTreePtr createCoresetTree();
   static void clearCoresetTree(CoresetTreePtr tree);
+
+  static MicroClusterPtr createMicroCluster(int dimension, int id);
+  static MicroClusterPtr createMicroCluster();
+  static void clearMicroCluster(MicroClusterPtr microCluster);
+  static SnapshotPtr createSnapshot();
+  static void clearSnapshot(SnapshotPtr snapshot);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_DATASTRUCTUREFACTORY_HPP_
