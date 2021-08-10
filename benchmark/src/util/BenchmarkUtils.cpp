@@ -132,13 +132,13 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 20;
-  cmd_params.lastArrivingNum=300;
-  cmd_params.timeWindow=35;
-  cmd_params.timeInterval=3;
+  cmd_params.lastArrivingNum=30;
+  cmd_params.timeWindow=10;
+  cmd_params.timeInterval=2;
   cmd_params.onlineClusterNumber=15;
   cmd_params.radiusFactor=10;
   cmd_params.initBuffer=300;
-  cmd_params.offlineTimeWindow=300;
+  cmd_params.offlineTimeWindow=50;
   string home = getenv("HOME");
   cmd_params.inputPath =  "/mnt/d/SESAME/benchmark/datasets/new.txt";//home+"/benchmark/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);

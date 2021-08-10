@@ -37,7 +37,7 @@ void SESAME::CluStream::initOffline(vector<PointPtr> &initData, vector<PointPtr>
   for (int i = 0;i <  CluStreamParam.initBuffer;i++)
   {
     int clusterId=initialData[i]->getClusteringCenter();
-    SESAME_INFO("the belonging micro cluster id is !"<<clusterId);
+   // SESAME_INFO("the belonging micro cluster id is !"<<clusterId);
     if(microClusters[clusterId]->clusterNum==0 )
     {
      // SESAME_INFO("micro cluster is new!");
@@ -88,9 +88,11 @@ void SESAME::CluStream::runOnlineClustering(const vector<PointPtr> &input)
   {
     clock_t now = clock();
 
-  if((int)((now-lastTime)/CLOCKS_PER_SEC)>=10)
+  if((int)((now-lastTime)/CLOCKS_PER_SEC)>=1)
     {
-     // window->pyramidalWindowProcess(now,microClusters);
+
+      window->pyramidalWindowProcess(now,microClusters);
+      lastTime=now;
    }
     incrementalCluster(input[i]);
   }
@@ -164,7 +166,7 @@ double SESAME::CluStream::calRadius(MicroClusterPtr closestCluster)
 //   Date fits case
 void SESAME::CluStream::insertIntoCluster(PointPtr data,  MicroClusterPtr operateCluster)
 {
-  SESAME_INFO("This data fits");
+  //SESAME_INFO("This data fits");
   pointsFitted++;
   operateCluster->insert(data, ((int)(clock()-startTime))/CLOCKS_PER_SEC);
 
@@ -173,7 +175,7 @@ void SESAME::CluStream::insertIntoCluster(PointPtr data,  MicroClusterPtr operat
 //Delete oldest cluster and create new one case
 void SESAME::CluStream::deleteCreateCluster(PointPtr data)
 {
-  SESAME_INFO("Micro cluster needs to delete");
+ // SESAME_INFO("Micro cluster needs to delete");
   // 3.1 Try to forget old micro clusters
   int threshold = ((int)(clock()-startTime))/CLOCKS_PER_SEC - this->CluStreamParam.timeWindow; // Kernels before this can be forgotten
 
@@ -197,7 +199,7 @@ void SESAME::CluStream::deleteCreateCluster(PointPtr data)
 
 void SESAME::CluStream::MergeCreateCluster(PointPtr data)
 {
-  SESAME_INFO("Micro cluster needs to merge");
+  //SESAME_INFO("Micro cluster needs to merge");
   unsigned int closestA = 0;
   unsigned int closestB = 0;
   double minDistance = doubleMax;
