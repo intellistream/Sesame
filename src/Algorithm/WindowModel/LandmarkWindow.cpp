@@ -186,10 +186,10 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::Mi
 
   clock_t now= clock();
   int elapsedTime=(int)((now,startTime)/CLOCKS_PER_SEC);
- // SESAME_INFO("Start pyramidal window "<<elapsedTime);
+  SESAME_INFO("Start pyramidal window "<<elapsedTime);
   if(elapsedTime>0)
     this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
-  //SESAME_INFO(" Current order is:"<< this->pyramidalWindow.currentOrder);
+  SESAME_INFO(" Current order is:"<< this->pyramidalWindow.currentOrder);
   //NOTE: snapshot when elapsed time =0 always add to the front of latest T order
   while(++i>=0)//++i>=0
   {
@@ -197,7 +197,7 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::Mi
     {
       if(elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i+1))!=0)
       {
-       // SESAME_INFO("Taking snapshot in order :"<<i);
+        SESAME_INFO("Taking snapshot in order :"<<i);
         storeSnapshot(i,microClusters,elapsedTime);
       }
 
