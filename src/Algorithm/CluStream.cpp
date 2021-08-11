@@ -4,7 +4,6 @@
 
 
 #include<Algorithm/CluStream.hpp>
-#include <Utils/Logger.hpp>
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 SESAME::CluStream::CluStream()
