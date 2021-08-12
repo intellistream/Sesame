@@ -19,8 +19,8 @@ class MicroCluster;
 typedef std::shared_ptr<MicroCluster> MicroClusterPtr;
 class MicroCluster {
  public:
-  const double EPSILON = 0.00005;
-  const double MIN_VARIANCE = 1e-50;//TODO Need to move ...
+  constexpr static  const double EPSILON = 0.00005;
+  constexpr static  const double MIN_VARIANCE = 1e-50;//TODO Need to move ...
 
   std::vector<int> id;
   dataPoint centroid;

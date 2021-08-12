@@ -47,8 +47,8 @@ class CluStream: public Algorithm{
 
   void initOffline(vector<PointPtr> &initData, vector<PointPtr> &initialData);
   void incrementalCluster(PointPtr data);
-  double calRadius(MicroCluster &closestCluster);
-  void insertIntoCluster(PointPtr data,  MicroCluster &closestCluster);
+  double calRadius(MicroCluster * closestCluster);
+  void insertIntoCluster(PointPtr data,  MicroCluster *closestCluster);
   void deleteCreateCluster(PointPtr data);
   void MergeCreateCluster(PointPtr data);
   void microClusterToPoint(std::vector <MicroCluster> microClusters, vector<PointPtr> &points);

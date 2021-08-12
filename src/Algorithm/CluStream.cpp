@@ -108,6 +108,7 @@ void SESAME::CluStream::runOnlineClustering(const vector<PointPtr> &input)
       lastTime=now;
    }
     incrementalCluster(input[i]);
+   // SESAME_INFO("i "<<i);
   }
   SESAME_INFO("Online part succeed!");
 }
@@ -123,14 +124,14 @@ void SESAME::CluStream::runOnlineClustering(const vector<PointPtr> &input)
  */
 void SESAME::CluStream::incrementalCluster(PointPtr data)
 { // 1. Determine closest clusters
-  MicroCluster closestCluster;
+  MicroCluster *closestCluster;//TODO think how to remove it
   double minDistance=doubleMax;
   for (int i = 0; i < this->CluStreamParam.clusterNumber; i++) {
     double dist =  microClusters[i].calCentroidDistance(data);
 
     if (dist < minDistance)
     {
-      closestCluster=std::move(microClusters[i]);
+      closestCluster=&microClusters[i];
       minDistance = dist;
     }
   }
@@ -151,17 +152,17 @@ void SESAME::CluStream::incrementalCluster(PointPtr data)
 }
 
 //Calculate and return the value of radius
-double SESAME::CluStream::calRadius(MicroCluster &closestCluster)
+double SESAME::CluStream::calRadius(MicroCluster * closestCluster)
 {
   double radius;
-  if (closestCluster.clusterNum == 1) {
+  if (closestCluster->clusterNum == 1) {
     // Special case: estimate radius by determining the distance to the
     // next closest cluster
     radius =doubleMax;
-    dataPoint centroid = closestCluster.getCentroid();
+    dataPoint centroid = closestCluster->getCentroid();
     for (int i = 0; i <this->CluStreamParam.clusterNumber; i++) {
      // SESAME_INFO("i is for wegf"<<i);
-      if (microClusters[i].id == closestCluster.id) //TODO Need to modify
+      if (microClusters[i].id == closestCluster->id) //TODO Need to modify
       {
         continue;
       }
@@ -170,18 +171,18 @@ double SESAME::CluStream::calRadius(MicroCluster &closestCluster)
     }
   }
   else
-    radius = closestCluster.getRadius(this->CluStreamParam.radiusFactor);
+    radius = closestCluster->getRadius(this->CluStreamParam.radiusFactor);
 
   return radius;
 }
 
 
 //   Date fits case
-void SESAME::CluStream::insertIntoCluster(PointPtr data,  MicroCluster &operateCluster)
+void SESAME::CluStream::insertIntoCluster(PointPtr data,  MicroCluster *operateCluster)
 {
   //SESAME_INFO("This data fits");
   pointsFitted++;
-  operateCluster.insert(data, ((int)(clock()-startTime))/CLOCKS_PER_SEC);
+  operateCluster->insert(data, ((int)(clock()-startTime))/CLOCKS_PER_SEC);
 
 }
 
@@ -285,15 +286,15 @@ void SESAME::CluStream::runOfflineClustering(const std::vector<PointPtr> &input,
    vector<PointPtr> TransformedSnapshot;
    microClusterToPoint(substractMiroCluster->microClusters,TransformedSnapshot);
   SESAME_INFO("offline Cluster Number "<<this->CluStreamParam.offlineClusterNumber<<"Total number of p: "<<TransformedSnapshot.size());
-   this->km.runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
-                        TransformedSnapshot,output,true);
-  /*
-  for(int i=0;i<this->CluStreamParam.clusterNumber;i++)
-  {
-      int clusterId=centers[i]->getClusteringCenter();
-  }
-  this->km.groupPointsByCenters((int)centers.size(), (int)input.size(),
-                            const_cast<vector<PointPtr> &>(input), centers, groups);*/
+  /*  this->km.runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
+                         TransformedSnapshot,output,true);
+
+   for(int i=0;i<this->CluStreamParam.clusterNumber;i++)
+   {
+       int clusterId=centers[i]->getClusteringCenter();
+   }
+   this->km.groupPointsByCenters((int)centers.size(), (int)input.size(),
+                             const_cast<vector<PointPtr> &>(input), centers, groups);*/
 
   /*
       // print the clustering information
