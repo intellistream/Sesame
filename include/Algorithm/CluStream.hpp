@@ -17,14 +17,14 @@ namespace SESAME{
 
 class CluStreamParameter: public AlgorithmParameters{
  public:
-  unsigned int lastArrivingNum;
-  unsigned int timeWindow;
+  int lastArrivingNum;
+  int timeWindow;
   unsigned int timeInterval;
   int clusterNumber; //total number of micro clusters online
   int offlineClusterNumber; //total number of micro clusters online
   double radiusFactor;//radius factor
   int initBuffer;
-  unsigned int offlineTimeWindow;
+  int offlineTimeWindow;
 };
 
 const double doubleMax = std::numeric_limits<double>::max();
@@ -35,9 +35,9 @@ class CluStream: public Algorithm{
   LandmarkWindowPtr window;
   std::vector <MicroCluster>  microClusters;
 
-  long unsigned int pointsFitted;
-  long unsigned int pointsForgot;
-  long unsigned int pointsMerged;
+  int pointsFitted;
+  int pointsForgot;
+  int pointsMerged;
   clock_t startTime;
   CluStream();
   ~CluStream();
@@ -48,10 +48,10 @@ class CluStream: public Algorithm{
   void initOffline(vector<PointPtr> &initData, vector<PointPtr> &initialData);
   void incrementalCluster(PointPtr data);
   double calRadius(MicroCluster * closestCluster);
-  void insertIntoCluster(PointPtr data,  MicroCluster *closestCluster);
+  void insertIntoCluster(PointPtr data,  MicroCluster * closestCluster);
   void deleteCreateCluster(PointPtr data);
   void MergeCreateCluster(PointPtr data);
-  void microClusterToPoint(std::vector <MicroCluster> microClusters, vector<PointPtr> &points);
+   void microClusterToPoint(std::vector <MicroCluster> &microClusters, vector<PointPtr> &points);
   static double distance(dataPoint a,dataPoint b,int dim);
 };
 

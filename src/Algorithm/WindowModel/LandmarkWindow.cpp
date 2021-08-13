@@ -5,8 +5,6 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Utils/Logger.hpp>
 #include <iterator>
-#include <utility>
-#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
 /**
  * TODO: seems not meaningful? @Wangxin
@@ -168,8 +166,9 @@ std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std:
  */
 void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
 {
-  std::vector<SnapshotPtr>  queueSnapshot;queueSnapshot.reserve(timeInterval+1);
-  for(int i=0;i<100;i++)
+  QueueSnapshot  queueSnapshot;
+  queueSnapshot.reserve(timeInterval+1);
+  for(int i=0;i<50;i++)
   {
     orderSnapShots.push_back(queueSnapshot);
   }
@@ -184,16 +183,13 @@ void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
     * @Return: void
     */
 //TODO Still need to debug
-void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::MicroClusters microClusters){
+void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,const SESAME::MicroClusters& microClusters){
   int i=-1;
- //unsigned int i=0;
   clock_t now= clock();
   int elapsedTime=(int)((now-startTime)/CLOCKS_PER_SEC);
-  SESAME_INFO(" Current elapsed time is:"<< elapsedTime);
   if(elapsedTime>0)
   {
     this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
-    SESAME_INFO(" Current order is:"<< this->pyramidalWindow.currentOrder);
     //NOTE: snapshot when elapsed time =0 always add to the front of latest T order
     while(++i>=0)//++i>=0
     {
@@ -201,7 +197,6 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::Mi
       {
         if(elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i+1))!=0)
         {
-          SESAME_INFO("Taking snapshot in order :"<<i);
           storeSnapshot(i,microClusters,elapsedTime);
         }
       }
@@ -210,7 +205,7 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::Mi
     }
   }
   else
-    storeSnapshot(0,microClusters,elapsedTime);
+    storeSnapshot(0,microClusters,0);
 
 }
 /**
@@ -223,32 +218,20 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,SESAME::Mi
 
 void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,MicroClusters microClusters, int elapsedTime)
 {
-  SESAME_INFO("taking sp");
+  SESAME_INFO("taking snapshot");
   unsigned int size=orderSnapShots[currentOrder].size();
-  SnapshotPtr snapshot=SESAME::DataStructureFactory::createSnapshot();
-  snapshot->elapsedTime=elapsedTime;
-  snapshot->microClusters=std::move(microClusters);
- // SESAME_INFO("The current order size is "<<size<<"current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
-  for(int j=0;j<15;j++)
-  {
-    std::stringstream result;
-    std::copy(snapshot->microClusters[j].id.begin(),snapshot->microClusters[j].id.end(), std::ostream_iterator<int>(result, " "));
-    SESAME_INFO("The micro cluster id "<<result.str()<<"weight is "<<snapshot->microClusters[j].clusterNum);
-  }
+  Snapshot snapshot;
+  snapshot.elapsedTime=elapsedTime;
+  snapshot.microClusters=std::move(microClusters);
+ SESAME_INFO("The current order size is "<<size<<" current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
   if(size==this->pyramidalWindow.timeInterval+1)
   {
     orderSnapShots[currentOrder].erase(orderSnapShots[currentOrder].begin());
   }
   orderSnapShots[currentOrder].push_back(snapshot);
-  SESAME_INFO("Judge 2");
-  for(int j=0;j<15;j++)
-  {
-    std::stringstream result;
-    std::copy(orderSnapShots[currentOrder].back()->microClusters[j].id.begin(),orderSnapShots[currentOrder].back()->microClusters[j].id.end(), std::ostream_iterator<int>(result, " "));
-    SESAME_INFO("The micro cluster id "<<result.str()<<"weight is "<<orderSnapShots[currentOrder].back()->microClusters[j].clusterNum);
-  }
+
 }
 void SESAME::LandmarkWindow::clearPyramidalWindow()
 {
-  std::vector <SESAME::QueueSnapshotPtr>().swap(this->orderSnapShots);
+  std::vector <SESAME::QueueSnapshot>().swap(this->orderSnapShots);
 }

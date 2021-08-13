@@ -3,44 +3,62 @@
 //
 #include<Algorithm/DataStructure/MicroCluster.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
-SESAME::MicroCluster::MicroCluster()
-{
+#include <Utils/Logger.hpp>
+#include <iterator>
 
-  this->dimension=54;
-  clusterNum=0;
-  this->id.reserve(10);
-}
 SESAME::MicroCluster::MicroCluster(int dimension, int id)
 {
   this->dimension=dimension;
   clusterNum=0;
-  this->id.insert(this->id.begin(),1,id);
+  this->id.push_back(id);
 }
 
 //Release memory of the current micro cluster
 SESAME::MicroCluster::~MicroCluster()
 {
   std::vector <int>().swap(id);
+  std::vector <double>().swap(centroid);
 }
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
+
   clusterNum++;
   for (int i = 0;i < dimension;i++) {
     double data = datapoint->getFeatureItem(i);
     CF1x.push_back(data);
     CF2x.push_back(data * data);
+    centroid.push_back(data);
   }
   CF1t=timestamp;
   CF2t=timestamp*timestamp;
 
-  centroid=getCentroid();
+}
+void SESAME::MicroCluster::reInit(int id,PointPtr datapoint, int timestamp)
+{
+   clusterNum=1;
+  std::vector <int>().swap(this->id);
+  std::vector <double>().swap(this->CF1x);
+  std::vector <double>().swap(this->CF2x);
+  std::vector <double>().swap(this->centroid);
+
+  for (int i = 0;i < dimension;i++) {
+    double data = datapoint->getFeatureItem(i);
+    CF1x.push_back(data);
+    CF2x.push_back(data * data);
+    centroid.push_back(data);
+  }
+  CF1t=timestamp;
+  CF2t=timestamp*timestamp;
+  this->id.push_back(id);
+
+
 
 }
 //insert a new data point from input data stream
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
   clusterNum++;
-  for(int i=0;i<dimension;i++)
+  for(int i=0;i<CF1x.size();i++)
   {
     double data=datapoint->getFeatureItem(i);
     CF1x[i]+=data;
@@ -50,8 +68,7 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
   CF1t+=timestamp;
   CF2t+=timestamp*timestamp;
 
-  centroid=getCentroid();
-
+  centroid=std::move(getCentroid());
 
 }
 
@@ -66,7 +83,8 @@ void SESAME::MicroCluster::merge(MicroCluster &other){
   CF1t+=other.CF1t;
   CF2t+=other.CF2t;
   updateId(other);
-  centroid=getCentroid();
+  centroid=std::move(getCentroid());
+
 }
 
 //Calculate the process of micro cluster N(Tc-h')
@@ -75,19 +93,19 @@ void SESAME::MicroCluster::substractClusterVector(MicroCluster &other)
   this->clusterNum-=other.clusterNum;
   for(int i=0;i<dimension;i++)
   {
-    CF1x[i]-=other.CF1x[i];
-    CF2x[i]-=other.CF2x[i];
+    this->CF1x[i]-=other.CF1x[i];
+    this->CF2x[i]-=other.CF2x[i];
   }
   this->CF1t-= other.CF1t;
   this->CF2t-= other.CF2t;
-  this->centroid=getCentroid();
+  centroid=std::move(getCentroid());
 
 }
 bool SESAME::MicroCluster::judgeMerge(MicroCluster &other)
 {   bool merge=true;
   for(unsigned int i=0;i<other.id.size();i++)
   {
-    if (std::find(id.begin(), id.end(), other.id[i])==id.end())
+    if (std::find(this->id.begin(), this->id.end(), other.id[i])==id.end())
       merge=false;
   }
   return merge;
@@ -101,7 +119,7 @@ void SESAME::MicroCluster::updateId(MicroCluster &other)
   {
     this->id.push_back(other.id[i]);
   }
-  other.id.clear();
+  std::vector <int>().swap(other.id);
   this->id.reserve(10);
 }
 
@@ -139,7 +157,7 @@ double SESAME::MicroCluster::getRadius(double radiusFactor){
   if(clusterNum==1)
     return 0;
   if(radiusFactor<=0)
-    radiusFactor=1.8;
+    radiusFactor=radiusFactor;
 
   return getDeviation()*radiusFactor;
 }
@@ -160,9 +178,11 @@ double SESAME::MicroCluster::getDeviation(){
 SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
   if(clusterNum==1)
     return CF1x;
-  dataPoint dataObject;//double
-  for(int i=0;i<dimension;i++){
-    dataObject.push_back(CF1x[i]/clusterNum);
+  dataPoint dataObject(CF1x.size());//double
+  if(clusterNum>1){
+    for(int i=0;i<centroid.size();i++){
+      dataObject[i]=(CF1x[i]/clusterNum);
+    }
   }
   return dataObject;
 }

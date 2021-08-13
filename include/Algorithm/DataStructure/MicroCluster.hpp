@@ -31,11 +31,10 @@ class MicroCluster {
   int clusterNum; //number of data point in the clusters
   int dimension;
 
-
-  MicroCluster();
   MicroCluster(int dimension, int id);
   ~MicroCluster();
   void init(PointPtr datapoint, int timestamp);
+  void reInit(int id,PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);
   void merge(MicroCluster &other);
   void substractClusterVector(MicroCluster &other);

@@ -12,13 +12,13 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(std::string algoName,
                                                       int dimension,
                                                       int coresetSize,
                                                       int seed,
-                                                      unsigned int lastArrivingNum,
-                                                      unsigned int timeWindow,
+                                                      int lastArrivingNum,
+                                                      int timeWindow,
                                                       unsigned int timeInterval,
                                                       int onlineClusterNumber,
                                                       double radiusFactor,
                                                       int initBuffer,
-                                                      unsigned int offlineTimeWindow) {
+                                                      int offlineTimeWindow) {
   if (algoName == "StreamKMeans") {
     shared_ptr<StreamKM> streamkm = std::make_shared<StreamKM>();
     streamkm->StreamKMParam.pointNumber = pointNumber;

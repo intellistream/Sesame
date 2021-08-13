@@ -21,13 +21,13 @@ struct param_t {
   int dimension;
   int coresetSize;
   int seed;
-  unsigned int lastArrivingNum;
-  unsigned int timeWindow;
+  int lastArrivingNum;
+  int timeWindow;
   unsigned int timeInterval;
   int onlineClusterNumber;
   double radiusFactor;
   int initBuffer;
-  unsigned int offlineTimeWindow;
+  int offlineTimeWindow;
   std::string inputPath;
   std::string outputPath;
   std::string algoName;

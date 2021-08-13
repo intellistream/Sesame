@@ -24,7 +24,6 @@ class DataStructureFactory {
   static void clearCoresetTree(CoresetTreePtr tree);
 
   static MicroClusterPtr createMicroCluster(int dimension, int id);
-  static MicroClusterPtr createMicroCluster();
   static void clearMicroCluster(MicroClusterPtr microCluster);
   static SnapshotPtr createSnapshot();
   static void clearSnapshot(SnapshotPtr snapshot);

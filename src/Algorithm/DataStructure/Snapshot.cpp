@@ -7,11 +7,12 @@
 #include <iterator>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshotPtr orderSnapShots,
-                                                        int landmarkTime,int currentElapsedTime ,unsigned int currentOrder)
+SESAME::Snapshot SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapShots,
+                                                int landmarkTime, int currentElapsedTime , unsigned int currentOrder)
 {
   unsigned int i=0;
-  SnapshotPtr nearestSnapshot=SESAME::DataStructureFactory::createSnapshot();
+  Snapshot nearestSnapshot;
+  nearestSnapshot.elapsedTime=-1;
 
   int minDistance=currentElapsedTime;
   int dist;
@@ -22,17 +23,15 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshotPtr orderSn
   {
     for(int a=0;a<orderSnapShots[i].size();a++)
     {
-      SESAME_INFO("current Order "<< i<<" SIZE "<<orderSnapShots[i].size());
-      SESAME_INFO("current a is "<<a<<"corrsponding et is"<<orderSnapShots[i][a]->elapsedTime);
-       elapsedTimeSnapshot=orderSnapShots[i][a]->elapsedTime;
+       elapsedTimeSnapshot=orderSnapShots[i][a].elapsedTime;
        dist=abs((int)(elapsedTimeSnapshot-landmarkTime));
 
       if(minDistance>dist|| (minDistance==dist&&tempMinDistance<elapsedTimeSnapshot) )//
       { //SESAME_INFO(" this one ET is "<< elapsedTimeSnapshot<<",last mindistance is "<<tempMinDistance);
         minDistance=dist;
         tempMinDistance=elapsedTimeSnapshot;
-        nearestSnapshot->microClusters=std::move(orderSnapShots[i][a]->microClusters);
-        nearestSnapshot->elapsedTime=orderSnapShots[i][a]->elapsedTime;
+        nearestSnapshot.microClusters=std::move(orderSnapShots[i][a].microClusters);
+        nearestSnapshot.elapsedTime=orderSnapShots[i][a].elapsedTime;
 
       }
     }
@@ -42,53 +41,50 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshotPtr orderSn
   return nearestSnapshot;
 
 }
-SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurrent,
-                                                        SnapshotPtr snapshotLandmark,unsigned int clusterNumber)
+SESAME::Snapshot SESAME::Snapshot::substractSnapshot(Snapshot &snapshotCurrent,
+                                                        Snapshot &snapshotLandmark,unsigned int clusterNumber)
 {
-
-  if(snapshotCurrent->elapsedTime!=snapshotLandmark->elapsedTime)
+  SESAME_INFO("Start substract "<<snapshotCurrent.elapsedTime<<" LANDMARK ET "<<snapshotLandmark.elapsedTime);
+  if(snapshotCurrent.elapsedTime!=snapshotLandmark.elapsedTime)
   {
       for(unsigned int i=0;i<clusterNumber;i++)
-      {
-          //If the micro cluster raised from merging
-          if(snapshotCurrent->microClusters[i].id.size()>1)
+      {   //If the micro cluster raised from merging
+          if(snapshotCurrent.microClusters[i].id.size()>1)
           {
-           // SESAME_INFO("Start substract --multiple id");
            for(unsigned int j=0;j<clusterNumber;j++)
            {
-              if(snapshotLandmark->microClusters[j].id.size()>1)
+              if(snapshotLandmark.microClusters[j].id.size()>1)
               {
-                bool ifMerge=snapshotCurrent->microClusters[i].judgeMerge(snapshotLandmark->microClusters[j]);
-                if(ifMerge)
-                  snapshotCurrent->microClusters[i].substractClusterVector(snapshotLandmark->microClusters[j]);
+                if(snapshotCurrent.microClusters[i].judgeMerge(snapshotLandmark.microClusters[j]))
+                {
+                  snapshotCurrent.microClusters[i].substractClusterVector(snapshotLandmark.microClusters[j]);
+                }
               }
               else
               {
-                int clusterIdLandmark=snapshotLandmark->microClusters[j].id[0];
-                if(std::find(snapshotCurrent->microClusters[i].id.begin(),
-                             snapshotCurrent->microClusters[i].id.end(),clusterIdLandmark)!=snapshotCurrent->microClusters[i].id.end())
-                  snapshotCurrent->microClusters[i].substractClusterVector(snapshotLandmark->microClusters[j]);
+                int clusterIdLandmark;
+                clusterIdLandmark = snapshotLandmark.microClusters[j].id[0];
+                if(std::find(snapshotCurrent.microClusters[i].id.begin(),
+                             snapshotCurrent.microClusters[i].id.end(),clusterIdLandmark)!=snapshotCurrent.microClusters[i].id.end())
+                snapshotCurrent.microClusters[i].substractClusterVector(snapshotLandmark.microClusters[j]);
               }
            }
           }
-          // The micro cluster raised from creating new ones
+          // The micro cluster raised from creating new ones or the original ones
           else
           {
-          for(unsigned int j=0;j<clusterNumber;j++)
-          {
-            int clusterIdLandmark=snapshotLandmark->microClusters[j].id[0];
-            if(std::find(snapshotCurrent->microClusters[i].id.begin(),
-                     snapshotCurrent->microClusters[i].id.end(),clusterIdLandmark)!=snapshotCurrent->microClusters[i].id.end())
+            for(unsigned int j=0;j<clusterNumber;j++)
             {
-              snapshotCurrent->microClusters[i].substractClusterVector(snapshotLandmark->microClusters[j]);
+              if(snapshotLandmark.microClusters[j].id.size()==1)
+              {
+              int clusterIdLandmark=snapshotLandmark.microClusters[j].id[0];
+              if(snapshotCurrent.microClusters[i].id[0]==clusterIdLandmark)
+                  snapshotCurrent.microClusters[i].substractClusterVector(snapshotLandmark.microClusters[j]);
+              }
             }
           }
-          }
-   // substractedSnapshot.push_back(subtractedMC);
+      }
   }
-  }
-
-    SESAME_INFO("Substract SUCCEED!");
   return snapshotCurrent;
 
 }

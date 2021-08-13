@@ -20,8 +20,8 @@ class Snapshot;
 typedef std::shared_ptr<Snapshot> SnapshotPtr;
 
 typedef std::vector <MicroCluster>  MicroClusters;
-typedef std::vector<SnapshotPtr> QueueSnapshotPtr;
-typedef std::vector<QueueSnapshotPtr> QueueOrderSnapshotPtr;
+typedef std::vector<Snapshot> QueueSnapshot;
+typedef std::vector<QueueSnapshot> QueueOrderSnapshot;
 
 class Snapshot{
  public:
@@ -33,11 +33,11 @@ class Snapshot{
   QueueOrderSnapshotPtr: Data Structure representing orders
   **/
 
-  static SnapshotPtr findSnapshot(QueueOrderSnapshotPtr orderSnapShots,
+  static Snapshot findSnapshot(QueueOrderSnapshot orderSnapShots,
                                        int landmarkTime ,int currentElapsedTime ,unsigned int currentOrder);
 
-  static SnapshotPtr substractSnapshot(SnapshotPtr snapshotCurrent,
-                                       SnapshotPtr snapshotLandmark,unsigned int clusterNumber);
+  static Snapshot substractSnapshot(Snapshot &snapshotCurrent,
+                                       Snapshot &snapshotLandmark,unsigned int clusterNumber);
 
 };
 }
