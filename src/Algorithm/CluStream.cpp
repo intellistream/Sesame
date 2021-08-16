@@ -56,7 +56,7 @@ void SESAME::CluStream::initOffline(vector<PointPtr> &initData, vector<PointPtr>
  * radiusFactor: radius factor of micro cluster
  * size: size of initial data objects
  * input: vector of data streams
- * @Return: store the output result(with computed clustering center) into ???//TODO still need to refactor
+ * @Return: store the output result(with computed clustering center) into ???//
  */
 void SESAME::CluStream::runOnlineClustering(const vector<PointPtr> &input)
 {
@@ -110,11 +110,11 @@ void SESAME::CluStream::runOnlineClustering(const vector<PointPtr> &input)
  * 2. data does not fit in any cluster,  delete oldest one & create a new cluster;
  * 3.  merge two closest clusters & create a new cluster.
  * @Param: data: input data object
- * @Return: store the output result(with computed clustering center) into ???//TODO still need to refactor
+ * @Return: store the output result(with computed clustering center) into ???
  */
 void SESAME::CluStream::incrementalCluster(PointPtr data)
 { // 1. Determine closest clusters
-  MicroClusterPtr closestCluster;//TODO think how to remove it
+  MicroClusterPtr closestCluster;
   double minDistance=doubleMax;
   for (int i = 0; i < this->CluStreamParam.clusterNumber; i++) {
     double dist =  microClusters[i]->calCentroidDistance(data);
@@ -185,7 +185,7 @@ void SESAME::CluStream::deleteCreateCluster(PointPtr data)
       SESAME_INFO("Need to delete");
       int newId=this->CluStreamParam.clusterNumber+pointsForgot+pointsMerged;
       DataStructureFactory::clearMicroCluster(microClusters[i]);
-      microClusters[i]= DataStructureFactory::createMicroCluster(CluStreamParam.dimension,newId);//TODO doubt there
+      microClusters[i]= DataStructureFactory::createMicroCluster(CluStreamParam.dimension,newId);
       microClusters[i]->init(std::move(data),elapsedTime);
       pointsForgot++;
       return;
@@ -217,12 +217,12 @@ void SESAME::CluStream::MergeCreateCluster(PointPtr data)
   microClusters[closestA]->merge(microClusters[closestB]);
   int elapsedTime=(int)((clock()-startTime)/CLOCKS_PER_SEC);
   DataStructureFactory::clearMicroCluster(microClusters[closestB]);
-  microClusters[closestB]= DataStructureFactory::createMicroCluster(CluStreamParam.dimension,newId);//TODO doubt there
+  microClusters[closestB]= DataStructureFactory::createMicroCluster(CluStreamParam.dimension,newId);
   microClusters[closestB]->init(std::move(data),elapsedTime);
   pointsMerged++;
 
 }
-// TODO : need to modify KMeans.cpp for initialization part
+
 void SESAME::CluStream::runOfflineClustering(const std::vector<PointPtr> &input, vector<PointPtr> &output)
 {
   input; output;
