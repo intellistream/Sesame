@@ -15,7 +15,14 @@ class AlgorithmFactory {
                                      int clusterNumber,
                                      int dimension,
                                      int coresetSize,
-                                     int seed);
+                                     int seed,
+                                     int lastArrivingNum,
+                                     int timeWindow,
+                                     unsigned int timeInterval,
+                                     int onlineClusterNumber,
+                                     double radiusFactor,
+                                     int initBuffer,
+                                     int offlineTimeWindow);
 };
 }
 #endif //SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
