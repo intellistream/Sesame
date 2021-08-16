@@ -21,7 +21,6 @@ SESAME::MicroCluster::~MicroCluster()
 }
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
-
   clusterNum++;
   for (int i = 0;i < dimension;i++) {
     double data = datapoint->getFeatureItem(i);

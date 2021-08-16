@@ -12,7 +12,6 @@
 #include <ctime>
 #include <cstdio>
 #include<Algorithm/DataStructure/MicroCluster.hpp>
-#include<Algorithm/DataStructure/ArrayQueue.hpp>
 #include <iostream>
 
 namespace SESAME {
