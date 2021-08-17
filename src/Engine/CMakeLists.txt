@@ -14,5 +14,5 @@
 
 add_source_sesame(
         Engine.cpp
-        SingleThreadEngine.cpp
+        SimpleEngine.cpp
 )

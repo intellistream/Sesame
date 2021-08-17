@@ -8,9 +8,10 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <iostream>
 #include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Sinks/DataSink.hpp>
 namespace SESAME {
 
-class StreamKMParameter: public AlgorithmParameters{
+class StreamKMParameter : public AlgorithmParameters {
  public:
   int windowSize;
   int seed;
@@ -21,16 +22,24 @@ class StreamKM : public Algorithm {
 
  public:
   StreamKMParameter StreamKMParam;
+
   // initialize
   LandmarkWindowPtr window;
-  std::vector<PointPtr> streamingCoreset;//intermediate results.
+  vector <PointPtr> inputs;//buffered inputs.
+  vector <PointPtr> streamingCoreset;//intermediate results.
   KMeans km;//used for offline processing.
   StreamKM();
+
   ~StreamKM();
 
-  void runOnlineClustering(const vector<PointPtr> &input) override;
-  void runOfflineClustering(const std::vector<PointPtr> &input, vector<PointPtr> &output) override;
+  void Initilize() override;
 
+  void runOnlineClustering(PointPtr input) override;
+
+  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+
+ private:
+  void dumpResults(vector <PointPtr> &centers, vector <vector<SESAME::PointPtr>> groups, DataSinkPtr ptr) const;
 };
 }
 

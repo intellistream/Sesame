@@ -9,13 +9,31 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <Utils/UtilityFunctions.hpp>
+#include <Utils/SPSCQueue.hpp>
 
 using namespace std;
 
 namespace SESAME {
+class DataSource;
+typedef std::shared_ptr<DataSource> DataSourcePtr;
+
 class DataSource {
+ private:
+  std::vector<PointPtr> input;
+  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
+  ThreadPtr threadPtr;
+  BarrierPtr barrierPtr;
  public:
-  static void create(int point_number, int dimension, vector<string> input, vector<PointPtr> &points);
+  void load(int point_number, int dimension, vector <string> input);
+  bool empty();
+  PointPtr get();
+  DataSource();
+  ~DataSource();
+  void runningRoutine();
+  bool start();
+  bool stop();
+  void setBarrier(BarrierPtr barrierPtr);
 
 };
 }

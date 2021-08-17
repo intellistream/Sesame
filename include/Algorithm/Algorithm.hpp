@@ -5,6 +5,7 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_ALGORITHM_HPP_
 #include <Algorithm/DataStructure/Point.hpp>
+#include <Sinks/DataSink.hpp>
 #include <string>
 #include <vector>
 #include <memory>
@@ -24,13 +25,10 @@ class Algorithm {
  public:
   Algorithm() = default;
   virtual ~Algorithm() = default;
-
-  virtual void runOnlineClustering(const std::vector<PointPtr> &input) = 0;
-
-  // incremental computation
-
-  // offline pass (optional)
-  virtual void runOfflineClustering(const std::vector<PointPtr> &input, std::vector<PointPtr> &output) = 0;
+  virtual void Initilize() = 0;
+  virtual void runOnlineClustering(SESAME::PointPtr input) = 0;
+  virtual void runOfflineClustering(SESAME::DataSinkPtr ptr) = 0;
+  void store(std::string outputPath, int numberOfCenters, int dimension, std::vector<PointPtr> results);
 };
 }
 
