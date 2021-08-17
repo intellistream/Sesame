@@ -28,13 +28,20 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
                         {"dimension",      required_argument, 0, 'd'},
                         {"coreset_size",   required_argument, 0, 's'},
                         {"seed",           required_argument, 0, 'S'},
+                        {"lastArrivingNum", required_argument, 0, 'a'},
+                        {"timeWindow", required_argument, 0, 'T'},
+                        {"timeInterval", required_argument, 0, 't'},
+                        {"onlineClusterNumber", required_argument, 0, 'C'},
+                        {"radiusFactor", required_argument, 0, 'r'},
+                        {"initBuffer", required_argument, 0, 'b'},
+                        {"offlineTimeWindow", required_argument, 0, 'O'},
 //            {"input_path", required_argument, 0, 'i'},
 //            {"output_path", required_argument, 0, 'o'},
                 };
         /* getopt_long stores the option index here. */
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "p:c:d:s:S:h",
+        c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h",
                         long_options, &option_index);
 
         /* Detect the end of the options. */
@@ -75,6 +82,29 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
                 cmd_params.seed = atoi(optarg);
                 SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
                 break;
+            case 'a': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.lastArrivingNum: " << cmd_params.lastArrivingNum);
+                break;
+            case 'T': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.timeWindow: " << cmd_params.timeWindow);
+                break;
+            case 't': cmd_params.seed = atoi(optarg);
+               SESAME_INFO("configure cmd_params.timeInterval: " << cmd_params.timeInterval);
+                break;
+            case 'C': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.onlineClusterNumber: " << cmd_params.onlineClusterNumber);
+                break;
+            case 'r': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.radiusFactor: " << cmd_params.radiusFactor);
+                break;
+            case 'b': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.initBuffer: " << cmd_params.initBuffer);
+                break;
+            case 'O': cmd_params.seed = atoi(optarg);
+                SESAME_INFO("configure cmd_params.offlineTimeWindow: " << cmd_params.offlineTimeWindow);
+                break;
+
+
             case 'i':
                 cmd_params.inputPath = optarg;
                 SESAME_INFO("configure input path: " << cmd_params.inputPath);
@@ -107,10 +137,17 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
     cmd_params.clusterNumber = 10;
     cmd_params.dimension = 54;
     cmd_params.coresetSize = 100;
+    cmd_params.lastArrivingNum=60;
+    cmd_params.timeWindow=6;
+    cmd_params.timeInterval=4;
+    cmd_params.onlineClusterNumber=15;
+    cmd_params.radiusFactor=70;
+    cmd_params.initBuffer=500;
+    cmd_params.offlineTimeWindow=2;
     cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
     SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
     cmd_params.outputPath = "results.txt";
-    cmd_params.algoName = "StreamKMeans";
+    cmd_params.algoName = "CluStream";//StreamKMeans
 }
 
 /* command line handling functions */
@@ -165,7 +202,14 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                              cmd_params.clusterNumber,
                                              cmd_params.dimension,
                                              cmd_params.coresetSize,
-                                             cmd_params.seed);
+                                             cmd_params.seed,
+                                             cmd_params.lastArrivingNum,
+                                             cmd_params.timeWindow,
+                                             cmd_params.timeInterval,
+                                             cmd_params.onlineClusterNumber,
+                                             cmd_params.radiusFactor,
+                                             cmd_params.initBuffer,
+                                             cmd_params.offlineTimeWindow);
 
     SESAME::SingleThreadEngine().runAlgorithm(input, output,
                                               algo);

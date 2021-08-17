@@ -26,13 +26,13 @@ TEST(SystemTest, SampleRun) {
     BenchmarkUtils::runBenchmark(cmd_params, input, results);
 
     //Evaluate results against input.
-    BenchmarkUtils::evaluate(cmd_params, input, results);
+   // BenchmarkUtils::evaluate(cmd_params, input, results);
 
     //Store results.
-    BenchmarkUtils::store(cmd_params, results);
+  //  BenchmarkUtils::store(cmd_params, results);
 
     //TODO: specify here what is the expected results after running the algorithm.
-    std::vector<SESAME::PointPtr> expected_results;
+ //   std::vector<SESAME::PointPtr> expected_results;
 
 //    EXPECT_EQ(results, expected_results);
 }

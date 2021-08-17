@@ -6,6 +6,7 @@
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/CoresetTree.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
+#include <iterator>
 
 /**
  * TODO: seems not meaningful? @Wangxin
@@ -155,4 +156,90 @@ std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std:
     }
     return coreset;
 }
+
+
+/**
+ * @Description: init the pyramidal window, pass the value of startTime and
+ * reset shared_ptr Arrayqueue of snapshots
+ * timeInterval: the time interval of online pyramidal window frame
+ * @Return: void
+ */
+void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
+{
+  QueueSnapshotPtr  queueSnapshot;
+  queueSnapshot.reserve(timeInterval+1);
+  for(int i=0;i<50;i++)
+  {
+    orderSnapShots.push_back(queueSnapshot);
+  }
+  this->pyramidalWindow.currentOrder=0;
+}
+
+/**
+    * @Description: this function is pyramidal window for Clustream,
+    * which takes and stores the snapshots of micro clusters
+    * @Param: microClusters: micro clusters' snapshot need to be stored
+    * startTime: start time of algorithms
+    * @Return: void
+    */
+//TODO Still need to debug
+void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,const SESAME::MicroClusters& microClusters){
+  int i=-1;
+  clock_t now= clock();
+  int elapsedTime=(int)((now-startTime)/CLOCKS_PER_SEC);
+  if(elapsedTime>0)
+  {
+    this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
+    //NOTE: snapshot when elapsed time =0 always add to the front of latest T order
+    while(++i>=0)//++i>=0
+    {
+      if(this->pyramidalWindow.currentOrder>=i && elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i))==0)
+      {
+        if(elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i+1))!=0)
+        {
+          storeSnapshot(i,microClusters,elapsedTime);
+        }
+      }
+      else
+        break;
+    }
+  }
+  else
+    storeSnapshot(0,microClusters,0);
+
+}
+/**
+      * @Description: this function stores snapshots into the pyramidal window data structure
+      * @Param: currentOrder: the ith order  snapshots stored into
+      * microClusters: micro clusters' snapshot need to be stored
+      * elapsedTime: the current elapsed time
+      * @Return: void
+      */
+void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,const MicroClusters & microClusters, int elapsedTime)
+{
+  SESAME_INFO("taking snapshot");
+
+
+  unsigned int size=orderSnapShots[currentOrder].size();
+  SnapshotPtr snapshot;
+  snapshot=DataStructureFactory::createSnapshot(const_cast<std::vector<MicroClusterPtr> &>(microClusters),elapsedTime);
+  SESAME_INFO("The current order size is "<<size<<" current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
+  if(size==this->pyramidalWindow.timeInterval+1)
+  {
+    orderSnapShots[currentOrder].erase(orderSnapShots[currentOrder].begin());
+  }
+  orderSnapShots[currentOrder].push_back(snapshot);
+  SESAME_INFO("snapshot is...");
+  for(int i=0;i<microClusters.size();i++)
+  {
+    std::stringstream re2;
+    std::copy( microClusters[i]->id.begin(), microClusters[i]->id.end(), std::ostream_iterator<int>(re2, " "));
+    SESAME_INFO("The ID is "<<re2.str()<<"weight is "<< microClusters[i]->weight);
+  }
+}
+void SESAME::LandmarkWindow::clearPyramidalWindow()
+{
+  std::vector <SESAME::QueueSnapshotPtr>().swap(this->orderSnapShots);
+}
+
 

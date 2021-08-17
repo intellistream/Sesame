@@ -27,3 +27,19 @@ SESAME::CoresetTreePtr SESAME::DataStructureFactory::createCoresetTree() {
 void SESAME::DataStructureFactory::clearCoresetTree(SESAME::CoresetTreePtr tree) {
   tree.reset();
 }
+
+SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(int id, int dimension){
+   return std::make_shared<SESAME::MicroCluster>( id, dimension);
+}
+
+void SESAME::DataStructureFactory::clearMicroCluster(SESAME::MicroClusterPtr microCluster){
+   microCluster.reset();
+}
+
+SESAME::SnapshotPtr SESAME::DataStructureFactory::createSnapshot(SESAME::MicroClusters & otherMicroClusters,int elapsedTime){
+  return std::make_shared<SESAME::Snapshot>(otherMicroClusters,elapsedTime);
+}
+
+void SESAME::DataStructureFactory::clearSnapshot(SESAME::SnapshotPtr Snapshot){
+  Snapshot.reset();
+}

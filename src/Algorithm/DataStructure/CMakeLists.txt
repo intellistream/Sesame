@@ -2,5 +2,7 @@ add_source_sesame(
         Point.cpp
         TreeNode.cpp
         CoresetTree.cpp
+        MicroCluster.cpp
+        Snapshot.cpp
         DataStructureFactory.cpp
 )
