@@ -21,9 +21,17 @@ struct param_t {
   int dimension;
   int coresetSize;
   int seed;
+  int lastArrivingNum;
+  int timeWindow;
+  unsigned int timeInterval;
+  int onlineClusterNumber;
+  double radiusFactor;
+  int initBuffer;
+  int offlineTimeWindow;
   std::string inputPath;
   std::string outputPath;
   std::string algoName;
+
 };
 
 class BenchmarkUtils {
