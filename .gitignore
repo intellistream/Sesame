@@ -12,8 +12,10 @@
 .DS_Store
 /practice/Clustream/cmake-build-debug/
 
-/cmake-build-debug/
-/cmake-build-release/
+/cmake-build-debug/*
+/cmake-build-release/*
+/cmake-build-debug/_deps/
+/cmake-build-release/_deps/
 /benchmark/cmake-build-debug/
 /benchmark/cmake-build-release/
 /cmake-build-debug*

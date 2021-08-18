@@ -33,13 +33,13 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(std::string algoName,
     cluStream->CluStreamParam.pointNumber = pointNumber;
     cluStream->CluStreamParam.clusterNumber = onlineClusterNumber;
     cluStream->CluStreamParam.dimension = dimension;
-    cluStream->CluStreamParam.lastArrivingNum=lastArrivingNum;
-    cluStream->CluStreamParam.timeWindow=timeWindow;
-    cluStream->CluStreamParam.timeInterval=timeInterval;
-    cluStream->CluStreamParam.offlineClusterNumber=clusterNumber;
-    cluStream->CluStreamParam.radiusFactor=radiusFactor;
-    cluStream->CluStreamParam.initBuffer=initBuffer;
-    cluStream->CluStreamParam.offlineTimeWindow=offlineTimeWindow;
+    cluStream->CluStreamParam.lastArrivingNum = lastArrivingNum;
+    cluStream->CluStreamParam.timeWindow = timeWindow;
+    cluStream->CluStreamParam.timeInterval = timeInterval;
+    cluStream->CluStreamParam.offlineClusterNumber = clusterNumber;
+    cluStream->CluStreamParam.radiusFactor = radiusFactor;
+    cluStream->CluStreamParam.initBuffer = initBuffer;
+    cluStream->CluStreamParam.offlineTimeWindow = offlineTimeWindow;
 
     return (SESAME::AlgorithmPtr) cluStream;
   }

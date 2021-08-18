@@ -1,1 +1,1 @@
-add_source_sesame(DataSink.cpp)
+add_source_sesame(DataSink.cpp DataSinkFactory.cpp)

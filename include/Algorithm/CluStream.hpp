@@ -15,9 +15,9 @@
 #include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
-namespace SESAME{
+namespace SESAME {
 
-class CluStreamParameter: public AlgorithmParameters{
+class CluStreamParameter : public AlgorithmParameters {
  public:
   int lastArrivingNum;
   int timeWindow;
@@ -30,7 +30,7 @@ class CluStreamParameter: public AlgorithmParameters{
 };
 
 const double doubleMax = std::numeric_limits<double>::max();
-class CluStream: public Algorithm{
+class CluStream : public Algorithm {
  public:
   CluStreamParameter CluStreamParam;
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
@@ -43,18 +43,24 @@ class CluStream: public Algorithm{
   CluStream();
   ~CluStream();
 
-  void runOnlineClustering(const vector<PointPtr> &input) override;
-  void runOfflineClustering(const std::vector<PointPtr> &input, vector<PointPtr> &output) override;
+  void Initilize() override;
 
-  void initOffline(vector<PointPtr> &initData, vector<PointPtr> &initialData);
+  void runOnlineClustering(PointPtr input) override;
+
+  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+
+ private:
+  void initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData);
   void incrementalCluster(PointPtr data);
   double calRadius(MicroClusterPtr closestCluster);
   void insertIntoCluster(PointPtr data, MicroClusterPtr closestCluster);
   void deleteCreateCluster(PointPtr data);
   void MergeCreateCluster(PointPtr data);
-   void microClusterToPoint(MicroClusters  &microClusters, vector<PointPtr> &points) const;
-  static double distance(dataPoint a,dataPoint b,int dim);
-  void microClusterToPoint(vector<MicroCluster> &microClusters, vector<PointPtr> &points);
+  void microClusterToPoint(MicroClusters &microClusters, vector <PointPtr> &points) const;
+  static double distance(dataPoint a, dataPoint b, int dim);
+
+  bool initilized = false;
+  vector <PointPtr> initialInputs;
 };
 
 }

@@ -1,1 +1,1 @@
-add_source_sesame(DataSource.cpp)
+add_source_sesame(DataSource.cpp DataSourceFactory.cpp)

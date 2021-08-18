@@ -229,13 +229,6 @@ void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,const Micr
     orderSnapShots[currentOrder].erase(orderSnapShots[currentOrder].begin());
   }
   orderSnapShots[currentOrder].push_back(snapshot);
-  SESAME_INFO("snapshot is...");
-  for(int i=0;i<microClusters.size();i++)
-  {
-    std::stringstream re2;
-    std::copy( microClusters[i]->id.begin(), microClusters[i]->id.end(), std::ostream_iterator<int>(re2, " "));
-    SESAME_INFO("The ID is "<<re2.str()<<"weight is "<< microClusters[i]->weight);
-  }
 }
 void SESAME::LandmarkWindow::clearPyramidalWindow()
 {

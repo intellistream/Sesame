@@ -14,6 +14,9 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <memory>
 #include <vector>
+#include <Sources/DataSource.hpp>
+#include <Sinks/DataSink.hpp>
+#include <Algorithm/Algorithm.hpp>
 
 struct param_t {
   int pointNumber;
@@ -39,14 +42,11 @@ class BenchmarkUtils {
   static void print_help(char *string);
   static void parseArgs(int argc, char **argv, param_t &cmd_params);
   static void defaultParam(param_t &cmd_params);
-  static void loadData(param_t &cmd_params, std::vector<SESAME::PointPtr> &input);
+  static void loadData(param_t &cmd_params, SESAME::DataSourcePtr dataSourcePtr);
   static void runBenchmark(param_t &cmd_params,
-                           const std::vector<SESAME::PointPtr> &input,
-                           std::vector<SESAME::PointPtr> &output);
-  static void evaluate(param_t &cmd_params,
-                       const std::vector<SESAME::PointPtr> &input,
-                       const std::vector<SESAME::PointPtr> &output);
-  static void store(param_t &cmd_params, const std::vector<SESAME::PointPtr> &output);
+                           SESAME::DataSourcePtr sourcePtr,
+                           SESAME::DataSinkPtr sinkPtr,
+                           SESAME::AlgorithmPtr algoPtr);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
