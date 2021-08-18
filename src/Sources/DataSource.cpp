@@ -14,7 +14,7 @@
  * @param input
  * @return
  */
-void SESAME::DataSource::load(int point_number, int dimension, vector<string> input) {
+void SESAME::DataSource::load(int point_number, int dimension, vector <string> input) {
 
   for (int i = 0; i < point_number; i++) {
     PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0);
@@ -83,8 +83,5 @@ void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {
 }
 SESAME::DataSource::~DataSource() {
   stop();
-}
-vector<SESAME::PointPtr> SESAME::DataSource::getInputs() {
-  return input;
 }
 

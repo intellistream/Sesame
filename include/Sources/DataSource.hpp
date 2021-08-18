@@ -34,7 +34,6 @@ class DataSource {
   bool start();
   bool stop();
   void setBarrier(BarrierPtr barrierPtr);
-  std::vector<PointPtr> getInputs();
 
 };
 }

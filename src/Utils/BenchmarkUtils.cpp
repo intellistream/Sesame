@@ -138,7 +138,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "CluStream";//StreamKMeans CluStream
+  cmd_params.algoName = "CluStream";//StreamKMeans  CluStream
 }
 
 /* command line handling functions */
@@ -191,13 +191,6 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   engine.stop();
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, sinkPtr->getResults());
-
-  SESAME::Evaluation::euclideanCost(cmd_params.pointNumber,
-                                    cmd_params.clusterNumber,
-                                    cmd_params.dimension,
-                                    sourcePtr->getInputs(),
-                                    sinkPtr->getResults());
-
   SESAME_INFO("Finished store results.");
 }
 
