@@ -177,7 +177,7 @@ double SESAME::CluStream::distance(dataPoint a, dataPoint b, int dim) {
 }
 
 void SESAME::CluStream::Initilize() {
-  SESAME_INFO("configure cmd_params.pointNumber: " << CluStreamParam.pointNumber);
+  /*SESAME_INFO("configure cmd_params.pointNumber: " << CluStreamParam.pointNumber);
   SESAME_INFO("configure cmd_params.initBuffer: " << CluStreamParam.initBuffer);
   SESAME_INFO("configure cmd_params.lastArrivingNum: " << CluStreamParam.lastArrivingNum);
   SESAME_INFO("configure cmd_params.timeWindow: " << CluStreamParam.timeWindow);
@@ -185,12 +185,12 @@ void SESAME::CluStream::Initilize() {
   SESAME_INFO("configure cmd_params.clusterNumber: " << CluStreamParam.clusterNumber);
   SESAME_INFO("configure cmd_params.offlineClusterNumber: " << CluStreamParam.offlineClusterNumber);
   SESAME_INFO("configure cmd_params.radiusFactor: " << CluStreamParam.radiusFactor);
-  SESAME_INFO("configure cmd_params.offlineTimeWindow: " << CluStreamParam.offlineTimeWindow);
+  SESAME_INFO("configure cmd_params.offlineTimeWindow: " << CluStreamParam.offlineTimeWindow);*/
   this->window = WindowFactory::createLandmarkWindow();
   this->window->pyramidalWindow.timeInterval = this->CluStreamParam.timeInterval;
   this->startTime = clock();
   window->initPyramidalWindow(this->window->pyramidalWindow.timeInterval);
-  SESAME_INFO("INITIALIZATION SUCCEED!");
+
 }
 
 /**
@@ -211,16 +211,18 @@ void SESAME::CluStream::Initilize() {
 void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
 
   if (!this->initilized) {
+    Initilize();
     this->initialInputs.push_back(input);
-    if (this->initialInputs.size() > this->CluStreamParam.initBuffer) {//TODO: fix this hard code @Zhenyu
+    if (this->initialInputs.size() == this->CluStreamParam.initBuffer) {//TODO: fix this hard code @Zhenyu
       vector <PointPtr> initData;//initialData
       initOffline(this->initialInputs,
                   initData);
+      window->pyramidalWindowProcess(startTime, microClusters);
       this->initilized = true;
     }
   } else {
     int interval;
-    window->pyramidalWindowProcess(startTime, microClusters);
+
     clock_t lastTime = clock();
     clock_t now = clock();
     interval = (int) ((now - lastTime) / CLOCKS_PER_SEC);
@@ -230,7 +232,7 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
       lastTime = now;
     }
     incrementalCluster(input);
-    SESAME_INFO("Online part succeed!");
+
   }
 }
 
@@ -291,7 +293,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
 
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-  this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
+   this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
                           TransformedSnapshot, oldGroups, newGroups, true);
   // store the result input output
   this->kmeans->produceResult(oldGroups, sinkPtr);

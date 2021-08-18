@@ -138,7 +138,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "StreamKMeans";//StreamKMeans CluStream
+  cmd_params.algoName = "CluStream";//StreamKMeans  CluStream
 }
 
 /* command line handling functions */
