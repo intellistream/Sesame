@@ -72,6 +72,6 @@ double SESAME::UtilityFunctions::genrand_real3() {
   return (((double) genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
-//std::string SESAME::UtilityFunctions::getDir() {
-//  return std::experimental::filesystem::current_path();
-//}
+std::shared_ptr<std::barrier<>> SESAME::UtilityFunctions::createBarrier(int count) {
+  return std::make_shared<std::barrier<>>(count);
+}

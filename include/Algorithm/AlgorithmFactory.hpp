@@ -5,7 +5,7 @@
 #ifndef SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
 #define SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
 
-#include "Algorithm.hpp"
+#include <Algorithm/Algorithm.hpp>
 namespace SESAME {
 class AlgorithmFactory {
 
