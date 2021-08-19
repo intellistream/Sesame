@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 19/07/2021.
 //
@@ -29,11 +31,11 @@ void SESAME::DataStructureFactory::clearCoresetTree(SESAME::CoresetTreePtr tree)
 }
 
 SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(int id, int dimension){
-   return std::make_shared<SESAME::MicroCluster>( id, dimension);
+  return std::make_shared<SESAME::MicroCluster>( id, dimension);
 }
 
 void SESAME::DataStructureFactory::clearMicroCluster(SESAME::MicroClusterPtr microCluster){
-   microCluster.reset();
+  microCluster.reset();
 }
 
 SESAME::SnapshotPtr SESAME::DataStructureFactory::createSnapshot(SESAME::MicroClusters & otherMicroClusters,int elapsedTime){

@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 #include <Utils/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
 #include <Sources/DataSource.hpp>

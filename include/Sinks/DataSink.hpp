@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
@@ -10,6 +12,7 @@
 #include <Utils/SPSCQueue.hpp>
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
+#include <Engine/SingleThread.hpp>
 namespace SESAME {
 class DataSink;
 typedef std::shared_ptr<DataSink> DataSinkPtr;
@@ -18,7 +21,7 @@ class DataSink {
  private:
   std::vector<PointPtr> output;
   std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> outputQueue;
-  ThreadPtr threadPtr;
+  SingleThreadPtr threadPtr;
   bool finished;
   BarrierPtr barrierPtr;
  public:
@@ -26,7 +29,7 @@ class DataSink {
   ~DataSink();
   void put(PointPtr resultPtr);
   void runningRoutine();
-  bool start();
+  bool start(int id);
   bool stop();
   void finish();
   std::vector<PointPtr> getResults();

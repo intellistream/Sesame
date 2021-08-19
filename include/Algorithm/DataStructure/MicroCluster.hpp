@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by 1124a on 2021/8/16.
 //
@@ -30,7 +32,6 @@ class MicroCluster {
   int SST;//the sum of the squares of the time stamps  Til... Tin
   int weight; //number of data point in the clusters
   int dimension;
-
 
   MicroCluster(int dimension, int id);
   ~MicroCluster();

@@ -1,4 +1,6 @@
 
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 /**
  * @brief This is the main entry point of the entire program.
  * Users will typically access this file to use the stream clustering algorithm.

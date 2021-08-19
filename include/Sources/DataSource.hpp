@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
@@ -11,6 +13,7 @@
 #include <vector>
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/SPSCQueue.hpp>
+#include <Engine/SingleThread.hpp>
 
 using namespace std;
 
@@ -22,7 +25,7 @@ class DataSource {
  private:
   std::vector<PointPtr> input;
   std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
-  ThreadPtr threadPtr;
+  SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
  public:
   void load(int point_number, int dimension, vector <string> input);
@@ -31,7 +34,7 @@ class DataSource {
   DataSource();
   ~DataSource();
   void runningRoutine();
-  bool start();
+  bool start(int i);
   bool stop();
   void setBarrier(BarrierPtr barrierPtr);
 
