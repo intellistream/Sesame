@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by 1124a on 2021/8/16.
 //
@@ -288,11 +290,11 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   microClusterToPoint(substractMiroCluster->microClusters, TransformedSnapshot);
 
   SESAME_INFO("offline Cluster Number " << this->CluStreamParam.offlineClusterNumber << "Total number of p: "
-                                        << TransformedSnapshot.size());
+                  << TransformedSnapshot.size());
 
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-   this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
+  this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
                           TransformedSnapshot, oldGroups, newGroups, true);
   // store the result input output
   this->kmeans->produceResult(oldGroups, sinkPtr);

@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by shuhao zhang on 8/8/2021.
 //

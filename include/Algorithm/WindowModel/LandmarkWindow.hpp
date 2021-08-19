@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
@@ -83,7 +85,6 @@ Data Structure representing all orders of snapshots
     unsigned int currentOrder; //the biggest order T of snapshots
   };
   PyramidalWindow pyramidalWindow;
-
 
 /**
  * @Description: init the pyramidal window, pass the value of startTime and

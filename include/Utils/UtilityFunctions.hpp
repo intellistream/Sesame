@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
@@ -25,7 +27,6 @@ Determines when Lloyd terminates (should be between 0 and 1)
 
 namespace SESAME {
 typedef std::shared_ptr<std::barrier<>> BarrierPtr;
-typedef std::shared_ptr<std::thread> ThreadPtr;
 
 class UtilityFunctions {
 

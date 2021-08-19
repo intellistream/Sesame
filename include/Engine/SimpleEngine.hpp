@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 19/07/2021.
 //
@@ -22,7 +24,8 @@ class SimpleEngine : SESAME::Engine {
   DataSourcePtr sourcePtr;
   DataSinkPtr sinkPtr;
   AlgorithmPtr algoPtr;
-  ThreadPtr threadPtr;//SimpleEngine has only one thread to run algorithm.
+  SingleThreadPtr threadPtr;//SimpleEngine has only one thread to run algorithm.
+  atomic_int threadID;
  public:
   BarrierPtr barrierPtr;
   SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
@@ -32,8 +35,10 @@ class SimpleEngine : SESAME::Engine {
   bool start(BarrierPtr barrierPtr,
              DataSourcePtr sourcePtr,
              DataSinkPtr sinkPtr,
-             AlgorithmPtr algoPtr);//start the algorithm thread.
+             AlgorithmPtr algoPtr,
+             int id);//start the algorithm thread.
   bool stop();
+  int assignID();
 };
 }
 #endif //SESAME_INCLUDE_Engine_SINGLETHREADENGINE_H_

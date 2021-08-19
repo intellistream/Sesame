@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by 1124a on 2021/8/16.
 //
@@ -33,10 +35,10 @@ class Snapshot{
   Snapshot(MicroClusters & otherMicroClusters,int elapsedTime);
   ~Snapshot();
   static SnapshotPtr findSnapshot(QueueOrderSnapshot orderSnapShots,
-                               int landmarkTime ,int currentElapsedTime ,unsigned int currentOrder);
+                                  int landmarkTime , int currentElapsedTime , unsigned int currentOrder);
 
   static SnapshotPtr substractSnapshot(SnapshotPtr snapshotCurrent,
-                                       const SnapshotPtr& snapshotLandmark,unsigned int clusterNumber);
+                                       const SnapshotPtr& snapshotLandmark, unsigned int clusterNumber);
 
   SnapshotPtr copy();
 

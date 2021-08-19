@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 19/07/2021.
 //
@@ -5,8 +7,6 @@
 #ifndef SESAME_INCLUDE_UTILS_LOGGER_HPP_
 #define SESAME_INCLUDE_UTILS_LOGGER_HPP_
 // TRACE < DEBUG < INFO < WARN < ERROR < FATAL
-
-#include <Utils/StacktraceLoader.hpp>
 #include <iostream>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>

@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 #include <Utils/UtilityFunctions.hpp>
 
 static unsigned long mt[N]; /* the array for the state vector  */

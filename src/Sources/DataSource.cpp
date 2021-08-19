@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
@@ -14,7 +16,7 @@
  * @param input
  * @return
  */
-void SESAME::DataSource::load(int point_number, int dimension, vector <string> input) {
+void SESAME::DataSource::load(int point_number, int dimension, vector<string> input) {
 
   for (int i = 0; i < point_number; i++) {
     PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0);
@@ -40,6 +42,7 @@ void SESAME::DataSource::load(int point_number, int dimension, vector <string> i
 
 SESAME::DataSource::DataSource() {
   inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(1000);//TODO: remove hard-coded queue initialization.
+  threadPtr = std::make_shared<SingleThread>();
 }
 
 //TODO: we can control the source speed here.
@@ -51,21 +54,22 @@ void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
 }
 
-bool SESAME::DataSource::start() {
-  threadPtr = std::make_shared<std::thread>([this]() {
+bool SESAME::DataSource::start(int id) {
+  auto fun = [this]() {
     barrierPtr->arrive_and_wait();
     runningRoutine();
-  });
-  SESAME_DEBUG("DataSource spawn thread" << threadPtr->get_id());
+  };
+  threadPtr->construct(fun, id);
+  SESAME_INFO("DataSource spawn thread=" << threadPtr->getID());
   return true;
 }
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
-    SESAME_DEBUG("DataSource::stop try to join threads=" << threadPtr->get_id());
+    SESAME_INFO("DataSource::stop try to join threads");
     threadPtr->join();
     threadPtr.reset();
   } else {
-    SESAME_DEBUG("DataSource " << threadPtr->get_id() << ": Thread is not joinable");
+    SESAME_INFO("DataSource " << ": Thread is not joinable");
     return false;
   }
   return true;

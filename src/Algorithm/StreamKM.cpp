@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by tuidan on 2021/7/21.
 //
@@ -20,7 +22,7 @@ void SESAME::StreamKM::Initilize() {
   this->window->tree = DataStructureFactory::createCoresetTree();
   SESAME_DEBUG(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: "
-                              << this->StreamKMParam.dimension);
+          << this->StreamKMParam.dimension);
 }
 
 /**
@@ -77,7 +79,8 @@ void SESAME::StreamKM::dumpResults(vector <PointPtr> &centers,
     for (int j = 0; j < groups[i].size(); j++) {
       groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
       cout << groups[i][j]->getIndex() << " ";
-      sinkPtr->put(groups[i][j]);
+//      sinkPtr->put(groups[i][j]);
+      sinkPtr.get();
     }
   }
   cout << endl;

@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Shuhao Zhang on 19/07/2021.
 //
@@ -14,10 +16,11 @@ using namespace std;
 
 SESAME::SimpleEngine::SimpleEngine(DataSourcePtr sourcePtr,
                                    DataSinkPtr sinkPtr,
-                                   AlgorithmPtr algoPtr) {
+                                   AlgorithmPtr algoPtr) : threadID(0) {
   this->sourcePtr = std::move(sourcePtr);
   this->sinkPtr = std::move(sinkPtr);
   this->algoPtr = std::move(algoPtr);
+  threadPtr = std::make_shared<SingleThread>();
 }
 
 void SESAME::SimpleEngine::run() {
@@ -27,24 +30,26 @@ void SESAME::SimpleEngine::run() {
   this->sinkPtr->setBarrier(barrierPtr);
 
   //start source thread
-  this->sourcePtr->start();
+  this->sourcePtr->start(assignID());
 
   //start sink thread
-  this->sinkPtr->start();
+  this->sinkPtr->start(assignID());
 
   //start engine thread(s) for algorithm.
-  this->start(barrierPtr, sourcePtr, sinkPtr, algoPtr);
+  this->start(barrierPtr, sourcePtr, sinkPtr, algoPtr, assignID());
 
 }
-bool SESAME::SimpleEngine::start(SESAME::BarrierPtr barrierPtr,
+bool SESAME::SimpleEngine::start(BarrierPtr barrierPtr,
                                  DataSourcePtr sourcePtr,
                                  DataSinkPtr sinkPtr,
-                                 AlgorithmPtr algoPtr) {
-  threadPtr = std::make_shared<std::thread>([this, barrierPtr, sourcePtr, sinkPtr, algoPtr]() {
+                                 AlgorithmPtr algoPtr,
+                                 int id) {
+  auto fun = [this, barrierPtr, sourcePtr, sinkPtr, algoPtr]() {
     barrierPtr->arrive_and_wait();//wait for source and sink.
     runningRoutine(sourcePtr, sinkPtr, algoPtr);
-  });
-  SESAME_DEBUG("Engine spawn thread" << threadPtr->get_id());
+  };
+  threadPtr->construct(fun, id);
+  SESAME_DEBUG("Engine spawn thread" << threadPtr->getID());
   return true;
 }
 /**
@@ -76,12 +81,15 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
 bool SESAME::SimpleEngine::stop() {
   if (threadPtr) {
-    SESAME_DEBUG("Engine::stop try to join threads=" << threadPtr->get_id());
+    SESAME_DEBUG("Engine::stop try to join threads=" << threadPtr->getID());
     threadPtr->join();
     threadPtr.reset();
   } else {
-    SESAME_DEBUG("Engine " << threadPtr->get_id() << ": Thread is not joinable");
+    SESAME_DEBUG("Engine " << threadPtr->getID() << ": Thread is not joinable");
     return false;
   }
   return true;
+}
+int SESAME::SimpleEngine::assignID() {
+  return threadID++;
 }

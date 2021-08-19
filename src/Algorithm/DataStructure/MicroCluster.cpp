@@ -1,10 +1,11 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by 1124a on 2021/8/16.
 //
 #include <Algorithm/DataStructure/MicroCluster.hpp>
 #include <Utils/Logger.hpp>
 #include <iterator>
-
 
 SESAME::MicroCluster::MicroCluster(int dimension, int id)
 {
@@ -26,7 +27,7 @@ SESAME::MicroCluster::~MicroCluster()
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
   weight++;
-  for (int i = 0;i < dimension;i++) {
+  for (int i = 0; i < dimension; i++) {
     double data = datapoint->getFeatureItem(i);
     LS.push_back(data);
     SS.push_back(data * data);
@@ -40,8 +41,7 @@ void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
   weight++;
-  for(int i=0;i<LS.size();i++)
-  {
+  for(int i=0; i<LS.size(); i++) {
     double data=datapoint->getFeatureItem(i);
     LS[i]+=data;
     SS[i]+=data*data;
@@ -56,7 +56,7 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 //merge two micro-clusters
 void SESAME::MicroCluster::merge(MicroClusterPtr other){
   weight+=other->weight;
-  for(int i=0;i<dimension;i++)// dimension can change to CF1x.size()
+  for(int i=0; i<dimension; i++)// dimension can change to CF1x.size()
   {
     LS[i]+=other->LS[i];
     SS[i]+=other->SS[i];
@@ -71,8 +71,7 @@ void SESAME::MicroCluster::merge(MicroClusterPtr other){
 void SESAME::MicroCluster::substractClusterVector(MicroClusterPtr other)
 {
   this->weight-=other->weight;
-  for(int i=0;i<dimension;i++)
-  {
+  for(int i=0; i<dimension; i++) {
     this->LS[i]-=other->LS[i];
     this->SS[i]-=other->SS[i];
   }
@@ -83,8 +82,7 @@ void SESAME::MicroCluster::substractClusterVector(MicroClusterPtr other)
 bool SESAME::MicroCluster::judgeMerge(MicroClusterPtr other)
 {
   bool merge=true;
-  for(unsigned int i=0;i<other->id.size();i++)
-  {
+  for(unsigned int i=0; i<other->id.size(); i++) {
     if (std::find(this->id.begin(), this->id.end(), other->id[i])==id.end())
       merge=false;
   }
@@ -94,8 +92,7 @@ bool SESAME::MicroCluster::judgeMerge(MicroClusterPtr other)
 //update id list of Micro cluster
 void SESAME::MicroCluster::updateId(MicroClusterPtr other)
 {
-  for(unsigned int i=0;i<other->id.size();i++)
-  {
+  for(unsigned int i=0; i<other->id.size(); i++) {
     this->id.push_back(other->id[i]);
   }
   std::vector <int>().swap(other->id);
@@ -124,13 +121,11 @@ double SESAME::MicroCluster::getSigmaTime() const
   return sqrt(SST/weight - (LST/weight)*(LST/weight));
 }
 
-
 double SESAME::MicroCluster::getQuantile(double z)
 {
-  assert( z >= 0 && z <= 1 );
+  assert(z >= 0 && z <= 1 );
   return sqrt( 2 ) * inverseError( 2*z - 1 );
 }
-
 
 double SESAME::MicroCluster::getRadius(double radiusFactor){
   if(weight==1)
@@ -146,7 +141,7 @@ double SESAME::MicroCluster::getRadius(double radiusFactor){
 double SESAME::MicroCluster::getDeviation(){
   SESAME::dataPoint variance=getVarianceVector();
   double sumOfDeviation=0;
-  for(int i=0;i<dimension;i++){
+  for(int i=0; i<dimension; i++){
     sumOfDeviation += sqrt(variance[i]);
   }
 
@@ -159,7 +154,7 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
     return LS;
   dataPoint dataObject(LS.size());//double
   if(weight>1){
-    for(int i=0;i<centroid.size();i++){
+    for(int i=0; i<centroid.size(); i++){
       dataObject[i]=(LS[i]/weight);
     }
   }
@@ -167,10 +162,9 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
 }
 
 double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double radiusFactor) {
-  if(weight==1)
-  {
+  if(weight==1) {
     double distance=0;
-    for(int i=0;i<dimension;i++){
+    for(int i=0; i<dimension; i++){
       double d=LS[i]-datapoint->getFeatureItem(i);
       distance+=d*d;
     }
@@ -178,8 +172,7 @@ double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double r
     if(distance<EPSILON)
       return 1;
     return 0;
-  }
-  else{
+  } else{
     double dist= calCentroidDistance(datapoint);
     if(dist<=getRadius(radiusFactor))
       return 0;
@@ -193,7 +186,7 @@ double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double r
 SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
   dataPoint datapoint;
 
-  for(int i=0;i<dimension;i++){
+  for(int i=0; i<dimension; i++){
     double linearSum= LS[i];
     double squaredSum= SS[i];
     double aveLinearSum= linearSum/weight;
@@ -212,7 +205,7 @@ SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
 double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint){
 
   double temp=0;
-  for(int i=0;i<dimension;i++){
+  for(int i=0; i<dimension; i++){
     double diff=centroid[i]-datapoint->getFeatureItem(i);
     temp+=(diff*diff);
   }
