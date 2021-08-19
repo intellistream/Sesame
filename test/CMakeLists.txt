@@ -4,7 +4,7 @@ add_executable(Google_Tests_run
         )
 
 # linking Google_Tests_run with sesame_lib which will be tested
-target_link_libraries(Google_Tests_run sesame gtest gtest_main gmock gmock_main)
+target_link_libraries(Google_Tests_run gtest_main sesame)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/datasets
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
