@@ -32,7 +32,7 @@ class SimpleEngine : SESAME::Engine {
   //  void createBarrier();
   void run();//start the engine.
   void runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
-  bool start(BarrierPtr barrierPtr,
+  bool start(
              DataSourcePtr sourcePtr,
              DataSinkPtr sinkPtr,
              AlgorithmPtr algoPtr,
