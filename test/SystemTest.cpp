@@ -13,7 +13,7 @@
 
 TEST(SystemTest, SampleRun) {
   //Setup Logs.
-  setupLogging("benchmark.log", LOG_DEBUG);
+  // setupLogging("benchmark.log", LOG_DEBUG);
 
   //Parse parameters.
   param_t cmd_params;
