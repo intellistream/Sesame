@@ -6,9 +6,9 @@ project(SESAME CXX)
 # Judge the os system
 
 if (UNIX AND NOT APPLE)
-    message(STATUS "1111")
     add_definitions(-DUSELOG4CXX)
 endif (UNIX AND NOT APPLE)
+
 
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
