@@ -32,11 +32,11 @@ void SESAME::SimpleEngine::run() {
   //start source thread
   this->sourcePtr->start(assignID());
 
-  //start sink thread
-  this->sinkPtr->start(assignID());
-
   //start engine thread(s) for algorithm.
   this->start(sourcePtr, sinkPtr, algoPtr, assignID());
+
+  //start sink thread
+  this->sinkPtr->start(assignID());
 
 }
 bool SESAME::SimpleEngine::start(DataSourcePtr sourcePtr,
@@ -71,11 +71,11 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   }
   // run offline clustering
   algoPtr->runOfflineClustering(sinkPtr);
-  SESAME_INFO("Engine finished process data");
-  sinkPtr->finish();//Let sink knows that there won't be any more data coming.
-  SESAME_INFO("Engine finished emit data");
+  SESAME_INFO("Engine sourceEnd process data");
+  sinkPtr->sourceEnded();//Let sink knows that there won't be any more data coming.
+  SESAME_INFO("Engine sourceEnd emit data");
   barrierPtr->arrive_and_wait();//wait for source and sink.
-  SESAME_DEBUG("Engine finished wait for source and sink.");
+  SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
 }
 
 bool SESAME::SimpleEngine::stop() {

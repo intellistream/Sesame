@@ -22,6 +22,7 @@ class DataSink {
   std::vector<PointPtr> output;
   std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> outputQueue;
   SingleThreadPtr threadPtr;
+  std::atomic_bool sourceEnd;
   std::atomic_bool finished;
   BarrierPtr barrierPtr;
  public:
@@ -31,7 +32,7 @@ class DataSink {
   void runningRoutine();
   bool start(int id);
   bool stop();
-  void finish();
+  void sourceEnded();
   bool isFinished();
   std::vector<PointPtr> getResults();
   void setBarrier(BarrierPtr barrierPtr);

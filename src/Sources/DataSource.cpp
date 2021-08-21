@@ -53,7 +53,7 @@ void SESAME::DataSource::runningRoutine() {
     inputQueue->push(p);
   }
   barrierPtr->arrive_and_wait();
-  SESAME_INFO("DataSource finished emit data");
+  SESAME_INFO("DataSource sourceEnd emit data");
 }
 
 bool SESAME::DataSource::start(int id) {

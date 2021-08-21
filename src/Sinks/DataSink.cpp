@@ -10,20 +10,26 @@ SESAME::DataSink::DataSink() {
   outputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>
       (1000);//TODO: remove hard-coded queue initialization.
   threadPtr = std::make_shared<SingleThread>();
-  finished = false;
+  sourceEnd = false;
 }
 void SESAME::DataSink::runningRoutine() {
   barrierPtr->arrive_and_wait();
   SESAME_INFO("DataSink start to grab data");
-  while (!finished) {
+  while (!sourceEnd) {
     if (!outputQueue->empty()) {
       PointPtr result = *outputQueue->front();
       output.push_back(result);
       outputQueue->pop();
     }
   }
+  while (!outputQueue->empty()) {
+    PointPtr result = *outputQueue->front();
+    output.push_back(result);
+    outputQueue->pop();
+  }
+  finished=true;
   barrierPtr->arrive_and_wait();
-  SESAME_INFO("DataSink finished grab data, in total:" << output.size());
+  SESAME_INFO("DataSink sourceEnd grab data, in total:" << output.size());
 }
 bool SESAME::DataSink::start(int id) {
   auto fun = [this]() {
@@ -57,8 +63,8 @@ void SESAME::DataSink::setBarrier(SESAME::BarrierPtr barrierPtr) {
 SESAME::DataSink::~DataSink() {
   stop();
 }
-void SESAME::DataSink::finish() {
-  this->finished = true;
+void SESAME::DataSink::sourceEnded() {
+  this->sourceEnd = true;
 }
 bool SESAME::DataSink::isFinished() {
   return this->finished;

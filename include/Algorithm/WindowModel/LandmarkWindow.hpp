@@ -66,7 +66,7 @@ Case 1: the last bucket is full
 Case2: the last bucket is not full
 => we compute a coreset of all nonempty windows
 
-this operation should only be called after the streaming process is finished
+this operation should only be called after the streaming process is sourceEnd
 **/
   std::vector<PointPtr> getCoresetFromManager(std::vector<PointPtr> & coreset); // https://stackoverflow.com/questions/15704565/efficient-way-to-return-a-stdvector-in-c
 

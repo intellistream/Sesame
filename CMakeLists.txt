@@ -76,7 +76,7 @@ if (ENABLE_UNIT_TESTS)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
     include(GoogleTest)
-    find_package(GTest 1.11.0)
+#    find_package(GTest 1.11.0)
 endif ()
 
 # Print all used include directories

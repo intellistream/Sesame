@@ -277,9 +277,9 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
 
   } while (!flagToStop);
   if (KMeansPP) {
-    SESAME_INFO("KMeans++ finished!!!");
+    SESAME_INFO("KMeans++ sourceEnd!!!");
   } else {
-    SESAME_INFO("KMeans finished!!!");
+    SESAME_INFO("KMeans sourceEnd!!!");
   }
 }
 
