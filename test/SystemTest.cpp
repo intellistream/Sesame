@@ -13,9 +13,8 @@
 
 TEST(SystemTest, SampleRun) {
   //Setup Logs.
-  #ifdef USELOG4CXX
-    setupLogging("benchmark.log", LOG_DEBUG);
-  #endif
+  setupLogging("benchmark.log", LOG_DEBUG);
+
   //Parse parameters.
   param_t cmd_params;
   BenchmarkUtils::defaultParam(cmd_params);
