@@ -3,13 +3,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
-# Judge the os system
-
-if (UNIX AND NOT APPLE)
-    add_definitions(-DUSELOG4CXX)
-endif (UNIX AND NOT APPLE)
-
-
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 include(cmake/macros.cmake)
