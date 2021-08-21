@@ -25,7 +25,7 @@ SESAME::SimpleEngine::SimpleEngine(DataSourcePtr sourcePtr,
 
 void SESAME::SimpleEngine::run() {
 
-  barrierPtr = UtilityFunctions::createBarrier(4);
+  barrierPtr = UtilityFunctions::createBarrier(3);
   this->sourcePtr->setBarrier(barrierPtr);
   this->sinkPtr->setBarrier(barrierPtr);
 
@@ -36,20 +36,18 @@ void SESAME::SimpleEngine::run() {
   this->sinkPtr->start(assignID());
 
   //start engine thread(s) for algorithm.
-  this->start(barrierPtr, sourcePtr, sinkPtr, algoPtr, assignID());
+  this->start(sourcePtr, sinkPtr, algoPtr, assignID());
 
 }
-bool SESAME::SimpleEngine::start(BarrierPtr barrierPtr,
-                                 DataSourcePtr sourcePtr,
+bool SESAME::SimpleEngine::start(DataSourcePtr sourcePtr,
                                  DataSinkPtr sinkPtr,
                                  AlgorithmPtr algoPtr,
                                  int id) {
-  auto fun = [this, barrierPtr, sourcePtr, sinkPtr, algoPtr]() {
-    barrierPtr->arrive_and_wait();//wait for source and sink.
+  auto fun = [this, sourcePtr, sinkPtr, algoPtr]() {
     runningRoutine(sourcePtr, sinkPtr, algoPtr);
   };
   threadPtr->construct(fun, id);
-  SESAME_DEBUG("Engine spawn thread" << threadPtr->getID());
+  SESAME_DEBUG("Engine spawn thread=" << threadPtr->getID());
   return true;
 }
 /**
@@ -61,22 +59,21 @@ bool SESAME::SimpleEngine::start(BarrierPtr barrierPtr,
 void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
                                           DataSinkPtr sinkPtr,
                                           AlgorithmPtr algoPtr) {
+
+  barrierPtr->arrive_and_wait();//wait for source and sink.
+  SESAME_INFO("Algorithm start to process data");
   //initialization
   algoPtr->Initilize();
-
   // run online clustering
   while (!sourcePtr->empty()) {
     auto item = sourcePtr->get();
     algoPtr->runOnlineClustering(item);
   }
-
   // run offline clustering
   algoPtr->runOfflineClustering(sinkPtr);
-
-  SESAME_INFO("Algorithm finished process data");
   sinkPtr->finish();//Let sink knows that there won't be any more data coming.
-  // finished execution
-  barrierPtr->arrive_and_wait();
+  barrierPtr->arrive_and_wait();//wait for source and sink.
+  SESAME_INFO("Algorithm finished process data");
 }
 
 bool SESAME::SimpleEngine::stop() {

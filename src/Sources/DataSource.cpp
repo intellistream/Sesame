@@ -47,16 +47,17 @@ SESAME::DataSource::DataSource() {
 
 //TODO: we can control the source speed here.
 void SESAME::DataSource::runningRoutine() {
+  barrierPtr->arrive_and_wait();
+  SESAME_INFO("DataSource start to emit data");
   for (PointPtr p: this->input) {
     inputQueue->push(p);
   }
-  SESAME_INFO("DataSource finished emit data");
   barrierPtr->arrive_and_wait();
+  SESAME_INFO("DataSource finished emit data");
 }
 
 bool SESAME::DataSource::start(int id) {
   auto fun = [this]() {
-    barrierPtr->arrive_and_wait();
     runningRoutine();
   };
   threadPtr->construct(fun, id);

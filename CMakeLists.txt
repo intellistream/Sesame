@@ -7,6 +7,7 @@ project(SESAME CXX)
 
 if (UNIX AND NOT APPLE)
     add_definitions(-DUSELOG4CXX)
+    MESSAGE(STATUS "Enalbe Log4CXX")
 endif (UNIX AND NOT APPLE)
 
 
@@ -14,7 +15,6 @@ endif (UNIX AND NOT APPLE)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 include(cmake/macros.cmake)
 include(cmake/default.cmake)
-
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 20)

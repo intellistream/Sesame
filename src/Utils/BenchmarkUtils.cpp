@@ -187,8 +187,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   engine.run();
 
-  engine.barrierPtr->arrive_and_wait();//ask algorithm to start execution
-  engine.barrierPtr->arrive_and_wait();//wait algorithm to finish execution
+  while (!sinkPtr->isFinished());//wait algorithm to finish execution
 
   engine.stop();
   //Store results.

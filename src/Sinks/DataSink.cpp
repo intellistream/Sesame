@@ -13,6 +13,8 @@ SESAME::DataSink::DataSink() {
   finished = false;
 }
 void SESAME::DataSink::runningRoutine() {
+  barrierPtr->arrive_and_wait();
+  SESAME_INFO("DataSink start to grab data");
   while (!finished) {
     if (!outputQueue->empty()) {
       PointPtr result = *outputQueue->front();
@@ -20,12 +22,11 @@ void SESAME::DataSink::runningRoutine() {
       outputQueue->pop();
     }
   }
-  SESAME_INFO("DataSink finished grab data, in total:" << output.size());
   barrierPtr->arrive_and_wait();
+  SESAME_INFO("DataSink finished grab data, in total:" << output.size());
 }
 bool SESAME::DataSink::start(int id) {
   auto fun = [this]() {
-    barrierPtr->arrive_and_wait();
     runningRoutine();
   };
   threadPtr->construct(fun, id);
@@ -58,4 +59,7 @@ SESAME::DataSink::~DataSink() {
 }
 void SESAME::DataSink::finish() {
   this->finished = true;
+}
+bool SESAME::DataSink::isFinished() {
+  return this->finished;
 }
