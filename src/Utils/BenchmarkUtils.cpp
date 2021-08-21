@@ -61,7 +61,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       case 'h':
       case '?':
         /* getopt_long already printed an error message. */
-        print_help(argv[0]);
+        #ifdef USELOG4CXX
+          print_help(argv[0]);
+        #endif
         exit(EXIT_SUCCESS);
         break;
       case 'p':cmd_params.pointNumber = atoi(optarg);
@@ -148,10 +150,13 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
  * TODO: Make it more useful @WangXin.
  * @param string
  */
+#ifdef USELOG4CXX
 void BenchmarkUtils::print_help(char *string) {
+
   SESAME_ERROR("Usage: " << string << " [options]");
   SESAME_ERROR(" Available options: ");
 }
+#endif
 
 /**
  * @Description: load data from the given dataset and convert the data format into the given point data structure
