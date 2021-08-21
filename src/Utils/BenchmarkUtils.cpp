@@ -187,13 +187,13 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   engine.run();
 
-  engine.barrierPtr->arrive_and_wait();//ask algorithm to start execution
-  engine.barrierPtr->arrive_and_wait();//wait algorithm to finish execution
+  while (!sinkPtr->isFinished());//wait for sink to stop.
 
-  engine.stop();
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, sinkPtr->getResults());
-  SESAME_INFO("Finished store results.");
+  SESAME_INFO("Finished store results: "<<sinkPtr->getResults().size());
+
+  engine.stop();
 }
 
 

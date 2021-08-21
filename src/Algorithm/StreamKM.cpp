@@ -79,8 +79,7 @@ void SESAME::StreamKM::dumpResults(vector <PointPtr> &centers,
     for (int j = 0; j < groups[i].size(); j++) {
       groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
       cout << groups[i][j]->getIndex() << " ";
-//      sinkPtr->put(groups[i][j]);
-      sinkPtr.get();
+      sinkPtr->put(groups[i][j]);
     }
   }
   cout << endl;
