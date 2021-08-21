@@ -5,12 +5,9 @@ project(SESAME CXX)
 
 # Judge the os system
 
-if (MSVC)
-    set(LOG4CXX 0)
-else()
-    set(LOG4CXX 1)
-endif (MSVC)
-
+if (LINUX)
+    add_definitions(-DUSELOG4CXX)
+endif (LINUX)
 
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")

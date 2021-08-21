@@ -6,10 +6,9 @@
 
 #ifndef SESAME_INCLUDE_UTILS_LOGGER_HPP_
 #define SESAME_INCLUDE_UTILS_LOGGER_HPP_
-#define LOG4CXX "@LOG4CXX@"
 // TRACE < DEBUG < INFO < WARN < ERROR < FATAL
 #include <iostream>
-if LOG4CXX
+#ifdef USELOG4CXX
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logger.h>
@@ -17,6 +16,7 @@ if LOG4CXX
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+#endif
 
 enum DebugLevel { LOG_NONE, LOG_WARNING, LOG_DEBUG, LOG_INFO, LOG_TRACE };
 
@@ -51,8 +51,9 @@ static DebugLevel getStringAsDebugLevel(std::string level) {
     throw std::runtime_error("Logger: Debug level unknown: " + level);
   }
 }
-
+#ifdef USELOG4CXX
 static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
+#endif
 
 // LoggerPtr logger(Logger::getLogger("SESAME"));
 
@@ -143,34 +144,52 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
     } while (0)
 #endif
 #else
-#define SESAME_TRACE(TEXT)                                                                                                          \
-    do {                                                                                                                         \
-        LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
-    } while (0)
-#define SESAME_DEBUG(TEXT)                                                                                                          \
-    do {                                                                                                                         \
-        LOG4CXX_DEBUG(SESAMELogger, TEXT);                                                                                          \
-    } while (0)
-#define SESAME_TRACE(TEXT)                                                                                                          \
-    do {                                                                                                                         \
-        LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
-    } while (0)
-#define SESAME_INFO(TEXT)                                                                                                           \
-    do {                                                                                                                         \
-        LOG4CXX_INFO(SESAMELogger, TEXT);                                                                                           \
-    } while (0)
-#define SESAME_WARNING(TEXT)                                                                                                        \
-    do {                                                                                                                         \
-        LOG4CXX_WARN(SESAMELogger, TEXT);                                                                                           \
-    } while (0)
-#define SESAME_ERROR(TEXT)                                                                                                          \
-    do {                                                                                                                         \
-        LOG4CXX_ERROR(SESAMELogger, TEXT);                                                                                          \
-    } while (0)
-#define SESAME_FATAL_ERROR(TEXT)                                                                                                    \
-    do {                                                                                                                         \
-        LOG4CXX_ERROR(SESAMELogger, TEXT);                                                                                          \
-    } while (0)
+  #ifdef USELOG4CXX
+    #define SESAME_TRACE(TEXT)                                                                                                          \
+        do {                                                                                                                            \
+            LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
+        } while (0)
+    #define SESAME_DEBUG(TEXT)                                                                                                          \
+        do {                                                                                                                         \
+            LOG4CXX_DEBUG(SESAMELogger, TEXT);                                                                                          \
+        } while (0)
+    #define SESAME_TRACE(TEXT)                                                                                                          \
+        do {                                                                                                                         \
+            LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
+        } while (0)
+    #define SESAME_INFO(TEXT)                                                                                                           \
+        do {                                                                                                                         \
+            LOG4CXX_INFO(SESAMELogger, TEXT);                                                                                           \
+        } while (0)
+    #define SESAME_WARNING(TEXT)                                                                                                        \
+        do {                                                                                                                         \
+            LOG4CXX_WARN(SESAMELogger, TEXT);                                                                                           \
+        } while (0)
+    #define SESAME_ERROR(TEXT)                                                                                                          \
+        do {                                                                                                                         \
+            LOG4CXX_ERROR(SESAMELogger, TEXT);                                                                                          \
+        } while (0)
+    #define SESAME_FATAL_ERROR(TEXT)                                                                                                    \
+        do {                                                                                                                         \
+            LOG4CXX_ERROR(SESAMELogger, TEXT);                                                                                          \
+        } while (0)
+                                                                                               \
+  #endif
+  #ifndef USELOG4CXX
+    #define SESAME_TRACE(TEXT)                                                                                                          \
+
+    #define SESAME_DEBUG(TEXT)                                                                                                          \
+
+    #define SESAME_TRACE(TEXT)                                                                                                          \
+
+    #define SESAME_INFO(TEXT)                                                                                                           \
+
+    #define SESAME_WARNING(TEXT)                                                                                                        \
+
+    #define SESAME_ERROR(TEXT)                                                                                                          \
+
+    #define SESAME_FATAL_ERROR(TEXT)
+#endif
 #endif
 
 #ifdef SESAME_DEBUG
@@ -210,101 +229,103 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
         SESAME_FATAL_ERROR(TEXT);                                                                                                   \
         throw std::runtime_error(TEXT);                                                                                          \
     } while (0)
+#ifdef USELOG4CXX
+  static void setupLogging(std::string logFileName, DebugLevel level) {
+    std::cout << "Logger: SETUP_LOGGING" << std::endl;
+    // create PatternLayout
+    log4cxx::LayoutPtr
+        layoutPtr(new log4cxx::PatternLayout("%d{MMM dd yyyy HH:mm:ss} %c: %l %X{threadName} [%-5t] [%p] : %m%n"));
 
-static void setupLogging(std::string logFileName, DebugLevel level) {
-  std::cout << "Logger: SETUP_LOGGING" << std::endl;
-  // create PatternLayout
-  log4cxx::LayoutPtr
-      layoutPtr(new log4cxx::PatternLayout("%d{MMM dd yyyy HH:mm:ss} %c: %l %X{threadName} [%-5t] [%p] : %m%n"));
+    // create FileAppender
+    LOG4CXX_DECODE_CHAR(fileName, logFileName);
+    log4cxx::FileAppenderPtr file(new log4cxx::FileAppender(layoutPtr, fileName));
 
-  // create FileAppender
-  LOG4CXX_DECODE_CHAR(fileName, logFileName);
-  log4cxx::FileAppenderPtr file(new log4cxx::FileAppender(layoutPtr, fileName));
+    // create ConsoleAppender
+    log4cxx::ConsoleAppenderPtr console(new log4cxx::ConsoleAppender(layoutPtr));
 
-  // create ConsoleAppender
-  log4cxx::ConsoleAppenderPtr console(new log4cxx::ConsoleAppender(layoutPtr));
+      // set log level
+    #ifdef SESAME_LOGGING_LEVEL
+        ((void) level);
+      #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
+          SESAMELogger->setLevel(log4cxx::Level::getFatal());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
+          SESAMELogger->setLevel(log4cxx::Level::getError());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+          SESAMELogger->setLevel(log4cxx::Level::getWarn());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_INFO
+          SESAMELogger->setLevel(log4cxx::Level::getInfo());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+          SESAMELogger->setLevel(log4cxx::Level::getDebug());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+          SESAMELogger->setLevel(log4cxx::Level::getTrace());
+      #endif
+    #else
+      if (level == LOG_NONE) {
+        SESAMELogger->setLevel(log4cxx::Level::getOff());
+      } else if (level == LOG_WARNING) {
+        SESAMELogger->setLevel(log4cxx::Level::getWarn());
+      } else if (level == LOG_DEBUG) {
+        SESAMELogger->setLevel(log4cxx::Level::getDebug());
+      } else if (level == LOG_INFO) {
+        SESAMELogger->setLevel(log4cxx::Level::getInfo());
+      } else if (level == LOG_TRACE) {
+        SESAMELogger->setLevel(log4cxx::Level::getTrace());
+      } else {
+        SESAME_ERROR("setupLogging: log level not supported " << getDebugLevelAsString(level));
+        throw Exception("Error while setup logging");
+      }
+    #endif
 
-  // set log level
-#ifdef SESAME_LOGGING_LEVEL
-  ((void) level);
-#if SESAME_LOGGING_LEVEL == LEVEL_FATAL
-    SESAMELogger->setLevel(log4cxx::Level::getFatal());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_ERROR
-    SESAMELogger->setLevel(log4cxx::Level::getError());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_WARN
-    SESAMELogger->setLevel(log4cxx::Level::getWarn());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_INFO
-    SESAMELogger->setLevel(log4cxx::Level::getInfo());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
-    SESAMELogger->setLevel(log4cxx::Level::getDebug());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_TRACE
-    SESAMELogger->setLevel(log4cxx::Level::getTrace());
-#endif
-#else
-  if (level == LOG_NONE) {
-    SESAMELogger->setLevel(log4cxx::Level::getOff());
-  } else if (level == LOG_WARNING) {
-    SESAMELogger->setLevel(log4cxx::Level::getWarn());
-  } else if (level == LOG_DEBUG) {
-    SESAMELogger->setLevel(log4cxx::Level::getDebug());
-  } else if (level == LOG_INFO) {
-    SESAMELogger->setLevel(log4cxx::Level::getInfo());
-  } else if (level == LOG_TRACE) {
-    SESAMELogger->setLevel(log4cxx::Level::getTrace());
-  } else {
-    SESAME_ERROR("setupLogging: log level not supported " << getDebugLevelAsString(level));
-    throw Exception("Error while setup logging");
+      SESAMELogger->addAppender(file);
+      SESAMELogger->addAppender(console);
+    }
+
+    static void setLogLevel(DebugLevel level) {
+      // set log level
+    #ifdef SESAME_LOGGING_LEVEL
+        ((void) level);
+      #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
+          SESAMELogger->setLevel(log4cxx::Level::getFatal());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
+          SESAMELogger->setLevel(log4cxx::Level::getError());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+          SESAMELogger->setLevel(log4cxx::Level::getWarn());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_INFO
+          SESAMELogger->setLevel(log4cxx::Level::getInfo());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+          SESAMELogger->setLevel(log4cxx::Level::getDebug());
+      #endif
+      #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+          SESAMELogger->setLevel(log4cxx::Level::getTrace());
+      #endif
+    #else
+
+      if (level == LOG_NONE) {
+        SESAMELogger->setLevel(log4cxx::Level::getOff());
+      } else if (level == LOG_WARNING) {
+        SESAMELogger->setLevel(log4cxx::Level::getWarn());
+      } else if (level == LOG_DEBUG) {
+        SESAMELogger->setLevel(log4cxx::Level::getDebug());
+      } else if (level == LOG_INFO) {
+        SESAMELogger->setLevel(log4cxx::Level::getInfo());
+      } else if (level == LOG_TRACE) {
+        SESAMELogger->setLevel(log4cxx::Level::getTrace());
+      } else {
+        SESAME_ERROR("setLogLevel: log level not supported " << getDebugLevelAsString(level));
+        throw Exception("Error while trying to change log level");
+      }
+    #endif
   }
 #endif
-
-  SESAMELogger->addAppender(file);
-  SESAMELogger->addAppender(console);
-}
-
-static void setLogLevel(DebugLevel level) {
-  // set log level
-#ifdef SESAME_LOGGING_LEVEL
-  ((void) level);
-#if SESAME_LOGGING_LEVEL == LEVEL_FATAL
-    SESAMELogger->setLevel(log4cxx::Level::getFatal());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_ERROR
-    SESAMELogger->setLevel(log4cxx::Level::getError());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_WARN
-    SESAMELogger->setLevel(log4cxx::Level::getWarn());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_INFO
-    SESAMELogger->setLevel(log4cxx::Level::getInfo());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
-    SESAMELogger->setLevel(log4cxx::Level::getDebug());
-#endif
-#if SESAME_LOGGING_LEVEL == LEVEL_TRACE
-    SESAMELogger->setLevel(log4cxx::Level::getTrace());
-#endif
-#else
-  if (level == LOG_NONE) {
-    SESAMELogger->setLevel(log4cxx::Level::getOff());
-  } else if (level == LOG_WARNING) {
-    SESAMELogger->setLevel(log4cxx::Level::getWarn());
-  } else if (level == LOG_DEBUG) {
-    SESAMELogger->setLevel(log4cxx::Level::getDebug());
-  } else if (level == LOG_INFO) {
-    SESAMELogger->setLevel(log4cxx::Level::getInfo());
-  } else if (level == LOG_TRACE) {
-    SESAMELogger->setLevel(log4cxx::Level::getTrace());
-  } else {
-    SESAME_ERROR("setLogLevel: log level not supported " << getDebugLevelAsString(level));
-    throw Exception("Error while trying to change log level");
-  }
-#endif
-}
 
 #define SESAME_NOT_IMPLEMENTED()                                                                                                    \
     do {                                                                                                                         \
