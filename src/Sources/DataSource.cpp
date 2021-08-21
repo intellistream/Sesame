@@ -66,7 +66,7 @@ bool SESAME::DataSource::start(int id) {
 }
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
-    SESAME_INFO("DataSource::stop try to join threads");
+    SESAME_INFO("DataSource::stop try to join threads="<< threadPtr->getID());
     threadPtr->join();
     threadPtr.reset();
   } else {
