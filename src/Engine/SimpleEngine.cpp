@@ -71,9 +71,10 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   }
   // run offline clustering
   algoPtr->runOfflineClustering(sinkPtr);
+  SESAME_INFO("Algorithm finished process data");
   sinkPtr->finish();//Let sink knows that there won't be any more data coming.
   barrierPtr->arrive_and_wait();//wait for source and sink.
-  SESAME_INFO("Algorithm finished process data");
+  SESAME_INFO("Algorithm finished emit data");
 }
 
 bool SESAME::SimpleEngine::stop() {
