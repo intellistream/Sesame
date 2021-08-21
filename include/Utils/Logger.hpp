@@ -177,18 +177,20 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
   #endif
   #ifndef USELOG4CXX
     #define SESAME_TRACE(TEXT)                                                                                                          \
-
+      std::cout << TEXT << std::endl;
     #define SESAME_DEBUG(TEXT)                                                                                                          \
-
+      std::cout << TEXT << std::endl;
     #define SESAME_TRACE(TEXT)                                                                                                          \
-
+      std::cout << TEXT << std::endl;
     #define SESAME_INFO(TEXT)                                                                                                           \
-
+      std::cout << TEXT << std::endl;
     #define SESAME_WARNING(TEXT)                                                                                                        \
-
+      std::cout << TEXT << std::endl;
     #define SESAME_ERROR(TEXT)                                                                                                          \
+      std::cout << TEXT << std::endl;
+    #define SESAME_FATAL_ERROR(TEXT)                                                                                                    \
+      std::cout << TEXT << std::endl;
 
-    #define SESAME_FATAL_ERROR(TEXT)
 #endif
 #endif
 
