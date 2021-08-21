@@ -6,8 +6,10 @@
 
 #ifndef SESAME_INCLUDE_UTILS_LOGGER_HPP_
 #define SESAME_INCLUDE_UTILS_LOGGER_HPP_
+#define LOG4CXX "@LOG4CXX@"
 // TRACE < DEBUG < INFO < WARN < ERROR < FATAL
 #include <iostream>
+if LOG4CXX
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logger.h>

@@ -16,7 +16,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
   //Setup Logs.
-  setupLogging("benchmark.log", LOG_DEBUG);
+  //setupLogging("benchmark.log", LOG_DEBUG);
 
   //Parse parameters.
   param_t cmd_params;

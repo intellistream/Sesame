@@ -3,6 +3,15 @@
 cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
+# Judge the os system
+
+if (MSVC)
+    set(LOG4CXX 0)
+else()
+    set(LOG4CXX 1)
+endif (MSVC)
+
+
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 include(cmake/macros.cmake)
