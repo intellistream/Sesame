@@ -41,9 +41,7 @@ struct param_t {
 
 class BenchmarkUtils {
  public:
-  #ifdef USELOG4CXX
-    static void print_help(char *string);
-  #endif
+  static void print_help(char *string);
   static void parseArgs(int argc, char **argv, param_t &cmd_params);
   static void defaultParam(param_t &cmd_params);
   static void loadData(param_t &cmd_params, SESAME::DataSourcePtr dataSourcePtr);

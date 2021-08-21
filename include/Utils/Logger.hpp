@@ -191,7 +191,7 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
     #define SESAME_FATAL_ERROR(TEXT)                                                                                                    \
       std::cout << TEXT << std::endl;
 
-#endif
+  #endif
 #endif
 
 #ifdef SESAME_DEBUG
@@ -231,103 +231,106 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
         SESAME_FATAL_ERROR(TEXT);                                                                                                   \
         throw std::runtime_error(TEXT);                                                                                          \
     } while (0)
-#ifdef USELOG4CXX
+
   static void setupLogging(std::string logFileName, DebugLevel level) {
-    std::cout << "Logger: SETUP_LOGGING" << std::endl;
-    // create PatternLayout
-    log4cxx::LayoutPtr
-        layoutPtr(new log4cxx::PatternLayout("%d{MMM dd yyyy HH:mm:ss} %c: %l %X{threadName} [%-5t] [%p] : %m%n"));
+      std::cout << "LogFileName: " << logFileName << ", and DebugLevel: " << level << std::endl;
+      #ifdef USELOG4CXX
+      std::cout << "Logger: SETUP_LOGGING" << std::endl;
+      // create PatternLayout
+      log4cxx::LayoutPtr
+          layoutPtr(new log4cxx::PatternLayout("%d{MMM dd yyyy HH:mm:ss} %c: %l %X{threadName} [%-5t] [%p] : %m%n"));
 
-    // create FileAppender
-    LOG4CXX_DECODE_CHAR(fileName, logFileName);
-    log4cxx::FileAppenderPtr file(new log4cxx::FileAppender(layoutPtr, fileName));
+      // create FileAppender
+      LOG4CXX_DECODE_CHAR(fileName, logFileName);
+      log4cxx::FileAppenderPtr file(new log4cxx::FileAppender(layoutPtr, fileName));
 
-    // create ConsoleAppender
-    log4cxx::ConsoleAppenderPtr console(new log4cxx::ConsoleAppender(layoutPtr));
+      // create ConsoleAppender
+      log4cxx::ConsoleAppenderPtr console(new log4cxx::ConsoleAppender(layoutPtr));
 
-      // set log level
-    #ifdef SESAME_LOGGING_LEVEL
-        ((void) level);
-      #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
-          SESAMELogger->setLevel(log4cxx::Level::getFatal());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
-          SESAMELogger->setLevel(log4cxx::Level::getError());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+        // set log level
+      #ifdef SESAME_LOGGING_LEVEL
+          ((void) level);
+        #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
+            SESAMELogger->setLevel(log4cxx::Level::getFatal());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
+            SESAMELogger->setLevel(log4cxx::Level::getError());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+            SESAMELogger->setLevel(log4cxx::Level::getWarn());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_INFO
+            SESAMELogger->setLevel(log4cxx::Level::getInfo());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+            SESAMELogger->setLevel(log4cxx::Level::getDebug());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+            SESAMELogger->setLevel(log4cxx::Level::getTrace());
+        #endif
+      #else
+        if (level == LOG_NONE) {
+          SESAMELogger->setLevel(log4cxx::Level::getOff());
+        } else if (level == LOG_WARNING) {
           SESAMELogger->setLevel(log4cxx::Level::getWarn());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_INFO
-          SESAMELogger->setLevel(log4cxx::Level::getInfo());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+        } else if (level == LOG_DEBUG) {
           SESAMELogger->setLevel(log4cxx::Level::getDebug());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+        } else if (level == LOG_INFO) {
+          SESAMELogger->setLevel(log4cxx::Level::getInfo());
+        } else if (level == LOG_TRACE) {
           SESAMELogger->setLevel(log4cxx::Level::getTrace());
+        } else {
+          SESAME_ERROR("setupLogging: log level not supported " << getDebugLevelAsString(level));
+          throw Exception("Error while setup logging");
+        }
       #endif
-    #else
-      if (level == LOG_NONE) {
-        SESAMELogger->setLevel(log4cxx::Level::getOff());
-      } else if (level == LOG_WARNING) {
-        SESAMELogger->setLevel(log4cxx::Level::getWarn());
-      } else if (level == LOG_DEBUG) {
-        SESAMELogger->setLevel(log4cxx::Level::getDebug());
-      } else if (level == LOG_INFO) {
-        SESAMELogger->setLevel(log4cxx::Level::getInfo());
-      } else if (level == LOG_TRACE) {
-        SESAMELogger->setLevel(log4cxx::Level::getTrace());
-      } else {
-        SESAME_ERROR("setupLogging: log level not supported " << getDebugLevelAsString(level));
-        throw Exception("Error while setup logging");
+
+        SESAMELogger->addAppender(file);
+        SESAMELogger->addAppender(console);
       }
-    #endif
 
-      SESAMELogger->addAppender(file);
-      SESAMELogger->addAppender(console);
-    }
+      static void setLogLevel(DebugLevel level) {
+        // set log level
+      #ifdef SESAME_LOGGING_LEVEL
+          ((void) level);
+        #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
+            SESAMELogger->setLevel(log4cxx::Level::getFatal());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
+            SESAMELogger->setLevel(log4cxx::Level::getError());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+            SESAMELogger->setLevel(log4cxx::Level::getWarn());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_INFO
+            SESAMELogger->setLevel(log4cxx::Level::getInfo());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+            SESAMELogger->setLevel(log4cxx::Level::getDebug());
+        #endif
+        #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+            SESAMELogger->setLevel(log4cxx::Level::getTrace());
+        #endif
+      #else
 
-    static void setLogLevel(DebugLevel level) {
-      // set log level
-    #ifdef SESAME_LOGGING_LEVEL
-        ((void) level);
-      #if SESAME_LOGGING_LEVEL == LEVEL_FATAL
-          SESAMELogger->setLevel(log4cxx::Level::getFatal());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_ERROR
-          SESAMELogger->setLevel(log4cxx::Level::getError());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_WARN
+        if (level == LOG_NONE) {
+          SESAMELogger->setLevel(log4cxx::Level::getOff());
+        } else if (level == LOG_WARNING) {
           SESAMELogger->setLevel(log4cxx::Level::getWarn());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_INFO
-          SESAMELogger->setLevel(log4cxx::Level::getInfo());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_DEBUG
+        } else if (level == LOG_DEBUG) {
           SESAMELogger->setLevel(log4cxx::Level::getDebug());
-      #endif
-      #if SESAME_LOGGING_LEVEL == LEVEL_TRACE
+        } else if (level == LOG_INFO) {
+          SESAMELogger->setLevel(log4cxx::Level::getInfo());
+        } else if (level == LOG_TRACE) {
           SESAMELogger->setLevel(log4cxx::Level::getTrace());
+        } else {
+          SESAME_ERROR("setLogLevel: log level not supported " << getDebugLevelAsString(level));
+          throw Exception("Error while trying to change log level");
+        }
       #endif
-    #else
-
-      if (level == LOG_NONE) {
-        SESAMELogger->setLevel(log4cxx::Level::getOff());
-      } else if (level == LOG_WARNING) {
-        SESAMELogger->setLevel(log4cxx::Level::getWarn());
-      } else if (level == LOG_DEBUG) {
-        SESAMELogger->setLevel(log4cxx::Level::getDebug());
-      } else if (level == LOG_INFO) {
-        SESAMELogger->setLevel(log4cxx::Level::getInfo());
-      } else if (level == LOG_TRACE) {
-        SESAMELogger->setLevel(log4cxx::Level::getTrace());
-      } else {
-        SESAME_ERROR("setLogLevel: log level not supported " << getDebugLevelAsString(level));
-        throw Exception("Error while trying to change log level");
-      }
     #endif
   }
-#endif
+
 
 #define SESAME_NOT_IMPLEMENTED()                                                                                                    \
     do {                                                                                                                         \
