@@ -8,23 +8,13 @@
 #define SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
 
 #include <Algorithm/Algorithm.hpp>
+#include <Utils/BenchmarkUtils.hpp>
+
 namespace SESAME {
 class AlgorithmFactory {
 
  public:
-  static SESAME::AlgorithmPtr create(std::string algoName,
-                                     int pointNumber,
-                                     int clusterNumber,
-                                     int dimension,
-                                     int coresetSize,
-                                     int seed,
-                                     int lastArrivingNum,
-                                     int timeWindow,
-                                     unsigned int timeInterval,
-                                     int onlineClusterNumber,
-                                     double radiusFactor,
-                                     int initBuffer,
-                                     int offlineTimeWindow);
+  static SESAME::AlgorithmPtr create(param_t &cmd_params);
 };
 }
 #endif //SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_

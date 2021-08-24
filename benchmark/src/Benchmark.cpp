@@ -35,19 +35,7 @@ int main(int argc, char **argv) {
   SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
 
   //Create Algorithm.
-  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params.algoName,
-                                                                  cmd_params.pointNumber,
-                                                                  cmd_params.clusterNumber,
-                                                                  cmd_params.dimension,
-                                                                  cmd_params.coresetSize,
-                                                                  cmd_params.seed,
-                                                                  cmd_params.lastArrivingNum,
-                                                                  cmd_params.timeWindow,
-                                                                  cmd_params.timeInterval,
-                                                                  cmd_params.onlineClusterNumber,
-                                                                  cmd_params.radiusFactor,
-                                                                  cmd_params.initBuffer,
-                                                                  cmd_params.offlineTimeWindow);
+  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
   //Run algorithm producing results.
   BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);

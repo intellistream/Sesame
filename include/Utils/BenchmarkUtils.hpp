@@ -33,6 +33,9 @@ struct param_t {
   double radiusFactor;
   int initBuffer;
   int offlineTimeWindow;
+  int maxInternalNodes;
+  int maxLeafNodes;
+  double thresholdDistance;
   std::string inputPath;
   std::string outputPath;
   std::string algoName;
