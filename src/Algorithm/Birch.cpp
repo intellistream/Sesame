@@ -20,7 +20,7 @@ void SESAME::Birch::Initilize() {
  */
 void SESAME::Birch::runOnlineClustering(const SESAME::PointPtr input) {
     // insert the root
-  forwardInsert(this->root,input,this->cfTree,this->leafNodes, this->leafMask);
+  forwardInsert(input);
 }
 
 /**
@@ -31,19 +31,18 @@ void SESAME::Birch::runOnlineClustering(const SESAME::PointPtr input) {
  * @param output
  */
 void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
-  vector<SESAME::PointPtr> middleCentroids;
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dimension, 0);
     for(int j = 0; j < BirchParam.dimension; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
     }
-    middleCentroids.push_back(centroid);
+    sinkPtr->put(centroid->copy());
   }
-  std::cout << "The size of the leafNodes is :" << middleCentroids.size() << std::endl;
-  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
-                          middleCentroids,oldGroups,newGroups, true);
-  this->kmeans->produceResult(oldGroups, sinkPtr);
+  SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+//  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
+//                          middleCentroids,oldGroups,newGroups, true);
+//  this->kmeans->produceResult(oldGroups, sinkPtr);
 }
 
 SESAME::Birch::Birch() {
@@ -207,9 +206,8 @@ void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
   }
 }
 
-void SESAME::Birch::forwardInsert(SESAME::NodePtr &root, SESAME::PointPtr point,
-                                  SESAME::CFTreePtr &tree, vector<SESAME::NodePtr> &leafNodes, int &leafMask){
-  NodePtr curNode = root;
+void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
+  NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     updateNLS(curNode, point, true);
   } else{
@@ -222,17 +220,17 @@ void SESAME::Birch::forwardInsert(SESAME::NodePtr &root, SESAME::PointPtr point,
         }
         PointPtr centroid = make_shared<Point>();
         calculateCentroid(curCF, centroid);
-        if(calculateRadius(point,  centroid) <= tree->getT()) { // concept drift detection
+        if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
           updateNLS(curNode, point, true);
           // means this point could get included in this cluster
-          cout << "No concept drift occurs(t <= T), insert tha point into the leaf node..." << endl;
+          SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
           // Normally insert the data point into the tree leafNode without concept drift
         } else {
           // concept drift adaption
-          cout << "Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T" << endl;
-          backwardEvolution(curNode, point, tree,root, leafNodes, leafMask);
+          SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
+          backwardEvolution(curNode, point);
           break;
         }
       } else{
@@ -243,10 +241,9 @@ void SESAME::Birch::forwardInsert(SESAME::NodePtr &root, SESAME::PointPtr point,
 }
 
 // concept drift adaption
-void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point,
-                                      SESAME::CFTreePtr &tree, SESAME::NodePtr &root, vector<SESAME::NodePtr> &leafNodes, int &leafMask) {
+void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   if(curNode->getParents().empty()) { // means current node is root node
-    cout << "l <= L, create a new leaf node and insert the point into it(root change)" << endl;
+    SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
     NodePtr newRoot = make_shared<CFNode>();
     newRoot->setIsLeaf(false);
     newRoot->setChild(curNode);
@@ -260,14 +257,14 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
     newRoot->getCF()->setLS(curLS);
     newRoot->getCF()->setSS(curSS);
     newRoot->getCF()->setN(curN);
-    newRoot->setIndex(leafMask++);
-    leafNodes.push_back(newRoot);
+    newRoot->setIndex(this->leafMask++);
+    this->leafNodes.push_back(newRoot);
 
 
     // update the parent node
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
-    root = newRoot;
+    this->root = newRoot;
 
   } else{
     NodePtr parent = curNode->getParents().at(0);
@@ -276,22 +273,22 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
     updateNLS(newNode, point, false);
     newNode->setParent(parent);
     parent->setChild(newNode);
-    if(parent->getChildren().size() <= tree->getL()){
+    if(parent->getChildren().size() <= this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
-      cout << "l <= L, create a new leaf node and insert the point into it" << endl;
+      SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it");
 
       // update the parent node
       updateNLS(parent, point, true);
     } else{
-      cout << "l > L, parent node of the current leaf node capacity reaches the threshold L" << endl;
-      cout << "split a new parent node from the old one " << endl;
+      SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
+      SESAME_DEBUG("split a new parent node from the old one ");
       bool CurNodeIsLeaf = true;
       while(true) {
         NodePtr parParent;
         if(parent->getParents().empty()) {
           parParent = make_shared<CFNode>();
           parParent->setIsLeaf(false);
-          root = parParent;
+          this->root = parParent;
           CFPtr parCF = parent->getCF();
           parParent->setCF(parCF);
         } else{
@@ -301,15 +298,15 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
         NodePtr newParentA = make_shared<CFNode>();
         NodePtr newParentB = make_shared<CFNode>();
         if(parent->getChildren().at(0)->getIsLeaf()) {
-          for(int i = 0; i < leafNodes.size(); i++) {
-            if(leafNodes.at(i)->getIndex() == parent->getIndex()) {
-              leafNodes.erase(leafNodes.begin() + i);
+          for(int i = 0; i < this->leafNodes.size(); i++) {
+            if(this->leafNodes.at(i)->getIndex() == parent->getIndex()) {
+              this->leafNodes.erase(this->leafNodes.begin() + i);
             }
           }
-          newParentA->setIndex(++leafMask);
-          newParentB->setIndex(++leafMask);
-          leafNodes.push_back(newParentA);
-          leafNodes.push_back(newParentB);
+          newParentA->setIndex(++this->leafMask);
+          newParentB->setIndex(++this->leafMask);
+          this->leafNodes.push_back(newParentA);
+          this->leafNodes.push_back(newParentB);
         }
 
 
@@ -369,11 +366,11 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
           updateNLS(parParent, point, true);
         }
 
-        if(parParent->getChildren().size() <= tree->getB()) {
-          cout << "b < B, remove the old node and insert the new nodeA and nodeB into the parent node" << endl;
+        if(parParent->getChildren().size() <= this->cfTree->getB()) {
+          SESAME_DEBUG("b < B, remove the old node and insert the new nodeA and nodeB into the parent node");
           break;
         }else {
-          cout << "b >= B, parent node of the current interior node capacity reaches the threshold B" << endl;
+          SESAME_DEBUG("b >= B, parent node of the current interior node capacity reaches the threshold B");
           curNode = curNode->getParents()[0];
           parent = parParent;
           CurNodeIsLeaf = false;

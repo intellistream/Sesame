@@ -38,8 +38,8 @@ class Birch : public Algorithm {
   void runOfflineClustering(DataSinkPtr sinkPtr) override;
  private:
 
-  void forwardInsert(NodePtr &root, PointPtr point, CFTreePtr &tree, vector<NodePtr> &leafNodes, int &leafMask);
-  void backwardEvolution(NodePtr &curNode, PointPtr &point, CFTreePtr &tree, NodePtr &root, vector<NodePtr> &leafNodes, int &leafMask);
+  void forwardInsert(PointPtr point);
+  void backwardEvolution(NodePtr &curNode, PointPtr &point);
   void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
   double calculateRadius(PointPtr &point, PointPtr &centroid);
   void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
