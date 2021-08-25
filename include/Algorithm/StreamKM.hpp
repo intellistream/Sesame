@@ -11,6 +11,8 @@
 #include <iostream>
 #include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
+#include <Utils/BenchmarkUtils.hpp>
+
 namespace SESAME {
 
 class StreamKMParameter : public AlgorithmParameters {
@@ -30,7 +32,7 @@ class StreamKM : public Algorithm {
   vector <PointPtr> inputs;//buffered inputs.
   vector <PointPtr> streamingCoreset;//intermediate results.
   KMeans km;//used for offline processing.
-  StreamKM();
+  StreamKM(param_t &cmd_params);
 
   ~StreamKM();
 
