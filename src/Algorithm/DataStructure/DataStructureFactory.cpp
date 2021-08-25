@@ -45,3 +45,9 @@ SESAME::SnapshotPtr SESAME::DataStructureFactory::createSnapshot(SESAME::MicroCl
 void SESAME::DataStructureFactory::clearSnapshot(SESAME::SnapshotPtr Snapshot){
   Snapshot.reset();
 }
+SESAME::CFTreePtr SESAME::DataStructureFactory::createCFTree() {
+  return std::make_shared<SESAME::CFTree>(0,0,0);
+}
+SESAME::NodePtr SESAME::DataStructureFactory::createNode() {
+  return std::make_shared<SESAME::CFNode>();
+}

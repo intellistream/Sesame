@@ -1,6 +1,8 @@
 # adding the Google_Tests_run target
 add_executable(Google_Tests_run
-        SystemTest.cpp
+        SystemTest/CluStreamTest.cpp
+        SystemTest/StreamKMTest.cpp
+        SystemTest/BirchTest.cpp
         )
 
 # linking Google_Tests_run with sesame_lib which will be tested

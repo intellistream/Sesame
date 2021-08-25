@@ -11,6 +11,9 @@
 #include <Algorithm/DataStructure/CoresetTree.hpp>
 #include <Algorithm/DataStructure/MicroCluster.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
+#include <Algorithm/DataStructure/CFTree.hpp>
+#include <Algorithm/DataStructure/FeatureVector.hpp>
+
 namespace SESAME {
 class DataStructureFactory {
 
@@ -28,6 +31,8 @@ class DataStructureFactory {
   static void clearMicroCluster(MicroClusterPtr microCluster);
   static SnapshotPtr createSnapshot(MicroClusters & otherMicroClusters,int elapsedTime);
   static void clearSnapshot(SnapshotPtr snapshot);
+  static CFTreePtr createCFTree();
+  static NodePtr createNode();
 
 };
 }

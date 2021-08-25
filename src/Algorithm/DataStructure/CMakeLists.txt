@@ -5,4 +5,6 @@ add_source_sesame(
         MicroCluster.cpp
         Snapshot.cpp
         DataStructureFactory.cpp
+        CFTree.cpp
+        FeatureVector.cpp
 )

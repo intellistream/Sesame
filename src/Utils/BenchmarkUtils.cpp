@@ -137,10 +137,13 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.radiusFactor = 70;
   cmd_params.initBuffer = 500;
   cmd_params.offlineTimeWindow = 2;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/new.txt";
+  cmd_params.maxLeafNodes = 3;
+  cmd_params.maxInternalNodes = 3;
+  cmd_params.thresholdDistance = 6550;
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "StreamKMeans";//StreamKMeans  CluStream
+  cmd_params.algoName = "Birch";//StreamKMeans  CluStream Birch
 }
 
 /* command line handling functions */
@@ -190,7 +193,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   while (!sinkPtr->isFinished());//wait for sink to stop.
 
   //Store results.
-  algoPtr->store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, sinkPtr->getResults());
+  algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
   SESAME_INFO("Finished store results: "<<sinkPtr->getResults().size());
 
   engine.stop();

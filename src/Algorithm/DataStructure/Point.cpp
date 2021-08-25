@@ -73,4 +73,7 @@ SESAME::PointPtr SESAME::Point::copy() {
 int SESAME::Point::getDimension() const {
   return this->dimension;
 }
+int SESAME::Point::getFeatureLength() {
+  return (int)this->feature->size();
+}
 

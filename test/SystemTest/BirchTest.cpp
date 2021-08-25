@@ -1,27 +1,32 @@
+//
+// Created by tuidan on 2021/8/25.
+//
 
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
-/**
- * @brief This is the main entry point of the entire program.
- * Users will typically access this file to use the stream clustering algorithm.
- * We use this as the entry point for benchmarking.
- */
+#include <filesystem>
+#include <gtest/gtest.h>
 #include <Utils/BenchmarkUtils.hpp>
 #include <Utils/Logger.hpp>
 #include <Sources/DataSourceFactory.hpp>
 #include <Sinks/DataSinkFactory.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
-using namespace std;
-
-int main(int argc, char **argv) {
+TEST(SystemTest, BirchTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
 
   //Parse parameters.
   param_t cmd_params;
-  BenchmarkUtils::defaultParam(cmd_params);
-  BenchmarkUtils::parseArgs(argc, argv, cmd_params);
+  cmd_params.pointNumber = 150;
+  cmd_params.thresholdDistance = 7;
+  cmd_params.maxInternalNodes = 3;
+  cmd_params.maxLeafNodes = 3;
+  cmd_params.dimension = 4;
+
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
+  cmd_params.outputPath = "results.txt";
+  cmd_params.algoName = "Birch";
+
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -40,4 +45,3 @@ int main(int argc, char **argv) {
   //Run algorithm producing results.
   BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 }
-
