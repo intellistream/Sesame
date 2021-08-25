@@ -1,10 +1,8 @@
 //
 // Created by 1124a on 2021/8/23.
 //
-
 #ifndef SESAME_INCLUDE_ALGORITHM_DENSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DENSTREAM_HPP_
-
 #include <cmath>
 #include <cassert>
 #include <limits>
@@ -14,7 +12,7 @@
 #include<Algorithm/DataStructure/MicroCluster.hpp>
 #include <Algorithm/OfflineClustering/DBSCAN.hpp>
 #include <Algorithm/WindowModel/DampedWindow.hpp>
-
+#include <Utils/BenchmarkUtils.hpp>
 
 namespace SESAME {
 #define noVisited (-1)
@@ -45,7 +43,11 @@ class DenStreamParams : public AlgorithmParameters {
         int pMicroClusterIndex;
         int oMicroClusterIndex;
 
-        int finalClusterNumber;
+
+
+        DenStream(param_t &cmd_params);
+
+        ~DenStream();
         void Initilize() override;
         void runOnlineClustering(PointPtr input) override;
         void runOfflineClustering(DataSinkPtr sinkPtr) override;

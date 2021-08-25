@@ -36,6 +36,13 @@ struct param_t {
   int maxInternalNodes;
   int maxLeafNodes;
   double thresholdDistance;
+  //used in DenStream(unique)
+  unsigned int minPoints;
+  double epsilon;
+  double base;
+  double lambda;
+  double mu;
+  double beta;
   std::string inputPath;
   std::string outputPath;
   std::string algoName;
