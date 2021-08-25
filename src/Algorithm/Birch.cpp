@@ -13,23 +13,13 @@ void SESAME::Birch::Initilize() {
   this->root->setIsLeaf(true);
 }
 
-/**
- * @Description: build the landmark Window, insert the data point and construct the coreset tree if the window is full
- * @Param:
- * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
- */
+
 void SESAME::Birch::runOnlineClustering(const SESAME::PointPtr input) {
     // insert the root
   forwardInsert(input);
 }
 
-/**
- * @Description: we run offline KMeans++ algorithm 5 times using the final m coreset points(this->streamingCoreset)[m>k]
- * @param clusterNumber
- * @param coresetSize
- * @param dimension
- * @param output
- */
+
 void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dimension, 0);
