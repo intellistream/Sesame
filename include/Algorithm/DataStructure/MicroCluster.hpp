@@ -33,14 +33,27 @@ class MicroCluster {
   int weight; //number of data point in the clusters
   int dimension;
 
+  //TODO Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
+  //the parameters below is unique for DenStream
+  clock_t createTime;
+  clock_t lastUpdateTime;
+  bool visited;
+
+  //TODO this may need to modify in the future (All algorithms used this, e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
   MicroCluster(int dimension, int id);
   ~MicroCluster();
   void init(PointPtr datapoint, int timestamp);
 
   void insert(PointPtr datapoint, int timestamp);
+  bool insert(PointPtr datapoint,double decayFactor,double epsilon);//Used in DenStream
+
   void merge(MicroClusterPtr other);
   void substractClusterVector(MicroClusterPtr other);
   void updateId(MicroClusterPtr other);
+
+  void resetID(int index);   //Used in DenStream
+  double getRadius();  //Used in DenStream
+
   double getRelevanceStamp(int lastArrivingNum) const;
   double getMutime() const;
   double getSigmaTime() const;
