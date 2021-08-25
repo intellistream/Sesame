@@ -35,8 +35,12 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
 //  this->kmeans->produceResult(oldGroups, sinkPtr);
 }
 
-SESAME::Birch::Birch() {
-
+SESAME::Birch::Birch(param_t &cmd_params) {
+  this->BirchParam.pointNumber = cmd_params.pointNumber;
+  this->BirchParam.dimension = cmd_params.dimension;
+  this->BirchParam.maxInternalNodes = cmd_params.maxInternalNodes;
+  this->BirchParam.maxLeafNodes = cmd_params.maxLeafNodes;
+  this->BirchParam.thresholdDistance = cmd_params.thresholdDistance;
 }
 SESAME::Birch::~Birch() {
 

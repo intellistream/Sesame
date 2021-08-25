@@ -9,6 +9,7 @@
 #include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/DataStructure/CFTree.hpp>
+#include <Utils/BenchmarkUtils.hpp>
 namespace SESAME {
 
 class BirchParameter : public AlgorithmParameters {
@@ -27,7 +28,7 @@ class Birch : public Algorithm {
   NodePtr root;
   vector<NodePtr> leafNodes;
   CFTreePtr cfTree;
-  Birch();
+  Birch(param_t &cmd_params);
 
   ~Birch();
 
