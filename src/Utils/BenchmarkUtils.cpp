@@ -193,7 +193,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   while (!sinkPtr->isFinished());//wait for sink to stop.
 
   //Store results.
-  algoPtr->store(cmd_params.outputPath, cmd_params.clusterNumber, cmd_params.dimension, sinkPtr->getResults());
+  algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
   SESAME_INFO("Finished store results: "<<sinkPtr->getResults().size());
 
   engine.stop();

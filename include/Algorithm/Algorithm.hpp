@@ -30,7 +30,7 @@ class Algorithm {
   virtual void Initilize() = 0;
   virtual void runOnlineClustering(SESAME::PointPtr input) = 0;
   virtual void runOfflineClustering(SESAME::DataSinkPtr ptr) = 0;
-  void store(std::string outputPath, int numberOfCenters, int dimension, std::vector<PointPtr> results);
+  void store(std::string outputPath, int dimension, std::vector<PointPtr> results);
 };
 }
 
