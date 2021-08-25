@@ -59,31 +59,32 @@ void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
                      newGroups,
                      true);
   // store the result input output
-  this->km.storeResult(oldGroups, centers);
-  this->km.groupPointsByCenters((int) centers.size(), (int) this->inputs.size(),
-                                const_cast<vector <PointPtr> &>(this->inputs), centers, groups);
-  // print the clustering information
-  dumpResults(centers, groups, sinkPtr);
-  cout << endl;
+  this->km.produceResult(oldGroups, sinkPtr);
+//  this->km.storeResult(oldGroups, centers);
+//  this->km.groupPointsByCenters((int) centers.size(), (int) this->inputs.size(),
+//                                const_cast<vector <PointPtr> &>(this->inputs), centers, groups);
+//  // print the clustering information
+//  dumpResults(centers, groups, sinkPtr);
+//  cout << endl;
 }
-void SESAME::StreamKM::dumpResults(vector <PointPtr> &centers,
-                                   vector <vector<SESAME::PointPtr>> groups,
-                                   DataSinkPtr sinkPtr) const {
-  int cluster = 0;
-  cout << cluster << " cluster: ";
-  for (int i = 0; i < groups.size(); i++) {
-    if (cluster != centers.at(i)->getClusteringCenter()) {
-      cluster = centers.at(i)->getClusteringCenter();
-      cout << endl << cluster << " cluster: ";
-    }
-    for (int j = 0; j < groups[i].size(); j++) {
-      groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
-      cout << groups[i][j]->getIndex() << " ";
-      sinkPtr->put(groups[i][j]);
-    }
-  }
-  cout << endl;
-}
+//void SESAME::StreamKM::dumpResults(vector <PointPtr> &centers,
+//                                   vector <vector<SESAME::PointPtr>> groups,
+//                                   DataSinkPtr sinkPtr) const {
+//  int cluster = 0;
+//  cout << cluster << " cluster: ";
+//  for (int i = 0; i < groups.size(); i++) {
+//    if (cluster != centers.at(i)->getClusteringCenter()) {
+//      cluster = centers.at(i)->getClusteringCenter();
+//      cout << endl << cluster << " cluster: ";
+//    }
+//    for (int j = 0; j < groups[i].size(); j++) {
+//      groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
+//      cout << groups[i][j]->getIndex() << " ";
+//      sinkPtr->put(groups[i][j]);
+//    }
+//  }
+//  cout << endl;
+//}
 
 SESAME::StreamKM::StreamKM() {
 

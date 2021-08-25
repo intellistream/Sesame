@@ -36,6 +36,7 @@ class Point {
   void setClusteringCenter(int index);
   int getDimension() const;
   void setDimension(int d);
+  int getFeatureLength();
   SESAME::PointPtr copy();
 };
 }
