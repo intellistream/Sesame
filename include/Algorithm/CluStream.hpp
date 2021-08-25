@@ -17,6 +17,8 @@
 #include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
+#include <Utils/BenchmarkUtils.hpp>
+
 namespace SESAME {
 
 class CluStreamParameter : public AlgorithmParameters {
@@ -42,7 +44,7 @@ class CluStream : public Algorithm {
   int pointsForgot;
   int pointsMerged;
   clock_t startTime;
-  CluStream();
+  CluStream(param_t &cmd_params);
   ~CluStream();
 
   void Initilize() override;

@@ -86,8 +86,12 @@ void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
 //  cout << endl;
 //}
 
-SESAME::StreamKM::StreamKM() {
-
+SESAME::StreamKM::StreamKM(param_t &cmd_params) {
+  this->StreamKMParam.pointNumber = cmd_params.pointNumber;
+  this->StreamKMParam.clusterNumber = cmd_params.clusterNumber;
+  this->StreamKMParam.windowSize = cmd_params.coresetSize;
+  this->StreamKMParam.seed = cmd_params.seed;
+  this->StreamKMParam.dimension = cmd_params.dimension;
 }
 SESAME::StreamKM::~StreamKM() {
 
