@@ -18,7 +18,7 @@ TEST(SystemTest, BirchTest) {
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 150;
-  cmd_params.thresholdDistance = 10;
+  cmd_params.thresholdDistance = 7;
   cmd_params.maxInternalNodes = 3;
   cmd_params.maxLeafNodes = 3;
   cmd_params.dimension = 4;
