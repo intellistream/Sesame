@@ -14,6 +14,9 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
   this->id.push_back(id);
   LST=0;
   SST=0;
+  this->visited=false;
+  this->createTime=clock();
+  this->lastUpdateTime=this->createTime;
 }
 
 //Release memory of the current micro cluster
@@ -52,7 +55,33 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
   centroid=std::move(getCentroid());
 
 }
-
+bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double epsilon){
+  bool result;
+  dataPoint LSPre; LSPre.assign(this->LS.begin(),this->LS.end());
+  dataPoint SSPre; SSPre.assign(this->SS.begin(),this->SS.end());
+  for (int i = 0; i < this->dimension; i++) {
+    double data=datapoint->getFeatureItem(i);
+    LSPre[i] *= decayFactor;
+    LSPre[i] += data;
+    SSPre[i] *= decayFactor;
+    SSPre[i] += data * data;
+  }
+  if (getRadius() < epsilon)
+  {
+    LS = LSPre;
+    SS = SSPre;
+    weight *= decayFactor;
+    weight++;
+    for (int i = 0; i < this->dimension; i++) {
+      centroid.at(i) = LS.at(i) / weight;
+    }
+    this->lastUpdateTime=clock();
+    result=true;
+  }
+  else
+    result=false;
+  return result;
+}
 //merge two micro-clusters
 void SESAME::MicroCluster::merge(MicroClusterPtr other){
   weight+=other->weight;
@@ -99,8 +128,13 @@ void SESAME::MicroCluster::updateId(MicroClusterPtr other)
   this->id.reserve(20);
 }
 
-//obtain relevance stamp of a cluster to judge whether it needs to be deleted
+//reset the unique id in MICRO CLUSTER OF DENSTREAM
+void SESAME::MicroCluster::resetID(int index){
+  this->id.pop_back();
+  this->id.push_back(index);
+}
 
+//obtain relevance stamp of a cluster to judge whether it needs to be deleted
 double SESAME::MicroCluster::getRelevanceStamp(int lastArrivingNum) const
 {
   if(weight<(2*lastArrivingNum))
@@ -134,6 +168,15 @@ double SESAME::MicroCluster::getRadius(double radiusFactor){
     radiusFactor=1.8;
 
   return getDeviation()*radiusFactor;
+}
+
+//Calculate the radius of the current micro cluster in DenStream
+double SESAME::MicroCluster::getRadius(){
+  double radius = 0;
+  for (int i = 0; i < this->dimension; i++) {
+    radius += (SS.at(i) - (pow(LS.at(i), 2) / weight));
+  }
+  return sqrt(radius / weight);
 }
 
 //calculate RMS deviation very confused

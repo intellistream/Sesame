@@ -3,6 +3,8 @@
 //
 // Created by Shuhao Zhang on 19/07/2021.
 //
+#ifndef SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_
+#define SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_
 
 #include <cstdio>
 #include <iostream>
@@ -14,3 +16,4 @@ class OfflineClustering {
  public:
 };
 }
+#endif //SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_
