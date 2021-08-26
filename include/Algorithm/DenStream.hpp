@@ -40,10 +40,9 @@ class DenStreamParams : public AlgorithmParameters {
         clock_t startTime;
         clock_t pointArrivingTime;
         long Tp;
+        int iterpoint=0;//TODO DELETE LATER
         int pMicroClusterIndex;
         int oMicroClusterIndex;
-
-
 
         DenStream(param_t &cmd_params);
 
@@ -60,7 +59,7 @@ class DenStreamParams : public AlgorithmParameters {
         void merge(PointPtr dataPoint);
         void pointsNearCorePoint(vector <PointPtr> &initData,std::vector<int> pointIndex,MicroClusterPtr microCluster);
         int nearestNeighbor(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters );
-        bool mergeToMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters,int index );
+        int mergeToMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters );
         static void  microClusterToPoint(std::vector<MicroClusterPtr> &microClusters,
                                          vector <PointPtr> &points);
         //TODO overlap functions with Clustream, may need to remove to utils folder

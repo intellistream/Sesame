@@ -58,7 +58,7 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double epsilon){
   bool result;
   dataPoint LSPre; LSPre.assign(this->LS.begin(),this->LS.end());
-  dataPoint SSPre; SSPre.assign(this->SS.begin(),this->SS.begin());
+  dataPoint SSPre; SSPre.assign(this->SS.begin(),this->SS.end());
   for (int i = 0; i < this->dimension; i++) {
     double data=datapoint->getFeatureItem(i);
     LSPre[i] *= decayFactor;
@@ -80,7 +80,6 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
   }
   else
     result=false;
-
   return result;
 }
 //merge two micro-clusters
