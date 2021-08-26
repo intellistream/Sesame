@@ -8,3 +8,6 @@
 std::shared_ptr<SESAME::LandmarkWindow> SESAME::WindowFactory::createLandmarkWindow() {
   return std::make_shared<LandmarkWindow>();
 }
+std::shared_ptr<SESAME::DampedWindow> SESAME::WindowFactory::createDampedWindow(double base, double lambda) {
+  return std::make_shared<DampedWindow>(base,lambda);
+}

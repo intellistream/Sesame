@@ -128,7 +128,7 @@ void SESAME::CluStream::deleteCreateCluster(PointPtr data) {
     threshold = elapsedTime - this->CluStreamParam.timeWindow;
   for (int i = 0; i < this->CluStreamParam.clusterNumber; i++) {
     if (microClusters[i]->getRelevanceStamp(this->CluStreamParam.lastArrivingNum) < threshold) {
-      SESAME_INFO("Need to delete");
+      //SESAME_INFO("Need to delete");
       int newId = this->CluStreamParam.clusterNumber + pointsForgot + pointsMerged;
       DataStructureFactory::clearMicroCluster(microClusters[i]);
       microClusters[i] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
