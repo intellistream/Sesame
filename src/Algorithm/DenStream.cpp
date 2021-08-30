@@ -118,9 +118,9 @@ void  SESAME::DenStream::runOnlineClustering(PointPtr input) {
         }
       }
     }
-   // SESAME_INFO("Insert Succeed "<<iterpoint);
+    // SESAME_INFO("Insert Succeed "<<iterPoint);
   }
-  iterpoint++;
+  iterPoint++;
 }
 
 void SESAME::DenStream::merge(PointPtr dataPoint){
@@ -128,16 +128,16 @@ void SESAME::DenStream::merge(PointPtr dataPoint){
   if(!this->pMicroClusters.empty())
   {
     index=mergeToMicroCluster(dataPoint,this->pMicroClusters);
-    //SESAME_INFO("Merge into PMC! "<<iterpoint<<","<< index<<",");
+    //SESAME_INFO("Merge into PMC! "<<iterPoint<<","<< index<<",");
   }
 
   if(index<0&&!this->oMicroClusters.empty())
   {
     index=mergeToMicroCluster(dataPoint,this->oMicroClusters);
-   // SESAME_INFO("Merge into OMC! "<<iterpoint<<","<< index<<",");
+    // SESAME_INFO("Merge into OMC! "<<iterPoint<<","<< index<<",");
     if(index>=0)
     { double decayFactor= this->dampedWindow->decayFunction(this->oMicroClusters.at(index)->lastUpdateTime,pointArrivingTime);
-      //SESAME_INFO("Merge INTO OMC! "<<iterpoint<<","<<index);
+      //SESAME_INFO("Merge INTO OMC! "<<iterPoint<<","<<index);
       if((this->oMicroClusters.at(index)->weight)*decayFactor>minWeight)
       {
        // SESAME_INFO("erase OMC and turn into PMC! ");
@@ -156,7 +156,7 @@ void SESAME::DenStream::merge(PointPtr dataPoint){
     MicroClusterPtr newOMicroCluster=DataStructureFactory::createMicroCluster(denStreamParams.dimension, oMicroClusterIndex);
     newOMicroCluster->init(dataPoint, 0);
     oMicroClusters.push_back(newOMicroCluster->copy());
-   // SESAME_INFO("Create new OMC! "<<iterpoint<<","<<oMicroClusterIndex);
+    // SESAME_INFO("Create new OMC! "<<iterPoint<<","<<oMicroClusterIndex);
   }
 }
 int SESAME::DenStream::mergeToMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters){
