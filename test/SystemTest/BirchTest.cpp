@@ -27,7 +27,8 @@ TEST(SystemTest, BirchTest) {
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::BirchType;
+  cmd_params.algoType = SESAME::algoType::BirchType;
+
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

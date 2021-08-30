@@ -66,10 +66,10 @@ void SESAME::DenStream::Initilize() {
   this->dbscan =
       std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon, denStreamParams.initBufferSize);
   this->startTime = clock();
-  SESAME_INFO("Start time: " << this->startTime);
+  this->lastUpdateTime= this->startTime ;
   this->pointArrivingTime = this->startTime;
   this->minWeight = denStreamParams.beta * denStreamParams.mu;
-  this->Tp = (long) (1 / denStreamParams.lambda) * (log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
+  this->Tp = (double) ((1 / denStreamParams.lambda) * log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
 }
 void SESAME::DenStream::runOnlineClustering(PointPtr input) {
 
@@ -82,15 +82,12 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
       this->isInitial = true;
     }
   } else {
-
     this->pointArrivingTime = clock();
-    SESAME_INFO("pointArrivingTime time: " << this->pointArrivingTime);
     merge(input);
-
-    long elapsedTime = (long) (this->pointArrivingTime - this->startTime) / CLOCKS_PER_SEC;
-    SESAME_INFO("Merge! " << elapsedTime << "," << elapsedTime % this->Tp);
-
-    if (elapsedTime % this->Tp == 0) {//SESAME_INFO("Check");
+    clock_t now = clock();
+    double interval = (double) ((now - lastUpdateTime) / CLOCKS_PER_SEC);
+    if (interval >= this->Tp) {
+      SESAME_INFO("Check"<<interval);
       for (int iter = 0; iter < pMicroClusters.size(); iter++) {
         if (pMicroClusters.at(iter)->weight < minWeight) {
           pMicroClusters.erase(pMicroClusters.begin() + iter);
@@ -99,8 +96,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
       }
       if (oMicroClusters.size() != 0) {
         for (int iter = 0; iter < oMicroClusters.size(); iter++) {
-          double a = (-(denStreamParams.lambda) * floor(((pointArrivingTime - oMicroClusters.at(iter)->createTime)
-              / CLOCKS_PER_SEC + this->Tp)));
+          double a = (-(denStreamParams.lambda) * floor((double)(pointArrivingTime - oMicroClusters.at(iter)->createTime)/ CLOCKS_PER_SEC + this->Tp));
           double b = (-denStreamParams.lambda * this->Tp);
           double Xi = (pow(denStreamParams.base, a) - 1) / (pow(denStreamParams.base, b) - 1);
           // SESAME_INFO("NOW Xi  "<<Xi);
@@ -110,6 +106,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
           }
         }
       }
+      lastUpdateTime=now;
     }
     // SESAME_INFO("Insert Succeed "<<iterpoint);
   }
