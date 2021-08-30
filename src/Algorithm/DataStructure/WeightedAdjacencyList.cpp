@@ -33,5 +33,3 @@ void SESAME::AdjustedWeight::add(clock_t startTime,double decayValue) {
 double SESAME::AdjustedWeight::getCurrentWeight(double decayFactor){
   return weight * decayFactor;
 }
-
-
