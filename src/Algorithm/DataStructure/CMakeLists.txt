@@ -4,6 +4,7 @@ add_source_sesame(
         CoresetTree.cpp
         MicroCluster.cpp
         Snapshot.cpp
+        WeightedAdjacencyList.cpp
         DataStructureFactory.cpp
         CFTree.cpp
         FeatureVector.cpp

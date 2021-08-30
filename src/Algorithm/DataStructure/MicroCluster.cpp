@@ -17,6 +17,23 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
   this->visited=false;
   this->createTime=clock();
   this->lastUpdateTime=this->createTime;
+  radius=0;
+}
+SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
+  this->dimension=dimension;
+  weight=1;
+  this->id.push_back(id);
+  LST=0;
+  SST=0;
+  this->visited=false;
+  this->createTime=clock();
+  this->lastUpdateTime=this->createTime;
+  this->radius=radius;
+  for (int i = 0; i < dimension; i++) {
+    double data = dataPoint->getFeatureItem(i);
+    LS.push_back(data);
+    centroid.push_back(data);
+  }
 }
 
 //Release memory of the current micro cluster
@@ -40,6 +57,7 @@ void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
   SST+=timestamp*timestamp;
 }
 
+
 //insert a new data point from input data stream
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
@@ -53,8 +71,29 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
   LST+=timestamp;
   SST+=timestamp*timestamp;
   centroid=std::move(getCentroid());
-
 }
+void SESAME::MicroCluster::insert(PointPtr datapoint)
+{
+  weight++;
+  double val = exp(-(pow(3 * this->distance / radius, 2) / 2));
+  for(int i=0; i<LS.size(); i++) {
+    double data=datapoint->getFeatureItem(i);
+    LS[i] = centroid.at(i) + val * (data - centroid.at(i));
+  }
+}
+double SESAME::MicroCluster::getDistance(PointPtr datapoint){
+  this->distance=calCentroidDistance(datapoint);
+  return this->distance;
+}
+double SESAME::MicroCluster::getDistance(MicroClusterPtr other){
+  double temp = 0, dist = 0;
+  for (int i = 0; i < this->dimension; i++) {
+    temp = this->centroid[i] - other->centroid[i];
+    dist += temp * temp;
+  }
+  return sqrt(dist);
+}
+
 bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double epsilon){
   bool result;
   dataPoint LSPre; LSPre.assign(this->LS.begin(),this->LS.end());
@@ -97,7 +136,7 @@ void SESAME::MicroCluster::merge(MicroClusterPtr other){
 }
 
 //Calculate the process of micro cluster N(Tc-h')
-void SESAME::MicroCluster::substractClusterVector(MicroClusterPtr other)
+void SESAME::MicroCluster::subtractClusterVector(MicroClusterPtr other)
 {
   this->weight-=other->weight;
   for(int i=0; i<dimension; i++) {
@@ -254,6 +293,12 @@ double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint){
   }
   return sqrt(temp);
 }
+
+//Still need to modify
+void SESAME::MicroCluster::move(){
+  this->centroid=this->LS;
+}
+
 
 double SESAME::MicroCluster::inverseError(double x){
   double z = sqrt(M_PI) * x;

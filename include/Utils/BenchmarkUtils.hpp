@@ -44,6 +44,11 @@ struct param_t {
   double lambda;
   double mu;
   double beta;
+  //used in DBStream
+  double radius;
+  int cleanUpInterval;
+  double weightMin;
+  double alpha;
   std::string inputPath;
   std::string outputPath;
   std::string algoName;

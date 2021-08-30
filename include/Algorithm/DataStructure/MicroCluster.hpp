@@ -32,23 +32,27 @@ class MicroCluster {
   int SST;//the sum of the squares of the time stamps  Til... Tin
   double weight; //number of data point in the clusters
   int dimension;
+  double radius;//Used in DBStream
 
-  //TODO Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
+
   //the parameters below is unique for DenStream
   clock_t createTime;
   clock_t lastUpdateTime;
   bool visited;
 
-  //TODO this may need to modify in the future (All algorithms used this, e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
+  //TODO 1. Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
+  // 2.this may need to modify in the future (All algorithms used this, e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
+
+
   MicroCluster(int dimension, int id);
+  MicroCluster(int dimension, int id,PointPtr dataPoint,double radius);//DBStream
   ~MicroCluster();
   void init(PointPtr datapoint, int timestamp);
-
-  void insert(PointPtr datapoint, int timestamp);
-  bool insert(PointPtr datapoint,double decayFactor,double epsilon);//Used in DenStream
-
+  void insert(PointPtr datapoint, int timestamp);//Used in CluStream
+  bool insert(PointPtr datapoint,double decayFactor,double epsilon);// DenStream
+  void insert(PointPtr datapoint);//DBStream
   void merge(MicroClusterPtr other);
-  void substractClusterVector(MicroClusterPtr other);
+  void subtractClusterVector(MicroClusterPtr other);
   void updateId(MicroClusterPtr other);
 
   void resetID(int index);   //Used in DenStream
@@ -65,9 +69,13 @@ class MicroCluster {
   dataPoint getVarianceVector();
   double calCentroidDistance(PointPtr datapoint);
   bool judgeMerge(MicroClusterPtr other);
+  double getDistance(PointPtr datapoint);//DBStream
+  double getDistance(MicroClusterPtr other);//DBStream
+  void move();//DBStream
   SESAME::MicroClusterPtr copy();
 
  private:
+  double distance;
   static double inverseError(double x);
 };
 }
