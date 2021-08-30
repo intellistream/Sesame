@@ -200,6 +200,7 @@ void SESAME::CluStream::Initilize() {
   this->window = WindowFactory::createLandmarkWindow();
   this->window->pyramidalWindow.timeInterval = this->CluStreamParam.timeInterval;
   this->startTime = clock();
+  this->lastUpdateTime=this->startTime;
   window->initPyramidalWindow(this->window->pyramidalWindow.timeInterval);
 
 }
@@ -233,13 +234,12 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
     }
   } else {
     int interval;
-    clock_t lastTime = clock();
     clock_t now = clock();
-    interval = (int) ((now - lastTime) / CLOCKS_PER_SEC);
-    if (interval >= 1)//
+    interval = (int) ((now - lastUpdateTime) / CLOCKS_PER_SEC);
+    if (interval >= 1)
     {
       window->pyramidalWindowProcess(startTime, microClusters);
-      lastTime = now;
+      lastUpdateTime = now;
     }
     incrementalCluster(input);
 

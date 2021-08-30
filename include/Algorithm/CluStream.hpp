@@ -44,6 +44,7 @@ class CluStream : public Algorithm {
   int pointsForgot;
   int pointsMerged;
   clock_t startTime;
+  clock_t lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
 
