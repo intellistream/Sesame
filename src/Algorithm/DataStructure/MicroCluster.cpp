@@ -18,7 +18,6 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
   this->createTime=clock();
   this->lastUpdateTime=this->createTime;
   radius=0;
-  visited=false;
 }
 SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
   this->dimension=dimension;
@@ -26,7 +25,7 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,doub
   this->id.push_back(id);
   LST=0;
   SST=0;
-  this->visited=true;
+  this->visited=false;
   this->createTime=clock();
   this->lastUpdateTime=this->createTime;
   this->radius=radius;
@@ -35,7 +34,6 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,doub
     LS.push_back(data);
     centroid.push_back(data);
   }
-
 }
 
 //Release memory of the current micro cluster
@@ -301,9 +299,7 @@ void SESAME::MicroCluster::move(){
   this->centroid=this->LS;
 }
 
-void SESAME::MicroCluster::decayWeight(double decayFactor){
-  this->weight *=decayFactor;
-}
+
 double SESAME::MicroCluster::inverseError(double x){
   double z = sqrt(M_PI) * x;
   double res = (z) / 2;
