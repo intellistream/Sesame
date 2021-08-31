@@ -299,7 +299,9 @@ void SESAME::MicroCluster::move(){
   this->centroid=this->LS;
 }
 
-
+void SESAME::MicroCluster::decayWeight(double decayFactor){
+  this->weight *=decayFactor;
+}
 double SESAME::MicroCluster::inverseError(double x){
   double z = sqrt(M_PI) * x;
   double res = (z) / 2;

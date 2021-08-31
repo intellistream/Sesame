@@ -32,6 +32,7 @@ class DBStream : public Algorithm
       DampedWindowPtr dampedWindow;
       unordered_set<MicroClusterPtr> microClusters;
       SESAME::WeightedAdjacencyList weightedAdjacencyList;
+      std::vector<MicroClusterPtr> microClusterNN;
       double weakEntry;//W_weak, weak entries
       double aWeakEntry;
       clock_t startTime;
@@ -45,11 +46,10 @@ class DBStream : public Algorithm
       void runOfflineClustering(DataSinkPtr sinkPtr) override;
      private:
       bool isInitial  = false;
-     // vector <PointPtr> initialBuffer;
       void update(PointPtr dataPoint);
-      void cleanUp(clock_t time);
-      bool checkMove( std::vector<MicroClusterPtr> microClusters);
+      bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint, double decayFactor);
+      void cleanUp(clock_t nowTime);
     };
 
 }
