@@ -72,6 +72,7 @@ class MicroCluster {
   double getDistance(PointPtr datapoint);//DBStream
   double getDistance(MicroClusterPtr other);//DBStream
   void move();//DBStream
+  void decayWeight(double decayFactor);
   SESAME::MicroClusterPtr copy();
 
  private:
