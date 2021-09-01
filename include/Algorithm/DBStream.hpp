@@ -16,6 +16,7 @@
 #include <Utils/BenchmarkUtils.hpp>
 #include <Algorithm/DataStructure/WeightedAdjacencyList.hpp>
 namespace SESAME {
+typedef std::vector<std::vector<MicroClusterPtr>> Clusters;
 class DBStreamParams : public AlgorithmParameters {
  public:
   double radius;
@@ -32,12 +33,14 @@ class DBStream : public Algorithm
       DampedWindowPtr dampedWindow;
       unordered_set<MicroClusterPtr> microClusters;
       SESAME::WeightedAdjacencyList weightedAdjacencyList;
-      std::vector<MicroClusterPtr> microClusterNN;
+      std::vector<MicroClusterPtr> microClusterNN;//micro clusters found in function findFixedRadiusNN
       double weakEntry;//W_weak, weak entries
       double aWeakEntry;
       clock_t startTime;
       clock_t pointArrivingTime;
       int microClusterIndex;
+      //Final output of clusters
+      Clusters finalClusters;
       //TODO Need to implement weighted a weighted adjacency list S
       DBStream(param_t &cmd_params);
       ~DBStream();
@@ -50,6 +53,12 @@ class DBStream : public Algorithm
       bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint, double decayFactor);
       void cleanUp(clock_t nowTime);
+      void reCluster(double threshold);
+      static void insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+                                  MicroClusterPtr microCluster,MicroClusterPtr Other);
+      static void insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+                           MicroClusterPtr microCluster);
+      void findConnectedComponents(unordered_map<MicroClusterPtr,unordered_set<MicroClusterPtr>> connectivityGraph);
     };
 
 }
