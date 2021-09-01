@@ -89,4 +89,7 @@ void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {
 SESAME::DataSource::~DataSource() {
   stop();
 }
+vector<SESAME::PointPtr> SESAME::DataSource::getInputs() {
+  return input;
+}
 
