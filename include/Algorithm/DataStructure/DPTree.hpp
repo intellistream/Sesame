@@ -33,7 +33,7 @@ class DPTree {
  public:
   DPTree();
   ~DPTree();
-
+  DPTree(int num, double CluR);
 };
 
 
@@ -62,9 +62,13 @@ class DPNode {
  public:
   DPNode();
   ~DPNode();
+
+  int getCid();
+  int getcid();
+
   explicit DPNode(SESAME::PointPtr p, long startTime);
-  void insert(SESAME::PointPtr p);
-  void add(SESAME::PointPtr p, double coef);
+  void insert(SESAME::PointPtr p, long startTime);
+  void add(SESAME::PointPtr p, double coef, long startTime);
   void addSuccessor(SESAME::DPNodePtr &node);
   void removeSuccessor(SESAME::DPNodePtr &node);
   bool hasSuccessor();
