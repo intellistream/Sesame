@@ -31,6 +31,7 @@ class DataSource {
   void load(int point_number, int dimension, vector <string> input);
   bool empty();
   PointPtr get();
+  std::vector<PointPtr> getInputs();
   DataSource();
   ~DataSource();
   void runningRoutine();

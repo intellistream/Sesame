@@ -140,16 +140,17 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.maxLeafNodes = 3;
   cmd_params.maxInternalNodes = 3;
   cmd_params.thresholdDistance = 6550;
-  cmd_params.minPoints=10;
-  cmd_params.epsilon=50;
-  cmd_params.base=2;
-  cmd_params.lambda=1.8;
-  cmd_params.mu=7;
-  cmd_params.beta=5;
+  cmd_params.minPoints = 10;
+  cmd_params.epsilon = 50;
+  cmd_params.base = 2;
+  cmd_params.lambda = 1.8;
+  cmd_params.mu = 7;
+  cmd_params.beta = 5;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoName = "Birch";//StreamKMeans  CluStream Birch
+  cmd_params.evaluateType = SESAME::euclideanCost;
 }
 
 /* command line handling functions */
@@ -200,8 +201,17 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
-  SESAME_INFO("Finished store results: "<<sinkPtr->getResults().size());
+  SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
+  switch (cmd_params.evaluateType) {
+    case SESAME::euclideanCost:
+      SESAME::Evaluation::euclideanCost(cmd_params.pointNumber,
+                                        sinkPtr->getResults().size(),
+                                        cmd_params.dimension,
+                                        sourcePtr->getInputs(),
+                                        sinkPtr->getResults());
+      break;
+  }
   engine.stop();
 }
 
