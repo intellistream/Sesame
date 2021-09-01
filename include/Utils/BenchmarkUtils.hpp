@@ -19,6 +19,7 @@
 #include <Sources/DataSource.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/Algorithm.hpp>
+#include <Evaluation/Evaluation.hpp>
 
 struct param_t {
   int pointNumber;
@@ -46,7 +47,7 @@ struct param_t {
   std::string inputPath;
   std::string outputPath;
   std::string algoName;
-
+  SESAME::evaluateType evaluateType;
 };
 
 class BenchmarkUtils {

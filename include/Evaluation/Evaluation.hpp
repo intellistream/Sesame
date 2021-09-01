@@ -9,6 +9,9 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <vector>
 namespace SESAME {
+
+enum evaluateType { euclideanCost };
+
 class Evaluation {
  public:
   static void euclideanCost(int numberOfPoints,

@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
 # Judge the os system
-
 if (UNIX AND NOT APPLE)
     add_definitions(-DUSELOG4CXX)
     MESSAGE(STATUS "Enalbe Log4CXX")
