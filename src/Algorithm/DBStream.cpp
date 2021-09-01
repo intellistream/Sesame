@@ -40,8 +40,13 @@ void SESAME::DBStream::Initilize() {
   }
 }
 void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
+
   sinkPtr;
+  reCluster(dbStreamParams.alpha);
 }
+
+
+
 void SESAME::DBStream::update(PointPtr dataPoint){
   double decayFactor=dampedWindow->decayFunction(this->pointArrivingTime, clock());
   this->pointArrivingTime=clock();
@@ -131,3 +136,71 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
   }
 }
 
+void SESAME::DBStream::reCluster(double threshold){
+  unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph;//C in DBStream paper
+  WeightedAdjacencyList::iterator interW;
+  for (interW = weightedAdjacencyList.begin(); interW != weightedAdjacencyList.end(); interW++){
+    MicroClusterPtr microCluster1 =interW->first->microCluster1->copy();
+    MicroClusterPtr microCluster2 =interW->first->microCluster2->copy();
+    if (microCluster1->weight >= dbStreamParams.weightMin &&microCluster2->weight >= dbStreamParams.weightMin){
+      double val = 2*interW->second->weight / (microCluster1->weight+microCluster2->weight);
+      if (val > threshold) {
+        insertIntoGraph(connectivityGraph,microCluster1,microCluster2);
+        insertIntoGraph(connectivityGraph,microCluster2,microCluster1);
+      }
+      else
+      {
+        insertIntoGraph(connectivityGraph,microCluster1);
+        insertIntoGraph(connectivityGraph,microCluster2);
+      }
+    }
+  }
+  findConnectedComponents(connectivityGraph);
+
+}
+void SESAME::DBStream::insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+                            MicroClusterPtr microCluster,MicroClusterPtr Other){
+  if (connectivityGraph.find(microCluster)!=connectivityGraph.end())
+    connectivityGraph.find(microCluster)->second.insert(Other);
+  else{
+    microCluster->visited = false;
+    unordered_set<MicroClusterPtr> newMicroClusterSet;
+    newMicroClusterSet.insert(Other);
+    connectivityGraph.insert(std::make_pair(microCluster,newMicroClusterSet));
+  }
+}
+void SESAME::DBStream::insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+                                       MicroClusterPtr microCluster){
+  if (connectivityGraph.find(microCluster)==connectivityGraph.end())
+  {
+    microCluster->visited = false;
+    unordered_set<MicroClusterPtr> newMicroClusterSet;
+    connectivityGraph.insert(std::make_pair(microCluster,newMicroClusterSet));
+  }
+}
+
+void SESAME::DBStream::findConnectedComponents(unordered_map<MicroClusterPtr,
+                                               unordered_set<MicroClusterPtr>> connectivityGraph){
+  unordered_map<MicroClusterPtr,unordered_set<MicroClusterPtr>>::iterator inter;
+  for (inter = connectivityGraph.begin(); inter != connectivityGraph.end(); inter++){
+    if (!inter->first->visited) {
+      std::vector<MicroClusterPtr> newCluster, clusterGroup;
+      newCluster.push_back(inter->first);
+      while (!newCluster.empty()) {
+        //after found the front one, insert it into clusterGroup and delete from the original vector
+        MicroClusterPtr microCluster = newCluster.front();
+        newCluster.erase(newCluster.begin());
+        clusterGroup.push_back(microCluster);
+        microCluster->visited = true;
+
+        for(const auto & interS : inter->second)
+        {
+          if (!interS->visited)
+            newCluster.push_back(interS);
+        }
+      }
+      this->finalClusters.push_back(clusterGroup);
+    }
+  }
+
+}
