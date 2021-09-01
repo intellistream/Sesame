@@ -6,5 +6,6 @@ add_source_sesame(
         Snapshot.cpp
         DataStructureFactory.cpp
         CFTree.cpp
+        DPTree.cpp
         FeatureVector.cpp
 )
