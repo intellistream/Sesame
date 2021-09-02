@@ -31,7 +31,7 @@ TEST(SystemTest, CluStreamTest) {
   cmd_params.offlineTimeWindow = 2;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = "CluStream";//StreamKMeans  CluStream
+  cmd_params.algoType = SESAME::CluStreamType;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

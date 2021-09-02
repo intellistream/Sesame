@@ -3,13 +3,13 @@
 #ifndef SESAME_SRC_TIMER_CYCLEMETER_HPP_
 #define SESAME_SRC_TIMER_CYCLEMETER_HPP_
 
-#include <sys/time.h>           /* gettimeofday */
+#include <time.h>           /* gettimeofday */
 #include <cstddef>
 #include <cstdint>
 namespace SESAME {
 class TimeMeter {
  private:
-  timeval start, end;
+  struct timespec start, stop;
  public:
   void START_MEASURE();
   void END_MEASURE();

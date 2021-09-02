@@ -149,7 +149,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::CluStreamType;
+  cmd_params.algoType = SESAME::BirchType;
   cmd_params.evaluateType = SESAME::euclideanCostType;
 }
 
