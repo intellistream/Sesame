@@ -39,7 +39,8 @@ class DenStreamParams : public AlgorithmParameters {
         std::vector <MicroClusterPtr> oMicroClusters;
         clock_t startTime;
         clock_t pointArrivingTime;
-        long Tp;
+        clock_t lastUpdateTime;//for calculating time interval
+        double Tp;
         int iterpoint=0;//TODO DELETE LATER
         int pMicroClusterIndex;
         int oMicroClusterIndex;
