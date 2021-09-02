@@ -63,7 +63,7 @@ void SESAME::DataSink::setBarrier(SESAME::BarrierPtr barrierPtr) {
 SESAME::DataSink::~DataSink() {
   stop();
 }
-void SESAME::DataSink::sourceEnded() {
+void SESAME::DataSink::Ended() {
   this->sourceEnd = true;
 }
 bool SESAME::DataSink::isFinished() {

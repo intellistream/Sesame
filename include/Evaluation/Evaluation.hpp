@@ -10,7 +10,7 @@
 #include <vector>
 namespace SESAME {
 
-enum evaluateType { euclideanCost };
+enum evaluateType { euclideanCostType };
 
 class Evaluation {
  public:

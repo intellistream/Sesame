@@ -14,6 +14,8 @@
 using namespace std;
 namespace SESAME {
 
+enum algoType { BirchType, StreamKMeansType, CluStreamType, DenStreamType };
+
 class Algorithm;
 typedef std::shared_ptr<Algorithm> AlgorithmPtr;
 

@@ -14,6 +14,7 @@
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/SPSCQueue.hpp>
 #include <Engine/SingleThread.hpp>
+#include <Timer/TimeMeter.hpp>
 
 using namespace std;
 
@@ -27,8 +28,10 @@ class DataSource {
   std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
+  TimeMeter overallMeter;
+  bool sourceEnd;
  public:
-  void load(int point_number, int dimension, vector <string> input);
+  void load(int point_number, int dimension, vector<string> input);
   bool empty();
   PointPtr get();
   std::vector<PointPtr> getInputs();
@@ -38,7 +41,8 @@ class DataSource {
   bool start(int i);
   bool stop();
   void setBarrier(BarrierPtr barrierPtr);
-
+  void printTime();
+  bool sourceEnded();
 };
 }
 #endif //SESAME_SRC_SOURCES_DATASOURCE_HPP_
