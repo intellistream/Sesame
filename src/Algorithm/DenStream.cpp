@@ -66,10 +66,10 @@ void SESAME::DenStream::Initilize() {
   this->dbscan =
       std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon, denStreamParams.initBufferSize);
   this->startTime = clock();
-  SESAME_INFO("Start time: " << this->startTime);
+  this->lastUpdateTime = this->startTime;
   this->pointArrivingTime = this->startTime;
   this->minWeight = denStreamParams.beta * denStreamParams.mu;
-  this->Tp = (long) (1 / denStreamParams.lambda) * (log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
+  this->Tp = (double) (1 / denStreamParams.lambda) * (log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
 }
 void SESAME::DenStream::runOnlineClustering(PointPtr input) {
 
@@ -82,15 +82,12 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
       this->isInitial = true;
     }
   } else {
-
     this->pointArrivingTime = clock();
-    SESAME_INFO("pointArrivingTime time: " << this->pointArrivingTime);
     merge(input);
-
-    long elapsedTime = (long) (this->pointArrivingTime - this->startTime) / CLOCKS_PER_SEC;
-    SESAME_INFO("Merge! " << elapsedTime << "," << elapsedTime % this->Tp);
-
-    if (elapsedTime % this->Tp == 0) {//SESAME_INFO("Check");
+    clock_t now=clock();
+    double elapsedTime = (double) ( this->lastUpdateTime -now) / CLOCKS_PER_SEC;
+    if (elapsedTime >=this->Tp ) {
+      SESAME_INFO("Check"<<elapsedTime);
       for (int iter = 0; iter < pMicroClusters.size(); iter++) {
         if (pMicroClusters.at(iter)->weight < minWeight) {
           pMicroClusters.erase(pMicroClusters.begin() + iter);
@@ -110,6 +107,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
           }
         }
       }
+      this->lastUpdateTime =now;
     }
     // SESAME_INFO("Insert Succeed "<<iterpoint);
   }
