@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by Zhenyu on 2021/8/25.
 //
@@ -27,7 +29,7 @@ TEST(SystemTest, DenStreamTest) {
   cmd_params.initBuffer = 1000;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "DenStream";
+  cmd_params.algoType = "DenStream";
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

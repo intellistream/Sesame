@@ -1,4 +1,3 @@
-
 // Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
 /**
@@ -28,6 +27,7 @@ int main(int argc, char **argv) {
 
   //Create Spout.
   SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+
   //Directly load data from file. TODO: configure it to load from external sensors, e.g., HTTP.
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 

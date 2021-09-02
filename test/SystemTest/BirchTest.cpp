@@ -1,3 +1,5 @@
+// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+
 //
 // Created by tuidan on 2021/8/25.
 //
@@ -25,7 +27,7 @@ TEST(SystemTest, BirchTest) {
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "Birch";
+  cmd_params.algoType = "Birch";
 
 
   std::vector<SESAME::PointPtr> input;

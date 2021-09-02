@@ -26,6 +26,7 @@ class SimpleEngine : SESAME::Engine {
   AlgorithmPtr algoPtr;
   SingleThreadPtr threadPtr;//SimpleEngine has only one thread to run algorithm.
   atomic_int threadID;
+  TimeMeter overallMeter;
  public:
   BarrierPtr barrierPtr;
   SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
@@ -39,6 +40,7 @@ class SimpleEngine : SESAME::Engine {
              int id);//start the algorithm thread.
   bool stop();
   int assignID();
+  void printTime();
 };
 }
 #endif //SESAME_INCLUDE_Engine_SINGLETHREADENGINE_H_
