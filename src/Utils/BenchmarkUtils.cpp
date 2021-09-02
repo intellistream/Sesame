@@ -149,8 +149,8 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "Birch";//StreamKMeans  CluStream Birch
-  cmd_params.evaluateType = SESAME::euclideanCost;
+  cmd_params.algoType = SESAME::BirchType;
+  cmd_params.evaluateType = SESAME::euclideanCostType;
 }
 
 /* command line handling functions */
@@ -204,7 +204,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
   switch (cmd_params.evaluateType) {
-    case SESAME::euclideanCost:
+    case SESAME::euclideanCostType:
       SESAME::Evaluation::euclideanCost(cmd_params.pointNumber,
                                         sinkPtr->getResults().size(),
                                         cmd_params.dimension,

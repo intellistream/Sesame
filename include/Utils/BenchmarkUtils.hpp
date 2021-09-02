@@ -46,7 +46,7 @@ struct param_t {
   double beta;
   std::string inputPath;
   std::string outputPath;
-  std::string algoName;
+  SESAME::algoType algoType;
   SESAME::evaluateType evaluateType;
 };
 
