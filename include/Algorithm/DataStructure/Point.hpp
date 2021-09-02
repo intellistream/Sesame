@@ -37,6 +37,7 @@ class Point {
   int getDimension() const;
   void setDimension(int d);
   int getFeatureLength();
+  double getDisTo(SESAME::PointPtr p);
   SESAME::PointPtr copy();
 };
 }

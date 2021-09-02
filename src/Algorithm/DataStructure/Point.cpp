@@ -4,6 +4,7 @@
 // Created by Shuhao Zhang on 19/07/2021.
 //
 
+#include <cmath>
 #include <Algorithm/DataStructure/Point.hpp>
 
 SESAME::Point::Point() {
@@ -77,3 +78,10 @@ int SESAME::Point::getFeatureLength() {
   return (int)this->feature->size();
 }
 
+double SESAME::Point::getDisTo(SESAME::PointPtr p) {
+  double distance = 0;
+  for(int i = 0; i < this->dimension; i++) {
+    distance = distance + pow(p->getFeatureItem(i) - this->getFeatureItem(i), 2);
+  }
+  return sqrt(distance);
+}
