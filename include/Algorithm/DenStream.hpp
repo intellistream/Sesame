@@ -39,8 +39,9 @@ class DenStreamParams : public AlgorithmParameters {
         std::vector <MicroClusterPtr> oMicroClusters;
         clock_t startTime;
         clock_t pointArrivingTime;
-        long Tp;
-        int iterPoint=0;//TODO DELETE LATER
+        clock_t lastUpdateTime;//for calculating time interval
+        double Tp;
+        int iterpoint=0;//TODO DELETE LATER
         int pMicroClusterIndex;
         int oMicroClusterIndex;
 
@@ -62,6 +63,7 @@ class DenStreamParams : public AlgorithmParameters {
         int mergeToMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters );
         static void  microClusterToPoint(std::vector<MicroClusterPtr> &microClusters,
                                          vector <PointPtr> &points);
+        //TODO overlap functions with Clustream, may need to remove to utils folder
       };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DENSTREAM_HPP_

@@ -32,7 +32,7 @@ class DataSink {
   void runningRoutine();
   bool start(int id);
   bool stop();
-  void sourceEnded();
+  void Ended();
   bool isFinished();
   std::vector<PointPtr> getResults();
   void setBarrier(BarrierPtr barrierPtr);

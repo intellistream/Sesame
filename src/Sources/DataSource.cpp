@@ -43,17 +43,22 @@ void SESAME::DataSource::load(int point_number, int dimension, vector<string> in
 SESAME::DataSource::DataSource() {
   inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(1000);//TODO: remove hard-coded queue initialization.
   threadPtr = std::make_shared<SingleThread>();
+  sourceEnd = false;
 }
 
 //TODO: we can control the source speed here.
 void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
+  overallMeter.START_MEASURE();
   SESAME_INFO("DataSource start to emit data");
   for (PointPtr p: this->input) {
     inputQueue->push(p);
   }
+  sourceEnd = true;//Let engine knows that there won't be any more data coming.
   barrierPtr->arrive_and_wait();
+  overallMeter.END_MEASURE();
   SESAME_INFO("DataSource sourceEnd emit data");
+  printTime();
 }
 
 bool SESAME::DataSource::start(int id) {
@@ -66,7 +71,7 @@ bool SESAME::DataSource::start(int id) {
 }
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
-    SESAME_INFO("DataSource::stop try to join threads="<< threadPtr->getID());
+    SESAME_INFO("DataSource::stop try to join threads=" << threadPtr->getID());
     threadPtr->join();
     threadPtr.reset();
   } else {
@@ -78,11 +83,13 @@ bool SESAME::DataSource::stop() {
 bool SESAME::DataSource::empty() {
   return inputQueue->empty();
 }
+
 SESAME::PointPtr SESAME::DataSource::get() {
   auto rt = *inputQueue->front();
   inputQueue->pop();
   return rt;
 }
+
 void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {
   this->barrierPtr = barrierPtr;
 }
@@ -91,5 +98,11 @@ SESAME::DataSource::~DataSource() {
 }
 vector<SESAME::PointPtr> SESAME::DataSource::getInputs() {
   return input;
+}
+void SESAME::DataSource::printTime() {
+  SESAME_INFO("DataSource takes " << overallMeter.MeterUSEC() << " useconds to finish.");
+}
+bool SESAME::DataSource::sourceEnded() {
+  return sourceEnd;
 }
 

@@ -12,19 +12,19 @@
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
-  if (cmd_params.algoName == "StreamKMeans") {
+  if (cmd_params.algoType == SESAME::StreamKMeansType) {
     shared_ptr<StreamKM> streamkm = std::make_shared<StreamKM>(cmd_params);;
     return (SESAME::AlgorithmPtr) streamkm;
   }
-  if (cmd_params.algoName == "CluStream") {
+  if (cmd_params.algoType == SESAME::CluStreamType) {
     shared_ptr<CluStream> cluStream = std::make_shared<CluStream>(cmd_params);
     return (SESAME::AlgorithmPtr) cluStream;
   }
-  if (cmd_params.algoName == "Birch") {
+  if (cmd_params.algoType == SESAME::BirchType) {
     shared_ptr<Birch> birch = std::make_shared<Birch>(cmd_params);
     return (SESAME::AlgorithmPtr) birch;
   }
-  if (cmd_params.algoName == "DenStream") {
+  if (cmd_params.algoType == SESAME::DenStreamType) {
     shared_ptr<DenStream> denStream = std::make_shared<DenStream>(cmd_params);
     return (SESAME::AlgorithmPtr) denStream;
   }

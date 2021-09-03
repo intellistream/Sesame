@@ -26,7 +26,7 @@ TEST(SystemTest, StreamKMTest) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoName = "StreamKMeans";
+  cmd_params.algoType = SESAME::StreamKMeansType;
 
 
   std::vector<SESAME::PointPtr> input;
