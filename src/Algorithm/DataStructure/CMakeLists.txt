@@ -7,5 +7,8 @@ add_source_sesame(
         DataStructureFactory.cpp
         CFTree.cpp
         DPTree.cpp
+        DPNode.cpp
+        Cache.cpp
+        OutlierResevoir.cpp
         FeatureVector.cpp
 )

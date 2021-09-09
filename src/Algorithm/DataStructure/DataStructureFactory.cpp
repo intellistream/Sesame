@@ -51,3 +51,22 @@ SESAME::CFTreePtr SESAME::DataStructureFactory::createCFTree() {
 SESAME::NodePtr SESAME::DataStructureFactory::createNode() {
   return std::make_shared<SESAME::CFNode>();
 }
+SESAME::DPNodePtr SESAME::DataStructureFactory::createDPNode() {
+  return std::make_shared<SESAME::DPNode>();
+}
+SESAME::DPNodePtr SESAME::DataStructureFactory::createDPNode(SESAME::PointPtr p, double time) {
+  return std::make_shared<SESAME::DPNode>(p, time);
+}
+SESAME::OutPtr SESAME::DataStructureFactory::createOutlierReservoir() {
+  return std::make_shared<SESAME::OutlierReservoir>();
+}
+SESAME::CachePtr SESAME::DataStructureFactory::creatCache() {
+  return std::make_shared<SESAME::Cache>();
+}
+SESAME::OutPtr SESAME::DataStructureFactory::createOutlierReservoir(double r, double a, double lamd) {
+  return std::make_shared<SESAME::OutlierReservoir>(r, a, lamd);
+}
+SESAME::CachePtr SESAME::DataStructureFactory::creatCache(int num, double a, double lamd, double r) {
+  return std::make_shared<SESAME::Cache>(num, a, lamd, r);
+}
+
