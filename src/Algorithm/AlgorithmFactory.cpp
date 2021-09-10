@@ -8,6 +8,7 @@
 #include <Algorithm/CluStream.hpp>
 #include <Algorithm/DenStream.hpp>
 #include <Algorithm/Birch.hpp>
+#include <Algorithm/EDMStream.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
@@ -26,6 +27,10 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algoType == SESAME::DenStreamType) {
     shared_ptr<DenStream> denStream = std::make_shared<DenStream>(cmd_params);
     return (SESAME::AlgorithmPtr) denStream;
+  }
+  if (cmd_params.algoType == SESAME::EDMStreamType) {
+    shared_ptr<EDMStream> eDMStream = std::make_shared<EDMStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) eDMStream;
   }
   throw std::invalid_argument("Unsupported");
 }

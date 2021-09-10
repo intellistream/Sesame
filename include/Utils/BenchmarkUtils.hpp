@@ -44,6 +44,14 @@ struct param_t {
   double lambda;
   double mu;
   double beta;
+
+  // EDMStream
+  double a;
+  int cacheNum;
+  double radius;
+  double minDelta;
+  int opt;
+
   std::string inputPath;
   std::string outputPath;
   SESAME::algoType algoType;

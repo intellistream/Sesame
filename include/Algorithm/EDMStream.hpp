@@ -5,55 +5,58 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_EDMSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_EDMSTREAM_HPP_
 #include <Algorithm/Algorithm.hpp>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/DataStructure/DPNode.hpp>
 #include <Sinks/DataSink.hpp>
-#include <Algorithm/DataStructure/CFTree.hpp>
+#include <Algorithm/DataStructure/Cache.hpp>
+#include <Algorithm/DataStructure/DataStructureFactory.hpp>
+#include <Algorithm/DataStructure/OutlierReservoir.hpp>
+#include <Algorithm/DataStructure/DPTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 namespace SESAME {
+class EDMStream;
 
 class EDMParameter : public AlgorithmParameters {
  public:
-  DPTree dpTree;
-  OutlierReservoir outres;
-  Cache cache;
-  std::vector<Cluster> clusters;
-
   bool isInit = false;
 
   double a;
   double lamda;
-  double deltaT;
-  double alpha;
   double beta;
-
   int cacheNum;
-
-  int actCluMaxNum;
-
   double radius;
 
-  double minRho;
   double minDelta;
+  int opt;
 };
 
 class EDMStream : public Algorithm {
 
  public:
+  double deltaT;
+  int actCluMaxNum;
+  double minRho;
+  double alpha;
+
   EDMParameter EDMParam;
-  NodePtr root;
-  vector<NodePtr> leafNodes;
-  CFTreePtr cfTree;
+  DPTreePtr dpTree;
+  OutPtr outres;
+  CachePtr cache;
+  std::vector<ClusterPtr> clusters;
+
+ public:
   EDMStream(param_t &cmd_params);
-
   ~EDMStream();
-
   void Initilize() override;
+  void setMinDelta(double minDelta);
 
-  void runOnlineClustering(PointPtr input) override;
+  void InitDP(double time);
+  SESAME::DPNodePtr streamProcess(PointPtr p, int opt, double time);
+  double computeAlpha();
+  double adjustMinDelta();
+  void delCluster();
+  SESAME::DPNodePtr retrive(SESAME::PointPtr p, int opt, double time);
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
- private:
+  void runOnlineClustering(SESAME::PointPtr input) override;
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_EDMSTREAM_HPP_

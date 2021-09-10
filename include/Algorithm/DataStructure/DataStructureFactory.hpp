@@ -37,7 +37,7 @@ class DataStructureFactory {
   static void clearSnapshot(SnapshotPtr snapshot);
   static CFTreePtr createCFTree();
   static NodePtr createNode();
-  static NodePtr createDPTree();
+  static DPTreePtr createDPTree(int num, double r);
   static DPNodePtr createDPNode();
   static DPNodePtr createDPNode(SESAME::PointPtr p, double time);
   static CachePtr creatCache();

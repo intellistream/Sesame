@@ -19,10 +19,15 @@ class Cluster {
  private:
   int label;
   std::vector<DPNodePtr> cells;
+
  public:
   explicit Cluster(int label);
   void add(DPNodePtr &node);
   void remove(DPNodePtr &node);
+  int GetLabel() const;
+  void SetLabel(int label);
+  const std::vector<DPNodePtr> &GetCells() const;
+  void SetCells(const std::vector<DPNodePtr> &cells);
 };
 class DPNode {
  private:

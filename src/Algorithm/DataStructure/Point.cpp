@@ -85,3 +85,9 @@ double SESAME::Point::getDisTo(SESAME::PointPtr p) {
   }
   return sqrt(distance);
 }
+double SESAME::Point::getMinDist() const {
+  return minDist;
+}
+void SESAME::Point::setMinDist(double min_dist) {
+  minDist = min_dist;
+}

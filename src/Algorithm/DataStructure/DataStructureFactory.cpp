@@ -69,4 +69,7 @@ SESAME::OutPtr SESAME::DataStructureFactory::createOutlierReservoir(double r, do
 SESAME::CachePtr SESAME::DataStructureFactory::creatCache(int num, double a, double lamd, double r) {
   return std::make_shared<SESAME::Cache>(num, a, lamd, r);
 }
+SESAME::DPTreePtr SESAME::DataStructureFactory::createDPTree(int num, double r) {
+  return std::make_shared<SESAME::DPTree>(num, r);
+}
 

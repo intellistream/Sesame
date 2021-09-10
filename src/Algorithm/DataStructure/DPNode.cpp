@@ -106,6 +106,18 @@ SESAME::DPNode::DPNode(SESAME::PointPtr p, double time) {
 /**
  * Cluster
  */
+int SESAME::Cluster::GetLabel() const {
+  return label;
+}
+void SESAME::Cluster::SetLabel(int label) {
+  Cluster::label = label;
+}
+const std::vector<SESAME::DPNodePtr> &SESAME::Cluster::GetCells() const {
+  return cells;
+}
+void SESAME::Cluster::SetCells(const std::vector<DPNodePtr> &cells) {
+  Cluster::cells = cells;
+}
 SESAME::Cluster::Cluster(int label) {
   this->label = label;
 }
