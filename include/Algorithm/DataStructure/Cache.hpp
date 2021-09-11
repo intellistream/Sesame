@@ -19,17 +19,33 @@ typedef std::shared_ptr<Cache> CachePtr;
 
 class Cache {
  private:
-  int num{};
-  int size{};
-  double a{};
-  double lamd{};
-  double r{};
+  int num;
+  int size;
+  double a;
+  double lamd;
+  double r;
   std::vector<DPNodePtr> buffer;
   std::vector<DPNodePtr> clus;
   int pnum{};
  public:
   Cache();
   ~Cache();
+  int GetNum() const;
+  void SetNum(int num);
+  int GetSize() const;
+  void SetSize(int size);
+  double GetA() const;
+  void SetA(double a);
+  double GetLamd() const;
+  void SetLamd(double lamd);
+  double GetR() const;
+  void SetR(double r);
+  const std::vector<DPNodePtr> &GetBuffer() const;
+  void SetBuffer(const std::vector<DPNodePtr> &buffer);
+  const std::vector<DPNodePtr> &GetClus() const;
+  void SetClus(const std::vector<DPNodePtr> &clus);
+  int GetPnum() const;
+  void SetPnum(int pnum);
   Cache(int num, double a, double lamd, double r);
   DPNodePtr add(PointPtr p, double startTime);
   bool isFull();

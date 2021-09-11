@@ -49,7 +49,7 @@ struct param_t {
   double a;
   int cacheNum;
   double radius;
-  double minDelta;
+  double delta;
   int opt;
 
   std::string inputPath;

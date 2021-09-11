@@ -8,6 +8,7 @@
 /**
  * DPNode
  */
+static int id = 0;
 SESAME::DPNode::DPNode() {
 }
 
@@ -100,6 +101,9 @@ SESAME::DPNode::DPNode(SESAME::PointPtr p, double time) {
   this->center = p->copy();
   this->lastTime = time;
   this->active = false;
+  this->Cid = 0;
+  this->inactiveTime = 0;
+  this->dis = 0;
 }
 
 

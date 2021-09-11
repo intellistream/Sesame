@@ -8,7 +8,6 @@
 #include <iostream>
 #include <memory>
 #include <Algorithm/DataStructure/Point.hpp>
-static int id = 0;
 namespace SESAME {
 class DPNode;
 class Cluster;
@@ -26,7 +25,7 @@ class Cluster {
   void remove(DPNodePtr &node);
   int GetLabel() const;
   void SetLabel(int label);
-  const std::vector<DPNodePtr> &GetCells() const;
+  [[nodiscard]] const std::vector<DPNodePtr> &GetCells() const;
   void SetCells(const std::vector<DPNodePtr> &cells);
 };
 class DPNode {

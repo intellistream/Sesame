@@ -15,12 +15,12 @@ class OutlierReservoir;
 typedef std::shared_ptr<OutlierReservoir> OutPtr;
 class OutlierReservoir {
  private:
-  double r{};
-  double timeGap{};
-  long lastDelTime{};
+  double r;
+  double timeGap;
+  long lastDelTime;
 
-  double a{};
-  double lamd{};
+  double a;
+  double lamd;
 
   std::vector<DPNodePtr> outliers;
 

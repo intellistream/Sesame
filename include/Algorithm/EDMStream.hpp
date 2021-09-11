@@ -12,9 +12,8 @@
 #include <Algorithm/DataStructure/OutlierReservoir.hpp>
 #include <Algorithm/DataStructure/DPTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-namespace SESAME {
-class EDMStream;
 
+namespace SESAME {
 class EDMParameter : public AlgorithmParameters {
  public:
   bool isInit = false;
@@ -33,7 +32,7 @@ class EDMStream : public Algorithm {
 
  public:
   double deltaT;
-  int actCluMaxNum;
+  int actCluMaxNum = 1000;
   double minRho;
   double alpha;
 
@@ -43,20 +42,21 @@ class EDMStream : public Algorithm {
   CachePtr cache;
   std::vector<ClusterPtr> clusters;
 
- public:
   EDMStream(param_t &cmd_params);
   ~EDMStream();
   void Initilize() override;
   void setMinDelta(double minDelta);
 
   void InitDP(double time);
-  SESAME::DPNodePtr streamProcess(PointPtr p, int opt, double time);
+  SESAME::DPNodePtr streamProcess(SESAME::PointPtr p, int opt, double time);
   double computeAlpha();
   double adjustMinDelta();
   void delCluster();
   SESAME::DPNodePtr retrive(SESAME::PointPtr p, int opt, double time);
 
   void runOnlineClustering(SESAME::PointPtr input) override;
+
+  void runOfflineClustering(DataSinkPtr sinkPtr) override;
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_EDMSTREAM_HPP_

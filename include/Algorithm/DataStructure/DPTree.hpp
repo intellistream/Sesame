@@ -73,7 +73,7 @@ class DPTree {
   double fun(double alpha, double upavg, double downavg, double avg);
   bool check(SESAME::OutPtr outres);
   void check(std::vector<SESAME::ClusterPtr> clusters);
-  void adjustCluster(std::vector<SESAME::ClusterPtr> clusters, bool minChed);
+  void adjustCluster(std::vector<SESAME::ClusterPtr> clusters);
   void writeInfo(std::string string);
 
 

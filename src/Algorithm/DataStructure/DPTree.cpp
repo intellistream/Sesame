@@ -15,6 +15,8 @@ SESAME::DPTree::DPTree() {}
 SESAME::DPTree::~DPTree() {}
 SESAME::DPTree::DPTree(int num, double CluR) {
   this->num = num;
+  std::vector<DPNodePtr> clus(this->num);
+  this->Clus = clus;
   this->CluR = CluR;
   this->cluLabel = 0;
 }
@@ -51,6 +53,7 @@ void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> clus,
   Clus[0] = clus[0];
   SESAME::ClusterPtr cluster = std::make_shared<Cluster>(cluLabel++);;
   cluster->add(Clus[0]);
+  Clus[0]->SetCluster(cluster);
   clusters.push_back(cluster);
   int i = 1;
 
@@ -61,9 +64,11 @@ void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> clus,
     if (Clus[i]->GetDelta() > minDelta) {
       SESAME::ClusterPtr c = std::make_shared<Cluster>(cluLabel++);;
       c->add(Clus[i]);
+      Clus[i]->SetCluster(c);
       clusters.push_back(c);
     } else {
       Clus[i]->GetDep()->GetCluster()->add(Clus[i]);
+      Clus[i]->SetCluster(Clus[i]->GetDep()->GetCluster());
     }
 
   }
@@ -483,7 +488,7 @@ double SESAME::DPTree::adjustMinDelta(double alpha) {
 double SESAME::DPTree::fun(double alpha, double upavg, double downavg, double avg) {
   return alpha * (avg / upavg) + (1 - alpha) * (downavg / avg);
 }
-void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, bool minChed) {
+void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters) {
   std::vector<ClusterPtr> set;//
 
   if (Clus[0] == nullptr) {
@@ -494,6 +499,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, boo
     auto cluster = std::make_shared<Cluster>(cluLabel++);
     clusters.push_back(cluster);
     cluster->add(Clus[0]);
+    Clus[0]->SetCluster(cluster);
     set.push_back(cluster);
   } else {
     set.push_back(Clus[0]->GetCluster());
@@ -512,6 +518,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, boo
           c1->remove(Clus[i]);
         }
         c2->add(Clus[i]);
+        Clus[i]->SetCluster(c2);
         clusters.push_back(c2);
         set.push_back(c2);
       }
@@ -519,6 +526,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, boo
         auto cluster = std::make_shared<Cluster>(cluLabel++);
         clusters.push_back(cluster);
         cluster->add(Clus[i]);
+        Clus[i]->SetCluster(cluster);
         set.push_back(cluster);
       } else {
         bool flag = false;
@@ -532,6 +540,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, boo
           auto cluster = std::make_shared<Cluster>(cluLabel++);
           clusters.push_back(cluster);
           cluster->add(Clus[i]);
+          Clus[i]->SetCluster(cluster);
           set.push_back(cluster);
         } else {
           set.push_back(Clus[i]->GetCluster());
@@ -549,6 +558,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters, boo
           c1->remove(Clus[i]);
         }
         c2->add(Clus[i]);
+        Clus[i]->SetCluster(c2);
       }
     }
   }
