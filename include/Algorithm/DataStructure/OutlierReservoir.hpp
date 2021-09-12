@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <unordered_set>
 
 namespace SESAME {
 
@@ -22,7 +23,7 @@ class OutlierReservoir {
   double a;
   double lamd;
 
-  std::vector<DPNodePtr> outliers;
+  std::unordered_set<DPNodePtr> outliers;
 
  public:
   [[nodiscard]] double GetR() const;
@@ -35,8 +36,8 @@ class OutlierReservoir {
   void SetA(double a);
   [[nodiscard]] double GetLamd() const;
   void SetLamd(double lamd);
-  [[nodiscard]] const std::vector<SESAME::DPNodePtr> &GetOutliers() const;
-  void SetOutliers(const std::vector<SESAME::DPNodePtr> &outliers);
+  [[nodiscard]] const std::unordered_set<SESAME::DPNodePtr> &GetOutliers() const;
+  void SetOutliers(const std::unordered_set<SESAME::DPNodePtr> &outliers);
   OutlierReservoir();
   ~OutlierReservoir();
   OutlierReservoir(double r, double a, double lamd);

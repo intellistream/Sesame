@@ -3,6 +3,7 @@
 //
 
 #include <Algorithm/EDMStream.hpp>
+
 SESAME::EDMStream::EDMStream(param_t &cmd_params) {
   this->EDMParam.pointNumber = cmd_params.pointNumber;
   this->EDMParam.dimension = cmd_params.dimension;
@@ -16,6 +17,7 @@ SESAME::EDMStream::EDMStream(param_t &cmd_params) {
 }
 SESAME::EDMStream::~EDMStream(){};
 void SESAME::EDMStream::Initilize() {
+  this->alpha = 0;
   this->cache = SESAME::DataStructureFactory::creatCache(this->EDMParam.cacheNum, this->EDMParam.a,
                                                          this->EDMParam.lamda, this->EDMParam.radius);
   this->outres = SESAME::DataStructureFactory::createOutlierReservoir(this->EDMParam.radius,
@@ -78,8 +80,8 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
-  for(int i = 0; i < this->clusters.size(); i++) {
-    if(clusters[i]->GetCells().empty()) {
+  for(ClusterPtr clu : clusters) {
+    if(clu->GetCells().empty()) {
       this->clusters.erase(this->clusters.begin(), this->clusters.end());
     }
   }
@@ -120,7 +122,7 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
 }
 void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   for(auto & cluster : this->clusters) {
-    std::vector<DPNodePtr> cells = cluster->GetCells();
+    std::unordered_set<DPNodePtr> cells = cluster->GetCells();
     for(auto & cell : cells) {
       PointPtr center = cell->GetCenter();
       sinkPtr->put(center->copy());

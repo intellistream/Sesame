@@ -68,10 +68,10 @@ bool SESAME::DPNode::IsActive() const {
 void SESAME::DPNode::SetActive(bool active) {
   DPNode::active = active;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::DPNode::GetSucs() const {
+const std::unordered_set<SESAME::DPNodePtr> &SESAME::DPNode::GetSucs() const {
   return sucs;
 }
-void SESAME::DPNode::SetSucs(const std::vector<SESAME::DPNodePtr> &sucs) {
+void SESAME::DPNode::SetSucs(const std::unordered_set<SESAME::DPNodePtr> &sucs) {
   DPNode::sucs = sucs;
 }
 const SESAME::ClusterPtr &SESAME::DPNode::GetCluster() const {
@@ -116,24 +116,20 @@ int SESAME::Cluster::GetLabel() const {
 void SESAME::Cluster::SetLabel(int label) {
   Cluster::label = label;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::Cluster::GetCells() const {
+const std::unordered_set<SESAME::DPNodePtr> &SESAME::Cluster::GetCells() const {
   return cells;
 }
-void SESAME::Cluster::SetCells(const std::vector<DPNodePtr> &cells) {
+void SESAME::Cluster::SetCells(const std::unordered_set<DPNodePtr> &cells) {
   Cluster::cells = cells;
 }
 SESAME::Cluster::Cluster(int label) {
   this->label = label;
 }
 void SESAME::Cluster::add(DPNodePtr &node) {
-  this->cells.push_back(node);
+  this->cells.insert(node);
 }
 void SESAME::Cluster::remove(DPNodePtr &node) {
-  for(int i = 0; i < this->cells.size(); i++) {
-    if(this->cells.at(i)->GetId() == node->GetId()) {
-      this->cells.erase(this->cells.begin() + i);
-    }
-  }
+  this->cells.erase(node);
 }
 
 void SESAME::DPNode::insert(double time) {
@@ -145,14 +141,10 @@ void SESAME::DPNode::add(double coef, double time) {
   this->lastTime = time;
 }
 void SESAME::DPNode::addSuccessor(SESAME::DPNodePtr &node) {
-  this->sucs.push_back(node);
+  this->sucs.insert(node);
 }
 void SESAME::DPNode::removeSuccessor(SESAME::DPNodePtr &node) {
-  for(int i = 0; i < this->sucs.size(); i++){
-    if(this->sucs.at(i)->GetId() == node->GetId()) {
-      this->sucs.erase(this->sucs.begin() + i);
-    }
-  }
+  this->sucs.erase(node);
 }
 bool SESAME::DPNode::hasSuccessor() {
   return !sucs.empty();

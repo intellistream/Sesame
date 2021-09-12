@@ -42,10 +42,10 @@ double SESAME::OutlierReservoir::GetLamd() const {
 void SESAME::OutlierReservoir::SetLamd(double lamd) {
   OutlierReservoir::lamd = lamd;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::OutlierReservoir::GetOutliers() const {
+const std::unordered_set<SESAME::DPNodePtr> &SESAME::OutlierReservoir::GetOutliers() const {
   return outliers;
 }
-void SESAME::OutlierReservoir::SetOutliers(const std::vector<SESAME::DPNodePtr> &outliers) {
+void SESAME::OutlierReservoir::SetOutliers(const std::unordered_set<SESAME::DPNodePtr> &outliers) {
   OutlierReservoir::outliers = outliers;
 }
 SESAME::OutlierReservoir::OutlierReservoir(double r, double a, double lamd) {
@@ -59,36 +59,44 @@ void SESAME::OutlierReservoir::setTimeGap(double timeGap) {
 void SESAME::OutlierReservoir::insert(SESAME::DPNodePtr c) {
   c->SetDelta(DBL_MAX);
   if(c->GetDep() != nullptr){
-    std::vector<SESAME::DPNodePtr> successors = c->GetDep()->GetSucs();
-    for(int i = 0; i < successors.size(); i++) {
-      if(successors.at(i)->GetId() == c->GetId()) {
-        successors.erase(successors.begin() + i);
-      }
-    }
+    std::unordered_set<SESAME::DPNodePtr> successors = c->GetDep()->GetSucs();
+    successors.erase(c);
   }
   c->SetDep(nullptr);
-  this->outliers.push_back(c);
+  this->outliers.insert(c);
 }
 SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr p, double time) {
   double dis = 0;
   auto minDis = DBL_MAX;
   SESAME::DPNodePtr nn = nullptr;
-  SESAME::DPNodePtr temp = nullptr;
-  for(int i = 0; i < this->outliers.size(); i++){
-    temp = this->outliers.at(i);
-    if(time - double(temp->GetLastTime()) > this->timeGap) {
-      this->outliers.erase(this->outliers.begin() + i);
+ // SESAME::DPNodePtr temp = nullptr;
+  bool flag = 0;
+  std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
+  if(time == 125) {
+    flag = 1;
+  }
+  if(p->getIndex() == 1249){
+    std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
+  }
+  for(DPNodePtr node : this->outliers){
+    if(abs(dis - 2108) < 1) {
+      std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
+    }
+    if(time - double(node->GetLastTime()) > this->timeGap) {
+      this->outliers.erase(node);
       continue;
     }
-    dis = p->getDisTo(temp->GetCenter());
+    dis = p->getDisTo(node->GetCenter());
     if (dis < minDis) {
       minDis = dis;
-      nn = temp;
+      nn = node;
     }
   }
+
+  std::cout <<"MinDistance: "<< minDis<<std::endl;
   if (nn == nullptr || minDis > r) {
     SESAME::DPNodePtr c = std::make_shared<SESAME::DPNode>(p, time);
-    this->outliers.push_back(c);
+    this->outliers.insert(c);
     return c;
   } else {
     double coef = pow(a, lamd * (time - nn->GetLastTime()));
@@ -100,9 +108,5 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr p, double ti
   }
 }
 void SESAME::OutlierReservoir::remove(SESAME::DPNodePtr nn) {
-  for(int i = 0; i < this->outliers.size(); i++) {
-    if(this->outliers.at(i)->GetId() == nn->GetId()) {
-      this->outliers.erase(this->outliers.begin() + i);
-    }
-  }
+  this->outliers.erase(nn);
 }

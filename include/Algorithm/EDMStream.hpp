@@ -12,6 +12,7 @@
 #include <Algorithm/DataStructure/OutlierReservoir.hpp>
 #include <Algorithm/DataStructure/DPTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
+#include <unordered_set>
 
 namespace SESAME {
 class EDMParameter : public AlgorithmParameters {
@@ -32,7 +33,7 @@ class EDMStream : public Algorithm {
 
  public:
   double deltaT;
-  int actCluMaxNum = 1000;
+  int actCluMaxNum = 10000;
   double minRho;
   double alpha;
 
@@ -40,7 +41,7 @@ class EDMStream : public Algorithm {
   DPTreePtr dpTree;
   OutPtr outres;
   CachePtr cache;
-  std::vector<ClusterPtr> clusters;
+  std::unordered_set<ClusterPtr> clusters;
 
   EDMStream(param_t &cmd_params);
   ~EDMStream();

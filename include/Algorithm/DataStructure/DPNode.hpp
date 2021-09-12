@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <unordered_set>
 #include <Algorithm/DataStructure/Point.hpp>
 namespace SESAME {
 class DPNode;
@@ -17,7 +18,7 @@ typedef std::shared_ptr<Cluster> ClusterPtr;
 class Cluster {
  private:
   int label;
-  std::vector<DPNodePtr> cells;
+  std::unordered_set<DPNodePtr> cells;
 
  public:
   explicit Cluster(int label);
@@ -25,8 +26,8 @@ class Cluster {
   void remove(DPNodePtr &node);
   int GetLabel() const;
   void SetLabel(int label);
-  [[nodiscard]] const std::vector<DPNodePtr> &GetCells() const;
-  void SetCells(const std::vector<DPNodePtr> &cells);
+  [[nodiscard]] const std::unordered_set<DPNodePtr> &GetCells() const;
+  void SetCells(const std::unordered_set<DPNodePtr> &cells);
 };
 class DPNode {
  private:
@@ -39,7 +40,7 @@ class DPNode {
   SESAME::PointPtr center;
   double lastTime;
   bool active;
-  std::vector<SESAME::DPNodePtr> sucs; //TODO: children
+  std::unordered_set<DPNodePtr> sucs; //TODO: children
   SESAME::ClusterPtr cluster;
   // public double sumDelta;
   // public int sucNum;
@@ -72,8 +73,8 @@ class DPNode {
   void SetLastTime(double last_time);
   [[nodiscard]] bool IsActive() const;
   void SetActive(bool active);
-  [[nodiscard]] const std::vector<SESAME::DPNodePtr> &GetSucs() const;
-  void SetSucs(const std::vector<SESAME::DPNodePtr> &sucs);
+  [[nodiscard]] const std::unordered_set<SESAME::DPNodePtr> &GetSucs() const;
+  void SetSucs(const std::unordered_set<SESAME::DPNodePtr> &sucs);
   [[nodiscard]] const ClusterPtr &GetCluster() const;
   void SetCluster(const SESAME::ClusterPtr &cluster);
   [[nodiscard]] double GetInactiveTime() const;

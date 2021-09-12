@@ -6,6 +6,7 @@
 #include <Utils/Logger.hpp>
 #include <cfloat>
 #include <cmath>
+#include <unordered_set>
 
 
 /**
@@ -48,24 +49,24 @@ void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> clus,
                           double minRho,
                           double minDelta,
                           SESAME::OutPtr outs,
-                          std::vector<ClusterPtr> clusters) {
+                          std::unordered_set<ClusterPtr> clusters) {
   this->minDelta = minDelta;
   Clus[0] = clus[0];
   SESAME::ClusterPtr cluster = std::make_shared<Cluster>(cluLabel++);;
   cluster->add(Clus[0]);
   Clus[0]->SetCluster(cluster);
-  clusters.push_back(cluster);
+  clusters.insert(cluster);
   int i = 1;
 
   for (; i < size && clus[i]->GetRho() >= minRho; i++) {
     Clus[i] = clus[i];
-    std::vector<DPNodePtr> sucs = Clus[i]->GetDep()->GetSucs();
-    sucs.push_back(Clus[i]);
+    std::unordered_set<DPNodePtr> sucs = Clus[i]->GetDep()->GetSucs();
+    sucs.insert(Clus[i]);
     if (Clus[i]->GetDelta() > minDelta) {
       SESAME::ClusterPtr c = std::make_shared<Cluster>(cluLabel++);;
       c->add(Clus[i]);
       Clus[i]->SetCluster(c);
-      clusters.push_back(c);
+      clusters.insert(c);
     } else {
       Clus[i]->GetDep()->GetCluster()->add(Clus[i]);
       Clus[i]->SetCluster(Clus[i]->GetDep()->GetCluster());
@@ -380,12 +381,8 @@ void SESAME::DPTree::deleteInact(SESAME::OutPtr outres, double minRho, double ti
       size--;
       cc->SetActive(false);
       cc->SetInactiveTime(time);
-      std::vector<DPNodePtr> cells = cc->GetDep()->GetSucs();
-      for(int i = 0; i < cells.size(); i++) {
-        if(cells.at(i)->GetId() == cc->GetId()) {
-          cells.erase(cells.begin() + i);
-        }
-      }
+      std::unordered_set<DPNodePtr> cells = cc->GetDep()->GetSucs();
+      cells.erase(cc);
       cc->GetCluster()->remove(cc);
       outres->insert(cc);
     } else {
@@ -488,7 +485,7 @@ double SESAME::DPTree::adjustMinDelta(double alpha) {
 double SESAME::DPTree::fun(double alpha, double upavg, double downavg, double avg) {
   return alpha * (avg / upavg) + (1 - alpha) * (downavg / avg);
 }
-void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters) {
+void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> clusters) {
   std::vector<ClusterPtr> set;//
 
   if (Clus[0] == nullptr) {
@@ -497,7 +494,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters) {
     SESAME_DEBUG("please adjust your r parameter larger");
   } else if (Clus[0]->GetCluster() == nullptr) {// there is new cluster center appearing
     auto cluster = std::make_shared<Cluster>(cluLabel++);
-    clusters.push_back(cluster);
+    clusters.insert(cluster);
     cluster->add(Clus[0]);
     Clus[0]->SetCluster(cluster);
     set.push_back(cluster);
@@ -519,12 +516,12 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters) {
         }
         c2->add(Clus[i]);
         Clus[i]->SetCluster(c2);
-        clusters.push_back(c2);
+        clusters.insert(c2);
         set.push_back(c2);
       }
       if (Clus[i]->GetCluster() == nullptr) {// new cluster appears
         auto cluster = std::make_shared<Cluster>(cluLabel++);
-        clusters.push_back(cluster);
+        clusters.insert(cluster);
         cluster->add(Clus[i]);
         Clus[i]->SetCluster(cluster);
         set.push_back(cluster);
@@ -538,7 +535,7 @@ void SESAME::DPTree::adjustCluster(std::vector<SESAME::ClusterPtr> clusters) {
           // smaller
           Clus[i]->GetCluster()->remove(Clus[i]);
           auto cluster = std::make_shared<Cluster>(cluLabel++);
-          clusters.push_back(cluster);
+          clusters.insert(cluster);
           cluster->add(Clus[i]);
           Clus[i]->SetCluster(cluster);
           set.push_back(cluster);

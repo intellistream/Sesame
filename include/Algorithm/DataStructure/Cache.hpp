@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <unordered_set>
 
 namespace SESAME {
 
@@ -51,7 +52,7 @@ class Cache {
   bool isFull();
   void compDeltaRho(double time);
   void getDPTree(double minRho, double minDelta, DPTreePtr dpTree,
-                 OutPtr outs, std::vector<ClusterPtr> clusters);
+                 OutPtr outs, std::unordered_set<ClusterPtr> clusters);
   //void outputBuffer(String outpath, double minRho)
 };
 }
