@@ -48,11 +48,11 @@ class Cache {
   int GetPnum() const;
   void SetPnum(int pnum);
   Cache(int num, double a, double lamd, double r);
-  DPNodePtr add(PointPtr p, double startTime);
+  DPNodePtr add(PointPtr &p, double startTime);
   bool isFull();
   void compDeltaRho(double time);
-  void getDPTree(double minRho, double minDelta, DPTreePtr dpTree,
-                 OutPtr outs, std::unordered_set<ClusterPtr> clusters);
+  void getDPTree(double minRho, double minDelta, DPTreePtr &dpTree,
+                 OutPtr &outs, std::unordered_set<ClusterPtr> &clusters);
   //void outputBuffer(String outpath, double minRho)
 };
 }

@@ -21,7 +21,7 @@ SESAME::Cache::Cache(int num, double a, double lamd, double r) {
 }
 SESAME::Cache::~Cache() = default;
 SESAME::Cache::Cache() = default;
-SESAME::DPNodePtr SESAME::Cache::add(SESAME::PointPtr p, double startTime) {
+SESAME::DPNodePtr SESAME::Cache::add(SESAME::PointPtr &p, double startTime) {
   this->pnum++;
   double dis = FLT_MAX;
   double minDis = FLT_MAX;
@@ -76,9 +76,9 @@ void SESAME::Cache::compDeltaRho(double time) {
 }
 void SESAME::Cache::getDPTree(double minRho,
                               double minDelta,
-                              SESAME::DPTreePtr dpTree,
-                              SESAME::OutPtr outs,
-                              std::unordered_set<ClusterPtr> clusters) {
+                              SESAME::DPTreePtr &dpTree,
+                              SESAME::OutPtr &outs,
+                              std::unordered_set<ClusterPtr> &clusters) {
   dpTree->init(clus, size, minRho, minDelta, outs, clusters);
 }
 int SESAME::Cache::GetNum() const {

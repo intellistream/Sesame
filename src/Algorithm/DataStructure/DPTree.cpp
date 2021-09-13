@@ -21,7 +21,7 @@ SESAME::DPTree::DPTree(int num, double CluR) {
   this->CluR = CluR;
   this->cluLabel = 0;
 }
-void SESAME::DPTree::insert(SESAME::DPNodePtr cc, int opt) {
+void SESAME::DPTree::insert(SESAME::DPNodePtr &cc, int opt) {
   cc->SetActive(true);
   Clus[size] = cc;
   size++;
@@ -42,14 +42,14 @@ void SESAME::DPTree::insert(SESAME::DPNodePtr cc, int opt) {
   }
 
   if (size == num) {
-    std::cout << "lack of DPTree nodes";
+    SESAME_DEBUG("lack of DPTree nodes");
   }}
-void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> clus,
+void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> &clus,
                           int size,
                           double minRho,
                           double minDelta,
-                          SESAME::OutPtr outs,
-                          std::unordered_set<ClusterPtr> clusters) {
+                          SESAME::OutPtr &outs,
+                          std::unordered_set<ClusterPtr> &clusters) {
   this->minDelta = minDelta;
   Clus[0] = clus[0];
   SESAME::ClusterPtr cluster = std::make_shared<Cluster>(cluLabel++);;
@@ -372,7 +372,7 @@ void SESAME::DPTree::computeDelta(int index) {
     clu->GetDep()->addSuccessor(clu);
   }
 }
-void SESAME::DPTree::deleteInact(SESAME::OutPtr outres, double minRho, double time) {
+void SESAME::DPTree::deleteInact(SESAME::OutPtr &outres, double minRho, double time) {
   for (int i = size - 1; i > 0; i--) {
 
     if (Clus[i]->GetRho() < minRho) {
@@ -485,7 +485,7 @@ double SESAME::DPTree::adjustMinDelta(double alpha) {
 double SESAME::DPTree::fun(double alpha, double upavg, double downavg, double avg) {
   return alpha * (avg / upavg) + (1 - alpha) * (downavg / avg);
 }
-void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> clusters) {
+void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> &clusters) {
   std::vector<ClusterPtr> set;//
 
   if (Clus[0] == nullptr) {

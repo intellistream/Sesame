@@ -44,7 +44,7 @@ class DPNode {
   SESAME::ClusterPtr cluster;
   // public double sumDelta;
   // public int sucNum;
-  long inactiveTime;
+  double inactiveTime;
 
   /**
    * we will use dis to quickly update the delta of CluCell
@@ -54,7 +54,7 @@ class DPNode {
 
   DPNode();
   ~DPNode();
-  DPNode(SESAME::PointPtr p, double time);
+  DPNode(SESAME::PointPtr &p, double time);
   [[nodiscard]] int GetId() const;
   void SetId(int id);
   [[nodiscard]] int GetCId() const;

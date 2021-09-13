@@ -80,9 +80,9 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
-  for(ClusterPtr clu : clusters) {
-    if(clu->GetCells().empty()) {
-      this->clusters.erase(this->clusters.begin(), this->clusters.end());
+  for(const auto& clu : clusters) {
+    if(clu->GetCells().empty() ) {
+      this->clusters.erase(clu);
     }
   }
 }
@@ -108,6 +108,14 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
   }
 }
 
+void CountNode(const SESAME::DPNodePtr &node, int &num) {
+  num = num + 1;
+  if(!node->GetSucs().empty()) {
+    for(const SESAME::DPNodePtr &el : node->GetSucs()) {
+      CountNode(el, num);
+    }
+  }
+}
 void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
   double curTime = (input->getIndex() + 1) / 10;
   auto c = retrive(input, this->EDMParam.opt, curTime);
@@ -121,13 +129,32 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
   }
 }
 void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
-  for(auto & cluster : this->clusters) {
+  SESAME_DEBUG("Cluster number: "<< this->clusters.size());
+  int i = 0;
+  int num = 0;
+  int sum = 0;
+  for(const auto & cluster : this->clusters) {
+    i++;
+    sum += num;
+    num = 0;
     std::unordered_set<DPNodePtr> cells = cluster->GetCells();
-    for(auto & cell : cells) {
+    for(const auto & cell : cells) {
+      CountNode(cell, num);
       PointPtr center = cell->GetCenter();
       sinkPtr->put(center->copy());
     }
+    // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
   }
-  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+  for(const auto & out : this->outres->GetOutliers()) {
+      i++;
+      sum += num;
+      num = 0;
+      CountNode(out, num);
+      // PointPtr center = out->GetCenter();
+      // sinkPtr->put(center->copy());
+      // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
+   }
+    //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+    SESAME_DEBUG("In all: "<< sum <<" points");
 }
 

@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <cmath>
 
+
 /**
  * OutlierReservoir
  */
@@ -56,7 +57,7 @@ SESAME::OutlierReservoir::OutlierReservoir(double r, double a, double lamd) {
 void SESAME::OutlierReservoir::setTimeGap(double timeGap) {
   this->timeGap = timeGap;
 }
-void SESAME::OutlierReservoir::insert(SESAME::DPNodePtr c) {
+void SESAME::OutlierReservoir::insert(SESAME::DPNodePtr &c) {
   c->SetDelta(DBL_MAX);
   if(c->GetDep() != nullptr){
     std::unordered_set<SESAME::DPNodePtr> successors = c->GetDep()->GetSucs();
@@ -65,23 +66,12 @@ void SESAME::OutlierReservoir::insert(SESAME::DPNodePtr c) {
   c->SetDep(nullptr);
   this->outliers.insert(c);
 }
-SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr p, double time) {
+SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double time) {
   double dis = 0;
   auto minDis = DBL_MAX;
   SESAME::DPNodePtr nn = nullptr;
  // SESAME::DPNodePtr temp = nullptr;
-  bool flag = 0;
-  std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
-  if(time == 125) {
-    flag = 1;
-  }
-  if(p->getIndex() == 1249){
-    std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
-  }
-  for(DPNodePtr node : this->outliers){
-    if(abs(dis - 2108) < 1) {
-      std::cout <<"outlier size: " << this->outliers.size()<<std::endl;
-    }
+  for(const auto& node : this->outliers){
     if(time - double(node->GetLastTime()) > this->timeGap) {
       this->outliers.erase(node);
       continue;
@@ -92,8 +82,6 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr p, double ti
       nn = node;
     }
   }
-
-  std::cout <<"MinDistance: "<< minDis<<std::endl;
   if (nn == nullptr || minDis > r) {
     SESAME::DPNodePtr c = std::make_shared<SESAME::DPNode>(p, time);
     this->outliers.insert(c);
@@ -107,6 +95,6 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr p, double ti
     return nn;
   }
 }
-void SESAME::OutlierReservoir::remove(SESAME::DPNodePtr nn) {
+void SESAME::OutlierReservoir::remove(SESAME::DPNodePtr &nn) {
   this->outliers.erase(nn);
 }

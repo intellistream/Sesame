@@ -10,6 +10,12 @@
  */
 static int id = 0;
 SESAME::DPNode::DPNode() {
+  this->cid = -1;
+  this->Cid = -1;
+  this->lastTime = 0;
+  this->inactiveTime = 0;
+  this->num = 0;
+  this->active = false;
 }
 
 SESAME::DPNode::~DPNode() {}
@@ -93,7 +99,7 @@ void SESAME::DPNode::SetDis(double dis) {
   DPNode::dis = dis;
 }
 
-SESAME::DPNode::DPNode(SESAME::PointPtr p, double time) {
+SESAME::DPNode::DPNode(SESAME::PointPtr &p, double time) {
   this->cid = id++;
   this->rho = 1;
   this->delta = FLT_MAX;

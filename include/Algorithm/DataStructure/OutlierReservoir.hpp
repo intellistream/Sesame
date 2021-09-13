@@ -44,11 +44,11 @@ class OutlierReservoir {
 
   void setTimeGap(double timeGap);
 
-  void insert(SESAME::DPNodePtr c);
+  void insert(SESAME::DPNodePtr &c);
 
-  SESAME::DPNodePtr insert(SESAME::PointPtr p, double time);
+  SESAME::DPNodePtr insert(SESAME::PointPtr &p, double time);
 
-  void remove(SESAME::DPNodePtr nn);
+  void remove(SESAME::DPNodePtr &nn);
 };
 
 }
