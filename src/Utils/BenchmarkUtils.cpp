@@ -143,9 +143,9 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.minPoints = 10;
   cmd_params.epsilon = 50;
   cmd_params.base = 2;
-  cmd_params.lambda = 1; // 1.8
+  cmd_params.lambda = 1.8; // 1.8
   cmd_params.mu = 7;
-  cmd_params.beta = 0.0021; // 5
+  cmd_params.beta = 5; // 5
 
   // EDMStream
   cmd_params.a = 0.998;
