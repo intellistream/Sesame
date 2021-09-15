@@ -16,10 +16,10 @@ TEST(SystemTest, EDMStreamTest) {
 
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 15120;
+  cmd_params.pointNumber = 3000;
   cmd_params.dimension = 54;
   cmd_params.a = 0.998;
-  cmd_params.cacheNum = 1000;
+  cmd_params.cacheNum = 500;
   cmd_params.radius = 250;
   cmd_params.lambda = 1;
   cmd_params.delta = 1500;
