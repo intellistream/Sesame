@@ -80,10 +80,9 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
-  for(const auto& clu : clusters) {
-    assert(clu);
-    if(clu->GetCells().begin() == clu->GetCells().end()) {
-      this->clusters.erase(clu);
+  for(auto it = clusters.begin(); it != clusters.end(); ++it){
+    if(it->get()->GetCells().begin() == it->get()->GetCells().end()){
+      this->clusters.erase(it);
     }
   }
 }
