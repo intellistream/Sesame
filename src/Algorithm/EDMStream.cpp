@@ -81,7 +81,8 @@ double SESAME::EDMStream::adjustMinDelta() {
 }
 void SESAME::EDMStream::delCluster() {
   for(const auto& clu : clusters) {
-    if(clu->GetCells().empty() ) {
+    assert(clu == nullptr);
+    if(clu->GetCells().empty()) {
       this->clusters.erase(clu);
     }
   }
