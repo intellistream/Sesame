@@ -5,6 +5,7 @@
 #include <Algorithm/DataStructure/DPNode.hpp>
 #include <cfloat>
 #include <cmath>
+#include <cassert>
 /**
  * DPNode
  */
@@ -132,6 +133,7 @@ SESAME::Cluster::Cluster(int label) {
   this->label = label;
 }
 void SESAME::Cluster::add(DPNodePtr &node) {
+  assert(node);
   this->cells.insert(node);
 }
 void SESAME::Cluster::remove(DPNodePtr &node) {
