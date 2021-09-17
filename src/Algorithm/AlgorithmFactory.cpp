@@ -28,7 +28,7 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     shared_ptr<DenStream> denStream = std::make_shared<DenStream>(cmd_params);
     return (SESAME::AlgorithmPtr) denStream;
   }
-  if (cmd_params.algoName == "DBStream") {
+  if (cmd_params.algoType == DBStreamType) {
     shared_ptr<DBStream> dbStream = std::make_shared<DBStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dbStream;
   }
