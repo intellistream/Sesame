@@ -124,6 +124,9 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
     this->dpTree->adjustCluster(this->clusters);
     this->delCluster();
   }
+  if(input->getIndex() == 1) {
+    SESAME_DEBUG(input->getDimension());
+  }
   if(input->getIndex() % (this->EDMParam.pointNumber -1) == 0 && input->getIndex() != 0) {
     SESAME_DEBUG(input->getDimension());
   }
