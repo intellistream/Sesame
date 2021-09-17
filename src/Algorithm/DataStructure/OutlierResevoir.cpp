@@ -71,15 +71,15 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double t
   auto minDis = DBL_MAX;
   SESAME::DPNodePtr nn = nullptr;
  // SESAME::DPNodePtr temp = nullptr;
-  for(const auto& node : this->outliers){
-    if(time - double(node->GetLastTime()) > this->timeGap) {
-      this->outliers.erase(node);
+  for(auto it = this->outliers.begin(); it != this->outliers.end(); ++it){
+    if(time - double(it->get()->GetLastTime()) > this->timeGap) {
+      this->outliers.erase(it);
       continue;
     }
-    dis = p->getDisTo(node->GetCenter());
+    dis = p->getDisTo(it->get()->GetCenter());
     if (dis < minDis) {
       minDis = dis;
-      nn = node;
+      nn = it->get()->copy();
     }
   }
   if (nn == nullptr || minDis > r) {

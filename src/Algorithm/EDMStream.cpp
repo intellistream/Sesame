@@ -136,23 +136,23 @@ void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   int i = 0;
   int num = 0;
   int sum = 0;
-  for(const auto & cluster : this->clusters) {
+  for(auto it = this->clusters.begin(); it != this->clusters.end(); ++it) {
     i++;
     sum += num;
     num = 0;
-    std::unordered_set<DPNodePtr> cells = cluster->GetCells();
-    for(const auto & cell : cells) {
-      CountNode(cell, num);
-      PointPtr center = cell->GetCenter();
+    std::unordered_set<DPNodePtr> cells = it->get()->GetCells();
+    for(auto cell = cells.begin(); cell != cells.end(); ++cell) {
+      CountNode(cell->get()->copy(), num);
+      PointPtr center = cell->get()->GetCenter();
       sinkPtr->put(center->copy());
     }
     // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
   }
-  for(const auto & out : this->outres->GetOutliers()) {
+  for(auto out = this->outres->GetOutliers().begin(); out != this->outres->GetOutliers().end(); ++ out) {
       i++;
       sum += num;
       num = 0;
-      CountNode(out, num);
+      CountNode(out->get()->copy(), num);
       // PointPtr center = out->GetCenter();
       // sinkPtr->put(center->copy());
       // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");

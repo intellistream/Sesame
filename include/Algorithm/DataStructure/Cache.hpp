@@ -27,7 +27,7 @@ class Cache {
   double r;
   std::vector<DPNodePtr> buffer;
   std::vector<DPNodePtr> clus;
-  int pnum{};
+  int pnum;
  public:
   Cache();
   ~Cache();
