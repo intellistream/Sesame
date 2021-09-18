@@ -31,13 +31,14 @@ class DBStream : public Algorithm
      public:
       DBStreamParams dbStreamParams;
       DampedWindowPtr dampedWindow;
-      unordered_set<MicroClusterPtr> microClusters;
+      std::vector<MicroClusterPtr> microClusters;
       SESAME::WeightedAdjacencyList weightedAdjacencyList;
       std::vector<MicroClusterPtr> microClusterNN;//micro clusters found in function findFixedRadiusNN
       double weakEntry;//W_weak, weak entries
       double aWeakEntry;
       clock_t startTime;
       clock_t pointArrivingTime;
+      clock_t lastCleanTime;
       int microClusterIndex;
       //Final output of clusters
       Clusters finalClusters;
@@ -51,7 +52,7 @@ class DBStream : public Algorithm
       bool isInitial  = false;
       void update(PointPtr dataPoint);
       bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
-      std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint, double decayFactor);
+      std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint);
       void cleanUp(clock_t nowTime);
       void reCluster(double threshold);
       static void insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,

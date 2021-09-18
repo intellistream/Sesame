@@ -50,7 +50,7 @@ class MicroCluster {
   void init(PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);//Used in CluStream
   bool insert(PointPtr datapoint,double decayFactor,double epsilon);// DenStream
-  void insert(PointPtr datapoint);//DBStream
+  void insert(PointPtr datapoint, double decayFactor);//DBStream
   void merge(MicroClusterPtr other);
   void subtractClusterVector(MicroClusterPtr other);
   void updateId(MicroClusterPtr other);

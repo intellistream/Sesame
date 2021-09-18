@@ -6,7 +6,7 @@
 #include <Algorithm/DataStructure/MicroCluster.hpp>
 #include <Utils/Logger.hpp>
 #include <iterator>
-
+//Create MC, only initialization, used for DenStream, CluStream
 SESAME::MicroCluster::MicroCluster(int dimension, int id)
 {
   this->dimension=dimension;
@@ -20,6 +20,7 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
   radius=0;
   visited=false;
 }
+//Create MC, only initialization, only used for DBStream as it has user-defined fixed radius
 SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
   this->dimension=dimension;
   weight=1;
@@ -46,6 +47,8 @@ SESAME::MicroCluster::~MicroCluster()
   std::vector <double>().swap(LS);
   std::vector <double>().swap(SS);
 }
+
+//Used in DenStream, DBStream
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
   weight++;
@@ -59,7 +62,7 @@ void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
   SST+=timestamp*timestamp;
 }
 
-
+//Used in DenStream, DBStream
 //insert a new data point from input data stream
 void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 {
@@ -74,19 +77,26 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
   SST+=timestamp*timestamp;
   centroid=std::move(getCentroid());
 }
-void SESAME::MicroCluster::insert(PointPtr datapoint)
+
+//Used only in DBStream
+void SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor)
 {
+  decayWeight(decayFactor);
   weight++;
   double val = exp(-(pow(3 * this->distance / radius, 2) / 2));
-  for(int i=0; i<LS.size(); i++) {
+  for(int i=0; i<LS.size(); i++)
+  {
     double data=datapoint->getFeatureItem(i);
     LS[i] = centroid.at(i) + val * (data - centroid.at(i));
   }
+  lastUpdateTime=clock();
 }
+
 double SESAME::MicroCluster::getDistance(PointPtr datapoint){
   this->distance=calCentroidDistance(datapoint);
   return this->distance;
 }
+//Often Used only in DBStream TODO this just a note, need to delete or detailed explain later
 double SESAME::MicroCluster::getDistance(MicroClusterPtr other){
   double temp = 0, dist = 0;
   for (int i = 0; i < this->dimension; i++) {
@@ -95,7 +105,7 @@ double SESAME::MicroCluster::getDistance(MicroClusterPtr other){
   }
   return sqrt(dist);
 }
-
+//Used in DenStream
 bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double epsilon){
   bool result;
   dataPoint LSPre; LSPre.assign(this->LS.begin(),this->LS.end());
@@ -123,6 +133,9 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
     result=false;
   return result;
 }
+
+
+
 //merge two micro-clusters
 void SESAME::MicroCluster::merge(MicroClusterPtr other){
   weight+=other->weight;
