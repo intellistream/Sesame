@@ -55,11 +55,11 @@ class DBStream : public Algorithm
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint);
       void cleanUp(clock_t nowTime);
       void reCluster(double threshold);
-      static void insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+      static void insertIntoGraph(unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph,
                                   MicroClusterPtr microCluster,MicroClusterPtr Other);
-      static void insertIntoGraph(unordered_map<MicroClusterPtr ,unordered_set<MicroClusterPtr>> connectivityGraph,
+      static void insertIntoGraph(unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph,
                            MicroClusterPtr microCluster);
-      void findConnectedComponents(unordered_map<MicroClusterPtr,unordered_set<MicroClusterPtr>> connectivityGraph);
+      void findConnectedComponents(unordered_map<MicroClusterPtr,std::vector<MicroClusterPtr>> connectivityGraph);
     };
 
 }

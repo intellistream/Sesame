@@ -27,15 +27,18 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,doub
   this->id.push_back(id);
   LST=0;
   SST=0;
-  this->visited=true;
+  this->visited=false;
   this->createTime=clock();
   this->lastUpdateTime=this->createTime;
   this->radius=radius;
-  for (int i = 0; i < dimension; i++) {
+
+  for (int i = 0; i < this->dimension; i++)
+  {
     double data = dataPoint->getFeatureItem(i);
     LS.push_back(data);
     centroid.push_back(data);
   }
+
 
 }
 

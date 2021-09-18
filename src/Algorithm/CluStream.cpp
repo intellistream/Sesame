@@ -289,7 +289,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   }
   SESAME_INFO("subtract Miro Cluster is...");
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {
-    std::stringstream result, re2;
+    std::stringstream  re2;
     std::copy(subtractMiroCluster->microClusters[i]->id.begin(),
               subtractMiroCluster->microClusters[i]->id.end(),
               std::ostream_iterator<int>(re2, " "));
