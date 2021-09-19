@@ -33,8 +33,6 @@ class MicroCluster {
   double weight; //number of data point in the clusters
   int dimension;
   double radius;//Used in DBStream
-
-
   //the parameters below is unique for DenStream
   clock_t createTime;
   clock_t lastUpdateTime;
@@ -46,6 +44,7 @@ class MicroCluster {
 
   MicroCluster(int dimension, int id);
   MicroCluster(int dimension, int id,PointPtr dataPoint,double radius);//DBStream
+
   ~MicroCluster();
   void init(PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);//Used in CluStream
@@ -79,5 +78,15 @@ class MicroCluster {
   double distance;
   static double inverseError(double x);
 };
+typedef struct finderMicroCluster
+{
+  finderMicroCluster(int n) : id(n) { }
+  bool operator()(MicroClusterPtr MC)
+  {
+    return (id == MC->id.front());
+  }
+  int id;
+}finderMicroCluster;
+
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_MICROCLUSTER_HPP_

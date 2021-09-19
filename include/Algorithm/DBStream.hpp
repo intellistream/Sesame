@@ -34,7 +34,7 @@ class DBStream : public Algorithm
       std::vector<MicroClusterPtr> microClusters;
       SESAME::WeightedAdjacencyList weightedAdjacencyList;
       std::vector<MicroClusterPtr> microClusterNN;//micro clusters found in function findFixedRadiusNN
-      double weakEntry;//W_weak, weak entries
+      int weakEntry;//W_weak, weak entries
       double aWeakEntry;
       clock_t startTime;
       clock_t pointArrivingTime;

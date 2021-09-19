@@ -14,22 +14,40 @@
 #include<Algorithm/DataStructure/MicroCluster.hpp>
 #include<Algorithm/WindowModel/DampedWindow.hpp>
 namespace SESAME {
-class MicroClusterPair;
+struct MicroClusterPair;
 typedef std::shared_ptr<MicroClusterPair> MicroClusterPairPtr;
-class MicroClusterPair{
- public:
+struct MicroClusterPair{
   MicroClusterPtr microCluster1;
   MicroClusterPtr microCluster2;
-  MicroClusterPair( MicroClusterPtr microCluster1,MicroClusterPtr microCluster2);
-  bool operator==(const MicroClusterPair &other) const;
+  MicroClusterPair( MicroClusterPtr microCluster1,MicroClusterPtr microCluster2){
+    this->microCluster1=microCluster1->copy();
+    this->microCluster2=microCluster2->copy();
+  }
+ //bool operator==(const MicroClusterPair &other) const;
+
 };
 
-struct hashMicroClusterPair{
- size_t operator()(const MicroClusterPair &microClusterPair) const
+struct KeyHasher{
+ std::size_t operator()(const MicroClusterPair &microClusterPair) const
   {
-    return (std::hash<MicroClusterPtr>()(microClusterPair.microCluster1)) + (std::hash<MicroClusterPtr>()(microClusterPair.microCluster2));
+   return (std::hash<int>()(microClusterPair.microCluster1->id.front())) ^ (std::hash<int>()(microClusterPair.microCluster2->id.front()));
   }
 };
+
+struct EqualKey
+    {
+  bool operator() (const MicroClusterPair &MCPair1, const MicroClusterPair &MCPair2) const
+  {
+     bool equal=false;
+    if( MCPair1.microCluster1->id.front()==MCPair2.microCluster1->id.front() &&MCPair1.microCluster2->id.front()==MCPair2.microCluster2->id.front() )
+      equal=true;
+    if(MCPair1.microCluster1->id.front() ==MCPair2.microCluster2->id.front() &&MCPair1.microCluster2->id.front()==MCPair2.microCluster1->id.front() )
+      equal=true;
+
+    return equal;
+  }
+    };
+
 
 class AdjustedWeight;
 typedef std::shared_ptr<AdjustedWeight> AdjustedWeightPtr;
@@ -42,11 +60,7 @@ class AdjustedWeight{
   double getCurrentWeight(double decayFactor);
 };
 
-typedef std::unordered_map<MicroClusterPair,AdjustedWeightPtr,hashMicroClusterPair> WeightedAdjacencyList;
+typedef std::unordered_map<MicroClusterPair,AdjustedWeightPtr,KeyHasher,EqualKey> WeightedAdjacencyList;
 typedef std::pair<MicroClusterPair, AdjustedWeightPtr>  DensityGraph;
-//S in paper, represent Weighted Adjacency List
-
 }
-
-
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_WEIGHTEDADJACENCYLIST_HPP_

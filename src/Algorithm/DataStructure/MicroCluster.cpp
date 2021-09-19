@@ -349,3 +349,4 @@ double SESAME::MicroCluster::inverseError(double x){
 SESAME::MicroClusterPtr SESAME::MicroCluster::copy() {
   return std::make_shared<MicroCluster>(*this);
 }
+

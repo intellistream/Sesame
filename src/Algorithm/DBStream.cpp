@@ -39,8 +39,8 @@ void SESAME::DBStream::Initilize() {
   this->startTime = clock();
   this->pointArrivingTime= clock();
   this->lastCleanTime=clock();
-  this->weakEntry= pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.cleanUpInterval);
-  this->aWeakEntry=weakEntry*dbStreamParams.alpha;
+  this->weakEntry= ceil(pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.cleanUpInterval));
+  this->aWeakEntry=ceil(weakEntry*dbStreamParams.alpha);
   this->microClusterIndex=-1;
  }
  /**
@@ -100,32 +100,28 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   else {
     for (int i = 0; i < sizeNN; i++) {
       //SESAME_INFO("insert into existing MCs! id "<< microClusterNN.at(i)->id.front());
-      MicroClusterPtr microCluster = microClusterNN.at(i);
+      MicroClusterPtr microCluster = microClusterNN.at(i)->copy();
       microCluster->insert(dataPoint,decayFactor); // just update weight
       // update shared density
       for (int j = i + 1; j < sizeNN; j++) {
-
-
+        MicroClusterPair microClusterPair(microCluster->copy(), microClusterNN.at(j)->copy());
        // SESAME_INFO("pair "<< microClusterNN.at(i)->id.front()<<" "<< microClusterNN.at(j)->id.front());
-       if (weightedAdjacencyList.find( MicroClusterPair(microCluster,
-                                                        microClusterNN.at(j))) != weightedAdjacencyList.end())
+        if (weightedAdjacencyList.find(microClusterPair) != weightedAdjacencyList.end())
         {
-        SESAME_INFO("find microClusterPair!"<<microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
-        clock_t startT= weightedAdjacencyList[ MicroClusterPair(microCluster,
-                                               microClusterNN.at(j))]->updateTime;
+       // SESAME_INFO("find microClusterPair!"<<microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
+          clock_t startT= weightedAdjacencyList[microClusterPair]->updateTime;
           double decayValue = dampedWindow->decayFunction(startT,this->pointArrivingTime);
-          weightedAdjacencyList[ MicroClusterPair(microCluster,
-                                                  microClusterNN.at(j))]->add(this->pointArrivingTime,decayValue);
-          //SESAME_INFO("pair weight = "<<weightedAdjacencyList[microClusterPair]->weight );
-        }
-        else
-        {
-          //SESAME_INFO("Create microClusterPair!" << microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
+          weightedAdjacencyList[microClusterPair]->add(this->pointArrivingTime,decayValue);
+         // SESAME_INFO("pair weight = "<<weightedAdjacencyList[microClusterPair]->weight );
+       //  SESAME_INFO(" weight is "<<weightedAdjacencyList[microClusterPair]->weight );
+        }else{
+        //  SESAME_INFO("Create microClusterPair!" << microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
           AdjustedWeightPtr adjustedWeight = SESAME::DataStructureFactory::createAdjustedWeight(1,this->pointArrivingTime);
-          DensityGraph densityGraph( MicroClusterPair(microCluster,
-                                                      microClusterNN.at(j)),adjustedWeight);
+          DensityGraph densityGraph( microClusterPair ,adjustedWeight);
           weightedAdjacencyList.insert(densityGraph);
-         // SESAME_INFO("pair weight = "<<densityGraph.second->weight );
+
+         // SESAME_INFO("new one weight is "<<weightedAdjacencyList[microClusterPair]->weight );
+         // SESAME_INFO("size is"<<weightedAdjacencyList.size() );
         }
 
       }
@@ -135,10 +131,11 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   }
  if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.cleanUpInterval && dataPoint->getIndex()!=0)
  {
-
    cleanUp(this->pointArrivingTime);
    this->lastCleanTime=this->pointArrivingTime;
+   SESAME_INFO("Clean !");
  }
+
 }
 
 
@@ -181,35 +178,46 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
   std::vector<MicroClusterPtr> removeMicroCluster;
   std::vector<MicroClusterPtr>::size_type iter;
   //Check the current micro Clusters whether they have weak MCs
+  //This just test for remove id
+  std::vector<int> idList;
   for (iter=0;iter<microClusters.size();iter++)
   {
     if (microClusters.at(iter)->weight <= this->weakEntry)
     {
       removeMicroCluster.push_back(microClusters.at(iter)->copy());
+      idList.push_back(microClusters.at(iter)->id.front());
       microClusters.erase(microClusters.begin()+int(iter));//Delete this MC from current MC list
     }
   }
-  SESAME_INFO("CLEAN MCs Already.");
-  WeightedAdjacencyList::iterator interW;
-  //Check the current shared density graph whether they have weak entries
-  if(!weightedAdjacencyList.empty())
+  //SESAME_INFO("now rm MCs number is "<<removeMicroCluster.size()<<", MCs is "<<microClusters.size());
+  std::stringstream re;
+  std::copy(idList.begin(),idList.end(),std::ostream_iterator<int>(re, " "));
+  SESAME_INFO("RM list "<<re.str());
+  for (auto iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); ++iterW)
   {
-    for (interW = weightedAdjacencyList.begin(); interW != weightedAdjacencyList.end(); interW++)
-  {
-    if (std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first.microCluster1) !=removeMicroCluster.end()
-    || std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first.microCluster2)!=removeMicroCluster.end())
-    {
-      weightedAdjacencyList.erase(interW);       SESAME_INFO("CLEAN existing entries.");}
-    else{
+    nowTime;
 
-      double decayFactor=dampedWindow->decayFunction(interW->second->updateTime,nowTime);
-      if (interW->second->getCurrentWeight(decayFactor) < aWeakEntry)
-        weightedAdjacencyList.erase(interW);
-    }
+   auto exist1 = std::find_if(removeMicroCluster.begin(), removeMicroCluster.end(),SESAME::finderMicroCluster(iterW->first.microCluster1->id.front()));
+   auto exist2 = std::find_if(removeMicroCluster.begin(), removeMicroCluster.end(),SESAME::finderMicroCluster(iterW->first.microCluster2->id.front()));
+      if ( exist1!=removeMicroCluster.end()|| exist2!=removeMicroCluster.end())
+      {
+       // SESAME_INFO("weightedAdjacencyList size:"<<weightedAdjacencyList.size());
+      // weightedAdjacencyList.erase(iterW);
+        SESAME_INFO("CLEAN existing pairs...");
+       // SESAME_INFO("now weightedAdjacencyList size:"<<weightedAdjacencyList.size());
+      }
+    else {
+    // if( exist1==removeMicroCluster.end()|| exist2==removeMicroCluster.end()){
+       double decayFactor=dampedWindow->decayFunction(iterW->second->updateTime,nowTime);
+       SESAME_INFO("Check existing entries... "<<" "<<iterW->second->getCurrentWeight(decayFactor));
+       if (iterW->second->getCurrentWeight(decayFactor) < aWeakEntry)
+       {
+         SESAME_INFO("erase... "<<" "<<decayFactor);
+        // weightedAdjacencyList.erase(iterW->first);
+         //SESAME_INFO("pair is "<<iterW->first.microCluster1->id.front()<<" "<<iterW->first.microCluster2->id.front());
+       }
+     }
   }
-
-  }
-
 }
 
 void SESAME::DBStream::reCluster(double threshold){
