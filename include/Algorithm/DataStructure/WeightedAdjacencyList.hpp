@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <unordered_map>
 #include<Algorithm/DataStructure/Point.hpp>
@@ -20,7 +21,14 @@ class MicroClusterPair{
   MicroClusterPtr microCluster1;
   MicroClusterPtr microCluster2;
   MicroClusterPair( MicroClusterPtr microCluster1,MicroClusterPtr microCluster2);
-  bool equal(MicroClusterPairPtr other);
+  bool operator==(const MicroClusterPair &other) const;
+};
+
+struct hashMicroClusterPair{
+ size_t operator()(const MicroClusterPair &microClusterPair) const
+  {
+    return (std::hash<MicroClusterPtr>()(microClusterPair.microCluster1)) + (std::hash<MicroClusterPtr>()(microClusterPair.microCluster2));
+  }
 };
 
 class AdjustedWeight;
@@ -34,8 +42,8 @@ class AdjustedWeight{
   double getCurrentWeight(double decayFactor);
 };
 
-typedef std::unordered_map<MicroClusterPairPtr,AdjustedWeightPtr> WeightedAdjacencyList;
-typedef std::pair<MicroClusterPairPtr, AdjustedWeightPtr>  DensityGraph;
+typedef std::unordered_map<MicroClusterPair,AdjustedWeightPtr,hashMicroClusterPair> WeightedAdjacencyList;
+typedef std::pair<MicroClusterPair, AdjustedWeightPtr>  DensityGraph;
 //S in paper, represent Weighted Adjacency List
 
 }

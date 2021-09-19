@@ -86,7 +86,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   this->pointArrivingTime=clock();
   this->microClusterNN=findFixedRadiusNN(dataPoint);
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
-   SESAME_INFO("find suitable MCs number : "<<sizeNN);
+  // SESAME_INFO("find suitable MCs number : "<<sizeNN);
   if (microClusterNN.empty()) {
     microClusterIndex++;
 
@@ -104,24 +104,26 @@ void SESAME::DBStream::update(PointPtr dataPoint){
       microCluster->insert(dataPoint,decayFactor); // just update weight
       // update shared density
       for (int j = i + 1; j < sizeNN; j++) {
-        MicroClusterPairPtr microClusterPair =SESAME::DataStructureFactory::createMicroClusterPair(microCluster,
-                                                                                                   microClusterNN.at(j));
-        MicroClusterPairPtr microClusterPair2 =SESAME::DataStructureFactory::createMicroClusterPair(microClusterNN.at(j),microCluster);
-        SESAME_INFO("pair "<< microClusterNN.at(i)->id.front()<<" "<< microClusterNN.at(j)->id.front());
-        if (weightedAdjacencyList.find(microClusterPair) != weightedAdjacencyList.end()||
-        weightedAdjacencyList.find(microClusterPair2) != weightedAdjacencyList.end())
+
+
+       // SESAME_INFO("pair "<< microClusterNN.at(i)->id.front()<<" "<< microClusterNN.at(j)->id.front());
+       if (weightedAdjacencyList.find( MicroClusterPair(microCluster,
+                                                        microClusterNN.at(j))) != weightedAdjacencyList.end())
         {
         SESAME_INFO("find microClusterPair!"<<microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
-          clock_t startT= weightedAdjacencyList[microClusterPair]->updateTime;
+        clock_t startT= weightedAdjacencyList[ MicroClusterPair(microCluster,
+                                               microClusterNN.at(j))]->updateTime;
           double decayValue = dampedWindow->decayFunction(startT,this->pointArrivingTime);
-          weightedAdjacencyList[microClusterPair]->add(this->pointArrivingTime,decayValue);
+          weightedAdjacencyList[ MicroClusterPair(microCluster,
+                                                  microClusterNN.at(j))]->add(this->pointArrivingTime,decayValue);
           //SESAME_INFO("pair weight = "<<weightedAdjacencyList[microClusterPair]->weight );
         }
         else
         {
-          //SESAME_INFO("Create microClusterPair!");
+          //SESAME_INFO("Create microClusterPair!" << microClusterNN.at(i)->id.front()<<", "<<microClusterNN.at(j)->id.front());
           AdjustedWeightPtr adjustedWeight = SESAME::DataStructureFactory::createAdjustedWeight(1,this->pointArrivingTime);
-          DensityGraph densityGraph(microClusterPair,adjustedWeight);
+          DensityGraph densityGraph( MicroClusterPair(microCluster,
+                                                      microClusterNN.at(j)),adjustedWeight);
           weightedAdjacencyList.insert(densityGraph);
          // SESAME_INFO("pair weight = "<<densityGraph.second->weight );
         }
@@ -194,8 +196,8 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
   {
     for (interW = weightedAdjacencyList.begin(); interW != weightedAdjacencyList.end(); interW++)
   {
-    if (std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first->microCluster1) !=removeMicroCluster.end()
-    || std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first->microCluster2)!=removeMicroCluster.end())
+    if (std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first.microCluster1) !=removeMicroCluster.end()
+    || std::find(removeMicroCluster.begin(),removeMicroCluster.end(),interW->first.microCluster2)!=removeMicroCluster.end())
     {
       weightedAdjacencyList.erase(interW);       SESAME_INFO("CLEAN existing entries.");}
     else{
@@ -214,8 +216,8 @@ void SESAME::DBStream::reCluster(double threshold){
   unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph;//Connectivity graph C in DBStream paper
   WeightedAdjacencyList::iterator interW;
   for (interW = weightedAdjacencyList.begin(); interW != weightedAdjacencyList.end(); interW++){
-    MicroClusterPtr microCluster1 =interW->first->microCluster1->copy();
-    MicroClusterPtr microCluster2 =interW->first->microCluster2->copy();
+    MicroClusterPtr microCluster1 =interW->first.microCluster1->copy();
+    MicroClusterPtr microCluster2 =interW->first.microCluster2->copy();
     if (microCluster1->weight >= dbStreamParams.weightMin &&microCluster2->weight >= dbStreamParams.weightMin){
       double val = 2*interW->second->weight / (microCluster1->weight+microCluster2->weight);
       if (val > threshold) {

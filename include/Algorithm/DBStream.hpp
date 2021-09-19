@@ -60,6 +60,7 @@ class DBStream : public Algorithm
       static void insertIntoGraph(unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph,
                            MicroClusterPtr microCluster);
       void findConnectedComponents(unordered_map<MicroClusterPtr,std::vector<MicroClusterPtr>> connectivityGraph);
+
     };
 
 }
