@@ -202,20 +202,20 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
       if ( exist1!=removeMicroCluster.end()|| exist2!=removeMicroCluster.end())
       {
        // SESAME_INFO("weightedAdjacencyList size:"<<weightedAdjacencyList.size());
-      // weightedAdjacencyList.erase(iterW);
+       weightedAdjacencyList.erase(iterW);
         SESAME_INFO("CLEAN existing pairs...");
        // SESAME_INFO("now weightedAdjacencyList size:"<<weightedAdjacencyList.size());
       }
     else {
     // if( exist1==removeMicroCluster.end()|| exist2==removeMicroCluster.end()){
        double decayFactor=dampedWindow->decayFunction(iterW->second->updateTime,nowTime);
-       SESAME_INFO("Check existing entries... "<<" "<<iterW->second->getCurrentWeight(decayFactor));
+     //  SESAME_INFO("Check existing entries... "<<" "<<iterW->second->getCurrentWeight(decayFactor));
        if (iterW->second->getCurrentWeight(decayFactor) < aWeakEntry)
-       {
-         SESAME_INFO("erase... "<<" "<<decayFactor);
-        // weightedAdjacencyList.erase(iterW->first);
+
+        // SESAME_INFO("erase... "<<" "<<decayFactor);
+        weightedAdjacencyList.erase(iterW->first);
          //SESAME_INFO("pair is "<<iterW->first.microCluster1->id.front()<<" "<<iterW->first.microCluster2->id.front());
-       }
+
      }
   }
 }
