@@ -18,14 +18,14 @@ TEST(SystemTest, DBStreamTest) {
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 15120;
+  cmd_params.pointNumber = 1000;
   cmd_params.dimension = 54;
   cmd_params.base=2;
-  cmd_params.lambda= 0.00001;
-  cmd_params.radius= 500;
-  cmd_params.cleanUpInterval=3;
+  cmd_params.lambda= 0.001;
+  cmd_params.radius= 1200;
+  cmd_params.cleanUpInterval=12;
   cmd_params.weightMin=3;
-  cmd_params.alpha=0.3;
+  cmd_params.alpha=0.25;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;

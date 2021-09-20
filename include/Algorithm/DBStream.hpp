@@ -42,6 +42,9 @@ class DBStream : public Algorithm
       int microClusterIndex;
       //Final output of clusters
       Clusters finalClusters;
+     //Connectivity graph
+     unordered_map<int,std::vector<int>> connecvtivityGraphId;
+
       //TODO Need to implement weighted a weighted adjacency list S
       DBStream(param_t &cmd_params);
       ~DBStream();
@@ -55,11 +58,9 @@ class DBStream : public Algorithm
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint);
       void cleanUp(clock_t nowTime);
       void reCluster(double threshold);
-      static void insertIntoGraph(unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph,
-                                  MicroClusterPtr microCluster,MicroClusterPtr Other);
-      static void insertIntoGraph(unordered_map<MicroClusterPtr ,std::vector<MicroClusterPtr>> connectivityGraph,
-                           MicroClusterPtr microCluster);
-      void findConnectedComponents(unordered_map<MicroClusterPtr,std::vector<MicroClusterPtr>> connectivityGraph);
+      void insertIntoGraph(int microClusterId,int OtherId);
+      void insertIntoGraph(int microClusterId);
+      void findConnectedComponents();
 
     };
 

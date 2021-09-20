@@ -81,7 +81,7 @@ class MicroCluster {
 typedef struct finderMicroCluster
 {
   finderMicroCluster(int n) : id(n) { }
-  bool operator()(MicroClusterPtr MC)
+  bool operator()(const MicroClusterPtr MC) const
   {
     return (id == MC->id.front());
   }
