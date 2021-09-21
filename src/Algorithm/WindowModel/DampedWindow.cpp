@@ -9,6 +9,6 @@ SESAME::DampedWindow::DampedWindow(double base, double lambda){
 
 double SESAME::DampedWindow::decayFunction(clock_t startTime, clock_t currentTimestamp) const
 {
-  double elapsedTime = (int) ((currentTimestamp - startTime) / CLOCKS_PER_SEC);
+  double elapsedTime = (double) (currentTimestamp - startTime) / CLOCKS_PER_SEC;
   return pow(this->base, -1 * this->lambda * elapsedTime);
 }

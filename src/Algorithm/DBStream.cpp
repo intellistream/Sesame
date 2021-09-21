@@ -77,7 +77,6 @@ void SESAME::DBStream::Initilize() {
 
 void SESAME::DBStream::update(PointPtr dataPoint){
   double decayFactor=dampedWindow->decayFunction(this->pointArrivingTime, clock());
- // SESAME_INFO("decayFactor is..."<<decayFactor);
   this->pointArrivingTime=clock();
   this->microClusterNN=findFixedRadiusNN(dataPoint);
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
@@ -92,9 +91,6 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   }
   else {
     for (int i = 0; i < sizeNN; i++) {
-      //SESAME_INFO("insert into existing MCs! id "<< microClusterNN.at(i)->id.front());
-     // MicroClusterPtr microCluster = microClusterNN.at(i);
-     // SESAME_INFO(" decay F is "<<decayFactor );
       microClusterNN[i]->insert(dataPoint,decayFactor); // just update weight
       for (int j = i + 1; j < sizeNN; j++) {
         MicroClusterPair microClusterPair(microClusterNN[i], microClusterNN.at(j));
@@ -109,8 +105,6 @@ void SESAME::DBStream::update(PointPtr dataPoint){
           AdjustedWeightPtr adjustedWeight = SESAME::DataStructureFactory::createAdjustedWeight(1,this->pointArrivingTime);
           DensityGraph densityGraph( microClusterPair ,adjustedWeight);
           weightedAdjacencyList.insert(densityGraph);
-         // SESAME_INFO("new one weight is "<<weightedAdjacencyList[microClusterPair]->weight );
-         // SESAME_INFO("size is"<<weightedAdjacencyList.size() );
         }
       }
     }
@@ -175,7 +169,7 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
       microClusters.erase(microClusters.begin()+int(iter));//Delete this MC from current MC list
     }
   }
- // SESAME_INFO("now rm MCs number is "<<removeMicroCluster.size()<<", MCs is "<<microClusters.size());
+ SESAME_INFO("now rm MCs number is "<<removeMicroCluster.size()<<", MCs is "<<microClusters.size());
   std::stringstream re;
   std::copy(idList.begin(),idList.end(),std::ostream_iterator<int>(re, " "));
  SESAME_INFO("RM list "<<re.str());
@@ -208,7 +202,6 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
     std::vector<double> centroid(finalClusters.at(iter).front()->dimension,0);
     for(auto j=0; j!=finalClusters.at(iter).size();j++)
     {
-    //  SESAME_INFO(finalClusters.at(iter)[j]->id.front()<<" MC weight is "<<finalClusters.at(iter)[j]->weight);
       double currentWeight=point->getWeight()+finalClusters.at(iter).at(j)->weight;
       point->setWeight(currentWeight);
       for(auto a =0;a<finalClusters.at(iter).at(j)->dimension;a++)
@@ -224,10 +217,9 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
         }
       }
     }
-    SESAME_INFO("The NO."<<iter<<" macro cluster weight is "<<point->getWeight());
     std::stringstream re;
     std::copy(centroid.begin(),centroid.end(),std::ostream_iterator<double>(re, " "));
-   // SESAME_INFO("The NO."<<iter<<" Centroid is "<<re.str());
+    SESAME_INFO("The NO."<<iter<<" Centroid is "<<re.str());
     sinkPtr->put(point->copy()); // point index start from 0
   }
 }
@@ -317,8 +309,8 @@ void SESAME::DBStream::findConnectedComponents(){
       //just used for examine reform ,need to delete later
       std::stringstream result;
       std::copy(idList.begin(),idList.end(),std::ostream_iterator<int>(result, " "));
-      SESAME_INFO("New formed macro cluster ... including micro cluster :");
-      SESAME_INFO("  " << result.str() );
+      //SESAME_INFO("New formed macro cluster ... including micro cluster :");
+      //SESAME_INFO("  " << result.str() );
     }
 
   }
