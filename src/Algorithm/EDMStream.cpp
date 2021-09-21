@@ -80,13 +80,15 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
+  bool flag = true;  // TODO: cannot use one for-loop
   for(auto it = clusters.begin(); it != clusters.end(); ++it){
     auto cluster = it->get();
-    if(cluster != nullptr) {
-      if(it->get()->GetCells().begin() == it->get()->GetCells().end()){
-        this->clusters.erase(it);
-      }
+    if(cluster->GetCells().begin() == cluster->GetCells().end()){
+      this->clusters.erase(it);
+      flag = true;
+      break;
     }
+    flag = false;
   }
 }
 
@@ -106,7 +108,7 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
     auto nn = streamProcess(curP, opt, time);
 
     this->dpTree->adjustCluster(clusters);
-    //delCluster();
+    delCluster();
     return nn;
   }
 }
@@ -125,7 +127,7 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
-    // delCluster();
+    this->delCluster();
   }
   if(input->getIndex() == 1) {
     SESAME_DEBUG(input->getDimension());

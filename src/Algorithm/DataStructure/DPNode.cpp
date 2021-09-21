@@ -21,79 +21,79 @@ SESAME::DPNode::DPNode() {
 
 SESAME::DPNode::~DPNode() {}
 
-int SESAME::DPNode::GetId() const {
+int SESAME::DPNode::GetId(){
   return cid;
 }
 void SESAME::DPNode::SetId(int id) {
   DPNode:: cid = id;
 }
-int SESAME::DPNode::GetCId() const {
+int SESAME::DPNode::GetCId(){
   return Cid;
 }
 void SESAME::DPNode::SetCId(int Cid) {
   DPNode:: Cid = Cid;
 }
-int SESAME::DPNode::GetNum() const {
+int SESAME::DPNode::GetNum(){
   return num;
 }
 void SESAME::DPNode::SetNum(int num) {
   DPNode::num = num;
 }
-double SESAME::DPNode::GetRho() const {
+double SESAME::DPNode::GetRho() {
   return rho;
 }
 void SESAME::DPNode::SetRho(double rho) {
   DPNode::rho = rho;
 }
-double SESAME::DPNode::GetDelta() const {
+double SESAME::DPNode::GetDelta() {
   return delta;
 }
 void SESAME::DPNode::SetDelta(double delta) {
   DPNode::delta = delta;
 }
-const SESAME::DPNodePtr &SESAME::DPNode::GetDep() const {
+SESAME::DPNodePtr &SESAME::DPNode::GetDep() {
   return dep;
 }
-void SESAME::DPNode::SetDep(const SESAME::DPNodePtr &dep) {
+void SESAME::DPNode::SetDep(SESAME::DPNodePtr &dep) {
   DPNode::dep = dep;
 }
-const SESAME::PointPtr &SESAME::DPNode::GetCenter() const {
+ SESAME::PointPtr &SESAME::DPNode::GetCenter() {
   return center;
 }
-void SESAME::DPNode::SetCenter(const SESAME::PointPtr &center) {
+void SESAME::DPNode::SetCenter(SESAME::PointPtr &center) {
   DPNode::center = center;
 }
-double SESAME::DPNode::GetLastTime() const {
+double SESAME::DPNode::GetLastTime() {
   return lastTime;
 }
 void SESAME::DPNode::SetLastTime(double last_time) {
   lastTime = last_time;
 }
-bool SESAME::DPNode::IsActive() const {
+bool SESAME::DPNode::IsActive() {
   return active;
 }
 void SESAME::DPNode::SetActive(bool active) {
   DPNode::active = active;
 }
-const std::unordered_set<SESAME::DPNodePtr> &SESAME::DPNode::GetSucs() const {
+ std::unordered_set<SESAME::DPNodePtr> &SESAME::DPNode::GetSucs() {
   return sucs;
 }
-void SESAME::DPNode::SetSucs(const std::unordered_set<SESAME::DPNodePtr> &sucs) {
+void SESAME::DPNode::SetSucs(std::unordered_set<SESAME::DPNodePtr> &sucs) {
   DPNode::sucs = sucs;
 }
-const SESAME::ClusterPtr &SESAME::DPNode::GetCluster() const {
+ SESAME::ClusterPtr &SESAME::DPNode::GetCluster() {
   return cluster;
 }
-void SESAME::DPNode::SetCluster(const SESAME::ClusterPtr &cluster) {
+void SESAME::DPNode::SetCluster(SESAME::ClusterPtr &cluster) {
   DPNode::cluster = cluster;
 }
-double SESAME::DPNode::GetInactiveTime() const {
+double SESAME::DPNode::GetInactiveTime() {
   return inactiveTime;
 }
 void SESAME::DPNode::SetInactiveTime(double inactive_time) {
   inactiveTime = inactive_time;
 }
-double SESAME::DPNode::GetDis() const {
+double SESAME::DPNode::GetDis() {
   return dis;
 }
 void SESAME::DPNode::SetDis(double dis) {
@@ -117,17 +117,20 @@ SESAME::DPNode::DPNode(SESAME::PointPtr &p, double time) {
 /**
  * Cluster
  */
-int SESAME::Cluster::GetLabel() const {
+int SESAME::Cluster::GetLabel() {
   return label;
 }
 void SESAME::Cluster::SetLabel(int label) {
   Cluster::label = label;
 }
-const std::unordered_set<SESAME::DPNodePtr> &SESAME::Cluster::GetCells() const {
+ std::unordered_set<SESAME::DPNodePtr> &SESAME::Cluster::GetCells() {
   return cells;
 }
-void SESAME::Cluster::SetCells(const std::unordered_set<DPNodePtr> &cells) {
+void SESAME::Cluster::SetCells( std::unordered_set<DPNodePtr> &cells) {
   Cluster::cells = cells;
+}
+SESAME::Cluster::Cluster() {
+  this->label = -1;
 }
 SESAME::Cluster::Cluster(int label) {
   this->label = label;

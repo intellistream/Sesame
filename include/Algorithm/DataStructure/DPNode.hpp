@@ -21,13 +21,14 @@ class Cluster {
   std::unordered_set<DPNodePtr> cells;
 
  public:
+  explicit Cluster();
   explicit Cluster(int label);
   void add(DPNodePtr &node);
   void remove(DPNodePtr &node);
-  int GetLabel() const;
+  int GetLabel() ;
   void SetLabel(int label);
-  [[nodiscard]] const std::unordered_set<DPNodePtr> &GetCells() const;
-  void SetCells(const std::unordered_set<DPNodePtr> &cells);
+  [[nodiscard]] std::unordered_set<DPNodePtr> &GetCells() ;
+  void SetCells(std::unordered_set<DPNodePtr> &cells);
 };
 class DPNode {
  private:
@@ -55,31 +56,31 @@ class DPNode {
   DPNode();
   ~DPNode();
   DPNode(SESAME::PointPtr &p, double time);
-  [[nodiscard]] int GetId() const;
+  [[nodiscard]] int GetId() ;
   void SetId(int id);
-  [[nodiscard]] int GetCId() const;
+  [[nodiscard]] int GetCId() ;
   void SetCId(int Cid);
-  [[nodiscard]] int GetNum() const;
+  [[nodiscard]] int GetNum() ;
   void SetNum(int num);
-  [[nodiscard]] double GetRho() const;
+  [[nodiscard]] double GetRho() ;
   void SetRho(double rho);
-  [[nodiscard]] double GetDelta() const;
+  [[nodiscard]] double GetDelta() ;
   void SetDelta(double delta);
-  [[nodiscard]] const DPNodePtr &GetDep() const;
-  void SetDep(const DPNodePtr &dep);
-  [[nodiscard]] const PointPtr &GetCenter() const;
-  void SetCenter(const PointPtr &center);
-  [[nodiscard]] double GetLastTime() const;
+  [[nodiscard]] DPNodePtr &GetDep() ;
+  void SetDep(DPNodePtr &dep);
+  [[nodiscard]] PointPtr &GetCenter() ;
+  void SetCenter(PointPtr &center);
+  [[nodiscard]] double GetLastTime() ;
   void SetLastTime(double last_time);
-  [[nodiscard]] bool IsActive() const;
+  [[nodiscard]] bool IsActive()  ;
   void SetActive(bool active);
-  [[nodiscard]] const std::unordered_set<SESAME::DPNodePtr> &GetSucs() const;
-  void SetSucs(const std::unordered_set<SESAME::DPNodePtr> &sucs);
-  [[nodiscard]] const ClusterPtr &GetCluster() const;
-  void SetCluster(const SESAME::ClusterPtr &cluster);
-  [[nodiscard]] double GetInactiveTime() const;
+  [[nodiscard]] std::unordered_set<SESAME::DPNodePtr> &GetSucs() ;
+  void SetSucs(std::unordered_set<SESAME::DPNodePtr> &sucs);
+  [[nodiscard]] ClusterPtr &GetCluster() ;
+  void SetCluster(SESAME::ClusterPtr &cluster);
+  [[nodiscard]] double GetInactiveTime() ;
   void SetInactiveTime(double inactive_time);
-  [[nodiscard]] double GetDis() const;
+  [[nodiscard]] double GetDis() ;
   void SetDis(double dis);
   SESAME::DPNodePtr copy();
 

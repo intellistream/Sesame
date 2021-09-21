@@ -10,8 +10,8 @@ bool cmp(SESAME::DPNodePtr &c1,SESAME::DPNodePtr &c2){
   return c1->GetRho() > c2->GetRho();
 }
 SESAME::Cache::Cache(int num, double a, double lamd, double r) {
-  std::vector<DPNodePtr> blankNode(10000);
-  this->buffer = blankNode;
+  std::vector<DPNodePtr> clu(num);
+  this->buffer = clu;
   this->num = num;
   this->pnum = 0;
   this->size = 0;
@@ -81,49 +81,49 @@ void SESAME::Cache::getDPTree(double minRho,
                               std::unordered_set<ClusterPtr> &clusters) {
   dpTree->init(clus, size, minRho, minDelta, outs, clusters);
 }
-int SESAME::Cache::GetNum() const {
+int SESAME::Cache::GetNum()  {
   return num;
 }
 void SESAME::Cache::SetNum(int num) {
   Cache::num = num;
 }
-int SESAME::Cache::GetSize() const {
+int SESAME::Cache::GetSize()  {
   return size;
 }
 void SESAME::Cache::SetSize(int size) {
   Cache::size = size;
 }
-double SESAME::Cache::GetA() const {
+double SESAME::Cache::GetA()  {
   return a;
 }
 void SESAME::Cache::SetA(double a) {
   Cache::a = a;
 }
-double SESAME::Cache::GetLamd() const {
+double SESAME::Cache::GetLamd()  {
   return lamd;
 }
 void SESAME::Cache::SetLamd(double lamd) {
   Cache::lamd = lamd;
 }
-double SESAME::Cache::GetR() const {
+double SESAME::Cache::GetR()  {
   return r;
 }
 void SESAME::Cache::SetR(double r) {
   Cache::r = r;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::Cache::GetBuffer() const {
+ std::vector<SESAME::DPNodePtr> &SESAME::Cache::GetBuffer()  {
   return buffer;
 }
-void SESAME::Cache::SetBuffer(const std::vector<DPNodePtr> &buffer) {
+void SESAME::Cache::SetBuffer( std::vector<DPNodePtr> &buffer) {
   Cache::buffer = buffer;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::Cache::GetClus() const {
+ std::vector<SESAME::DPNodePtr> &SESAME::Cache::GetClus()  {
   return clus;
 }
-void SESAME::Cache::SetClus(const std::vector<DPNodePtr> &clus) {
+void SESAME::Cache::SetClus( std::vector<DPNodePtr> &clus) {
   Cache::clus = clus;
 }
-int SESAME::Cache::GetPnum() const {
+int SESAME::Cache::GetPnum()  {
   return pnum;
 }
 void SESAME::Cache::SetPnum(int pnum) {

@@ -30,23 +30,23 @@ class DPTree {
 
   int cluLabel;
  public:
-  double GetLastTime() const;
+  double GetLastTime()     ;
   void SetLastTime(double last_time);
-  int GetSize() const;
+  int GetSize()  ;
   void SetSize(int size);
-  int GetNum() const;
+  int GetNum()  ;
   void SetNum(int num);
-  const std::vector<SESAME::DPNodePtr> &GetClus() const;
-  void SetClus(const std::vector<SESAME::DPNodePtr> &clus);
-  double GetA() const;
+  std::vector<SESAME::DPNodePtr> &GetClus()  ;
+  void SetClus(  std::vector<SESAME::DPNodePtr> &clus);
+  double GetA()  ;
   void SetA(double a);
-  double GetLamd() const;
+  double GetLamd()  ;
   void SetLamd(double lamd);
-  double GetCluR() const;
+  double GetCluR()    ;
   void SetCluR(double clu_r);
-  int GetCluLabel() const;
+  int GetCluLabel()  ;
   void SetCluLabel(int clu_label);
-  double GetMinDelta() const;
+  double GetMinDelta()  ;
   void SetMinDelta(double min_delta);
  private:
   double minDelta;
@@ -69,12 +69,11 @@ class DPTree {
   void deleteInact(SESAME::OutPtr &outres, double minRho, double time);
   double computeAlpha(double minDelta);
   double adjustMinDelta(double alpha);
-  double djustMinDelta(double alpha, double minDelta);
+  //double djustMinDelta(double alpha, double minDelta);
   double fun(double alpha, double upavg, double downavg, double avg);
-  bool check(SESAME::OutPtr outres);
-  void check(std::vector<SESAME::ClusterPtr> clusters);
+ // bool check(SESAME::OutPtr outres);
+  //void check(std::vector<SESAME::ClusterPtr> clusters);
   void adjustCluster(std::unordered_set<SESAME::ClusterPtr> &clusters);
-  void writeInfo(std::string string);
 
 
 };

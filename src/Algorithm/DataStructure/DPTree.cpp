@@ -164,7 +164,6 @@ void SESAME::DPTree::adjustNoOpt(int index) {
   // System.out.println(position);
   // }
   if (Clus[0] == clu) {
-    clu->SetDep(nullptr);
     clu->SetDelta(DBL_MAX);
   }
 
@@ -175,7 +174,6 @@ void SESAME::DPTree::computeDeltaNoOpt(int index) {
   auto clu = Clus[index];
   if (clu->GetDep() != nullptr) {
     clu->GetDep()->removeSuccessor(clu);
-    clu->SetDep(nullptr);
   }
   double dis = 0;
   clu->SetDelta(DBL_MAX);
@@ -209,7 +207,6 @@ void SESAME::DPTree::adjustOpt1(int index) {
   if (clu->GetDep() != nullptr && clu->GetDep()->GetRho() < clu->GetRho()) {
     clu->GetDep()->removeSuccessor(clu);
     clu->SetDelta(DBL_MAX);
-    clu->SetDep(nullptr);
   }
   int position = index;
   double dis = 0;
@@ -235,7 +232,6 @@ void SESAME::DPTree::adjustOpt1(int index) {
     }
   }
   if (Clus[0] == clu) {
-    clu->SetDep(nullptr);
     clu->SetDelta(DBL_MAX);
     position = 0;
   }
@@ -252,7 +248,6 @@ void SESAME::DPTree::computeDeltaF1(int index) {
   auto clu = Clus[index];
   if (clu->GetDep() != nullptr) {
     clu->GetDep()->removeSuccessor(clu);
-    clu->SetDep(nullptr);
   }
   clu->SetDelta(DBL_MAX);
   if (index == 0) {
@@ -280,7 +275,6 @@ void SESAME::DPTree::adjust(int index) {
   if (clu->GetDep() != nullptr && clu->GetDep()->GetRho() < clu->GetRho()) {
     clu->GetDep()->removeSuccessor(clu);
     clu->SetDelta(DBL_MAX);
-    clu->SetDep(nullptr);
   }
   int position = index;
   double dis = 0;
@@ -308,7 +302,6 @@ void SESAME::DPTree::adjust(int index) {
     }
   }
   if (Clus[0] == clu) {
-    clu->SetDep(nullptr);
     clu->SetDelta(DBL_MAX);
   }
   // if(p.id == 29585){
@@ -326,7 +319,6 @@ void SESAME::DPTree::computeHeadDelta() {
   auto clu = Clus[0];
   if (clu->GetDep() != nullptr) {
     clu->GetDep()->removeSuccessor(clu);
-    clu->SetDep(nullptr);
   }
 
   double maxValue = 0;
@@ -349,7 +341,6 @@ void SESAME::DPTree::computeDelta(int index) {
   auto clu = Clus[index];
   if (clu->GetDep() != nullptr) {
     clu->GetDep()->removeSuccessor(clu);
-    clu->SetDep(nullptr);
   }
   clu->SetDelta(DBL_MAX);
   if (index == 0) {
@@ -560,55 +551,55 @@ void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> &clust
     }
   }
 }
-double SESAME::DPTree::GetLastTime() const {
+double SESAME::DPTree::GetLastTime()    {
   return lastTime;
 }
 void SESAME::DPTree::SetLastTime(double last_time) {
   lastTime = last_time;
 }
-int SESAME::DPTree::GetSize() const {
+int SESAME::DPTree::GetSize()    {
   return size;
 }
 void SESAME::DPTree::SetSize(int size) {
   DPTree::size = size;
 }
-int SESAME::DPTree::GetNum() const {
+int SESAME::DPTree::GetNum()    {
   return num;
 }
 void SESAME::DPTree::SetNum(int num) {
   DPTree::num = num;
 }
-const std::vector<SESAME::DPNodePtr> &SESAME::DPTree::GetClus() const {
+   std::vector<SESAME::DPNodePtr> &SESAME::DPTree::GetClus()    {
   return Clus;
 }
-void SESAME::DPTree::SetClus(const std::vector<SESAME::DPNodePtr> &clus) {
+void SESAME::DPTree::SetClus(   std::vector<SESAME::DPNodePtr> &clus) {
   Clus = clus;
 }
-double SESAME::DPTree::GetA() const {
+double SESAME::DPTree::GetA()    {
   return a;
 }
 void SESAME::DPTree::SetA(double a) {
   DPTree::a = a;
 }
-double SESAME::DPTree::GetLamd() const {
+double SESAME::DPTree::GetLamd()    {
   return lamd;
 }
 void SESAME::DPTree::SetLamd(double lamd) {
   DPTree::lamd = lamd;
 }
-double SESAME::DPTree::GetCluR() const {
+double SESAME::DPTree::GetCluR()    {
   return CluR;
 }
 void SESAME::DPTree::SetCluR(double clu_r) {
   CluR = clu_r;
 }
-int SESAME::DPTree::GetCluLabel() const {
+int SESAME::DPTree::GetCluLabel()    {
   return cluLabel;
 }
 void SESAME::DPTree::SetCluLabel(int clu_label) {
   cluLabel = clu_label;
 }
-double SESAME::DPTree::GetMinDelta() const {
+double SESAME::DPTree::GetMinDelta()    {
   return minDelta;
 }
 void SESAME::DPTree::SetMinDelta(double min_delta) {

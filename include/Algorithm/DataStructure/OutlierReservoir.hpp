@@ -26,18 +26,18 @@ class OutlierReservoir {
   std::unordered_set<DPNodePtr> outliers;
 
  public:
-  [[nodiscard]] double GetR() const;
+  [[nodiscard]] double GetR()    ;
   void SetR(double r);
-  [[nodiscard]] double GetTimeGap() const;
+  [[nodiscard]] double GetTimeGap()    ;
   void SetTimeGap(double time_gap);
-  [[nodiscard]] long GetLastDelTime() const;
+  [[nodiscard]] long GetLastDelTime()    ;
   void SetLastDelTime(long last_del_time);
-  [[nodiscard]] double GetA() const;
+  [[nodiscard]] double GetA()    ;
   void SetA(double a);
-  [[nodiscard]] double GetLamd() const;
+  [[nodiscard]] double GetLamd()    ;
   void SetLamd(double lamd);
-  [[nodiscard]] const std::unordered_set<SESAME::DPNodePtr> &GetOutliers() const;
-  void SetOutliers(const std::unordered_set<SESAME::DPNodePtr> &outliers);
+  [[nodiscard]]     std::unordered_set<SESAME::DPNodePtr> &GetOutliers()    ;
+  void SetOutliers(    std::unordered_set<SESAME::DPNodePtr> &outliers);
   OutlierReservoir();
   ~OutlierReservoir();
   OutlierReservoir(double r, double a, double lamd);
