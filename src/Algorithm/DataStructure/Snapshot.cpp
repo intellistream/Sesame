@@ -59,13 +59,13 @@ SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurr
       for(unsigned int j=0; j<clusterNumber; j++) {
         if(snapshotLandmark->microClusters[j]->id.size()>1) {
           if(snapshotCurrent->microClusters[i]->judgeMerge(snapshotLandmark->microClusters[j]))
-            snapshotCurrent->microClusters[i]->substractClusterVector(snapshotLandmark->microClusters[j]);
+            snapshotCurrent->microClusters[i]->subtractClusterVector(snapshotLandmark->microClusters[j]);
         } else {
           int clusterIdLandmark;
           clusterIdLandmark = snapshotLandmark->microClusters[j]->id[0];
           if(std::find(snapshotCurrent->microClusters[i]->id.begin(),
                        snapshotCurrent->microClusters[i]->id.end(), clusterIdLandmark)!=snapshotCurrent->microClusters[i]->id.end())
-            snapshotCurrent->microClusters[i]->substractClusterVector(snapshotLandmark->microClusters[j]);
+            snapshotCurrent->microClusters[i]->subtractClusterVector(snapshotLandmark->microClusters[j]);
         }
       }
     }
@@ -75,7 +75,7 @@ SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurr
         if(snapshotLandmark->microClusters[j]->id.size()==1) {
           int clusterIdLandmark=snapshotLandmark->microClusters[j]->id[0];
           if(snapshotCurrent->microClusters[i]->id[0]==clusterIdLandmark)
-            snapshotCurrent->microClusters[i]->substractClusterVector(snapshotLandmark->microClusters[j]);
+            snapshotCurrent->microClusters[i]->subtractClusterVector(snapshotLandmark->microClusters[j]);
         }
       }
     }
