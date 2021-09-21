@@ -4,28 +4,23 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DBSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DBSTREAM_HPP_
-#include <cmath>
-#include <cassert>
-#include <limits>
-#include <ctime>
-#include <cstdio>
-#include <unordered_set>
 #include <Algorithm/Algorithm.hpp>
-#include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/WindowModel/DampedWindow.hpp>
-#include <Utils/BenchmarkUtils.hpp>
 #include <Algorithm/DataStructure/WeightedAdjacencyList.hpp>
+#include <Utils/BenchmarkUtils.hpp>
+
 namespace SESAME {
 typedef std::vector<std::vector<MicroClusterPtr>> Clusters;
 class DBStreamParams : public AlgorithmParameters {
  public:
   double radius;
   double lambda;
-  int cleanUpInterval;//Tgap
+  int cleanUpInterval;//Time gap
   double weightMin;//minimum weight
   double alpha;//α, intersection factor
   double base;//base of decay function
 };
+
+
 class DBStream : public Algorithm
     {
      public:
@@ -61,8 +56,6 @@ class DBStream : public Algorithm
       void insertIntoGraph(int microClusterId,int OtherId);
       void insertIntoGraph(int microClusterId);
       void findConnectedComponents();
-
     };
-
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DBSTREAM_HPP_

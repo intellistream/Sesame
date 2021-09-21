@@ -5,14 +5,12 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_WEIGHTEDADJACENCYLIST_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_WEIGHTEDADJACENCYLIST_HPP_
 #include <algorithm>
-#include <cmath>
-#include <cassert>
 #include <functional>
-#include <iostream>
 #include <unordered_map>
 #include<Algorithm/DataStructure/Point.hpp>
 #include<Algorithm/DataStructure/MicroCluster.hpp>
 #include<Algorithm/WindowModel/DampedWindow.hpp>
+
 namespace SESAME {
 struct MicroClusterPair;
 typedef std::shared_ptr<MicroClusterPair> MicroClusterPairPtr;
