@@ -93,7 +93,6 @@ SESAME::DPNodePtr SESAME::DPTree::findNN(SESAME::PointPtr p,
   int index = 0;
   double dis = 0;
   auto minDis = DBL_MAX;
-  // double maxDis = 0;
   for (int i = 0; i < size; i++) {
     Clus[i]->SetRho(Clus[i]->GetRho() * coef);
     dis = p->getDisTo(Clus[i]->GetCenter());
@@ -105,7 +104,6 @@ SESAME::DPNodePtr SESAME::DPTree::findNN(SESAME::PointPtr p,
   }
 
   p->setMinDist(minDis);
-  // p.maxDis = maxDis;
   auto cc = Clus[index];
   if (minDis <= CluR) {
     Clus[index]->insert(time);

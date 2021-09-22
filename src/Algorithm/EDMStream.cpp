@@ -34,19 +34,17 @@ void SESAME::EDMStream::setMinDelta(double minDelta) {
 
 void SESAME::EDMStream::InitDP(double time) {
   cache->compDeltaRho(time);
-  // cache.drawDecision(bufferPath, decisionPath);
-  // scan = new Scanner(System.in);
-  //SESAME_DEBUG("beta=" << this->EDMParam.beta);
+  SESAME_DEBUG("beta = " << this->EDMParam.beta);
   this->minRho = this->EDMParam.beta / (1 - pow(this->EDMParam.a, this->EDMParam.lamda));
-  //SESAME_DEBUG("minRho=" << this->minRho);
+  SESAME_DEBUG("minRho = " << this->minRho);
 
   this->deltaT = (log(1 - pow(this->EDMParam.a, this->EDMParam.lamda)) / log(this->EDMParam.a) -
       log(this->EDMParam.beta) / log(this->EDMParam.a))/ this->EDMParam.lamda;
   //		double deltaT = 100;
-  //SESAME_DEBUG("deltaT=" << this->deltaT);
+  SESAME_DEBUG("deltaT = " << this->deltaT);
   outres->setTimeGap(this->deltaT);
   cache->getDPTree(this->minRho, this->EDMParam.minDelta, dpTree, outres, clusters);
-  //SESAME_DEBUG("dpTree size = " << dpTree->GetSize());
+  SESAME_DEBUG("dpTree size = " << dpTree->GetSize());
   dpTree->SetLastTime(time);
 }
 
@@ -75,27 +73,6 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
-//  bool flag = true;
-//  while(flag) {
-//    for(auto it = clusters.begin(); it != clusters.end(); ++it){
-//      auto cluster = it->get();
-//      if(cluster->GetCells().begin() == cluster->GetCells().end()){
-//        this->clusters.erase(it);
-//        flag = true;
-//        break;
-//      }
-//      flag = false;
-//    }
-//  }
-//  auto it = clusters.begin();
-//  while(it != clusters.end()) {
-//    auto cluster = it->get();
-//    if(cluster->GetCells().begin() == cluster->GetCells().end()){
-//      this->clusters.erase(it);
-//    } else {
-//      it++;
-//    }
-//  }
   for(auto it = this->clusters.begin(); it != this->clusters.end();) {
     auto cluster = it->get();
     if(cluster->GetCells().begin() == cluster->GetCells().end()){
@@ -104,8 +81,6 @@ void SESAME::EDMStream::delCluster() {
       it++;
     }
   }
-
-
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double time) {
@@ -116,7 +91,7 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
       // draw decision graph
       InitDP(time);
       this->alpha = computeAlpha(); //TODO: what does it mean?
-      //SESAME_DEBUG("alpha=" << this->alpha);
+      SESAME_DEBUG("alpha = " << this->alpha);
       this->EDMParam.isInit = true;
     }
     return cc;
@@ -172,7 +147,7 @@ void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
       // sinkPtr->put(center->copy());
       // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
    }
-    //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
-    SESAME_DEBUG("In all: "<< sum <<" points");
+    // SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+    // SESAME_DEBUG("In all: "<< sum <<" points");
 }
 
