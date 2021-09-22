@@ -58,15 +58,10 @@ SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, 
 
     nn = outres->insert(p, time);
     if (nn->GetRho() > this->minRho) {
-//				System.out.println("change");
       outres->remove(nn);
-//				System.out.println("merged by o_micro:" + nn.dis);
       dpTree->insert(nn, opt);
     }
   }
-//		else{
-//			System.out.println("merged by p_micro:" + nn.dis);
-//		}
 
   dpTree->deleteInact(outres, this->minRho, time);
 //		dpTree.adjustCluster(clusters);

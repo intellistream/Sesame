@@ -75,9 +75,6 @@ void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> &clus,
   }
   double maxDelta = 0;
   for (int j = 1; j < size && j < i; j++) {
-    // System.out.println(j);
-    // System.out.println(size);
-    // System.out.println(Clus[j]);
     if (maxDelta < Clus[j]->GetDelta()) {
       maxDelta = Clus[j]->GetDelta();
     }
@@ -160,9 +157,6 @@ void SESAME::DPTree::adjustNoOpt(int index) {
       }
     }
   }
-  // if(p.id == 14731){
-  // System.out.println(position);
-  // }
   if (Clus[0] == clu) {
     clu->SetDelta(DBL_MAX);
   }
@@ -304,9 +298,6 @@ void SESAME::DPTree::adjust(int index) {
   if (Clus[0] == clu) {
     clu->SetDelta(DBL_MAX);
   }
-  // if(p.id == 29585){
-  // System.out.println(" positino" + position);
-  // }
   if (position != 0 && (clu->GetDep() == nullptr || clu->GetRho() > clu->GetDep()->GetRho())) {
 
     clu->SetDelta(DBL_MAX);

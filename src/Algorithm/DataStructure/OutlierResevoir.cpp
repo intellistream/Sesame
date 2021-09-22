@@ -90,9 +90,6 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double t
     return c;
   } else {
     double coef = pow(a, lamd * (time - nn->GetLastTime()));
-//			System.out.println(p.startTime + " " + nn.lastTime);
-//			System.out.println(minDis);
-//			System.out.println(coef);
     nn->add(coef, time);
     return nn;
   }
