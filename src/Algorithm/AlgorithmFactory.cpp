@@ -32,9 +32,11 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algoType == SESAME::EDMStreamType) {
     shared_ptr<EDMStream> eDMStream = std::make_shared<EDMStream>(cmd_params);
     return (SESAME::AlgorithmPtr) eDMStream;
+  }
   if (cmd_params.algoType == DBStreamType) {
     shared_ptr<DBStream> dbStream = std::make_shared<DBStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dbStream;
   }
   throw std::invalid_argument("Unsupported");
+
 }
