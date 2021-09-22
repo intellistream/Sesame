@@ -44,6 +44,12 @@ struct param_t {
   double lambda;
   double mu;
   double beta;
+  // EDMStream
+  double a;
+  int cacheNum;
+  double delta;
+  int opt;
+
   //used in DBStream
   double radius;
   int cleanUpInterval;

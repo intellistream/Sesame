@@ -7,5 +7,9 @@ add_source_sesame(
         WeightedAdjacencyList.cpp
         DataStructureFactory.cpp
         CFTree.cpp
+        DPTree.cpp
+        DPNode.cpp
+        Cache.cpp
+        OutlierResevoir.cpp
         FeatureVector.cpp
 )
