@@ -18,6 +18,9 @@ class Point {
   int index; // 1,2,3,4,5....
   double weight; // considering the outdated effect
   double cost;
+  double minDist;
+ private:
+  // the distance to the nearest data point
   int clusteringCenter;  // using index to identify
   int dimension;// feature Length
   std::vector<double> *feature;//TODO: need to think how to remove * here.
@@ -37,6 +40,9 @@ class Point {
   int getDimension() const;
   void setDimension(int d);
   int getFeatureLength();
+  double getDisTo(SESAME::PointPtr p);
+  double getMinDist() const;
+  void setMinDist(double min_dist);
   SESAME::PointPtr copy();
 };
 }

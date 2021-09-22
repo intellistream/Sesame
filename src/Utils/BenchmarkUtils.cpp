@@ -125,7 +125,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  * @Return:
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
-  cmd_params.pointNumber = 1000;
+  cmd_params.pointNumber = 15120; // number of the data points in the dataset, use the whole dataset to run benchmark
   cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;
@@ -143,13 +143,24 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.minPoints = 10;
   cmd_params.epsilon = 50;
   cmd_params.base = 2;
-  cmd_params.lambda = 1.8;
+  cmd_params.lambda = 1.8; // 1.8
   cmd_params.mu = 7;
-  cmd_params.beta = 5;
+  cmd_params.beta = 5; // 5
+
+  // EDMStream
+  cmd_params.a = 0.998;
+  cmd_params.cacheNum = 1000;
+  cmd_params.radius = 250;
+  cmd_params.lambda = 1;
+  cmd_params.delta = 1500;
+  cmd_params.beta = 0.0021;
+  cmd_params.opt = 2;
+
+
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::BirchType;
+  cmd_params.algoType = SESAME::EDMStreamType;
   cmd_params.evaluateType = SESAME::euclideanCostType;
 }
 
