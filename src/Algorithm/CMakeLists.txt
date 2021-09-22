@@ -4,6 +4,7 @@ add_source_sesame(
         Birch.cpp
         DenStream.cpp
         EDMStream.cpp
+        DBStream.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
 )
