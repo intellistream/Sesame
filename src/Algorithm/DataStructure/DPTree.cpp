@@ -434,8 +434,6 @@ double SESAME::DPTree::adjustMinDelta(double alpha) {
   double avg = 0;
   double up = 0;
   double down = 0;
-  // double max = deltas[size - 1];
-  // deltas[size - 1] = deltas[size - 2];
   up = deltas[size - 1];
   for (int i = 0; i < size - 1; i++) {
     down += deltas[i];
@@ -511,8 +509,7 @@ void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> &clust
           if(c->GetLabel() == Clus[i]->GetCluster()->GetLabel()) flag = true;
         }
         if (flag) { // this is because when
-          // minDelta become
-          // smaller
+          // minDelta become smaller
           Clus[i]->GetCluster()->remove(Clus[i]);
           auto cluster = std::make_shared<Cluster>(cluLabel++);
           clusters.insert(cluster);

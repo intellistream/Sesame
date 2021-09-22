@@ -69,7 +69,6 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double t
   double dis = 0;
   auto minDis = DBL_MAX;
   SESAME::DPNodePtr nn = nullptr;
- // SESAME::DPNodePtr temp = nullptr;
   for(auto it = this->outliers.begin(); it != this->outliers.end();){
     if(time - double(it->get()->GetLastTime()) > this->timeGap) {
       this->outliers.erase(it++);

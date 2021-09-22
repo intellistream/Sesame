@@ -62,8 +62,6 @@ SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, 
   }
 
   dpTree->deleteInact(outres, this->minRho, time);
-//		dpTree.adjustCluster(clusters);
-//		delCluster();
   return nn;
 }
 double SESAME::EDMStream::computeAlpha() {
@@ -136,18 +134,12 @@ void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
       PointPtr center = cell->get()->GetCenter();
       sinkPtr->put(center->copy());
     }
-    // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
   }
   for(auto out = this->outres->GetOutliers().begin(); out != this->outres->GetOutliers().end(); ++ out) {
       i++;
       sum += num;
       num = 0;
       CountNode(out->get()->copy(), num);
-      // PointPtr center = out->GetCenter();
-      // sinkPtr->put(center->copy());
-      // SESAME_DEBUG("Cluster "<< i << " has " << num <<" points");
    }
-    // SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
-    // SESAME_DEBUG("In all: "<< sum <<" points");
 }
 
