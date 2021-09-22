@@ -70,23 +70,19 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double t
   auto minDis = DBL_MAX;
   SESAME::DPNodePtr nn = nullptr;
  // SESAME::DPNodePtr temp = nullptr;
- int count = 0;
- // TODO: need modifying
- while(count != this->outliers.size()){
-   count = 0;
-   for(auto it = this->outliers.begin(); it != this->outliers.end(); ++it){
-     count++;
-     if(time - double(it->get()->GetLastTime()) > this->timeGap) {
-       this->outliers.erase(it);
-       break;
-     }
-     dis = p->getDisTo(it->get()->GetCenter());
-     if (dis < minDis) {
-       minDis = dis;
-       nn = it->get()->copy();
-     }
-   }
- }
+  for(auto it = this->outliers.begin(); it != this->outliers.end();){
+    if(time - double(it->get()->GetLastTime()) > this->timeGap) {
+      this->outliers.erase(it++);
+      continue;
+    } else {
+      dis = p->getDisTo(it->get()->GetCenter());
+      if (dis < minDis) {
+        minDis = dis;
+        nn = it->get()->copy();
+      }
+      it++;
+    }
+  }
 
   if (nn == nullptr || minDis > r) {
     SESAME::DPNodePtr c = std::make_shared<SESAME::DPNode>(p, time);

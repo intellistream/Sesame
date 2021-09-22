@@ -125,7 +125,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  * @Return:
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
-  cmd_params.pointNumber = 2000;
+  cmd_params.pointNumber = 3000;
   cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;

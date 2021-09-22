@@ -80,16 +80,37 @@ double SESAME::EDMStream::adjustMinDelta() {
   return dpTree->adjustMinDelta(this->alpha);
 }
 void SESAME::EDMStream::delCluster() {
-  bool flag = true;  // TODO: cannot use one for-loop
-  for(auto it = clusters.begin(); it != clusters.end(); ++it){
+//  bool flag = true;
+//  while(flag) {
+//    for(auto it = clusters.begin(); it != clusters.end(); ++it){
+//      auto cluster = it->get();
+//      if(cluster->GetCells().begin() == cluster->GetCells().end()){
+//        this->clusters.erase(it);
+//        flag = true;
+//        break;
+//      }
+//      flag = false;
+//    }
+//  }
+//  auto it = clusters.begin();
+//  while(it != clusters.end()) {
+//    auto cluster = it->get();
+//    if(cluster->GetCells().begin() == cluster->GetCells().end()){
+//      this->clusters.erase(it);
+//    } else {
+//      it++;
+//    }
+//  }
+  for(auto it = this->clusters.begin(); it != this->clusters.end();) {
     auto cluster = it->get();
     if(cluster->GetCells().begin() == cluster->GetCells().end()){
-      this->clusters.erase(it);
-      flag = true;
-      break;
+      this->clusters.erase(it++);
+    } else {
+      it++;
     }
-    flag = false;
   }
+
+
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double time) {
