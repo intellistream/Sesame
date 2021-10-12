@@ -10,6 +10,7 @@
 #include <experimental/filesystem>
 #include <barrier>
 #include <functional>
+#include <Algorithm/DataStructure/Point.hpp>
 /* Period parameters */
 #define N 624
 #define M 397
@@ -37,6 +38,10 @@ class UtilityFunctions {
   static long genrand_int31(void);
   static unsigned long genrand_int32(void);
   static std::shared_ptr<std::barrier<>> createBarrier(int count);
+  static void groupByCenters(const std::vector<PointPtr> &input,
+                      const std::vector<PointPtr> &centers,
+                      std::vector<PointPtr> &output,
+                      int dimension);
 };
 }
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

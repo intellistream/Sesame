@@ -1,1 +1,3 @@
 add_source_sesame(Evaluation.cpp)
+add_source_sesame(Purity.cpp)
+add_source_sesame(Euclidean.cpp)
