@@ -20,8 +20,21 @@ int main(int argc, char **argv) {
   //Parse parameters.
   param_t cmd_params;
   BenchmarkUtils::defaultParam(cmd_params);
+  cmd_params.pointNumber = 15120;
+  cmd_params.seed = 10;
+  cmd_params.clusterNumber = 10;
+  cmd_params.dimension = 54;
+  cmd_params.coresetSize = 100;
+  cmd_params.lastArrivingNum = 60;
+  cmd_params.timeWindow = 6;
+  cmd_params.timeInterval = 4;
+  cmd_params.onlineClusterNumber = 15;
+  cmd_params.radiusFactor = 70;
+  cmd_params.initBuffer = 500;
+  cmd_params.offlineTimeWindow = 2;
+  cmd_params.outputPath = "results.txt";
+  cmd_params.algoType = SESAME::CluStreamType;
   BenchmarkUtils::parseArgs(argc, argv, cmd_params);
-
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
 

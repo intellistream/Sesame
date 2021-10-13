@@ -3,9 +3,11 @@
 #ifndef SESAME_SRC_TIMER_CYCLEMETER_HPP_
 #define SESAME_SRC_TIMER_CYCLEMETER_HPP_
 
-#include <time.h>           /* gettimeofday */
+#include <Timer/rdtsc.hpp>/* startTimer, stopTimer */
+#include <ctime>           /* gettimeofday */
 #include <cstddef>
 #include <cstdint>
+
 namespace SESAME {
 class TimeMeter {
  private:
