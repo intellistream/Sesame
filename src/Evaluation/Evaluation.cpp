@@ -3,18 +3,21 @@
 #include <Evaluation/Evaluation.hpp>
 #include <Evaluation/Euclidean.hpp>
 #include <Evaluation/Purity.hpp>
+#include <Evaluation/CMM.hpp>
 #include <cmath>
 #include <Utils/Logger.hpp>
 
 void SESAME::Evaluation::runEvaluation(int numberOfPoints,
                                        int numberOfCenters,
                                        int dimension,
-                                       const std::vector<PointPtr> &results,
+                                       const std::vector<PointPtr> &inputs,
                                        const std::vector<PointPtr> &center) {
   SESAME::Euclidean::euclideanCost(numberOfPoints,
                                    numberOfCenters,
                                    dimension,
-                                   results,
+                                   inputs,
                                    center);
-  SESAME::Purity::purityCost(center, results, dimension);
+  SESAME::Purity::purityCost(center, inputs, dimension);
+
+  SESAME::CMM::CMMCost(dimension,inputs,center);
 }

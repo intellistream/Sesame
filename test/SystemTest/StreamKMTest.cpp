@@ -17,13 +17,13 @@ TEST(SystemTest, StreamKMTest) {
 
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 150;
+  cmd_params.pointNumber = 15120;
   cmd_params.seed = 10;
-  cmd_params.clusterNumber = 10;
-  cmd_params.dimension = 4;
-  cmd_params.coresetSize = 30;
+  cmd_params.clusterNumber = 30;
+  cmd_params.dimension = 54;
+  cmd_params.coresetSize = 100;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::StreamKMeansType;

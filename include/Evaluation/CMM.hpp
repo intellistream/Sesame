@@ -5,7 +5,8 @@
 #ifndef SESAME_INCLUDE_EVALUATION_CMM_HPP_
 #define SESAME_INCLUDE_EVALUATION_CMM_HPP_
 #include <Algorithm/DataStructure/Point.hpp>
-#include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace SESAME {
 
@@ -33,12 +34,12 @@ class CMMPoint {
   int dim;
   std::vector<double> vec;
   double weight;
-  std::string truth;
+  int truth;
   double conCL;
   double con;
 
-  CMMPoint(int id, long startTime,long time, std::vector<double> &vec,
-           double a, double lambda, std::string &truth);
+  CMMPoint(int id, long startTime, long time, std::vector<double> &vec,
+           double a, double lambda, int truth);
 
   double getDisTo(CMMPointPtr &p);
 
@@ -49,7 +50,7 @@ class CMMPoint {
 class CMMCluster {
  public:
   std::vector<CMMPointPtr> points;
-  std::string groundTruth;
+  int groundTruth;
   std::vector<int> rho;
   double knhDis{};
   ClusterType type;
@@ -57,19 +58,44 @@ class CMMCluster {
 
   void add(CMMPointPtr &p);
 
-  void getDistribution(std::map<std::string, int> &map);
+  // void getDistribution(std::unordered_map<std::string, int> &map);
 
   void getConn(int k);
 };
 
+class CMMDriver {
+ public:
+  double a;
+  double lambda;
+  int dim;
+  int groundTruth;
+  int k;
+
+  std::vector<CMMPointPtr> points;
+  std::unordered_map<int, CMMClusterPtr> CL;
+  std::vector<CMMClusterPtr> CLlist;
+  std::unordered_map<int, CMMClusterPtr> C;
+  std::unordered_map<std::string, std::string> CToCL;
+  std::vector<CMMClusterPtr> Clist;
+  std::vector<CMMPointPtr> faultSet;
+  std::unordered_set<CMMClusterPtr> faultClu;
+
+  CMMDriver(int dim, double a, double lambda, int k);
+  void load(const std::vector<PointPtr> &input, const std::vector<PointPtr> &center,
+            int dimension, long time);
+  void voteMap();
+  // int getDelta(CMMClusterPtr ci, CMMClusterPtr cljo);
+  void getFaultSet();
+  double compCMM(int k);
+  void compCon(int k);
+
+};
 class CMM {
  private:
  public:
-  static void CMMCost(int numberOfPoints,
-                      int numberOfCenters,
-                      int dimention,
+  static void CMMCost(int dimension,
                       const std::vector<PointPtr> &inputs,
-                      const std::vector<PointPtr> &results);
+                      const std::vector<PointPtr> &center);
 };
 
 }
