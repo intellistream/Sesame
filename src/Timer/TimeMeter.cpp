@@ -9,5 +9,5 @@ void SESAME::TimeMeter::END_MEASURE() {
 }
 long SESAME::TimeMeter::MeterUSEC() {
   return (((this->stop).tv_sec * 1000000L + (this->stop).tv_nsec / 1000L)
-      - ((this->start).tv_sec * 1000000L + (this->start).tv_nsec / 1000L));
+  - ((this->start).tv_sec * 1000000L + (this->start).tv_nsec / 1000L));
 }
