@@ -61,13 +61,14 @@ void SESAME::CMMCluster::add(SESAME::CMMPointPtr &p) {
   this->points.push_back(p);
 }
 
-void SESAME::CMMCluster::getConn(int k) {
+void SESAME::CMMCluster::getConn() {
   int size = (int)points.size();
   std::vector<double> knhPDis(size);
   double sum = 0;
   for (int i = 0; i < size; i++) {
     CMMPointPtr p = points.at(i);
-    knhPDis[i] = p->knnDis(k, *this);
+    knhPDis[i] = p->knnDis(CMM_KNN, *this);
+    // the paper says that the value of k has only marginal influence on CMM effectiveness. so here we set k = 10
     sum += knhPDis[i];
   }
   knhDis = sum/size;
@@ -92,16 +93,18 @@ void SESAME::CMMCluster::getConn(int k) {
   }
 }
 
-SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda, int k) {
+SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda) {
   this->dim = dim;
   this->a = a;
   this->lambda = lambda;
-  this->k = k;
+  //this->k = k;
 }
 void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
-                             const std::vector<PointPtr> &center, int dimension, long time) {
+                             const std::vector<PointPtr> &center, int dimension, double weight) {
+  // time ? weight ?
   std::vector<PointPtr> out;
   SESAME::UtilityFunctions::groupByCenters(input, center,out,dimension);
+  // convert to the predicted clustering center index
   for(int i = 0; i < out.size(); i++) {
     std::vector<double> features;
     for(int j = 0; j < dimension; j++) {
@@ -109,7 +112,7 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
     }
     int cl = input.at(i)->getClusteringCenter();
     SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(out.at(i)->getIndex(),
-                                                       (long)out.at(i)->getIndex(), time, features, a, lambda, cl);
+                                                       (long)out.at(i)->getIndex(), weight, features, a, lambda, cl);
     if(CL.count(cl)){
       CL[cl]->add(p);
     } else {
@@ -136,6 +139,10 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
   }
 }
 void SESAME::CMMDriver::voteMap() {
+/*
+  here CMM uses the mapping strategy rather than the vote, and in the paper the author also says that Mapping clusters
+  based on majority voting cannot recognize emerging or disappearing clusters.
+*/
   int csize = (int)Clist.size();
   for (int i = 0; i < csize; i++) {
     CMMClusterPtr c = Clist.at(i);
@@ -168,7 +175,7 @@ void SESAME::CMMDriver::voteMap() {
 }
 
 void SESAME::CMMDriver::getFaultSet() {
-  int csize = Clist.size();
+  int csize = (int)Clist.size();
   for (int i = 0; i < csize; i++) {
     CMMClusterPtr c = Clist.at(i);
     int truth = c->groundTruth;
@@ -187,12 +194,12 @@ void SESAME::CMMDriver::getFaultSet() {
   }
 }
 
-double SESAME::CMMDriver::compCMM(int k) {
+double SESAME::CMMDriver::compCMM() {
   getFaultSet();
   if (faultSet.empty()) {
     return 1;
   }
-  compCon(k);
+  compCon();
   double totalPen = 0;
   double totalCon = 0;
   int faultPsize = (int)faultSet.size();
@@ -207,26 +214,48 @@ double SESAME::CMMDriver::compCMM(int k) {
   else return 1 - totalPen / totalCon;
 }
 
-void SESAME::CMMDriver::compCon(int k) {
+void SESAME::CMMDriver::compCon() {
   for(auto &c:faultClu) {
-    c->getConn(k);
+    c->getConn();
   }
 }
+
+double SESAME::CMMDriver::computeWeight(double deltaTime) {
+  double belta = 2;
+  double lamda = 1;
+  return pow(belta,  lamda * (deltaTime));
+}
+/*here we assume that the data comes every 10 seconds
+ * */
 void SESAME::CMM::CMMCost(int dimension,
                           const std::vector<PointPtr> &inputs,
                           const std::vector<PointPtr> &center) {
   std::vector<double> CMMValues;
+  CMMValues.push_back(0);
   int start = 0;
-  for (int i = 100; i < 451; i += 100) {
-    CMMDriver cmm(dimension, 0.998, 1, 3);
-    std::vector<PointPtr> seg;
-    for(; start < i; start ++) {
-      seg.push_back(inputs.at(start));
+  double pre_time = 0;
+  for (int i = 0; i < inputs.size(); i++) {
+    // segment the stream data into horizons(windows) according to threshold
+    CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
+    double weight = cmm.computeWeight(i / 2 - pre_time);
+    if(weight >= CMM_THRESHOLD) {
+      pre_time = i * 2;
+      std::vector<PointPtr> seg;
+      for(; start < i; start ++) {
+        seg.push_back(inputs.at(start));
+      }
+      // here we set weight to 1
+      cmm.load(seg, center, dimension, weight); // according to arrival rate, can adjust if necessary
+      /*Transform the pre and GT data into specific CMM structures
+       * Clist: predicted clusters
+       * CList: GT clusters
+       * C:(PClusterID, PCluster)
+       * CL:(GTClusterID, GTCluster)
+       * */
+      cmm.voteMap();  // TODO: change voteMap according to the paper
+      double cmmValue = cmm.compCMM();
+      CMMValues.push_back(cmmValue);
     }
-    cmm.load(seg, center, dimension, i * 10);
-    cmm.voteMap();
-    double cmmValue = cmm.compCMM(3);
-    CMMValues.push_back(cmmValue);
   }
   double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
   SESAME_INFO("CMM Average Value:" << sum / CMMValues.size());

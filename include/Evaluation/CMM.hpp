@@ -60,7 +60,7 @@ class CMMCluster {
 
   // void getDistribution(std::unordered_map<std::string, int> &map);
 
-  void getConn(int k);
+  void getConn();
 };
 
 class CMMDriver {
@@ -69,7 +69,6 @@ class CMMDriver {
   double lambda;
   int dim;
   int groundTruth;
-  int k;
 
   std::vector<CMMPointPtr> points;
   std::unordered_map<int, CMMClusterPtr> CL;
@@ -80,14 +79,15 @@ class CMMDriver {
   std::vector<CMMPointPtr> faultSet;
   std::unordered_set<CMMClusterPtr> faultClu;
 
-  CMMDriver(int dim, double a, double lambda, int k);
+  CMMDriver(int dim, double a, double lambda);
   void load(const std::vector<PointPtr> &input, const std::vector<PointPtr> &center,
-            int dimension, long time);
+            int dimension, double weight);
   void voteMap();
+  double computeWeight(double deltaTime);
   // int getDelta(CMMClusterPtr ci, CMMClusterPtr cljo);
   void getFaultSet();
-  double compCMM(int k);
-  void compCon(int k);
+  double compCMM();
+  void compCon();
 
 };
 class CMM {
