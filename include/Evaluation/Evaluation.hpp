@@ -10,15 +10,16 @@
 #include <vector>
 namespace SESAME {
 
-enum evaluateType { euclideanCostType };
+// enum evaluateType { euclideanCostType, cmmType, purityType };
 
 class Evaluation {
  public:
-  static void euclideanCost(int numberOfPoints,
+  static void runEvaluation(int numberOfPoints,
                             int numberOfCenters,
-                            int dimention,
+                            int dimension,
                             const std::vector<PointPtr> &inputs,
-                            const std::vector<PointPtr> &results);//EuclideanCost, defined in StreamKM++: A clustering algorithm for data streams
+                            const std::vector<PointPtr> &results);
+
 
 };
 

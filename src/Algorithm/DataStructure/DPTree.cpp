@@ -52,7 +52,7 @@ void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> &clus,
                           std::unordered_set<ClusterPtr> &clusters) {
   this->minDelta = minDelta;
   Clus[0] = clus[0];
-  SESAME::ClusterPtr cluster = std::make_shared<Cluster>(cluLabel++);;
+  SESAME::ClusterPtr cluster = std::make_shared<Cluster>(cluLabel++);
   cluster->add(Clus[0]);
   Clus[0]->SetCluster(cluster);
   clusters.insert(cluster);
