@@ -8,6 +8,11 @@
 #include <vector>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <Utils/Logger.hpp>
+#include <thread>
+#include <chrono>
+using namespace std::chrono;
+typedef time_point<system_clock, nanoseconds> Timer;
+
 /**
  * Create input data points.
  * TODO: Remove the hard-coded part.
@@ -18,13 +23,19 @@
  */
 void SESAME::DataSource::load(int point_number, int dimension, vector<string> input) {
 
+  // The step used to generate random timestamps
+  const int timeStep = 10;
   for (int i = 0; i < point_number; i++) {
-    PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0);
+    int timeStamp = timeStep * i + rand() % timeStep;
+    PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0, timeStamp);
     char *charData = new char[10000];
+    // Put input[i] into charData
     strcpy(charData, input[i].c_str());
     // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
     const char *sep = " ";
+    // Split string into tokens, separated by " "
     char *feature = strtok(charData, sep);//TODO: why this??
+    // Skip the first feature???
     feature = strtok(nullptr, sep);
     int index = 0;
     while (feature != nullptr) {
@@ -50,10 +61,31 @@ SESAME::DataSource::DataSource() {
 void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
   overallMeter.START_MEASURE();
+  // Initialize timer with the timestamp of the first point
+  Timer timer = system_clock::time_point(nanoseconds{input[0]->getTimeStamp()});
   SESAME_INFO("DataSource start to emit data");
-  for (PointPtr p: this->input) {
+//  // Push data without considering timestamps
+//  for (PointPtr p: this->input) {
+//    cout << "PointPtr" << p << endl;
+//    inputQueue->push(p);
+//  }
+  // Increase timer using while loop
+  for (PointPtr p : this->input) {
+    int timestamp = (*p).getTimeStamp();
+    while (timer.time_since_epoch().count() < timestamp) {
+      timer += nanoseconds(1);
+    }
     inputQueue->push(p);
+    cout << "Time to load next point: " << timer.time_since_epoch().count() << endl;
   }
+//  // Increase timer using thread timeout
+//  for (PointPtr p : this->input) {
+//    int timestamp = (*p).getTimeStamp();
+//    this_thread::sleep_for(chrono::nanoseconds(timestamp - timer.time_since_epoch().count()));
+//    inputQueue->push(p);
+//    timer = system_clock::time_point(nanoseconds{timestamp});
+//    cout << "Time to load next point: " << timer.time_since_epoch().count() << endl;
+//  }
   sourceEnd = true;//Let engine knows that there won't be any more data coming.
   barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();

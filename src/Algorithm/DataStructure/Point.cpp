@@ -14,6 +14,7 @@ SESAME::Point::Point() {
   this->cost = 0;
   this->clusteringCenter = -1;
   this->feature = new std::vector<double>(54);
+  this->timestamp = 0;
 }
 
 SESAME::Point::Point(int index, double weight, int dimension, double cost) {
@@ -23,6 +24,16 @@ SESAME::Point::Point(int index, double weight, int dimension, double cost) {
   this->cost = cost;
   this->clusteringCenter = -1;
   this->feature = new std::vector<double>(dimension);
+}
+
+SESAME::Point::Point(int index, double weight, int dimension, double cost, int timestamp) {
+  this->index = index;
+  this->weight = weight;
+  this->dimension = dimension;
+  this->cost = cost;
+  this->clusteringCenter = -1;
+  this->feature = new std::vector<double>(dimension);
+  this->timestamp = timestamp;
 }
 
 int SESAME::Point::getIndex() const {
@@ -64,6 +75,16 @@ void SESAME::Point::setCost(double c) {
 double SESAME::Point::getCost() const {
   return this->cost;
 }
+
+void SESAME::Point::setTimeStamp(int t) {
+  this->timestamp = t;
+}
+
+int SESAME::Point::getTimeStamp() const {
+  return this->timestamp;
+}
+
+
 
 /**
  * @param source

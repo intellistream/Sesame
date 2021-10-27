@@ -23,6 +23,7 @@ class DataStructureFactory {
 
  public:
 
+  static PointPtr createPoint(int index, double weight, int dimension, double cost, int timestamp);
   static PointPtr createPoint(int index, double weight, int dimension, double cost);
   static PointPtr createPoint();
   static void clearPoint(PointPtr point);
