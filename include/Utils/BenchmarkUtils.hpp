@@ -58,7 +58,6 @@ struct param_t {
   std::string inputPath;
   std::string outputPath;
   SESAME::algoType algoType;
-  SESAME::evaluateType evaluateType;
 };
 
 class BenchmarkUtils {

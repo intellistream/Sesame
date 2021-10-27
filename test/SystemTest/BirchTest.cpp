@@ -19,13 +19,13 @@ TEST(SystemTest, BirchTest) {
 
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 150;
+  cmd_params.pointNumber = 15120;
   cmd_params.thresholdDistance = 7;
   cmd_params.maxInternalNodes = 3;
   cmd_params.maxLeafNodes = 3;
-  cmd_params.dimension = 4;
+  cmd_params.dimension = 54;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Mock.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::BirchType;
 
