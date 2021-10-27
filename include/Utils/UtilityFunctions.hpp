@@ -18,6 +18,8 @@
 #define LOWER_MASK 0x7fffffffUL /* least significant r bits */
 #define TRUE 1
 #define FALSE 0
+#define DEFAULT_WEIGHT 1
+#define DEFAULT_COST 0
 #define KMEANS_TIMES 5
 
 /*

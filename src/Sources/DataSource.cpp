@@ -8,6 +8,7 @@
 #include <vector>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <Utils/Logger.hpp>
+#include <Utils/UtilityFunctions.hpp>
 #include <thread>
 #include <chrono>
 using namespace std::chrono;
@@ -27,15 +28,13 @@ void SESAME::DataSource::load(int point_number, int dimension, vector<string> in
   const int timeStep = 10;
   for (int i = 0; i < point_number; i++) {
     int timeStamp = timeStep * i + rand() % timeStep;
-    PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0, timeStamp);
-    char *charData = new char[10000];
+    PointPtr point = DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, dimension, DEFAULT_COST, timeStamp);
+    char *charData = new char[INT32_MAX];
     // Put input[i] into charData
     strcpy(charData, input[i].c_str());
     // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
     const char *sep = " ";
-    // Split string into tokens, separated by " "
     char *feature = strtok(charData, sep);//TODO: why this??
-    // Skip the first feature???
     feature = strtok(nullptr, sep);
     int index = 0;
     while (feature != nullptr) {
