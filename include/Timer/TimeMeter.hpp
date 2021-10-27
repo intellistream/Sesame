@@ -18,15 +18,17 @@ namespace SESAME {
 struct T_TIMER {
 #ifndef NO_TIMING
   struct timeval start, end;
-  uint64_t overall_timer, partition_timer_pre, partition_timer;
-  //uint64_t wait_timer_pre = 0, wait_timer = 0;
+  uint64_t overall_timer, online_timer_pre, online_timer;
+
   uint64_t initialTimer_pre = 0, initialTimer = 0;
 
   uint64_t dataInsertTimer_pre = 0, dataInsertTimer = 0;//accumulate.
   uint64_t conceptDriftTimer_pre = 0, conceptDriftTimer = 0;//accumulate.
   uint64_t pruneTimer_pre = 0, pruneTimer = 0;//accumulate.
-  uint64_t snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for Clustream?)
-  uint64_t refinementTimer_pre = 0, refinementTimer = 0;//offline refinement
+  uint64_t snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for CluStream)
+
+
+  uint64_t refinementTimer = 0;//offline refinement
 
   std::vector<uint64_t> recordR;
   std::vector<uint64_t> recordS;
@@ -35,7 +37,7 @@ struct T_TIMER {
   int match_cnt = 0;
   int joiner_cnt = 0;
   int record_gap = 1;
-  int matches_in_sort = 0;
+
 #endif
 };
 
@@ -46,172 +48,119 @@ class TimeMeter {
   void START_MEASURE();
   void END_MEASURE();
   long MeterUSEC();//return the meter result in micro second unit.
-  //All functions need to modify later, just copy from AlianceDB
-  /** print out the execution time statistics of the join, used by no-refinement algorithms */
-  void breakdown_global(int64_t total_results, int nthreads, double average_partition_timer, std::string txtFile, int window_size);
+  //TODO:: All functions need to modify later, just modified and copied from AlianceDB REPO
+  /** print out the execution time statistics of stream clustering algorithms which have no-refinement algorithms */
+  void breakdown_global(int64_t total_results);
 
-  /** print out the execution time statistics of the join, used by algorithms that has refinement  */
-  void breakdown_global(int64_t result, int nthreads, T_TIMER *timer, long lastTS, _IO_FILE *pFile);
+  /** print out the execution time statistics of the stream clustering algorithms that has refinement  */
+  void breakdown_global(int64_t result, int nthreads);
 
-  void sortRecords(SESAME::algoType algo_name, int exp_id, long lastTS, unsigned long inputs, int64_t matches);
+  void sortRecords(SESAME::algoType algo_name);
 
 };
-#ifndef JOIN_COUNT
-#define JOIN_COUNT(timer) \
-timer->joiner_cnt++;
+
+#ifndef BEGIN_MEASURE_INITIALIZE
+#define BEGIN_MEASURE_INITIALIZE(timer) \
+startTimer(&(timer)->initialTimer);
 #endif
 
-#ifndef BEGIN_MEASURE_BUILD
-#define BEGIN_MEASURE_BUILD(timer) \
-startTimer(&(timer)->buildtimer);
+#ifndef END_MEASURE_INITIALIZE
+#define END_MEASURE_INITIALIZE(timer) \
+stopTimer(&(timer)->initialTimer);
 #endif
 
-#ifndef END_MEASURE_BUILD
-#define END_MEASURE_BUILD(timer) \
-stopTimer(&(timer)->buildtimer);
+
+#ifndef BEGIN_MEASURE_ONLINE
+#define BEGIN_MEASURE_ONLINE(timer) \
+startTimer(&(timer)->online_timer);
 #endif
 
-#ifndef BEGIN_MEASURE_BUILD_ACC
-#define BEGIN_MEASURE_BUILD_ACC(timer) \
-startTimer(&(timer)->buildtimer_pre);
+#ifndef END_MEASURE_ONLINE
+#define END_MEASURE_ONLINE(timer) \
+stopTimer(&(timer)->online_timer);
 #endif
 
-#ifndef END_MEASURE_BUILD_ACC
-#define END_MEASURE_BUILD_ACC(timer) \
-accTimer(&(timer)->buildtimer_pre, &(timer)->buildtimer); /* build time */
+#ifndef BEGIN_MEASURE_ONLINE_ACC
+#define BEGIN_MEASURE_ONLINE_ACC(timer) \
+startTimer(&(timer)->online_timer_pre);
 #endif
 
-#ifndef BEGIN_MEASURE_SORT_ACC
-#define BEGIN_MEASURE_SORT_ACC(timer) \
-startTimer(&(timer)->sorttimer_pre);
-#endif
-
-#ifndef END_MEASURE_SORT_ACC
-#define END_MEASURE_SORT_ACC(timer) \
-accTimer(&(timer)->sorttimer_pre, &(timer)->sorttimer); /* sort time */
-#endif
-
-#ifndef BEGIN_MEASURE_MERGE_ACC
-#define BEGIN_MEASURE_MERGE_ACC(timer) \
-startTimer(&(timer)->mergetimer_pre);
-#endif
-
-#ifndef END_MEASURE_MERGE_ACC
-#define END_MEASURE_MERGE_ACC(timer) \
-accTimer(&(timer)->mergetimer_pre, &(timer)->mergetimer); /* merge time */
-#endif
-
-#ifndef BEGIN_MEASURE_JOIN_MERGE_ACC
-#define BEGIN_MEASURE_JOIN_MERGE_ACC(timer) \
-startTimer(&(timer)->join_mergetimer_pre);
-#endif
-
-#ifndef END_MEASURE_JOIN_MERGE_ACC
-#define END_MEASURE_JOIN_MERGE_ACC(timer) \
-accTimer(&(timer)->join_mergetimer_pre, &(timer)->join_mergetimer); /* merge time */
-#endif
-
-#ifndef BEGIN_MEASURE_JOIN_ACC
-#define BEGIN_MEASURE_JOIN_ACC(timer) \
-startTimer(&(timer)->join_timer_pre);
-#endif
-
-#ifndef END_MEASURE_JOIN_ACC
-#define END_MEASURE_JOIN_ACC(timer) \
-accTimer(&(timer)->join_timer_pre, &(timer)->join_timer );  /* join time */
-#endif
-
-#ifndef BEGIN_MEASURE_WAIT_ACC
-#define BEGIN_MEASURE_WAIT_ACC(timer) \
-startTimer(&(timer)->wait_timer_pre); /* wait time */
-#endif
-
-#ifndef END_MEASURE_WAIT_ACC
-#define END_MEASURE_WAIT_ACC(timer) \
-accTimer(&(timer)->wait_timer_pre, &(timer)->wait_timer); /* wait time */
-#endif
-
-#ifndef SET_WAIT_ACC
-#define SET_WAIT_ACC(timer, delay) \
-timer->wait_timer=delay; /* wait time */
+#ifndef /*END_MEASURE_ONLINE_ACC*/NO_TIMING
+#define END_MEASURE_ONLINE_ACC(timer) \
+accTimer(&(timer)->online_timer_pre, &(timer)->online_timer); /* ONLINE one-pass absorbing data time */
 #endif
 
 
 
-/////
-
-#ifndef /*BEGIN_MEASURE_DEBUILD_ACC*/NO_TIMING
-#define BEGIN_MEASURE_DEBUILD_ACC(timer) \
-startTimer(&(timer)->debuildtimer_pre); /* clean time */
-#endif
-#ifndef /*END_MEASURE_DEBUILD_ACC*/NO_TIMING
-#define END_MEASURE_DEBUILD_ACC(timer) \
-accTimer(&(timer)->debuildtimer_pre, &(timer)->debuildtimer); /* clean time */
-#endif
-#ifndef BEGIN_MEASURE_PARTITION_ACC
-#define BEGIN_MEASURE_PARTITION_ACC(timer) \
-startTimer(&(timer)->partition_timer_pre);
+#ifndef BEGIN_MEASURE_INSERT_ACC
+#define BEGIN_MEASURE_INSERT_ACC(timer) \
+startTimer(&(timer)->dataInsertTimer_pre);
 #endif
 
-#ifndef END_MEASURE_PARTITION_ACC
-#define END_MEASURE_PARTITION_ACC(timer) \
-accTimer(&(timer)->partition_timer_pre, &(timer)->partition_timer); /* partition time */
-#endif
-
-#ifndef BEGIN_MEASURE_PARTITION
-#define BEGIN_MEASURE_PARTITION(timer) \
-startTimer(&(timer)->partition_timer);
-#endif
-
-#ifndef END_MEASURE_PARTITION
-#define END_MEASURE_PARTITION(timer) \
-stopTimer(&(timer)->partition_timer);
-#endif
-
-#ifndef BEGIN_GARBAGE
-#define BEGIN_GARBAGE(timer) \
-startTimer(&(timer)->garbage_time);
-#endif
-
-#ifndef END_GARBAGE
-#define END_GARBAGE(timer) \
-stopTimer(&(timer)->garbage_time);
+#ifndef /*END_MEASURE_INSERT_ACC*/NO_TIMING
+#define END_MEASURE_INSERT_ACC(timer) \
+accTimer(&(timer)->dataInsertTimer_pre, &(timer)->dataInsertTimer); /* data insert time */
 #endif
 
 
-#ifndef START_MEASUREMENT
-#define START_MEASUREMENT(timer) \
+#ifndef BEGIN_MEASURE_CONDRIFT_ACC
+#define BEGIN_MEASURE_CONDRIFT_ACC(timer) \
+startTimer(&(timer)->conceptDriftTimer_pre);
+#endif
+
+#ifndef /*END_MEASURE_CONDRIFT_ACC*/NO_TIMING
+#define END_MEASURE_CONDRIFT_ACC(timer) \
+accTimer(&(timer)->conceptDriftTimer_pre, &(timer)->conceptDriftTimer); /* Concept drift time */
+#endif
+
+
+#ifndef BEGIN_MEASURE_PRUNE_ACC
+#define BEGIN_MEASURE_PRUNE_ACC(timer) \
+startTimer(&(timer)->pruneTimer_pre);
+#endif
+
+#ifndef /*END_MEASURE_PRUNE_ACC*/NO_TIMING
+#define END_MEASURE_PRUNE_ACC(timer) \
+accTimer(&(timer)->pruneTimer_pre, &(timer)->pruneTimer); /* Outlier prune time */
+#endif
+
+
+#ifndef BEGIN_MEASURE_SNAPSHOT_ACC
+#define BEGIN_MEASURE_SNAPSHOT_ACC(timer) \
+startTimer(&(timer)->snapshotTimer_pre);
+#endif
+
+#ifndef /*END_MEASURE_SNAPSHOT_ACC*/NO_TIMING
+#define END_MEASURE_SNAPSHOT_ACC(timer) \
+accTimer(&(timer)->snapshotTimer_pre, &(timer)->snapshotTimer); /* Taking Snapshots time */
+#endif
+
+
+#ifndef BEGIN_MEASURE_REFINEMENT
+#define BEGIN_MEASURE_REFINEMENT(timer) \
+startTimer(&(timer)->refinementTimer);
+#endif
+
+#ifndef END_MEASURE_REFINEMENT
+#define END_MEASURE_REFINEMENT(timer) \
+stopTimer(&(timer)->refinementTimer);
+#endif
+
+
+#ifndef OVERALL_START_MEASURE
+#define OVERALL_START_MEASURE(timer) \
 gettimeofday(&(timer)->start, NULL); \
 startTimer(&(timer)->overall_timer); (\
 tim)er->partition_timer = 0; /* no partitioning */
 #endif
 
-#ifndef END_MEASUREMENT
-#define END_MEASUREMENT(timer) \
+#ifndef OVERALL_END_MEASURE
+#define OVERALL_END_MEASURE(timer) \
 stopTimer(&(timer)->overall_timer); /* overall */ \
 gettimeofday(&(timer)->end, NULL);
 #endif
 
-#ifndef END_PROGRESSIVE_MEASURE
-#define END_PROGRESSIVE_MEASURE(payloadID, timer, IStupleR)      \
-timer->match_cnt++;                                     \
-if((timer)->match_cnt == (timer)->record_gap){              \
-if(IStupleR){                                        \
-auto ts = curtick();                              \
-DEBUGMSG("TUPLE R [payload ID:%d] is joined at %lu\n", payloadID, ts)(\
-tim)er->recordRID.push_back(payloadID);           (\
-tim)er->recordR.push_back(ts);                    \
-}else{                                               \
-auto ts = curtick();                              \
-DEBUGMSG("TUPLE S [payload ID:%d] is joined at %lu\n", payloadID, ts)(\
-tim)er->recordSID.push_back(payloadID);           (\
-tim)er->recordS.push_back(ts);                    \
-}                                                (\
-tim)er->match_cnt=0;                                 \
-}
-#endif
-
-
+//TODO : re-write END_PROGRESSIVE_MEASURE
 
 }
 
