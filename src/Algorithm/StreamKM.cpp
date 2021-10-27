@@ -45,7 +45,7 @@ void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
 void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
 
   this->window->getCoresetFromManager(
-      this->streamingCoreset);//streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
+      this->streamingCoreset); // streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
   int parNumber = this->streamingCoreset.size();
   vector <PointPtr> centers;
   vector <vector<PointPtr>> groups;
