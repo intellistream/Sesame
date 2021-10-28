@@ -9,7 +9,7 @@
  * @Description: Please note that the order of the cluster index has to be consecutive
  */
 void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
-                                  std::vector<std::vector<PointPtr>> &group) {
+                                  std::vector<std::vector<PointPtr>> &group, int number) {
   int count = 0, k = 1; // TODO: cluster ID starting from 1 ?
   bool stop = false;
   while(!stop) {
@@ -20,7 +20,7 @@ void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
         count++;
       }
     }
-    if(cluster.empty()) stop = true;
+    if(k == number + 1) stop = true;
     else {
       group.push_back(cluster);
       k++;
@@ -60,14 +60,13 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
 void SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
                                int dimension) {
-
   std::vector<PointPtr> input;
   UtilityFunctions::groupByCenters(result, center, input, dimension);
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT);
-  pointToGroup(input, sample);
+  pointToGroup(result, GT, (int)result.size());
+  pointToGroup(input, sample, (int)center.size());
 
   double sum = 0;
   for(auto& el: sample) {
