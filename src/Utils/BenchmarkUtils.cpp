@@ -126,7 +126,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  * @Return:
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
-  cmd_params.pointNumber = 2000; // number of the data points in the dataset, use the whole dataset to run benchmark
+  cmd_params.pointNumber = 15120; // number of the data points in the dataset, use the whole dataset to run benchmark
   cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
   cmd_params.dimension = 54;
