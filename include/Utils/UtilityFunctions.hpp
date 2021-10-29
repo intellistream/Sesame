@@ -20,6 +20,7 @@
 #define FALSE 0
 #define DEFAULT_WEIGHT 1
 #define DEFAULT_COST 0
+#define DEFAULT_QUEUE_CAPACITY 1000
 #define KMEANS_TIMES 5
 
 /*
