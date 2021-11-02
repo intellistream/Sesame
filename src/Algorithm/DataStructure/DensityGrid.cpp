@@ -2,11 +2,15 @@
 // Created by 1124a on 2021/10/27.
 //
 #include <Algorithm/DataStructure/DensityGrid.hpp>
+
+
+SESAME::DensityGrid::DensityGrid(){
+
+}
 SESAME::DensityGrid::DensityGrid(std::vector<int> coordin)
 {
-
   this->dimensions = coordin.size();
-  this->coordinates= std::vector<int> (0,this->dimensions) ;
+  this->coordinates= std::vector<int> (this->dimensions,0) ;
   for (int i = 0 ; i < this->dimensions ; i++)
     this->coordinates[i] = coordin[i];
   this->isVisited = false;
@@ -16,7 +20,7 @@ SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 {
   std::vector<int> coord = grid.coordinates;
   this->dimensions = grid.dimensions;
-  this->coordinates= std::vector<int> (0,this->dimensions);
+  this->coordinates= std::vector<int> (this->dimensions,0) ;
   for (int i = 0 ; i < this->dimensions ; i++)
     this->coordinates[i] = coord[i];
   this->isVisited = false;

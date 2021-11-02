@@ -4,6 +4,11 @@
 
 #include <Algorithm/DataStructure/GridCluster.hpp>
 #include <Utils/Logger.hpp>
+
+SESAME::GridCluster::GridCluster()
+{
+
+}
 SESAME::GridCluster::GridCluster( int label)
 {
   this->clusterLabel = label;
@@ -215,4 +220,11 @@ double SESAME::GridCluster::getInclusionProb(Point point) {
       return 1.0;
   }
   return 0.0;
+}
+
+bool SESAME::GridCluster::operator==(GridCluster& other)const {
+  bool equal = false;
+  if( clusterLabel == other.clusterLabel)
+    equal = true;
+  return equal;
 }

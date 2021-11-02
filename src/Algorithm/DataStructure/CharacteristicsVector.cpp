@@ -3,6 +3,9 @@
 //
 
 #include <Algorithm/DataStructure/CharacteristicVector.hpp>
+SESAME::CharacteristicVector::CharacteristicVector(){
+
+}
 SESAME::CharacteristicVector::CharacteristicVector(clock_t updateTime, clock_t removeTime, double Density,
                                                    int label, bool status, double dl, double dm)
 {
@@ -37,7 +40,12 @@ bool SESAME::CharacteristicVector::isDense(double dm){
   else
     return false;
 }
-
+bool SESAME::CharacteristicVector::isTransitional(double dm, double dl){
+  if(this->gridDensity>=dl && this->gridDensity<=dm)
+    return true;
+  else
+    return false;
+}
 double SESAME::CharacteristicVector::getCurrGridDensity(clock_t NowTime, double lambda)
 {
   return pow(lambda, (double)(NowTime-this->updateTime)/CLOCKS_PER_SEC) * this->gridDensity;

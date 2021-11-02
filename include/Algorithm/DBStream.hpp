@@ -40,7 +40,7 @@ class DBStream : public Algorithm
      //Connectivity graph
      unordered_map<int,std::vector<int>> connecvtivityGraphId;
 
-      //TODO Need to implement weighted a weighted adjacency list S
+
       DBStream(param_t &cmd_params);
       ~DBStream();
       void Initilize() override;
