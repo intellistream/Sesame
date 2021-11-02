@@ -23,7 +23,6 @@ class DStreamParams : public AlgorithmParameters {
   double beta;
   double cm; // User defined parameter: Controls the threshold for dense grids
   double cl; // User defined parameter: Controls the threshold for sparse grids
-  int gridWidth; //width of grid
 };
 
 typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
@@ -32,13 +31,14 @@ class DStream : public Algorithm
      public:
       DStreamParams dStreamParams;
       DampedWindowPtr dampedWindow;
+
+
       clock_t startTime;
       clock_t pointArrivingTime;
-      clock_t lastAdjustTime;
       int gap;// Time gap between calls to the offline component
       double dm;// Density threshold for dense grids; controlled by cm
       double dl; //  Density threshold for sparse grids; controlled by cl
-      int NGrids;//The number of density grids ,with an initial value 0
+      int NGrids=0;//The number of density grids ,with an initial value 0
 
 
       //TODO Split the grid list from DStream
@@ -53,13 +53,11 @@ class DStream : public Algorithm
       ~DStream();
       void Initilize() override;
       void runOnlineClustering(PointPtr input) override;
-      void runOfflineClustering(DataSinkPtr sinkPtr) override;
+      //void runOfflineClustering(DataSinkPtr sinkPtr) override;
      private:
-      bool clusterInitial = false;
       bool isInitial  = false;
       bool recalculateN =false; // flag indicating whether N needs to be recalculated after this instance
       std::vector<int> tempCoord;
-      std::vector<int> Coord;
       void ifReCalculateN(PointPtr point);
       void reCalculateN();
 

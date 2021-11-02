@@ -10,16 +10,17 @@
 #include <Algorithm/DataStructure/DensityGrid.hpp>
 namespace SESAME{
 class GridCluster;
-typedef std::unordered_map<DensityGrid,bool,GridKeyHash,EqualGrid> HashGrids;
+typedef std::unordered_map<DensityGrid, bool,GridKeyHash,EqualGrid> HashGrids;
 class GridCluster{
  public:
-   HashGrids grids;
-   HashGrids visited;
+  HashGrids grids;
+  HashGrids visited;
    int clusterLabel;
    //Initialize
-   GridCluster(int label);
+   GridCluster( int label);
    GridCluster();
    GridCluster(HashGrids hashMap, int label);
+
    /**
 	 * @param grid the density grid to add to the cluster
 	 */

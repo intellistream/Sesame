@@ -34,10 +34,7 @@ SESAME::GridCluster::GridCluster(HashGrids hashMap, int label)
 void SESAME::GridCluster::addGrid(DensityGrid grid)
 {
   bool inside = isInside(grid);
-  if(this->grids.find(grid)!=this->grids.end())
-    this->grids.find(grid)->second=inside;
-  else
-    this->grids.insert(std::make_pair(grid,inside));
+  this->grids.insert(std::make_pair(grid,inside));
   HashGrids::iterator iterW;
   //Iterate on grids and judge whether they are inside grids or not
   for (iterW = this->grids.begin(); iterW != this->grids.end(); iterW++)
@@ -50,6 +47,7 @@ void SESAME::GridCluster::addGrid(DensityGrid grid)
     }
   }
 }
+
 
 /**
   * @param dg the density grid to remove from the cluster
@@ -83,15 +81,7 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
   while( thisGrid != this->grids.end())
   {
     inside = isInside(thisGrid->first);
-    if(newCluster.find(thisGrid->first)!= newCluster.end())
-    {
-      newCluster.find(thisGrid->first)->second=inside;
-    }
-    else
-    {
-      newCluster.insert(std::make_pair(thisGrid->first, inside));
-    }
-    thisGrid++;
+    newCluster.insert(std::make_pair(thisGrid->first, inside));
   }
   this->grids = newCluster;
   SESAME_INFO("...inside/outside determined");
@@ -111,9 +101,10 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
 bool SESAME::GridCluster::isInside(DensityGrid grid)
 {
   std::vector<DensityGrid> neighbour= grid.getNeighbours();
-  for(auto gridNeighbourhood : neighbour)
+  for( auto i = 0;i!=neighbour.size();i++)
   {
-    if(this->grids.find(gridNeighbourhood)==this->grids.end())
+    DensityGrid gridNeighbourhood=neighbour[i];
+    if(this->grids.find(gridNeighbourhood)!=this->grids.end())
     {
       return false;
     }
@@ -135,8 +126,9 @@ bool SESAME::GridCluster::isInside(DensityGrid grid)
 bool SESAME::GridCluster::isInside(DensityGrid grid, DensityGrid other)
 {
   std::vector<DensityGrid> neighbour= grid.getNeighbours();
-  for(auto gridNeighbourhood : neighbour)
+  for( auto i = 0;i!=neighbour.size();i++)
   {
+    DensityGrid gridNeighbourhood=neighbour[i];
     if(this->grids.find(gridNeighbourhood)!=this->grids.end()&&gridNeighbourhood == other)
     {
       return false;
@@ -157,7 +149,6 @@ bool SESAME::GridCluster::isInside(DensityGrid grid, DensityGrid other)
 bool SESAME::GridCluster::isConnected()
 {
   //TODO A little confused about here
-
   if (!this->grids.empty())
   {
     DensityGrid grid = this->grids.begin()->first;
@@ -176,8 +167,9 @@ bool SESAME::GridCluster::isConnected()
       {
         DensityGrid dg2V = visIter->first;
         std::vector<DensityGrid> neighbour= dg2V.getNeighbours();
-        for(auto dg2VNeighbourhood : neighbour)
+        for( auto i = 0;i!=neighbour.size();i++)
         {
+          DensityGrid dg2VNeighbourhood=neighbour[i];
           if(this->grids.find(dg2VNeighbourhood)!=this->grids.end()
           && this->visited.find(dg2VNeighbourhood)==this->visited.end())
             toAdd.insert(std::make_pair(dg2VNeighbourhood, this->grids.find(dg2VNeighbourhood)->second));
@@ -232,8 +224,7 @@ double SESAME::GridCluster::getInclusionProb(Point point) {
 
 bool SESAME::GridCluster::operator==(GridCluster& other)const {
   bool equal = false;
-  if( clusterLabel == other.clusterLabel  && grids.size()==other.grids.size()
-  && visited.size()==other.visited.size())
+  if( clusterLabel == other.clusterLabel)
     equal = true;
   return equal;
 }
