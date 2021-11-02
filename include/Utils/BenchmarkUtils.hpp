@@ -58,7 +58,6 @@ struct param_t {
   //used in DStream
   double cm;
   double cl;
-  int gridWidth;
   std::string inputPath;
   std::string outputPath;
   SESAME::algoType algoType;
