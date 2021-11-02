@@ -16,13 +16,12 @@ TEST(SystemTest, DStreamTest) {
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber =15120;
+  cmd_params.pointNumber = 15120;
   cmd_params.dimension = 54;
   cmd_params.lambda= 0.998;
-  cmd_params.beta=0.001;
+  cmd_params.beta=0.3;
   cmd_params.cm = 3.0;
-  cmd_params.cl = 1;
-  cmd_params.gridWidth= 6;
+  cmd_params.cl = 0.8;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
