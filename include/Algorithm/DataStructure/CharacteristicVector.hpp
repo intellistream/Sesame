@@ -6,9 +6,10 @@
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CHARACTERISTICVECTOR_HPP_
 #include <ctime>
 #include <cmath>
+#include <Algorithm/WindowModel/DampedWindow.hpp>
 namespace SESAME{
 enum Status{
-  SPARSE,TRANSITIONAL ,DENSE
+  NO_CLASS= -1,SPARSE,TRANSITIONAL ,DENSE
 };
 class CharacteristicVector {
  public:
@@ -53,12 +54,13 @@ class CharacteristicVector {
    */
   bool attChange;
 
-
+  CharacteristicVector();
   CharacteristicVector(clock_t updateTime, clock_t removeTime, double Density, int label, bool status, double dl, double dm);
   double getCurrGridDensity(clock_t NowTime, double lambda);
 
   bool isSparse(double dl);
   bool isDense(double dm);
+  bool isTransitional(double dm, double dl);
   /**
 	 * Implements the density update function given in
 	 * eq 5 (Proposition 3.1) of Chen and Tu 2007.

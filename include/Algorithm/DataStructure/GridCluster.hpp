@@ -18,6 +18,7 @@ class GridCluster{
    int clusterLabel;
    //Initialize
    GridCluster( int label);
+   GridCluster();
    GridCluster(HashGrids hashMap, int label);
 
    /**
@@ -81,7 +82,7 @@ class GridCluster{
     * @return 1.0 if instance matches any of the density grids; 0.0 otherwise.
     */
       double getInclusionProb(Point point);
-
+      bool operator==( GridCluster& Other)const;
 };
 
 

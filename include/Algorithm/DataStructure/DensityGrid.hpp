@@ -40,6 +40,7 @@ class DensityGrid{
 	 *
 	 * @param c the coordinates of the density grid
 	 */
+   DensityGrid();
    DensityGrid(std::vector<int> coordin);
 
    /**
