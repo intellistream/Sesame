@@ -19,6 +19,9 @@
 #define LOWER_MASK 0x7fffffffUL /* least significant r bits */
 #define TRUE 1
 #define FALSE 0
+#define DEFAULT_WEIGHT 1
+#define DEFAULT_COST 0
+#define DEFAULT_QUEUE_CAPACITY 1000
 #define KMEANS_TIMES 5
 #define CMM_KNN 10
 #define CMM_A 0.998

@@ -19,6 +19,7 @@ class Point {
   double weight; // considering the outdated effect
   double cost;
   double minDist;
+  int timestamp;
  private:
   // the distance to the nearest data point
   int clusteringCenter;  // using index to identify
@@ -27,6 +28,7 @@ class Point {
  public:
   Point();
   Point(int index, double weight, int dimension, double cost);
+  Point(int index, double weight, int dimension, double cost, int timestamp);
   void setCost(double c);
   double getCost() const;
   int getIndex() const;
@@ -44,6 +46,8 @@ class Point {
   double getMinDist() const;
   void setMinDist(double min_dist);
   SESAME::PointPtr copy();
+  void setTimeStamp(int t);
+  int getTimeStamp() const;
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
