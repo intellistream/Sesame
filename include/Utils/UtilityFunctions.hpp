@@ -10,6 +10,7 @@
 #include <experimental/filesystem>
 #include <barrier>
 #include <functional>
+#include <Algorithm/DataStructure/Point.hpp>
 /* Period parameters */
 #define N 624
 #define M 397
@@ -22,6 +23,10 @@
 #define DEFAULT_COST 0
 #define DEFAULT_QUEUE_CAPACITY 1000
 #define KMEANS_TIMES 5
+#define CMM_KNN 10
+#define CMM_A 0.998
+#define CMM_LAMDA 1
+#define CMM_THRESHOLD 1000
 
 /*
 Determines when Lloyd terminates (should be between 0 and 1)
@@ -40,6 +45,10 @@ class UtilityFunctions {
   static long genrand_int31(void);
   static unsigned long genrand_int32(void);
   static std::shared_ptr<std::barrier<>> createBarrier(int count);
+  static void groupByCenters(const std::vector<PointPtr> &input,
+                      const std::vector<PointPtr> &centers,
+                      std::vector<PointPtr> &output,
+                      int dimension);
 };
 }
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

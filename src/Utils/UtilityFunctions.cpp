@@ -1,7 +1,8 @@
 // Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
 #include <Utils/UtilityFunctions.hpp>
-
+#include <cfloat>
+#include <cmath>
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti; /* mti==N+1 means mt[N] is not initialized */
 
@@ -76,4 +77,24 @@ double SESAME::UtilityFunctions::genrand_real3() {
 }
 std::shared_ptr<std::barrier<>> SESAME::UtilityFunctions::createBarrier(int count) {
   return std::make_shared<std::barrier<>>(count);
+}
+void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input,
+                                              const std::vector<PointPtr> &centers,
+                                              std::vector<PointPtr> &output,
+                                              int dimension) {
+  for(int i = 0; i < input.size(); i++) {
+    output.push_back(input.at(i)->copy());
+    auto min = DBL_MAX;
+    for(int j = 0; j < centers.size(); j++) {
+      double dis = 0;
+      for(int k = 0; k < dimension; k++) {
+        dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
+      }
+      if(min > dis) {
+        output.at(i)->setClusteringCenter(j + 1);
+        min = dis;
+      }
+    }
+  }
+
 }

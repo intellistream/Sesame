@@ -6,6 +6,7 @@
 #include <Sinks/DataSink.hpp>
 #include <Engine/SimpleEngine.hpp>
 #include <Evaluation/Evaluation.hpp>
+#include <Evaluation/Purity.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 #include <filesystem>
 
@@ -161,7 +162,6 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::BirchType;
-  cmd_params.evaluateType = SESAME::euclideanCostType;
 }
 
 /* command line handling functions */
@@ -214,15 +214,13 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
-  switch (cmd_params.evaluateType) {
-    case SESAME::euclideanCostType:
-      SESAME::Evaluation::euclideanCost(cmd_params.pointNumber,
-                                        sinkPtr->getResults().size(),
-                                        cmd_params.dimension,
-                                        sourcePtr->getInputs(),
-                                        sinkPtr->getResults());
-      break;
-  }
+  SESAME::Evaluation::runEvaluation(cmd_params.pointNumber,
+                                    sinkPtr->getResults().size(),
+                                    cmd_params.dimension,
+                                    sourcePtr->getInputs(),
+                                    sinkPtr->getResults());
+
+
   engine.stop();
 }
 
