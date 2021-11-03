@@ -20,6 +20,10 @@ SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index, double wei
   return std::make_shared<Point>(index, weight, dimension, cost);
 }
 
+SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index, double weight, int dimension, double cost, int timestamp) {
+  return std::make_shared<Point>(index, weight, dimension, cost, timestamp);
+}
+
 void SESAME::DataStructureFactory::clearPoint(SESAME::PointPtr point) {
   point.reset();
 }
