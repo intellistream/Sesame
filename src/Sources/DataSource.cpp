@@ -8,6 +8,10 @@
 #include <vector>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <Utils/Logger.hpp>
+#include <Utils/UtilityFunctions.hpp>
+#include <chrono>
+using namespace std::chrono;
+
 /**
  * Create input data points.
  * TODO: Remove the hard-coded part.
@@ -18,14 +22,17 @@
  */
 void SESAME::DataSource::load(int point_number, int dimension, vector<string> input) {
 
+  // The step used to generate random timestamps
+  const int timeStep = 100000;
   for (int i = 0; i < point_number; i++) {
-    PointPtr point = DataStructureFactory::createPoint(i, 1, dimension, 0);
-    char *charData = new char[10000];
+    int timeStamp = timeStep * i + rand() % timeStep;
+    PointPtr point = DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, dimension, DEFAULT_COST, timeStamp);
+    char *charData = new char[INT32_MAX];
     strcpy(charData, input[i].c_str());
     // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
     const char *sep = " ";
-    char *feature = strtok(charData, sep);//TODO: why this??
-    feature = strtok(nullptr, sep);
+    char *feature = strtok(charData, sep);//TODO: why this?? Read token from charData
+    feature = strtok(nullptr, sep); // Skip the first token (index number)
     int index = 0;
     while (feature != nullptr) {
       if (index == dimension) {
@@ -41,17 +48,24 @@ void SESAME::DataSource::load(int point_number, int dimension, vector<string> in
 }
 
 SESAME::DataSource::DataSource() {
-  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(1000);//TODO: remove hard-coded queue initialization.
+  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);//TODO: remove hard-coded queue initialization: done
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
 
-//TODO: we can control the source speed here.
+//TODO: we can control the source speed here: done
 void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
   overallMeter.START_MEASURE();
+  // Initialize timer at time 0
+  auto startTime = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
-  for (PointPtr p: this->input) {
+  for (PointPtr p : this->input) {
+    int timestamp = (*p).getTimeStamp();
+    // Wait until (currentTime - startTime) >= timestamp to push point
+    while (duration_cast<nanoseconds>(high_resolution_clock::now()-startTime).count() < timestamp) {
+      continue;
+    }
     inputQueue->push(p);
   }
   sourceEnd = true;//Let engine knows that there won't be any more data coming.
