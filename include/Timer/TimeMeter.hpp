@@ -17,79 +17,268 @@
 namespace SESAME {
 struct T_TIMER {
 #ifndef NO_TIMING
-  struct timeval start, end;
-  uint64_t overall_timer, online_timer_pre, online_timer;
+  //the start and end timestamp of the algorithm
+  struct timespec start, end, overallPre;
+  /**
+   * accumulate for data point coming
+   * online_increment_timer_pre: start of accumulate online timer ( start of every xx s)
+   * online_timer: end of the online increment part
+   * */
+  timespec  online_increment_timer_pre, online_timer;
 
-  uint64_t initialTimer_pre = 0, initialTimer = 0;
+  /**
+   * initialTimerStart: Start of initial part
+   *  initialTimer: end of initial part
+   * */
+  timespec initialTimerStart, initialTimer;
 
+  /**
+   *  accumulate for data point coming
+   *  dataInsertTimer_pre: start of accumulated data insertion timer ( start of every xx s)
+   *  dataInsertTimer: end of the online increment part
+   *  //TODO : I THINK THIS ONE HARDLY COMES IN HANDY :)
+   **/
+
+  timespec dataInsertTimer_pre , dataInsertTimer;//accumulate.
+
+  /**
+ *  accumulate for data point coming
+ *  conceptDriftTimer_pre: start of accumulated concept drift timer ( start of every xx s)
+ *  conceptDriftTimer: end of the concept Drift part
+ **/
+  timespec conceptDriftTimer_pre, conceptDriftTimer;//accumulate.
+  /**
+ *  accumulate for data point coming
+ *  outlierDetectionTimer_pre: start of accumulated outlier Detection timer ( start of every xx s)
+ *  outlierDetectionTimer: end of the outlier Detection part
+ **/
+
+  timespec outlierDetectionTimer_pre, outlierDetectionTimer ;//accumulate.
+
+  /**
+ *  accumulate for data point coming
+ *  pruneTimer_pre: start of accumulated prune timer (when every periodical prune function starts)
+ *  pruneTimer: end of the prune part
+ **/
+
+  timespec pruneTimer_pre, pruneTimer; //accumulate.
+
+  /**
+*  accumulate for data point coming
+*  pruneTimer_pre: start of accumulated snapshot timer
+*  pruneTimer: end of the snapshot part
+ TODO : I THINK THIS ONE HARDLY COMES IN HANDY :)
+**/
+  timespec snapshotTimer_pre , snapshotTimer ;//accumulate (Special for CluStream key design)
+
+
+
+  /**
+   * refinementStart: Start of refinement part
+   *  refinementTimer: end of refinement part
+   **/
+
+  timespec refinementStart, refinementTimer;//offline refinement
+
+  // Store the overall elapsed time every xx s
+  std::vector<long> recordOverall;
+
+  // Store the overall elapsed time every xx s
+  std::vector<long> recordOnline;
+
+  // Store the data insertion elapsed time every xx s
+  std::vector<long> recordInsert;
+
+  // Store the data Concept drift elapsed time every xx s
+  std::vector<long> recordConceptDrift;
+
+  // Store the data Outlier Detection every xx s
+  std::vector<long> recordOutlierDetection;
+
+  // Store the data prune elapsed time when it occurs
+  std::vector<long> prune;
+
+  std::vector<long> snapshot;
+
+  int pruneCnt;
+  int snapshotCnt;
+
+  /*
+  uint64_t overall_timer, online_increment_timer_pre, online_increment_timer;//accumulate for data point coming,
+  uint64_t online_timer;
+  uint64_t initialTimer = 0;//initialTimer_pre = 0,
   uint64_t dataInsertTimer_pre = 0, dataInsertTimer = 0;//accumulate.
   uint64_t conceptDriftTimer_pre = 0, conceptDriftTimer = 0;//accumulate.
+  uint64_t outlierDetectionTimer_pre = 0, outlierDetectionTimer = 0;//accumulate.
   uint64_t pruneTimer_pre = 0, pruneTimer = 0;//accumulate.
-  uint64_t snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for CluStream)
-
-
+  uint64_t snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for CluStream key design)
   uint64_t refinementTimer = 0;//offline refinement
-
-  std::vector<uint64_t> recordR;
-  std::vector<uint64_t> recordS;
-  std::vector<int32_t> recordRID;
-  std::vector<int32_t> recordSID;
-  int match_cnt = 0;
-  int joiner_cnt = 0;
-  int record_gap = 1;
-
+  std::vector<uint64_t> recordOverall;
+  std::vector<uint64_t> recordInsert;
+  std::vector<uint64_t> recordConceptDrift;
+  std::vector<uint64_t> recordOutlierDetection;
+  std::vector<int32_t> recordID;
+   */
 #endif
 };
 
 class TimeMeter {
  private:
   struct timespec start, stop;
+  T_TIMER timer;
+  //the overall elapsed time of every part
+  long overallTime;
+  long onlineTime;
+  long dataInsertTime;
+  long conceptDriftTime;
+  long outlierDetectionTime;
+
+
+  long pruneTime = 0;   // if possible
+  long initialTime = 0; // if possible
+  long snapshotTime = 0; //if possible
+  long refinementTime = 0; //if possible
+  long otherTime = 0;
+
  public:
+
   void START_MEASURE();
   void END_MEASURE();
   long MeterUSEC();//return the meter result in micro second unit.
-  //TODO:: All functions need to modify later, just modified and copied from AlianceDB REPO
-  /** print out the execution time statistics of stream clustering algorithms which have no-refinement algorithms */
-  void breakdown_global(int64_t total_results);
 
-  /** print out the execution time statistics of the stream clustering algorithms that has refinement  */
-  void breakdown_global(int64_t result, int nthreads);
+  void MEASURE(timespec Time);
+  long MeterUSEC( timespec startAcc, timespec endAcc);//return the meter result in micro second unit.
 
-  void sortRecords(SESAME::algoType algo_name);
-
-};
-
-#ifndef BEGIN_MEASURE_INITIALIZE
-#define BEGIN_MEASURE_INITIALIZE(timer) \
-startTimer(&(timer)->initialTimer);
-#endif
-
-#ifndef END_MEASURE_INITIALIZE
-#define END_MEASURE_INITIALIZE(timer) \
-stopTimer(&(timer)->initialTimer);
-#endif
+  //the overall start and end time of every part
+  void  overallStartMeasure();
+  void  overallEndMeasure();
+  long MeterOverallUSEC();
+  // the start  of every xx s
+  void  overallAccMeasure();
+  //start of online part
+  void MeterOverallAccUSEC(int interval);
 
 
-#ifndef BEGIN_MEASURE_ONLINE
-#define BEGIN_MEASURE_ONLINE(timer) \
-startTimer(&(timer)->online_timer);
-#endif
+  void  onlineAccMeasure();
+  //end of online part
+  void  onlineEndMeasure();
+  void MeterOnlineAccUSEC(int interval);
 
-#ifndef END_MEASURE_ONLINE
-#define END_MEASURE_ONLINE(timer) \
-stopTimer(&(timer)->online_timer);
-#endif
 
-#ifndef BEGIN_MEASURE_ONLINE_ACC
-#define BEGIN_MEASURE_ONLINE_ACC(timer) \
-startTimer(&(timer)->online_timer_pre);
-#endif
+  //start of initial  part
+  void  initialMeasure();
+  //end of initial part
+  void  initialEndMeasure();
+  long MeterInitialUSEC();
+
+
+  //start of data Insert  part
+  void  dataInsertAccMeasure();
+  //end of data Insert  part
+  void  dataInsertEndMeasure();
+  void MeterDataInsertAccUSEC(int interval);
+  long MeterDataInsertUSEC();
+
+
+  //start of concept drift   part
+  void  conceptDriftAccMeasure();
+  //end of concept drift   part
+  void  conceptDriftEndMeasure();
+  void MeterConceptDriftAccUSEC(int interval);
+  long MeterConceptDriftUSEC();
+
+
+  //start of outlier Detection part
+  void outlierDetectionAccMeasure();
+  //end of outlier Detection  part
+  void outlierDetectionEndMeasure();
+  void MeterOutlierDetectionAccUSEC(int interval);
+  long MeterOutlierDetectionUSEC();
+
+
+  //start of prune part
+  void  pruneAccMeasure();
+  //end of prune  part
+  void  pruneEndMeasure();
+  void MeterPruneAccUSEC(int interval);
+  long MeterPruneUSEC();
+
+  //start of snapshot  part
+  void  snapshotAccMeasure();
+  //end of snapshot  part
+  void  snapshotEndMeasure();
+  void MeterSnapshotAccUSEC(int interval);
+  long MeterSnapshotUSEC();
+
+
+  //start of refinement  part
+  void  refinementAccMeasure();
+  //end of refinement  part
+  void  refinementEndMeasure();
+  long MeterRefinementUSEC();
+
+
+
+
+
+
+  //Store the result of every xx s
+  void AccumulateWithPointTimer(timespec Now, timespec end, long elapsedTime, int interval,
+                                std::vector<long> timerVector);
+  long getOnlineEtime();
+  void AccumulatePeriodTimer(timespec Now, timespec end,long elapsedTime, int interval,
+                             int count,std::vector<long> timerVector);
+  void setOverallTime(long overallT);
+
+  void setOnlineTime(long onlineT);
+  void setDataInsertTime(long dataInsertT);
+  void setConceptDriftTime(long conceptDriftT);
+  void setOutlierDetectionTime(long outlierDetectionT);
+
+  void setInitialTime(long initialT);
+  // if possible
+  void setRefinementTime(long refinementT);
+  // if possible
+  void setSnapshotTime(long snapshotT);
+  void setPruneTime(long pruneT);
+
+  /** print out the execution time statistics of stream clustering algorithms */
+  void breakdown_global( bool initial,bool snapshot,
+                         bool prune, bool refine);//int64_t total_results,
+
+//TODO the code below will be removed later
+  /*
+  #ifndef BEGIN_MEASURE_INITIALIZE
+  #define BEGIN_MEASURE_INITIALIZE(timer) \
+  startTimer(&(timer)->initialTimer);
+  #endif
+
+  #ifndef END_MEASURE_INITIALIZE
+  #define END_MEASURE_INITIALIZE(timer) \
+  stopTimer(&(timer)->initialTimer);
+  #endif
+
+
+  #ifndef BEGIN_MEASURE_ONLINE
+  #define BEGIN_MEASURE_ONLINE(timer) \
+  startTimer(&(timer)->online_timer);
+  #endif
+
+  #ifndef END_MEASURE_ONLINE
+  #define END_MEASURE_ONLINE(timer) \
+  stopTimer(&(timer)->online_timer);
+  #endif
+
+  #ifndef BEGIN_MEASURE_ONLINE_ACC
+  #define BEGIN_MEASURE_ONLINE_ACC(timer) \
+  startTimer(&(timer)->online_timer_pre);
+  #endif
+  */
 
 #ifndef /*END_MEASURE_ONLINE_ACC*/NO_TIMING
 #define END_MEASURE_ONLINE_ACC(timer) \
-accTimer(&(timer)->online_timer_pre, &(timer)->online_timer); /* ONLINE one-pass absorbing data time */
+accTimer(&(timer)->online_timer_pre, &(timer)->online_timer); // ONLINE one-pass absorbing data time
 #endif
-
 
 
 #ifndef BEGIN_MEASURE_INSERT_ACC
@@ -132,10 +321,10 @@ startTimer(&(timer)->snapshotTimer_pre);
 
 #ifndef /*END_MEASURE_SNAPSHOT_ACC*/NO_TIMING
 #define END_MEASURE_SNAPSHOT_ACC(timer) \
-accTimer(&(timer)->snapshotTimer_pre, &(timer)->snapshotTimer); /* Taking Snapshots time */
+accTimer(&(timer)->snapshotTimer_pre, &(timer)->snapshotTimer); //Taking Snapshots time
 #endif
 
-
+/*
 #ifndef BEGIN_MEASURE_REFINEMENT
 #define BEGIN_MEASURE_REFINEMENT(timer) \
 startTimer(&(timer)->refinementTimer);
@@ -151,16 +340,19 @@ stopTimer(&(timer)->refinementTimer);
 #define OVERALL_START_MEASURE(timer) \
 gettimeofday(&(timer)->start, NULL); \
 startTimer(&(timer)->overall_timer); (\
-tim)er->partition_timer = 0; /* no partitioning */
+tim)er->partition_timer = 0;
 #endif
 
 #ifndef OVERALL_END_MEASURE
 #define OVERALL_END_MEASURE(timer) \
-stopTimer(&(timer)->overall_timer); /* overall */ \
+stopTimer(&(timer)->overall_timer);  \
 gettimeofday(&(timer)->end, NULL);
 #endif
+ */
 
-//TODO : re-write END_PROGRESSIVE_MEASURE
+
+
+};
 
 }
 
