@@ -2,6 +2,12 @@
 
 #include <Timer/TimeMeter.hpp>
 #include <Utils/Logger.hpp>
+
+
+void  SESAME::TimeMeter::setInterval(int interV){
+  this->interval = interV;
+}
+
 void SESAME::TimeMeter::START_MEASURE() {
   clock_gettime(CLOCK_REALTIME, &start);
 }
@@ -14,37 +20,34 @@ long SESAME::TimeMeter::MeterUSEC() {
   - ((this->start).tv_sec * 1000000L + (this->start).tv_nsec / 1000L));
 }
 
-
 void SESAME::TimeMeter::MEASURE(timespec Time){
   clock_gettime(CLOCK_REALTIME, &Time);
 }
-
 
 long SESAME::TimeMeter::MeterUSEC( timespec startAcc,  timespec endAcc){
   return (((endAcc).tv_sec * 1000000L + (endAcc).tv_nsec / 1000L)
   - ((startAcc).tv_sec * 1000000L + (startAcc).tv_nsec / 1000L));
 }
 
-
-
 //the overall start and end time of every part
 void SESAME::TimeMeter::overallStartMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.start);
 }
-void   SESAME::TimeMeter::overallEndMeasure(){
+void SESAME::TimeMeter::overallEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.end);
 }
+
 // the start  of every xx s
 void  SESAME::TimeMeter::overallAccMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.overallPre);
 }
 
-void SESAME::TimeMeter::MeterOverallAccUSEC(int interval){
-  AccumulateWithPointTimer(timer.overallPre, timer.end, overallTime,
-                           interval, timer.recordOverall);
+void SESAME::TimeMeter::MeterOverallAccUSEC(){
+  timespec now = {0,0};
+  MEASURE(now);
+  AccumulateWithPointTimer(timer.overallPre, now, overallTime,
+                            timer.recordOverall);
 }
-
-
 
 long  SESAME::TimeMeter::MeterOverallUSEC(){
   long overall = MeterUSEC(timer.start,timer.end);
@@ -57,16 +60,15 @@ void  SESAME::TimeMeter::onlineAccMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.online_increment_timer_pre);
 }
 
-
 //end of online part
 void  SESAME::TimeMeter::onlineEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.online_timer);
 }
 
 
-void SESAME::TimeMeter::MeterOnlineAccUSEC(int interval){
+void SESAME::TimeMeter::MeterOnlineAccUSEC(){
+
   AccumulateWithPointTimer(timer.online_increment_timer_pre, timer.online_timer , onlineTime,
-                           interval,
                            timer.recordOnline);
 }
 
@@ -102,9 +104,8 @@ void  SESAME::TimeMeter::dataInsertEndMeasure(){
 }
 
 
-void SESAME::TimeMeter::MeterDataInsertAccUSEC(int interval){
+void SESAME::TimeMeter::MeterDataInsertAccUSEC(){
   AccumulateWithPointTimer(timer.dataInsertTimer_pre, timer.dataInsertTimer, dataInsertTime,
-                           interval,
                            timer.recordInsert);
 }
 long SESAME::TimeMeter::MeterDataInsertUSEC(){
@@ -119,9 +120,8 @@ void  SESAME::TimeMeter::conceptDriftAccMeasure(){
 void  SESAME::TimeMeter::conceptDriftEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.conceptDriftTimer);
 }
-void  SESAME::TimeMeter::MeterConceptDriftAccUSEC(int interval){
+void  SESAME::TimeMeter::MeterConceptDriftAccUSEC(){
   AccumulateWithPointTimer(timer.conceptDriftTimer_pre, timer.conceptDriftTimer, conceptDriftTime,
-                           interval,
                            timer.recordConceptDrift);
 }
 long  SESAME::TimeMeter::MeterConceptDriftUSEC(){
@@ -139,9 +139,8 @@ void  SESAME::TimeMeter::outlierDetectionAccMeasure(){
 void  SESAME::TimeMeter::outlierDetectionEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.outlierDetectionTimer);
 }
-void SESAME::TimeMeter::MeterOutlierDetectionAccUSEC(int interval){
-  AccumulateWithPointTimer(timer.outlierDetectionTimer_pre, timer.outlierDetectionTimer, outlierDetectionTime,
-                           interval,
+void SESAME::TimeMeter::MeterOutlierDetectionAccUSEC(){
+  AccumulateWithPointTimer( timer.outlierDetectionTimer_pre, timer.outlierDetectionTimer, outlierDetectionTime,
                            timer.recordOutlierDetection);
 }
 long SESAME::TimeMeter::MeterOutlierDetectionUSEC(){
@@ -158,10 +157,9 @@ void  SESAME::TimeMeter::pruneAccMeasure(){
 void  SESAME::TimeMeter::pruneEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.pruneTimer);
 }
-void SESAME::TimeMeter::MeterPruneAccUSEC(int interval){
+void SESAME::TimeMeter::MeterPruneAccUSEC(){
   AccumulatePeriodTimer(timer.pruneTimer_pre,timer.pruneTimer,
-                        pruneTime,
-                        interval,timer.pruneCnt,timer.prune);
+                        pruneTime,timer.pruneCnt,timer.prune);
 }
 long SESAME::TimeMeter::MeterPruneUSEC(){
   return pruneTime;
@@ -177,10 +175,9 @@ void  SESAME::TimeMeter::snapshotEndMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.snapshotTimer);
 }
 
-void SESAME::TimeMeter::MeterSnapshotAccUSEC(int interval){
+void SESAME::TimeMeter::MeterSnapshotAccUSEC(){
   AccumulatePeriodTimer(timer.snapshotTimer_pre,timer.snapshotTimer,
-                        snapshotTime,
-                        interval,timer.snapshotCnt,timer.snapshot);
+                        snapshotTime,timer.snapshotCnt,timer.snapshot);
 }
 long SESAME::TimeMeter::MeterSnapshotUSEC(){
   return snapshotTime;
@@ -199,8 +196,6 @@ long  SESAME::TimeMeter::MeterRefinementUSEC(){
   setRefinementTime(refinement);
   return refinement;
 }
-
-
 
 void SESAME::TimeMeter::setOverallTime(long overallT){
   overallTime = overallT;
@@ -233,23 +228,29 @@ void SESAME::TimeMeter::setPruneTime(long pruneT){
   pruneTime = pruneT;
 }
 
-
-
-
-
-
 void SESAME::TimeMeter::AccumulateWithPointTimer(timespec Now, timespec end, long elapsedTime,
-                                                 int interval, std::vector<long> timerVector){
+                                                 std::vector<long> timerVector){
   elapsedTime += MeterUSEC(Now,end);
-  if(MeterUSEC(timer.overallPre, Now) >= interval *1000000L)
+  if(InsertJudge)
   {
     timerVector.push_back(elapsedTime);
   }
-
 }
-void SESAME::TimeMeter::AccumulatePeriodTimer(timespec Now,timespec end,long elapsedTime, int interval,
+
+void SESAME::TimeMeter::OverallPreUpdate(){
+  timespec now={0,0};
+  clock_gettime(CLOCK_REALTIME, &now);
+  if(MeterUSEC(timer.overallPre, now) >= interval *1000000L)
+  {
+    clock_gettime(CLOCK_REALTIME, &timer.overallPre);
+    InsertJudge = true;
+  }
+}
+
+
+void SESAME::TimeMeter::AccumulatePeriodTimer( timespec Now,timespec end,long elapsedTime,
                                               int count, std::vector<long> timerVector){
-  AccumulateWithPointTimer(Now,end,elapsedTime,interval,timerVector);
+  AccumulateWithPointTimer(Now,end,elapsedTime,timerVector);
   count++;
 }
 
@@ -257,34 +258,34 @@ void SESAME::TimeMeter::AccumulatePeriodTimer(timespec Now,timespec end,long ela
  * print overall time of the algorithms
  */
 void SESAME::TimeMeter::breakdown_global( bool initial,bool snapshot,
-                                          bool prune, bool refine ) {
+                                          bool prune, bool refine) {
   otherTime = overallTime - (dataInsertTime + conceptDriftTime + outlierDetectionTime );
-  SESAME_INFO("Overall time is "<< overallTime << "us;");
+  SESAME_INFO("Overall time is "<< overallTime/1000000L << "s;");
   if(initial)
   {
     otherTime -= initialTime;
-    SESAME_INFO("Initial time is "<< initialTime << "us;");
+    SESAME_INFO("Initial time is "<< initialTime/1000000L << "s;");
   }
   if(snapshot)
   {
     otherTime -= snapshotTime;
-    SESAME_INFO("snapshot time is "<< snapshotTime << "us;");
+    SESAME_INFO("snapshot time is "<< snapshotTime/1000000L << "s;");
   }
 
-  SESAME_INFO("Data insertion time is "<< dataInsertTime << "us;");
-  SESAME_INFO("Concept drift time is "<< conceptDriftTime << "us;");
-  SESAME_INFO("Outlier Detection time is "<< outlierDetectionTime << "us;");
+  SESAME_INFO("Data insertion time is "<< dataInsertTime/1000000L << "s;");
+  SESAME_INFO("Concept drift time is "<< conceptDriftTime /1000000L<< "s;");
+  SESAME_INFO("Outlier Detection time is "<< outlierDetectionTime/1000000L << "s;");
   if(prune)
   {
     otherTime -= pruneTime;
-    SESAME_INFO("prune time is "<< pruneTime << "us;");
+    SESAME_INFO("prune time is "<< pruneTime/1000000L << "s;");
   }
 
   if(refine)
   {
     otherTime -= refinementTime;
-    SESAME_INFO("refinement time is "<< refinementTime << "us;");
+    SESAME_INFO("refinement time is "<< refinementTime/1000000L << "s;");
   }
-  SESAME_INFO("other time is "<< otherTime << "us;");
+  SESAME_INFO("other time is "<< otherTime/1000000L << "s;");
 }
 

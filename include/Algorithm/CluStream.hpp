@@ -50,11 +50,8 @@ class CluStream : public Algorithm {
   TimeMeter timerMeter;
 
 
-
   void Initilize() override;
-
   void runOnlineClustering(PointPtr input) override;
-
   void runOfflineClustering(DataSinkPtr sinkPtr) override;
 
  private:

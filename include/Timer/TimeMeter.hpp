@@ -125,7 +125,9 @@ struct T_TIMER {
 class TimeMeter {
  private:
   struct timespec start, stop;
+  int interval;
   T_TIMER timer;
+  bool InsertJudge=false;
   //the overall elapsed time of every part
   long overallTime;
   long onlineTime;
@@ -141,12 +143,12 @@ class TimeMeter {
   long otherTime = 0;
 
  public:
-
+  void setInterval(int interV);
   void START_MEASURE();
   void END_MEASURE();
   long MeterUSEC();//return the meter result in micro second unit.
 
-  void MEASURE(timespec Time);
+  static void MEASURE(timespec Time);
   long MeterUSEC( timespec startAcc, timespec endAcc);//return the meter result in micro second unit.
 
   //the overall start and end time of every part
@@ -156,13 +158,13 @@ class TimeMeter {
   // the start  of every xx s
   void  overallAccMeasure();
   //start of online part
-  void MeterOverallAccUSEC(int interval);
+  void MeterOverallAccUSEC();
 
 
   void  onlineAccMeasure();
   //end of online part
   void  onlineEndMeasure();
-  void MeterOnlineAccUSEC(int interval);
+  void MeterOnlineAccUSEC();
 
 
   //start of initial  part
@@ -176,7 +178,7 @@ class TimeMeter {
   void  dataInsertAccMeasure();
   //end of data Insert  part
   void  dataInsertEndMeasure();
-  void MeterDataInsertAccUSEC(int interval);
+  void MeterDataInsertAccUSEC();
   long MeterDataInsertUSEC();
 
 
@@ -184,7 +186,7 @@ class TimeMeter {
   void  conceptDriftAccMeasure();
   //end of concept drift   part
   void  conceptDriftEndMeasure();
-  void MeterConceptDriftAccUSEC(int interval);
+  void MeterConceptDriftAccUSEC();
   long MeterConceptDriftUSEC();
 
 
@@ -192,7 +194,7 @@ class TimeMeter {
   void outlierDetectionAccMeasure();
   //end of outlier Detection  part
   void outlierDetectionEndMeasure();
-  void MeterOutlierDetectionAccUSEC(int interval);
+  void MeterOutlierDetectionAccUSEC();
   long MeterOutlierDetectionUSEC();
 
 
@@ -200,14 +202,14 @@ class TimeMeter {
   void  pruneAccMeasure();
   //end of prune  part
   void  pruneEndMeasure();
-  void MeterPruneAccUSEC(int interval);
+  void MeterPruneAccUSEC();
   long MeterPruneUSEC();
 
   //start of snapshot  part
   void  snapshotAccMeasure();
   //end of snapshot  part
   void  snapshotEndMeasure();
-  void MeterSnapshotAccUSEC(int interval);
+  void MeterSnapshotAccUSEC();
   long MeterSnapshotUSEC();
 
 
@@ -223,13 +225,14 @@ class TimeMeter {
 
 
   //Store the result of every xx s
-  void AccumulateWithPointTimer(timespec Now, timespec end, long elapsedTime, int interval,
+  void AccumulateWithPointTimer(timespec Now, timespec end, long elapsedTime,
                                 std::vector<long> timerVector);
   long getOnlineEtime();
-  void AccumulatePeriodTimer(timespec Now, timespec end,long elapsedTime, int interval,
+  void AccumulatePeriodTimer(timespec Now, timespec end,long elapsedTime,
                              int count,std::vector<long> timerVector);
-  void setOverallTime(long overallT);
 
+  void OverallPreUpdate();
+  void setOverallTime(long overallT);
   void setOnlineTime(long onlineT);
   void setDataInsertTime(long dataInsertT);
   void setConceptDriftTime(long conceptDriftT);
