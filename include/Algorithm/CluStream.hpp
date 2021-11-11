@@ -18,7 +18,7 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-
+#include <Timer/TimeMeter.hpp>
 namespace SESAME {
 
 class CluStreamParameter : public AlgorithmParameters {
@@ -47,11 +47,11 @@ class CluStream : public Algorithm {
   clock_t lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
+  TimeMeter timerMeter;
+  //bool insert;
 
   void Initilize() override;
-
   void runOnlineClustering(PointPtr input) override;
-
   void runOfflineClustering(DataSinkPtr sinkPtr) override;
 
  private:
