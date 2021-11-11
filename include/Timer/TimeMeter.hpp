@@ -129,11 +129,11 @@ class TimeMeter {
   T_TIMER timer;
   bool InsertJudge=false;
   //the overall elapsed time of every part
-  long overallTime;
-  long onlineTime;
-  long dataInsertTime;
-  long conceptDriftTime;
-  long outlierDetectionTime;
+  long overallTime = 0;
+  long onlineTime = 0;
+  long dataInsertTime = 0;
+  long conceptDriftTime = 0;
+  long outlierDetectionTime = 0;
 
 
   long pruneTime = 0;   // if possible
@@ -218,10 +218,6 @@ class TimeMeter {
   //end of refinement  part
   void  refinementEndMeasure();
   long MeterRefinementUSEC();
-
-
-
-
 
 
   //Store the result of every xx s

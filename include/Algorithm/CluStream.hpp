@@ -48,7 +48,7 @@ class CluStream : public Algorithm {
   CluStream(param_t &cmd_params);
   ~CluStream();
   TimeMeter timerMeter;
-
+  //bool insert;
 
   void Initilize() override;
   void runOnlineClustering(PointPtr input) override;

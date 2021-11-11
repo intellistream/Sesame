@@ -4,7 +4,7 @@ add_executable(Google_Tests_run
        # SystemTest/StreamKMTest.cpp
         #SystemTest/BirchTest.cpp
         #SystemTest/EDMStreamTest.cpp
-        SystemTest/DenStreamTest.cpp
+        #SystemTest/DenStreamTest.cpp
        # SystemTest/DBStreamTest.cpp
         )
 
