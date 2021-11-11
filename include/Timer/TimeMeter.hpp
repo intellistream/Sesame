@@ -3,7 +3,6 @@
 #ifndef SESAME_SRC_TIMER_CYCLEMETER_HPP_
 #define SESAME_SRC_TIMER_CYCLEMETER_HPP_
 
-#include <Timer/rdtsc.hpp>/* startTimer, stopTimer */
 #include <ctime>           /* gettimeofday */
 #include <cstddef>
 #include <cstdint>
@@ -148,7 +147,7 @@ class TimeMeter {
   void END_MEASURE();
   long MeterUSEC();//return the meter result in micro second unit.
 
-  static void MEASURE(timespec Time);
+ // static void MEASURE(timespec Time);
   long MeterUSEC( timespec startAcc, timespec endAcc);//return the meter result in micro second unit.
 
   //the overall start and end time of every part
@@ -158,7 +157,7 @@ class TimeMeter {
   // the start  of every xx s
   void  overallAccMeasure();
   //start of online part
-  void MeterOverallAccUSEC();
+ // void MeterOverallAccUSEC();
 
 
   void  onlineAccMeasure();
@@ -221,13 +220,15 @@ class TimeMeter {
 
 
   //Store the result of every xx s
-  void AccumulateWithPointTimer(timespec Now, timespec end, long elapsedTime,
+  void AccumulateWithPointTimer(timespec start, timespec end, long elapsedTime,
                                 std::vector<long> timerVector);
   long getOnlineEtime();
-  void AccumulatePeriodTimer(timespec Now, timespec end,long elapsedTime,
-                             int count,std::vector<long> timerVector);
+
 
   void OverallPreUpdate();
+
+
+
   void setOverallTime(long overallT);
   void setOnlineTime(long onlineT);
   void setDataInsertTime(long dataInsertT);
