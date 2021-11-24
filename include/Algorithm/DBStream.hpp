@@ -7,6 +7,7 @@
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/DataStructure/WeightedAdjacencyList.hpp>
 #include <Utils/BenchmarkUtils.hpp>
+#include <Algorithm/OfflineClustering/ConnectedRegions.hpp>
 
 namespace SESAME {
 typedef std::vector<std::vector<MicroClusterPtr>> Clusters;
@@ -37,8 +38,10 @@ class DBStream : public Algorithm
       int microClusterIndex;
       //Final output of clusters
       Clusters finalClusters;
+      ConnectedRegions connectedRegions;
      //Connectivity graph
-     unordered_map<int,std::vector<int>> connecvtivityGraphId;
+
+    // unordered_map<int,std::vector<int>> connecvtivityGraphId;
 
       //TODO Need to implement weighted a weighted adjacency list S
       DBStream(param_t &cmd_params);
@@ -48,14 +51,17 @@ class DBStream : public Algorithm
       void runOfflineClustering(DataSinkPtr sinkPtr) override;
      private:
       bool isInitial  = false;
+
       void update(PointPtr dataPoint);
       bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint);
       void cleanUp(clock_t nowTime);
-      void reCluster(double threshold);
+     //The underline has moved to offline refinement
+      /*  void reCluster(double threshold);
       void insertIntoGraph(int microClusterId,int OtherId);
       void insertIntoGraph(int microClusterId);
-      void findConnectedComponents();
+      void findConnectedComponents();*/
     };
+
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DBSTREAM_HPP_

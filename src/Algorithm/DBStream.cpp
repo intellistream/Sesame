@@ -3,7 +3,6 @@
 //
 #include <Algorithm/DBStream.hpp>
 #include <Algorithm/WindowModel/WindowFactory.hpp>
-#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
 /**
  * @Description: initialize user defined parameters,
@@ -42,6 +41,7 @@ void SESAME::DBStream::Initilize() {
   this->weakEntry= ceil(pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.cleanUpInterval));
   this->aWeakEntry=ceil(weakEntry*dbStreamParams.alpha);
   this->microClusterIndex=-1;
+  connectedRegions = ConnectedRegions(dbStreamParams.alpha, dbStreamParams.weightMin);
  }
  /**
   * @Description: online clustering stage, input data point incrementally and update the MC list and weight adjacency lists,
@@ -81,14 +81,20 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   this->microClusterNN=findFixedRadiusNN(dataPoint);
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
   // SESAME_INFO("find suitable MCs number : "<<sizeNN);
+  /**
+   * If this point fits in no micro clusters
+   * */
   if (microClusterNN.empty()) {
     microClusterIndex++;
-    MicroClusterPtr newMicroCluster=SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dimension,microClusterIndex,
+    MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dimension,microClusterIndex,
                                                                                      dataPoint,dbStreamParams.radius);
     microClusters.push_back(newMicroCluster);
     microClusterNN.push_back(newMicroCluster);
- // SESAME_INFO("Add new MC!"<<microClusterIndex);
+    //SESAME_INFO("Add new MC!"<<microClusterIndex);
   }
+  /**
+ * If this point fits in at least one micro cluster
+ * */
   else {
     for (int i = 0; i < sizeNN; i++) {
       microClusterNN[i]->insert(dataPoint,decayFactor); // just update weight
@@ -194,7 +200,20 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
 
 
 void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
-  reCluster(dbStreamParams.alpha);
+  SESAME_INFO("micro clusters "<<microClusters.size());
+  SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());
+  connectedRegions.connection(microClusters,
+                   weightedAdjacencyList);
+
+  std::vector<PointPtr> points = connectedRegions.ResultsToDataSink();
+  for(auto & point : points)
+    sinkPtr->put(point->copy());
+
+}
+
+
+/*
+   * reCluster(dbStreamParams.alpha);
   for(auto iter=0; iter!=finalClusters.size();iter++)
   {   //initialize pseudo point of macro clusters
     PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dimension, 0);
@@ -222,8 +241,6 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
     SESAME_INFO("The NO."<<iter<<" Centroid is "<<re.str());
     sinkPtr->put(point->copy()); // point index start from 0
   }
-}
-
 
 void SESAME::DBStream::reCluster(double threshold){
   WeightedAdjacencyList::iterator iterW;
@@ -243,14 +260,6 @@ void SESAME::DBStream::reCluster(double threshold){
   }
   findConnectedComponents();
 }
-/**
- * @Description:  insert vertices and entries into connectivity graph when micro cluster pair
- * connectivity value greater than the intersection threshold
- * if the graph has testing micro cluster, add connected strong MC in the corresponding entries
- * else, create new V,E into the graph
- * @Param: connectivity graph, micro cluster 1 and 2
- * @Return: void
- */
 
 void SESAME::DBStream::insertIntoGraph(int microClusterId,int OtherId){
   if (connecvtivityGraphId.find(microClusterId)!=connecvtivityGraphId.end())
@@ -277,14 +286,6 @@ void SESAME::DBStream::insertIntoGraph(int microClusterId){
   }
 }
 
-/**
- * @Description:  findConnectedComponents function visit the existing connectivity graph
- * and find all connected strong MCs that will finally form arbitrary-shaped macro clusters
- * each macro cluster will be stored as a vector of micro clusters, which will be transformed into
- * point that stores in sink later
- * @Param: connectivity graph
- * @Return: void
- */
 void SESAME::DBStream::findConnectedComponents(){
   unordered_map<int,std::vector<int>>::iterator iter;
   //This variable just for indicating the id of micro cluster which forming macro clusters
@@ -312,6 +313,6 @@ void SESAME::DBStream::findConnectedComponents(){
       //SESAME_INFO("New formed macro cluster ... including micro cluster :");
       //SESAME_INFO("  " << result.str() );
     }
-
   }
 }
+ */
