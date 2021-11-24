@@ -1,4 +1,6 @@
 add_source_sesame(
         OfflineClustering.cpp
         KMeans.cpp
-        DBSCAN.cpp)
+        DBSCAN.cpp
+        ConnectedRegions.cpp
+)
