@@ -36,7 +36,7 @@ SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 
 std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours()
 {
-  SESAME_INFO("Obtain neighbours");
+//  SESAME_INFO("Obtain neighbours");
   std::vector<DensityGrid> neighbours;
   std::vector<int> hCoord = this->coordinates ;
   for (int i = 0 ; i < this->dimensions ; i++)

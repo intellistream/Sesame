@@ -119,7 +119,8 @@ std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink(){
     PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dimension, 0);
     //This is just for testing, need to delete
     std::vector<double> centroid(finalClusters.at(iter).front()->dimension,0);
-    for(auto j=0; j!=finalClusters.at(iter).size();j++)
+    //TODO maybe wrong ;so dizzy
+    for(auto j=0; j<finalClusters.at(iter).size();j++)
     {
       double currentWeight=point->getWeight()+finalClusters.at(iter).at(j)->weight;
       point->setWeight(currentWeight);

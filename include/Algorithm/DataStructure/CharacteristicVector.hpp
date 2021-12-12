@@ -53,6 +53,7 @@ class CharacteristicVector {
    * the last time the grid density was updated.
    */
   bool attChange;
+  bool isVisited=false;
 
   CharacteristicVector();
   CharacteristicVector(clock_t updateTime, clock_t removeTime, double Density, int label, bool status, double dl, double dm);
