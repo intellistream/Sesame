@@ -175,10 +175,10 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
       microClusters.erase(microClusters.begin()+int(iter));//Delete this MC from current MC list
     }
   }
- SESAME_INFO("now rm MCs number is "<<removeMicroCluster.size()<<", MCs is "<<microClusters.size());
+// SESAME_INFO("now rm MCs number is "<<removeMicroCluster.size()<<", MCs is "<<microClusters.size());
   std::stringstream re;
   std::copy(idList.begin(),idList.end(),std::ostream_iterator<int>(re, " "));
- SESAME_INFO("RM list "<<re.str());
+ //SESAME_INFO("RM list "<<re.str());
   auto iterW=weightedAdjacencyList.begin();
   while ( iterW != weightedAdjacencyList.end())
   {
@@ -195,7 +195,7 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
          iterW++;
    }
   }
-  SESAME_INFO("CLEAN! now weightedAdjacencyList size:"<<weightedAdjacencyList.size());
+//  SESAME_INFO("CLEAN! now weightedAdjacencyList size:"<<weightedAdjacencyList.size());
 }
 
 

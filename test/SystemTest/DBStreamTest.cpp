@@ -21,11 +21,11 @@ TEST(SystemTest, DBStreamTest) {
   cmd_params.pointNumber = 15120;
   cmd_params.dimension = 54;
   cmd_params.base=2;
-  cmd_params.lambda= 0.0001;
-  cmd_params.radius= 500;
-  cmd_params.cleanUpInterval=3;
-  cmd_params.weightMin=2;
-  cmd_params.alpha=0.25;
+  cmd_params.lambda= 0.6;
+  cmd_params.radius= 2000;
+  cmd_params.cleanUpInterval=6;
+  cmd_params.weightMin=3;
+  cmd_params.alpha=0.3;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;

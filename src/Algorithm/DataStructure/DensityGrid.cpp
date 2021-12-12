@@ -2,7 +2,7 @@
 // Created by 1124a on 2021/10/27.
 //
 #include <Algorithm/DataStructure/DensityGrid.hpp>
-
+#include <Utils/Logger.hpp>
 
 SESAME::DensityGrid::DensityGrid(){
 
@@ -36,10 +36,9 @@ SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 
 std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours()
 {
+  SESAME_INFO("Obtain neighbours");
   std::vector<DensityGrid> neighbours;
-
   std::vector<int> hCoord = this->coordinates ;
-
   for (int i = 0 ; i < this->dimensions ; i++)
   {
     hCoord[i] = hCoord[i]-1;

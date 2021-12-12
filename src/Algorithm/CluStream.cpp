@@ -15,8 +15,8 @@
  */
 SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.pointNumber = cmd_params.pointNumber;
-  this->CluStreamParam.clusterNumber = cmd_params.onlineClusterNumber;
   this->CluStreamParam.dimension = cmd_params.dimension;
+  this->CluStreamParam.clusterNumber = cmd_params.onlineClusterNumber;
   this->CluStreamParam.lastArrivingNum = cmd_params.lastArrivingNum;
   this->CluStreamParam.timeWindow = cmd_params.timeWindow;
   this->CluStreamParam.timeInterval = cmd_params.timeInterval;
