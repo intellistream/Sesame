@@ -34,6 +34,7 @@ class DStream : public Algorithm
       DampedWindowPtr dampedWindow;
       clock_t startTime;
       clock_t pointArrivingTime;
+      clock_t lastAdjustTime;
       int gap;// Time gap between calls to the offline component
       double dm;// Density threshold for dense grids; controlled by cm
       double dl; //  Density threshold for sparse grids; controlled by cl
@@ -58,6 +59,7 @@ class DStream : public Algorithm
       bool isInitial  = false;
       bool recalculateN =false; // flag indicating whether N needs to be recalculated after this instance
       std::vector<int> tempCoord;
+      std::vector<int> Coord;
       void ifReCalculateN(PointPtr point);
       void reCalculateN();
 
