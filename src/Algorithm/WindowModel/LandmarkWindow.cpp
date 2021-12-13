@@ -212,12 +212,12 @@ void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,const SESA
       */
 void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,const MicroClusters & microClusters, int elapsedTime)
 {
-  SESAME_INFO("taking snapshot");
+//  SESAME_INFO("taking snapshot");
 
   unsigned int size=orderSnapShots[currentOrder].size();
   SnapshotPtr snapshot;
   snapshot=DataStructureFactory::createSnapshot(const_cast<std::vector<MicroClusterPtr> &>(microClusters),elapsedTime);
-  SESAME_INFO("The current order size is "<<size<<" current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
+  //SESAME_INFO("The current order size is "<<size<<" current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
   if(size==this->pyramidalWindow.timeInterval+1) {
     orderSnapShots[currentOrder].erase(orderSnapShots[currentOrder].begin());
   }

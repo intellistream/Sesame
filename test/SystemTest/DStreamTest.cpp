@@ -1,8 +1,8 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+//
+// Created by 1124a on 2021/11/2.
+//
 
-//
-// Created by shuhao zhang on 8/8/2021.
-//
+
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <Utils/BenchmarkUtils.hpp>
@@ -11,25 +11,22 @@
 #include <Sinks/DataSinkFactory.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
-TEST(SystemTest, CluStreamTest) {
+TEST(SystemTest, DStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 15120;
+  cmd_params.pointNumber =15120;
   cmd_params.dimension = 54;
-  cmd_params.clusterNumber = 12;
-  cmd_params.lastArrivingNum =25;
-  cmd_params.timeWindow = 3;
-  cmd_params.timeInterval =6;
-  cmd_params.onlineClusterNumber =60;
-  cmd_params.radiusFactor =15;
-  cmd_params.initBuffer = 1000;
-  cmd_params.offlineTimeWindow = 0;
+  cmd_params.lambda= 0.998;
+  cmd_params.beta=0.001;
+  cmd_params.cm = 3.0;
+  cmd_params.cl = 1;
+  cmd_params.gridWidth= 6;
+
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::CluStreamType;
+  cmd_params.algoType = SESAME::DStreamType;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

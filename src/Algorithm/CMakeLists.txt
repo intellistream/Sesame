@@ -5,6 +5,7 @@ add_source_sesame(
         DenStream.cpp
         EDMStream.cpp
         DBStream.cpp
+        DStream.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
 )

@@ -43,7 +43,7 @@ struct param_t {
   double base;
   double lambda;
   double mu;
-  double beta;
+  double beta; //Also used in DStream, but different meaning
   // EDMStream
   double a;
   int cacheNum;
@@ -55,6 +55,10 @@ struct param_t {
   int cleanUpInterval;
   double weightMin;
   double alpha;
+  //used in DStream
+  double cm;
+  double cl;
+  int gridWidth;
   std::string inputPath;
   std::string outputPath;
   SESAME::algoType algoType;

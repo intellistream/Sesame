@@ -12,4 +12,7 @@ add_source_sesame(
         Cache.cpp
         OutlierResevoir.cpp
         FeatureVector.cpp
+        CharacteristicsVector.cpp
+        DensityGrid.cpp
+        GridCluster.cpp
 )
