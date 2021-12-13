@@ -10,6 +10,7 @@
 #include <Algorithm/DBStream.hpp>
 #include <Algorithm/Birch.hpp>
 #include <Algorithm/EDMStream.hpp>
+#include <Algorithm/DStream.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
@@ -36,6 +37,10 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algoType == DBStreamType) {
     shared_ptr<DBStream> dbStream = std::make_shared<DBStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dbStream;
+  }
+  if (cmd_params.algoType == DStreamType) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
   }
   throw std::invalid_argument("Unsupported");
 
