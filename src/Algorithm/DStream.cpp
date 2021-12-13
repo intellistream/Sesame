@@ -65,7 +65,7 @@ void SESAME::DStream::runOnlineClustering(PointPtr input) {
     {
       reCalculateN();
 
-      GridListUpdate(Coord);
+      GridListUpdate(Coord);//tempCoord
       // 5. If tc == gap, then initial clustering
       // and
       // 6. If tc mod gap == 0, then:
@@ -75,7 +75,8 @@ void SESAME::DStream::runOnlineClustering(PointPtr input) {
           lastAdjustTime=clock();
           initialClustering();
       }
-      if(((clock()-lastAdjustTime)/CLOCKS_PER_SEC)>=gap)
+      //if(((clock()-lastAdjustTime)/CLOCKS_PER_SEC)>=gap)
+      if(clusterInitial&&(clock()-startTime)/CLOCKS_PER_SEC%(gap*10)==0)
       {
         lastAdjustTime=clock();
         removeSporadic();

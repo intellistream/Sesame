@@ -22,7 +22,7 @@ TEST(SystemTest, DStreamTest) {
   cmd_params.beta=0.001;
   cmd_params.cm = 3.0;
   cmd_params.cl = 1;
-  cmd_params.gridWidth= 8;
+  cmd_params.gridWidth= 6;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
