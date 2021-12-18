@@ -127,9 +127,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 15120; // number of the data points in the dataset, use the whole dataset to run benchmark
+  cmd_params.dimension = 54;
   cmd_params.seed = 10;
   cmd_params.clusterNumber = 10;
-  cmd_params.dimension = 54;
   cmd_params.coresetSize = 100;
   cmd_params.lastArrivingNum = 60;
   cmd_params.timeWindow = 6;
@@ -156,7 +156,17 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.delta = 1500;
   cmd_params.beta = 0.0021;
   cmd_params.opt = 2;
+ //DBStream
+ cmd_params.radius = 200;
+ cmd_params.cleanUpInterval = 2;
+ cmd_params.weightMin = 2;
+ cmd_params.alpha = 0.2;
 
+ //DStream
+ cmd_params.cm = 2;
+ cmd_params.cl = 0.1;
+ cmd_params.gridWidth =2;
+ cmd_params.beta = 0.001;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
