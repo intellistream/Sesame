@@ -23,7 +23,7 @@ class DStreamParams : public AlgorithmParameters {
   double beta;
   double cm; // User defined parameter: Controls the threshold for dense grids
   double cl; // User defined parameter: Controls the threshold for sparse grids
-  int gridWidth; //width of grid
+  double gridWidth; //width of grid
 };
 
 typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
