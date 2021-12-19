@@ -283,7 +283,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   int landmarkTime = elapsedTime - this->CluStreamParam.offlineTimeWindow;
   if (this->CluStreamParam.offlineTimeWindow > elapsedTime)
     landmarkTime = 0;
-  SESAME_INFO("Start offline...");
+ // SESAME_INFO("Start offline...");
   SESAME::SnapshotPtr landmarkSnapshot;
   SESAME::SnapshotPtr subtractMiroCluster;
   //If offlineTimeWindow ==0, Only Observe the end results of micro clusters

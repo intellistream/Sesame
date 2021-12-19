@@ -70,6 +70,8 @@ void SESAME::DenStream::Initilize() {
   this->pointArrivingTime = this->startTime;
   this->minWeight = denStreamParams.beta * denStreamParams.mu;
   this->Tp = (double) (1 / denStreamParams.lambda) * (log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
+  if( this->Tp>1000|| this->Tp<=0)
+    this->Tp=1;
 }
 void SESAME::DenStream::runOnlineClustering(PointPtr input) {
 
@@ -87,11 +89,11 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
     clock_t now=clock();
     double elapsedTime = (double) ( this->lastUpdateTime -now) / CLOCKS_PER_SEC;
     if (elapsedTime >=this->Tp ) {
-      SESAME_INFO("Check"<<elapsedTime);
+     // SESAME_INFO("Check "<<elapsedTime);
       for (int iter = 0; iter < pMicroClusters.size(); iter++) {
         if (pMicroClusters.at(iter)->weight < minWeight) {
           pMicroClusters.erase(pMicroClusters.begin() + iter);
-          SESAME_INFO("NOW PMC number is: " << this->pMicroClusterIndex);
+       //   SESAME_INFO("NOW PMC number is: " << this->pMicroClusterIndex);
         }
       }
       if (oMicroClusters.size() != 0) {
@@ -103,7 +105,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr input) {
           // SESAME_INFO("NOW Xi  "<<Xi);
           if (oMicroClusters.at(iter)->weight < Xi) {
             oMicroClusters.erase(oMicroClusters.begin() + iter);
-            SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
+        //    SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
           }
         }
       }
@@ -172,7 +174,7 @@ int SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, std::vector<MicroClus
 }
 
 void SESAME::DenStream::runOfflineClustering(DataSinkPtr sinkPtr) {
-  SESAME_INFO("Finish online");
+ // SESAME_INFO("Finish online");
   vector<PointPtr> transformedPoints;
   std::vector<std::vector<PointPtr>> oldGroups;
   microClusterToPoint(pMicroClusters, transformedPoints);

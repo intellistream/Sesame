@@ -44,7 +44,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h:D:m:M:N:l:L:w:W:n:e:B:u:q:R:p:x:X:g:k",
+    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h:D:m:M:N:l:L:w:W:n:e:B:u:q:R:p:x:P:X:g:k",
                     long_options, &option_index);
 
     /* Detect the end of the options. */
@@ -101,8 +101,6 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               SESAME_INFO("configure cmd_params.thresholdDistance: " << cmd_params.thresholdDistance);
               break;
 
-
-
               case 'b': cmd_params.initBuffer = atoi(optarg);
               SESAME_INFO("configure cmd_params.initBuffer: " << cmd_params.initBuffer);
               break;
@@ -124,7 +122,6 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               case 'W': cmd_params.offlineTimeWindow = atoi(optarg);
               SESAME_INFO("configure cmd_params.offlineTimeWindow: " << cmd_params.offlineTimeWindow);
               break;
-
 
               case 'n': cmd_params.minPoints = atoi(optarg);
               SESAME_INFO("configure cmd_params.minPoints: " << cmd_params.minPoints);
@@ -171,7 +168,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               else if(cmd_params.datasetOption == 2) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/PowerSupply.txt";
               else if(cmd_params.datasetOption == 3) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond.txt";
               else if(cmd_params.datasetOption == 4) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Zelnik.txt";
-              SESAME_INFO("configure cmd_params.datasetOption: " << cmd_params.datasetOption);
+              SESAME_INFO("configure cmd_params.datasetOption: " << cmd_params.inputPath);//cmd_params.inputPath cmd_params.datasetOption
               break;
 
               case 'i':cmd_params.inputPath = optarg;
@@ -230,10 +227,10 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.opt = 2;
 
   cmd_params.datasetOption = 0;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/powersupply.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::StreamKMeansType;
+  cmd_params.algoType = SESAME::CluStreamType;
 }
 
 
