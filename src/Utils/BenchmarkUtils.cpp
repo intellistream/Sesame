@@ -25,26 +25,26 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
   while (1) {
     static struct option long_options[] =
         {
-            {"help", no_argument, 0, 'h'},
-            {"point_number", required_argument, 0, 'p'},
-            {"cluster_number", required_argument, 0, 'c'},
-            {"dimension", required_argument, 0, 'd'},
-            {"coreset_size", required_argument, 0, 's'},
-            {"seed", required_argument, 0, 'S'},
-            {"lastArrivingNum", required_argument, 0, 'a'},
-            {"timeWindow", required_argument, 0, 'T'},
-            {"timeInterval", required_argument, 0, 't'},
-            {"onlineClusterNumber", required_argument, 0, 'C'},
-            {"radiusFactor", required_argument, 0, 'r'},
-            {"initBuffer", required_argument, 0, 'b'},
-            {"offlineTimeWindow", required_argument, 0, 'O'},
-//            {"input_path", required_argument, 0, 'i'},
-//            {"output_path", required_argument, 0, 'o'},
+        {"help", no_argument, 0, 'h'},
+        {"point_number", required_argument, 0, 'p'},
+        {"cluster_number", required_argument, 0, 'c'},
+        {"dimension", required_argument, 0, 'd'},
+        {"coreset_size", required_argument, 0, 's'},
+        {"seed", required_argument, 0, 'S'},
+        {"lastArrivingNum", required_argument, 0, 'a'},
+        {"timeWindow", required_argument, 0, 'T'},
+        {"timeInterval", required_argument, 0, 't'},
+        {"onlineClusterNumber", required_argument, 0, 'C'},
+        {"radiusFactor", required_argument, 0, 'r'},
+        {"initBuffer", required_argument, 0, 'b'},
+        {"offlineTimeWindow", required_argument, 0, 'O'},
+        //            {"input_path", required_argument, 0, 'i'},
+        //            {"output_path", required_argument, 0, 'o'},
         };
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h",
+    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h:D:m:M:N:l:L:w:W:n:e:B:u:q:R:p:x:X:g:k",
                     long_options, &option_index);
 
     /* Detect the end of the options. */
@@ -59,56 +59,128 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
         if (optarg) SESAME_INFO(" with arg " << optarg);
         break;
 
-      case 'h':
-      case '?':
-        /* getopt_long already printed an error message. */
-        print_help(argv[0]);
-        exit(EXIT_SUCCESS);
-        break;
-      case 'p':cmd_params.pointNumber = atoi(optarg);
-        SESAME_INFO("configure cmd_params.pointNumber: " << cmd_params.pointNumber);
-        break;
-      case 'c':cmd_params.clusterNumber = atoi(optarg);
-        SESAME_INFO("configure cmd_params.clusterNumber: " << cmd_params.clusterNumber);
-        break;
-      case 'd':cmd_params.dimension = atoi(optarg);
-        SESAME_INFO("configure cmd_params.dimension: " << cmd_params.dimension);
-        break;
-      case 's':cmd_params.coresetSize = atoi(optarg);
-        SESAME_INFO("configure cmd_params.coresetSize: " << cmd_params.coresetSize);
-        break;
-      case 'S':cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
-        break;
-      case 'a': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.lastArrivingNum: " << cmd_params.lastArrivingNum);
-        break;
-      case 'T': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.timeWindow: " << cmd_params.timeWindow);
-        break;
-      case 't': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.timeInterval: " << cmd_params.timeInterval);
-        break;
-      case 'C': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.onlineClusterNumber: " << cmd_params.onlineClusterNumber);
-        break;
-      case 'r': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.radiusFactor: " << cmd_params.radiusFactor);
-        break;
-      case 'b': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.initBuffer: " << cmd_params.initBuffer);
-        break;
-      case 'O': cmd_params.seed = atoi(optarg);
-        SESAME_INFO("configure cmd_params.offlineTimeWindow: " << cmd_params.offlineTimeWindow);
-        break;
+        case 'h':
+          case '?':
+            /* getopt_long already printed an error message. */
+            print_help(argv[0]);
+            exit(EXIT_SUCCESS);
+            break;
+            case 'p':cmd_params.pointNumber = atoi(optarg);
+            SESAME_INFO("configure cmd_params.pointNumber: " << cmd_params.pointNumber);
+            break;
+            case 'c':cmd_params.clusterNumber = atoi(optarg);
+            SESAME_INFO("configure cmd_params.clusterNumber: " << cmd_params.clusterNumber);
+            break;
+            case 'd':cmd_params.dimension = atoi(optarg);
+            SESAME_INFO("configure cmd_params.dimension: " << cmd_params.dimension);
+            break;
+            case 's':cmd_params.coresetSize = atoi(optarg);
+            SESAME_INFO("configure cmd_params.coresetSize: " << cmd_params.coresetSize);
+            break;
+            case 'S':cmd_params.seed = atoi(optarg);
+            SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
+            break;
+            case 'a':
+              if(atoi(optarg) == 0) cmd_params.algoType = SESAME::StreamKMeansType;
+              else if(atoi(optarg) == 1) cmd_params.algoType = SESAME::BirchType;
+              else if(atoi(optarg) == 2) cmd_params.algoType = SESAME::EDMStreamType;
+              else if(atoi(optarg) == 3) cmd_params.algoType = SESAME::DBStreamType;
+              else if(atoi(optarg) == 4) cmd_params.algoType = SESAME::CluStreamType;
+              else if(atoi(optarg) == 5) cmd_params.algoType = SESAME::DenStreamType;
+              else if(atoi(optarg) == 6) cmd_params.algoType = SESAME::DStreamType;
+              else SESAME_ERROR("non selected algorithm! ");
+              SESAME_INFO("configure cmd_params.algoType: ");
+              break;
+              case 'm': cmd_params.maxLeafNodes = atoi(optarg);
+              SESAME_INFO("configure cmd_params.maxLeafNodes: " << cmd_params.maxLeafNodes);
+              break;
+              case 'M': cmd_params.maxInternalNodes = atoi(optarg);
+              SESAME_INFO("configure cmd_params.maxInternalNodes: " << cmd_params.maxInternalNodes);
+              break;
+              case 'D': cmd_params.thresholdDistance = atof(optarg);
+              SESAME_INFO("configure cmd_params.thresholdDistance: " << cmd_params.thresholdDistance);
+              break;
 
-      case 'i':cmd_params.inputPath = optarg;
-        SESAME_INFO("configure input path: " << cmd_params.inputPath);
-        break;
-      case 'o':cmd_params.outputPath = optarg;
-        SESAME_INFO("configure output path: " << cmd_params.outputPath);
-        break;
-      default:break;
+
+
+              case 'b': cmd_params.initBuffer = atoi(optarg);
+              SESAME_INFO("configure cmd_params.initBuffer: " << cmd_params.initBuffer);
+              break;
+              case 'N': cmd_params.onlineClusterNumber = atoi(optarg);
+              SESAME_INFO("configure cmd_params.onlineClusterNumber: " << cmd_params.onlineClusterNumber);
+              break;
+              case 'r': cmd_params.radiusFactor = atoi(optarg);
+              SESAME_INFO("configure cmd_params.radiusFactor: " << cmd_params.radiusFactor);
+              break;
+              case 'l': cmd_params.lastArrivingNum = atoi(optarg);
+              SESAME_INFO("configure cmd_params.lastArrivingNum: " << cmd_params.lastArrivingNum);
+              break;
+              case 'T': cmd_params.timeWindow = atoi(optarg);
+              SESAME_INFO("configure cmd_params.timeWindow: " << cmd_params.timeWindow);
+              break;
+              case 't': cmd_params.timeInterval = atoi(optarg);
+              SESAME_INFO("configure cmd_params.timeInterval: " << cmd_params.timeInterval);
+              break;
+              case 'W': cmd_params.offlineTimeWindow = atoi(optarg);
+              SESAME_INFO("configure cmd_params.offlineTimeWindow: " << cmd_params.offlineTimeWindow);
+              break;
+
+
+              case 'n': cmd_params.minPoints = atoi(optarg);
+              SESAME_INFO("configure cmd_params.minPoints: " << cmd_params.minPoints);
+              break;
+              case 'e': cmd_params.epsilon = atoi(optarg);
+              SESAME_INFO("configure cmd_params.epsilon: " << cmd_params.epsilon);
+              break;
+              case 'B': cmd_params.base = atoi(optarg);
+              SESAME_INFO("configure cmd_params.base: " << cmd_params.base);
+              break;
+              case 'L': cmd_params.lambda = atoi(optarg);
+              SESAME_INFO("configure cmd_params.lambda: " << cmd_params.lambda);
+              break;
+              case 'u': cmd_params.mu = atoi(optarg);
+              SESAME_INFO("configure cmd_params.mu: " << cmd_params.mu);
+              break;
+              case 'q': cmd_params.beta = atoi(optarg);
+              SESAME_INFO("configure cmd_params.beta: " << cmd_params.beta);
+              break;
+              case 'R': cmd_params.radius = atoi(optarg);
+              SESAME_INFO("configure cmd_params.radius: " << cmd_params.radius);
+              break;
+              case 'C': cmd_params.cleanUpInterval = atoi(optarg);
+              SESAME_INFO("configure cmd_params.cleanUpInterval: " << cmd_params.cleanUpInterval);
+              break;
+              case 'w': cmd_params.weightMin = atoi(optarg);
+              SESAME_INFO("configure cmd_params.weightMin: " << cmd_params.weightMin);
+              break;
+              case 'P': cmd_params.alpha = atoi(optarg);
+              SESAME_INFO("configure cmd_params.alpha: " << cmd_params.alpha);
+              break;
+              case 'x': cmd_params.cm = atoi(optarg);
+              SESAME_INFO("configure cmd_params.cm: " << cmd_params.cm);
+              break;
+              case 'X': cmd_params.cl = atoi(optarg);
+              SESAME_INFO("configure cmd_params.cl: " << cmd_params.cl);
+              break;
+              case 'g': cmd_params.gridWidth = atoi(optarg);
+              SESAME_INFO("configure cmd_params.gridWidth: " << cmd_params.gridWidth);
+              break;
+              case 'O': cmd_params.datasetOption = atoi(optarg);
+              if(cmd_params.datasetOption == 0) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+              else if(cmd_params.datasetOption == 1) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/KDD99.txt";
+              else if(cmd_params.datasetOption == 2) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/PowerSupply.txt";
+              else if(cmd_params.datasetOption == 3) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond.txt";
+              else if(cmd_params.datasetOption == 4) cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Zelnik.txt";
+              SESAME_INFO("configure cmd_params.datasetOption: " << cmd_params.datasetOption);
+              break;
+
+              case 'i':cmd_params.inputPath = optarg;
+              SESAME_INFO("configure input path: " << cmd_params.inputPath);
+              break;
+              case 'o':cmd_params.outputPath = optarg;
+              SESAME_INFO("configure output path: " << cmd_params.outputPath);
+              break;
+              default:break;
     }
   }
 
@@ -127,9 +199,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.pointNumber = 15120; // number of the data points in the dataset, use the whole dataset to run benchmark
+  cmd_params.seed = 1;
+  cmd_params.clusterNumber = 30;
   cmd_params.dimension = 54;
-  cmd_params.seed = 10;
-  cmd_params.clusterNumber = 10;
   cmd_params.coresetSize = 100;
   cmd_params.lastArrivingNum = 60;
   cmd_params.timeWindow = 6;
@@ -140,7 +212,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.offlineTimeWindow = 2;
   cmd_params.maxLeafNodes = 3;
   cmd_params.maxInternalNodes = 3;
-  cmd_params.thresholdDistance = 6550;
+  cmd_params.thresholdDistance = 3550;
   cmd_params.minPoints = 10;
   cmd_params.epsilon = 50;
   cmd_params.base = 2;
@@ -156,23 +228,14 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.delta = 1500;
   cmd_params.beta = 0.0021;
   cmd_params.opt = 2;
- //DBStream
- cmd_params.radius = 200;
- cmd_params.cleanUpInterval = 2;
- cmd_params.weightMin = 2;
- cmd_params.alpha = 0.2;
 
- //DStream
- cmd_params.cm = 2;
- cmd_params.cl = 0.1;
- cmd_params.gridWidth =2;
- cmd_params.beta = 0.001;
-
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+  cmd_params.datasetOption = 0;
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/powersupply.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::BirchType;
+  cmd_params.algoType = SESAME::StreamKMeansType;
 }
+
 
 /* command line handling functions */
 /**
