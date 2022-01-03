@@ -35,7 +35,7 @@ for o in $(seq 0 4)
             done
          done
     fi
-   #Perform on powerSupply
+   #Perform on Sensor
       if [ $o == 2 ] ; then
         for b in $(seq 300 200 500)
           do
@@ -54,7 +54,7 @@ for o in $(seq 0 4)
                             beta=(0.125 0.25)
                             for q in ${beta[*]}
                               do
-                                  ./benchmark.exe -p 3000 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
+                                  ./benchmark.exe -p 5000 -d 5 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
                             done
                           done
                       done
@@ -63,7 +63,7 @@ for o in $(seq 0 4)
            done
       fi
 #Perform on Diamond
-      if [ $o == 3 ] ; then
+  :'  if [ $o == 3 ] ; then
         for b in $(seq 150 150 500)
           do
             minPoints=(5 8 15)
@@ -115,7 +115,7 @@ for o in $(seq 0 4)
                   done
               done
            done
-      fi
+      fi'
   done
 
 

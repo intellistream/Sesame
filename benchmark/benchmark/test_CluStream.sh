@@ -43,7 +43,7 @@ for o in $(seq 0 4)
             done
          done
     fi
-#Perform on PowerSupply
+#Perform on Sensor
     if [ $o == 2 ]; then
       for b in $(seq  500 500 1000)
         do
@@ -55,15 +55,16 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2 4)
                         do
-                          ./benchmark.exe -p 3000 -d 2 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark.exe -p 5000 -d 5 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done
             done
          done
     fi
+       done
 #Perform on Diamond
-    if [ $o == 3 ]; then
+ :'   if [ $o == 3 ]; then
       for b in $(seq 500 500 1000)
         do
           for N in $(seq 60 20 150)
@@ -80,9 +81,9 @@ for o in $(seq 0 4)
                 done
             done
          done
-    fi
+    fi'
 #Perform on Zelnik
-    if [ $o == 4 ]; then
+   :' if [ $o == 4 ]; then
       for b in $(seq 300 200 500 )
         do
           for N in $(seq 60 10 150)
@@ -100,7 +101,7 @@ for o in $(seq 0 4)
             done
          done
     fi
-  done
+  done'
 
 
 

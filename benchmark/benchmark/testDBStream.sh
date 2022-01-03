@@ -48,7 +48,7 @@ for o in $(seq 0 4)
             done
          done
     fi
-#Perform on PowerSupply
+#Perform on Sensor
     if [ $o == 2 ]; then
         radius=(4 14)
           for R in $(seq 4 14)
@@ -64,7 +64,7 @@ for o in $(seq 0 4)
                           alpha=(0.25 0.5)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 3000 -d 2 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark.exe -p 5000 -d 5 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
                             done
                     done
                 done
@@ -72,7 +72,7 @@ for o in $(seq 0 4)
          done
     fi
 #Perform on Diamond
-    if [ $o == 3 ]; then
+  :'  if [ $o == 3 ]; then
        radius=(0.4 0.5)
           for R in ${radius[*]}
             do
@@ -115,7 +115,7 @@ for o in $(seq 0 4)
                 done
             done
          done
-    fi
+    fi'
   done
 
 
