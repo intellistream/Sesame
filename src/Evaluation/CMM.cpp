@@ -258,5 +258,6 @@ void SESAME::CMM::CMMCost(int dimension,
     }
   }
   double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
-  SESAME_INFO("CMM Average Value:" << sum / CMMValues.size());
+ // SESAME_INFO("CMM Average Value:" << sum / CMMValues.size());
+ SESAME_DEBUG("CMM Average Value:" << sum / CMMValues.size());
 }
