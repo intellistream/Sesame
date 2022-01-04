@@ -157,15 +157,15 @@ void  SESAME::TimeMeter::conceptDriftEndMeasure(){
   MeterConceptDriftAccUSEC();
 }
 void  SESAME::TimeMeter::MeterConceptDriftAccUSEC(){
-conceptDriftTime += MeterUSEC(timer.conceptDriftTimer_pre,timer.conceptDriftTimer);
+  onlineClusterUpdateTime += MeterUSEC(timer.conceptDriftTimer_pre,timer.conceptDriftTimer);
   if(InsertJudge)
   {
    // SESAME_INFO("Update ! Concept drift IS <<"<<conceptDriftTime/1000L <<"ms");
-    timer.recordConceptDrift.push_back(conceptDriftTime);
+   timer.recordConceptDrift.push_back(onlineClusterUpdateTime);
   }
 }
 long  SESAME::TimeMeter::MeterConceptDriftUSEC(){
-  return conceptDriftTime;
+  return onlineClusterUpdateTime;
 }
 
 
@@ -271,7 +271,7 @@ void SESAME::TimeMeter::setDataInsertTime(long dataInsertT){
   dataInsertTime = dataInsertT;
 }
 void SESAME::TimeMeter::setConceptDriftTime(long conceptDriftT){
-  conceptDriftTime = conceptDriftT ;
+  onlineClusterUpdateTime = conceptDriftT ;
 }
 void SESAME::TimeMeter::setOutlierDetectionTime(long outlierDetectionT){
   outlierDetectionTime = outlierDetectionT;
@@ -298,7 +298,7 @@ void SESAME::TimeMeter::AccumulateWithPointTimer(timespec start, timespec end, l
   elapsedTime += MeterUSEC(start,end);
   if(InsertJudge)
   {
-    SESAME_INFO("Update recording! NOW ES IS <<"<<elapsedTime);
+   // SESAME_INFO("Update recording! NOW ES IS <<"<<elapsedTime);
     timerVector.push_back(elapsedTime);
   }
 }
@@ -311,33 +311,33 @@ void SESAME::TimeMeter::AccumulateWithPointTimer(timespec start, timespec end, l
  */
 void SESAME::TimeMeter::breakdown_global( bool initial,bool snapshot,
                                           bool prune, bool refine) {
-  otherTime = overallTime - (dataInsertTime + conceptDriftTime + outlierDetectionTime );
-  SESAME_INFO("Overall time is "<< overallTime/1000L << "ms;" );//timer.recordOverall[timer.recordOverall.size()-1]
+  otherTime = overallTime - (dataInsertTime + onlineClusterUpdateTime + outlierDetectionTime );
+  SESAME_DEBUG("Overall time is "<< overallTime/1000L << "ms;" );//timer.recordOverall[timer.recordOverall.size()-1]
   if(initial)
   {
     otherTime -= initialTime;
-    SESAME_INFO("Initial time is "<< initialTime/1000L << "ms;");
+    SESAME_DEBUG("Initial time is "<< initialTime/1000L << "ms;");
   }
   if(snapshot)
   {
     otherTime -= snapshotTime;
-    SESAME_INFO("snapshot time is "<< snapshotTime/1000L << "ms;");
+    SESAME_DEBUG("snapshot time is "<< snapshotTime/1000L << "ms;");
   }
 
-  SESAME_INFO("Data insertion time is "<< dataInsertTime/1000L << "ms;");
-  SESAME_INFO("Concept drift time is "<< conceptDriftTime/1000L<< "ms;");
-  SESAME_INFO("Outlier Detection time is "<< outlierDetectionTime/1000L << "ms;");
+  SESAME_DEBUG("Data insertion time is "<< dataInsertTime/1000L << "ms;");
+  SESAME_DEBUG("online cluster update time is "<< onlineClusterUpdateTime/1000L<< "ms;");
+  SESAME_DEBUG("Outlier Detection time is "<< outlierDetectionTime/1000L << "ms;");
   if(prune)
   {
     otherTime -= pruneTime;
-    SESAME_INFO("prune time is "<< pruneTime/1000L << "ms;");
+    SESAME_DEBUG("prune time is "<< pruneTime/1000L << "ms;");
   }
 
   if(refine)
   {
     otherTime -= refinementTime;
-    SESAME_INFO("refinement time is "<< refinementTime/1000L << "ms;");
+    SESAME_DEBUG("refinement time is "<< refinementTime/1000L << "ms;");
   }
-  SESAME_INFO("other time is "<< otherTime/1000L << "ms;");
+  SESAME_DEBUG("other time is "<< otherTime/1000L << "ms;");
 }
 

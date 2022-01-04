@@ -131,7 +131,7 @@ class TimeMeter {
   long overallTime = 0;
   long onlineTime = 0;
   long dataInsertTime = 0;
-  long conceptDriftTime = 0;
+  long onlineClusterUpdateTime = 0;
   long outlierDetectionTime = 0;
 
 
