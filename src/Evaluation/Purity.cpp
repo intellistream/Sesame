@@ -57,9 +57,10 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
   return max;
 }
 
-void SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
+double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
                                int dimension) {
+  double purity;
   std::vector<PointPtr> input;
   UtilityFunctions::groupByCenters(result, center, input, dimension);
   std::vector<std::vector<PointPtr>> GT;
@@ -74,5 +75,9 @@ void SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
   }
   if(!result.empty()) {
     SESAME_DEBUG("Purity:" << sum / (double)result.size());
-  } else SESAME_DEBUG("Purity: 0");
+    purity=sum / (double)result.size();
+  } else
+  {SESAME_DEBUG("Purity: 0");
+    purity=0;}
+  return purity;
 }
