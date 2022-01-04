@@ -10,7 +10,7 @@ for o in $(seq 0 4)
         do
           for N in $(seq 60 20 150)
             do
-              for r in $(seq 2 1 8)
+              for r in $(seq 2 2 24)
                 do
                   for l in $(seq 2 2 10)
                     do
