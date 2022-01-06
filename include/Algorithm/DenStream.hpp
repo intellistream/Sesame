@@ -41,7 +41,7 @@ class DenStreamParams : public AlgorithmParameters {
         clock_t pointArrivingTime;
         clock_t lastUpdateTime;//for calculating time interval
         double Tp;
-        int iterpoint=0;//TODO DELETE LATER
+        TimeMeter timerMeter;
         int pMicroClusterIndex;
         int oMicroClusterIndex;
 

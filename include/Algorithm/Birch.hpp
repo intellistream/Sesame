@@ -28,6 +28,7 @@ class Birch : public Algorithm {
   NodePtr root;
   vector<NodePtr> leafNodes;
   CFTreePtr cfTree;
+  TimeMeter timerMeter;
   Birch(param_t &cmd_params);
 
   ~Birch();

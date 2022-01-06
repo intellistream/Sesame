@@ -40,7 +40,7 @@ class DBStream : public Algorithm
       Clusters finalClusters;
       ConnectedRegions connectedRegions;
      //Connectivity graph
-
+     TimeMeter timerMeter;
     // unordered_map<int,std::vector<int>> connecvtivityGraphId;
 
 

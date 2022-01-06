@@ -32,6 +32,7 @@ class StreamKM : public Algorithm {
   vector <PointPtr> inputs;//buffered inputs.
   vector <PointPtr> streamingCoreset;//intermediate results.
   KMeans km;//used for offline processing.
+  TimeMeter timerMeter;
   StreamKM(param_t &cmd_params);
 
   ~StreamKM();

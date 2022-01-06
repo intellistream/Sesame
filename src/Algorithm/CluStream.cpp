@@ -87,14 +87,11 @@ void SESAME::CluStream::incrementalCluster(PointPtr data) { // 1. Determine clos
  * some space to insert a new micro cluster
  * */
 // 3.1 delete oldest one & create a new cluster
-  timerMeter.outlierDetectionAccMeasure();
+  timerMeter.clusterUpdateAccMeasure();
   deleteCreateCluster(data);
-  timerMeter.outlierDetectionEndMeasure();
-
-  timerMeter.conceptDriftAccMeasure();
 // 3.2 merge two closest clusters & create a new cluster
   MergeCreateCluster(data);
-  timerMeter.conceptDriftEndMeasure();
+  timerMeter.clusterUpdateEndMeasure();
 }
 
 //Calculate and return the value of radius
@@ -229,35 +226,21 @@ void SESAME::CluStream::Initilize() {
  * @Return: store the output result(with computed clustering center) into ???//
  */
 void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
-  timerMeter.setInterval(1);
-  timerMeter.onlineAccMeasure();
   if (!this->initilized) {
-    //Start to count time
-    timerMeter.overallStartMeasure();
-    timerMeter.initialMeasure();
-    // overallAccMeasure
-    timerMeter.OverallPreUpdate();
-
     Initilize();
-
     this->initialInputs.push_back(input);
     if (this->initialInputs.size() == this->CluStreamParam.initBuffer) {//TODO: fix this hard code @Zhenyu
+      timerMeter.initialMeasure();
       vector <PointPtr> initData;//initialData
       initOffline(this->initialInputs,initData);
       timerMeter.initialEndMeasure();
-      timerMeter.MeterInitialUSEC();
       window->pyramidalWindowProcess(startTime, microClusters);
       this->initilized = true;
-      timerMeter.OverallPreUpdate();
     }
   } else{
-   // timerMeter.MeterOverallAccUSEC();
-    timerMeter.OverallPreUpdate();
-
     int interval;
     clock_t now = clock();
     interval = (int) ((now - lastUpdateTime) / CLOCKS_PER_SEC);
-
     timerMeter.snapshotAccMeasure();
     if (interval >= 1)
     {
@@ -265,18 +248,12 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
       lastUpdateTime = now;
     }
     timerMeter.snapshotEndMeasure();
-
-   // timerMeter.MeterSnapshotAccUSEC();
     incrementalCluster(input);
 
   }
-  timerMeter.onlineEndMeasure();
 }
 
 void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
-
-  timerMeter.refinementAccMeasure();
-
   clock_t now = clock();
   vector <vector<PointPtr>> groups;
   int elapsedTime = (int) ((now - startTime) / CLOCKS_PER_SEC);
@@ -334,18 +311,11 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
 
   this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
                           TransformedSnapshot, oldGroups, newGroups, true);
-
-  timerMeter.refinementEndMeasure();
-  timerMeter.MeterRefinementUSEC();
-
-
   //Count overall time
-  timerMeter.OverallPreUpdate();
-  timerMeter.overallEndMeasure();
-  timerMeter.MeterOverallUSEC();
-  timerMeter.breakdown_global(true, true,false,true);
+
   // store the result input output
   this->kmeans->produceResult(oldGroups, sinkPtr);
+  timerMeter.printTime(true, true,false,false);//
 
 }
 

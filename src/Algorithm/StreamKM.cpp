@@ -43,7 +43,7 @@ void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
  * @param output
  */
 void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
-
+  this->window->timerMeter.printTime(false,false,false,false);
   this->window->getCoresetFromManager(
       this->streamingCoreset); // streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
   int parNumber = this->streamingCoreset.size();

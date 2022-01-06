@@ -63,7 +63,9 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_INFO("Algorithm start to process data");
   overallMeter.START_MEASURE();
+  overallMeter.overallStartMeasure();
   //initialization
+
   algoPtr->Initilize();
 
   // run online clustering
@@ -73,14 +75,24 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
       algoPtr->runOnlineClustering(item);
     }
   }
+
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
     algoPtr->runOnlineClustering(item);
   }
+  overallMeter.onlineEndMeasure();
+
   // run offline clustering
+  overallMeter.refinementStartMeasure();
   algoPtr->runOfflineClustering(sinkPtr);
   SESAME_INFO("Engine sourceEnd process data");
+  overallMeter.refinementEndMeasure();
+
+  overallMeter.overallEndMeasure();
   overallMeter.END_MEASURE();
+
+  //TODO Add break down output
+
   sinkPtr->Ended();//Let sink knows that there won't be any more data coming.
   SESAME_INFO("Engine sourceEnd emit data");
   barrierPtr->arrive_and_wait();//wait for source and sink.
@@ -104,4 +116,7 @@ int SESAME::SimpleEngine::assignID() {
 }
 void SESAME::SimpleEngine::printTime() {
   SESAME_INFO("Engine takes " << overallMeter.MeterUSEC() << " useconds to finish.");
+  std::cout << "Online Time: " << overallMeter.MeterOnlineUSEC()<< "\n"
+  << "Refinement Time: " << overallMeter.MeterRefinementUSEC()<< "\n"
+   "Overall Time: " << overallMeter.MeterOverallUSEC()<< "\n"<< std::endl;
 }

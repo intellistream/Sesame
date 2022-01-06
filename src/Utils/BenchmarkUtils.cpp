@@ -44,7 +44,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    c = getopt_long(argc, argv, "p:c:d:s:S:a:T:t:C:r:b:O:h:D:m:M:N:l:L:w:W:n:e:B:u:q:R:p:x:P:X:g:k",
+    c = getopt_long(argc, argv, "A:a:B:b:C:c:D:d:E:e:g:h:i:j:k:L:l:M:m:N:n:O:o:P:p:Q:q:R:r:s:S:T:t:u:w:W:x:X",
+
                     long_options, &option_index);
 
     /* Detect the end of the options. */
@@ -80,10 +81,25 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
             case 'S':cmd_params.seed = atoi(optarg);
             SESAME_INFO("configure cmd_params.seed: " << cmd_params.seed);
             break;
+            //EDMStream
+            case 'A':cmd_params.a = atof(optarg);
+            SESAME_INFO("configure cmd_params.a: " << cmd_params.a);
+            case 'Q':cmd_params.opt = atof(optarg);
+            SESAME_INFO("configure cmd_params.opt: " << cmd_params.opt);
+            case 'E':cmd_params.delta = atof(optarg);
+            SESAME_INFO("configure cmd_params.delta: " << cmd_params.delta);
+            case 'j':cmd_params.cacheNum = atof(optarg);
+            SESAME_INFO("configure cmd_params.cacheNum: " << cmd_params.cacheNum);
             case 'a':
               if(atoi(optarg) == 0) cmd_params.algoType = SESAME::StreamKMeansType;
               else if(atoi(optarg) == 1) cmd_params.algoType = SESAME::BirchType;
-              else if(atoi(optarg) == 2) cmd_params.algoType = SESAME::EDMStreamType;
+              else if(atoi(optarg) == 2) {
+                cmd_params.algoType = SESAME::EDMStreamType;
+                cmd_params.a = 0.998;
+                cmd_params.lambda = 1;
+                cmd_params.beta = 0.0021;
+                cmd_params.opt = 2;
+              }
               else if(atoi(optarg) == 3) cmd_params.algoType = SESAME::DBStreamType;
               else if(atoi(optarg) == 4) cmd_params.algoType = SESAME::CluStreamType;
               else if(atoi(optarg) == 5) cmd_params.algoType = SESAME::DenStreamType;
@@ -91,6 +107,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               else SESAME_ERROR("non selected algorithm! ");
               SESAME_INFO("configure cmd_params.algoType: ");
               break;
+              //USED IN BIRCH
               case 'm': cmd_params.maxLeafNodes = atoi(optarg);
               SESAME_INFO("configure cmd_params.maxLeafNodes: " << cmd_params.maxLeafNodes);
               break;
@@ -101,6 +118,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               SESAME_INFO("configure cmd_params.thresholdDistance: " << cmd_params.thresholdDistance);
               break;
 
+              //USED IN CLUSTREAM
               case 'b': cmd_params.initBuffer = atoi(optarg);
               SESAME_INFO("configure cmd_params.initBuffer: " << cmd_params.initBuffer);
               break;
@@ -122,7 +140,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               case 'W': cmd_params.offlineTimeWindow = atoi(optarg);
               SESAME_INFO("configure cmd_params.offlineTimeWindow: " << cmd_params.offlineTimeWindow);
               break;
-
+              //USED IN DENSTREAM
               case 'n': cmd_params.minPoints = atoi(optarg);
               SESAME_INFO("configure cmd_params.minPoints: " << cmd_params.minPoints);
               break;
@@ -273,7 +291,66 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                   SESAME::DataSourcePtr sourcePtr,
                                   SESAME::DataSinkPtr sinkPtr,
                                   SESAME::AlgorithmPtr algoPtr) {
-
+  switch (cmd_params.algoType) {
+    case SESAME::CluStreamType:
+      std::cout << "Algorithm: CluStream "
+      << "lastArrivingNum: " << cmd_params.lastArrivingNum
+      << "   timeWindow: " << cmd_params.timeWindow
+      << "   offlineClusterNumber: " << cmd_params.clusterNumber
+      << "   ClusterNumber: " << cmd_params.onlineClusterNumber
+      << "   radiusFactor: " << cmd_params.radiusFactor
+      << "   initBuffer: " << cmd_params.initBuffer
+      <<"\n";
+      break;
+    case SESAME::DenStreamType:
+      std::cout << "Algorithm: DenStream "
+      << "initBuffer: " << cmd_params.initBuffer
+      << "   minPoints: " << cmd_params.minPoints
+      << "   epsilon: " << cmd_params.epsilon
+      << "   lambda: " << cmd_params.lambda
+      << "   mu: " << cmd_params.mu
+      << "   beta: " << cmd_params.beta
+      <<"\n";
+      break;
+    case SESAME::DBStreamType:
+      std::cout << "Algorithm: DBStream "
+      << "lambda: " << cmd_params.lambda
+      << "   radius: " << cmd_params.radius
+      << "   cleanUpInterval: " << cmd_params.cleanUpInterval
+      << "   weightMin: " << cmd_params.weightMin
+      << "   alpha: " << cmd_params.alpha
+      <<"\n";
+      break;
+    case SESAME::DStreamType:
+      std::cout << "Algorithm: DStream "
+      << "lambda: " << cmd_params.lambda
+      << "   beta: " << cmd_params.beta
+      << "   cm: " << cmd_params.cm
+      << "   cl: " << cmd_params.cl
+      <<"\n";
+      break;
+    case SESAME::StreamKMeansType:
+      std::cout << "Algorithm: StreamKMeans "
+      << "Seed: " << cmd_params.seed
+      << "   ClusterNumber: " << cmd_params.clusterNumber
+      << "   CoresetSize: " << cmd_params.coresetSize
+      <<"\n";
+      break;
+    case SESAME::BirchType:
+      std::cout << "Algorithm: Birch "
+      << "maxLeafNode: " << cmd_params.maxLeafNodes
+      << "   maxInnerNodes: " << cmd_params.maxInternalNodes
+      << "   thresholdDistance: " << cmd_params.thresholdDistance
+      <<"\n";
+      break;
+    case SESAME::EDMStreamType:
+      std::cout << "Algorithm: EDMStream "
+      << "CacheNum: " << cmd_params.cacheNum
+      << "   Radius: " << cmd_params.radius
+      << "   MinDelta: " << cmd_params.delta
+      <<"\n";
+  default:break;
+  }
   SESAME::SimpleEngine engine(sourcePtr, sinkPtr, algoPtr);//TODO: create multithread engine in future.
 
   engine.run();
@@ -283,59 +360,8 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
-  switch (cmd_params.algoType) {
-    case SESAME::CluStreamType:
-      std::cout << "Algorithm: CluStream"
-      << "lastArrivingNum: " << cmd_params.lastArrivingNum
-      << "   timeWindow: " << cmd_params.timeWindow
-      << "   offlineClusterNumber: " << cmd_params.clusterNumber
-      << "   ClusterNumber: " << cmd_params.onlineClusterNumber
-      << "   radiusFactor: " << cmd_params.radiusFactor
-      << "   initBuffer: " << cmd_params.initBuffer;
-      break;
-    case SESAME::DenStreamType:
-      std::cout << "Algorithm: DenStream"
-      << "initBuffer: " << cmd_params.initBuffer
-      << "   minPoints: " << cmd_params.minPoints
-      << "   epsilon: " << cmd_params.epsilon
-      << "   lambda: " << cmd_params.lambda
-      << "   mu: " << cmd_params.mu
-      << "   beta: " << cmd_params.beta;
-      break;
-    case SESAME::DBStreamType:
-      std::cout << "Algorithm: DBStream"
-      << "lambda: " << cmd_params.lambda
-      << "   radius: " << cmd_params.radius
-      << "   cleanUpInterval: " << cmd_params.cleanUpInterval
-      << "   weightMin: " << cmd_params.weightMin
-      << "   alpha: " << cmd_params.alpha;
-      break;
-    case SESAME::DStreamType:
-      std::cout << "Algorithm: DStream"
-      << "lambda: " << cmd_params.lambda
-      << "   beta: " << cmd_params.beta
-      << "   cm: " << cmd_params.cm
-      << "   cl: " << cmd_params.cl;
-      break;
-    case SESAME::StreamKMeansType:
-      std::cout << "Algorithm: StreamKMeans"
-      << "Seed: " << cmd_params.seed
-      << "   ClusterNumber: " << cmd_params.clusterNumber
-      << "   CoresetSize: " << cmd_params.coresetSize;
-      break;
-      case SESAME::BirchType:
-        std::cout << "Algorithm: Birch"
-        << "maxLeafNode: " << cmd_params.maxLeafNodes
-        << "   maxInnerNodes: " << cmd_params.maxInternalNodes
-        << "   thresholdDistance: " << cmd_params.thresholdDistance;
-        break;
-        case SESAME::EDMStreamType:
-          std::cout << "Algorithm: EDMStream"
-          << "CacheNum: " << cmd_params.cacheNum
-          << "   Radius: " << cmd_params.radius
-          << "   MinDelta: " << cmd_params.delta;
-          default:break;
-  }
+
+
 
   SESAME::Evaluation::runEvaluation(//cmd_params.pointNumber,
                                  //   sinkPtr->getResults().size(),

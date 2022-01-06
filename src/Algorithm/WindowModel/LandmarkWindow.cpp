@@ -43,6 +43,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
 
     // check if the next window is empty
     if (this->windowManager.windows[nextWindow].cursize == 0) {
+      timerMeter.dataInsertAccMeasure();
       SESAME_DEBUG("Window " << nextWindow << " is not full, move window " << curWindow << " points to window "
                        << nextWindow);
 
@@ -57,8 +58,9 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // first window is now set empty
       this->windowManager.windows[curWindow].cursize = 0;
       cursize = 0;
+      timerMeter.dataInsertAccMeasure();
     } else {
-
+      timerMeter.clusterUpdateAccMeasure();
       // if next window is full
       SESAME_DEBUG(
           "Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
@@ -104,12 +106,15 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
                                    this->windowManager.windows[nextWindow].points);
       this->windowManager.windows[curWindow].cursize = 0;
       this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
+      timerMeter.clusterUpdateEndMeasure();
     }
 
   }
+  timerMeter.dataInsertAccMeasure();
   // if the first window is not full, just insert point into it
   this->windowManager.windows[0].points.push_back(point->copy());//   .copy(point);
   this->windowManager.windows[0].cursize++;
+  timerMeter.dataInsertEndMeasure();
 }
 
 /**

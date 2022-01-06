@@ -76,28 +76,37 @@ void SESAME::DBStream::Initilize() {
  */
 
 void SESAME::DBStream::update(PointPtr dataPoint){
+  timerMeter.clusterUpdateAccMeasure();
   double decayFactor=dampedWindow->decayFunction(this->pointArrivingTime, clock());
   this->pointArrivingTime=clock();
   this->microClusterNN=findFixedRadiusNN(dataPoint);
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
+  timerMeter.clusterUpdateEndMeasure();
   // SESAME_INFO("find suitable MCs number : "<<sizeNN);
   /**
    * If this point fits in no micro clusters
    * */
+  timerMeter.clusterUpdateAccMeasure();
   if (microClusterNN.empty()) {
+
     microClusterIndex++;
     MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dimension,microClusterIndex,
                                                                                      dataPoint,dbStreamParams.radius);
     microClusters.push_back(newMicroCluster);
     microClusterNN.push_back(newMicroCluster);
     //SESAME_INFO("Add new MC!"<<microClusterIndex);
+
   }
+  timerMeter.clusterUpdateEndMeasure();
   /**
  * If this point fits in at least one micro cluster
  * */
-  else {
+   if(!microClusterNN.empty()){
     for (int i = 0; i < sizeNN; i++) {
+      timerMeter.dataInsertAccMeasure();
       microClusterNN[i]->insert(dataPoint,decayFactor); // just update weight
+      timerMeter.dataInsertEndMeasure();
+      timerMeter.clusterUpdateAccMeasure();
       for (int j = i + 1; j < sizeNN; j++) {
         MicroClusterPair microClusterPair(microClusterNN[i], microClusterNN.at(j));
         if (weightedAdjacencyList.find(microClusterPair) != weightedAdjacencyList.end())
@@ -113,16 +122,20 @@ void SESAME::DBStream::update(PointPtr dataPoint){
           weightedAdjacencyList.insert(densityGraph);
         }
       }
+      timerMeter.clusterUpdateEndMeasure();
     }
+    timerMeter.clusterUpdateAccMeasure();
     if (checkMove(microClusterNN))
       for (const MicroClusterPtr& microCluster : microClusterNN) microCluster->move();
+    timerMeter.clusterUpdateEndMeasure();
   }
+  timerMeter.clusterUpdateAccMeasure();
  if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.cleanUpInterval && dataPoint->getIndex()!=0)
  {
    cleanUp(this->pointArrivingTime);
    this->lastCleanTime=this->pointArrivingTime;
  }
-
+ timerMeter.clusterUpdateEndMeasure();
 }
 
 
@@ -200,6 +213,7 @@ void  SESAME::DBStream::cleanUp(clock_t nowTime){
 
 
 void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
+
   SESAME_INFO("micro clusters "<<microClusters.size());
   SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());
   connectedRegions.connection(microClusters,
@@ -209,6 +223,7 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
   for(auto & point : points)
     sinkPtr->put(point->copy());
 
+  timerMeter.printTime(false,false,false,false);
 }
 
 

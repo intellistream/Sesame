@@ -28,6 +28,7 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
     }
     sinkPtr->put(centroid->copy());
   }
+  timerMeter.printTime(false,false,false,false);
   SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
 //  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 //  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
@@ -203,11 +204,14 @@ void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
+    timerMeter.dataInsertAccMeasure();
     updateNLS(curNode, point, true);
+    timerMeter.dataInsertEndMeasure();
   } else{
     while(1) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
+        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
@@ -217,6 +221,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
           updateNLS(curNode, point, true);
+          timerMeter.clusterUpdateEndMeasure();
           // means this point could get included in this cluster
           SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
@@ -225,10 +230,14 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
           // concept drift adaption
           SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
           backwardEvolution(curNode, point);
+          timerMeter.clusterUpdateEndMeasure();
           break;
         }
+
       } else{
+        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
+        timerMeter.dataInsertEndMeasure();
       }
     }
   }
