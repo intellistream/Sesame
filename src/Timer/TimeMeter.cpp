@@ -92,7 +92,12 @@ void SESAME::TimeMeter::MeterOnlineAccUSEC(){
  //onlineTime += MeterUSEC(timer.online_increment_timer_pre,timer.online_timer);
  //if(InsertJudge)
    //timer.recordOnline.push_back(onlineTime);
+   intervalCnt++;
    onlineTime = MeterUSEC(timer.start,timer.online_timer);
+   if(intervalCnt==interval)
+   {
+     recordOnline.push_back(onlineTime);
+   }
 }
 
 long SESAME::TimeMeter::MeterOnlineUSEC(){
@@ -308,7 +313,7 @@ void SESAME::TimeMeter::AccumulateWithPointTimer(timespec start, timespec end, l
 
 
 void SESAME::TimeMeter::printTime( bool initial,bool snapshot,bool outlierBuffer,bool finalCluster){//
-  std::cout << "Time (Count in us) \n"
+  std::cout << "Time (Count in ns) \n"
   << "data insertion: "<<dataInsertTime << "\n"
   << "cluster update: "<<onlineClusterUpdateTime<< std::endl;
   if(initial)//
@@ -323,7 +328,11 @@ void SESAME::TimeMeter::printTime( bool initial,bool snapshot,bool outlierBuffer
   if(finalCluster)//
     std::cout<< "final cluster: "<<finalClusterTime << ", count "<<timer.periodicalCluCnt<< std::endl;
 }
-
+void SESAME::TimeMeter::printCumulative(bool offline){
+  std::cout << "Cumulative Overall Time every "<<interval<<" tuples (Count in ns)\n";
+  for(int i=0;i<recordOnline.size();i++)   std::cout <<recordOnline.at(i)<<"\n";
+  if(offline) std::cout <<refinementTime<<"\n"<<std::endl;
+}
 /**
  * print overall time of the algorithms
  */

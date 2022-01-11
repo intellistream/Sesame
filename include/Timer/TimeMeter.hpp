@@ -125,7 +125,7 @@ struct T_TIMER {
 class TimeMeter {
  private:
   struct timespec start, stop;
-  int interval=1;
+  int interval =1 ,intervalCnt=0;
   T_TIMER timer;
   bool InsertJudge=false;
   //the overall elapsed time of every part
@@ -134,7 +134,7 @@ class TimeMeter {
   long onlineTime = 0;
   long dataInsertTime = 0;
   long onlineClusterUpdateTime = 0;
-
+  std::vector<long> recordOnline;
 
   long outlierDetectionTime = 0;// if possible
   long pruneTime = 0;   // if possible
@@ -259,6 +259,7 @@ class TimeMeter {
                          bool outlierBuffer, bool refine);//int64_t total_results,
    /** print out the execution time statistics of stream clustering algorithms */
    void printTime(bool initial,bool snapshot, bool outlierBuffer,bool finalCluster);//
+   void printCumulative(bool offline);
 //TODO the code below will be removed later
   /*
   #ifndef BEGIN_MEASURE_INITIALIZE
