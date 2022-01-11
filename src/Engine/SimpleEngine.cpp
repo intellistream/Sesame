@@ -64,6 +64,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   SESAME_INFO("Algorithm start to process data");
   overallMeter.START_MEASURE();
   overallMeter.overallStartMeasure();
+  //We set observing interval for cumulative time: every 30 tuples
+  overallMeter.setInterval(30);
   //initialization
 
   algoPtr->Initilize();
@@ -71,14 +73,19 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
+    //  std::cout<<
       auto item = sourcePtr->get();
+      overallMeter.onlineAccMeasure();
       algoPtr->runOnlineClustering(item);
+      overallMeter.onlineAccEMeasure();
     }
   }
 
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
+    overallMeter.onlineAccMeasure();
     algoPtr->runOnlineClustering(item);
+    overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();
 
@@ -90,7 +97,6 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   overallMeter.overallEndMeasure();
   overallMeter.END_MEASURE();
-
   //TODO Add break down output
 
   sinkPtr->Ended();//Let sink knows that there won't be any more data coming.
@@ -98,6 +104,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
   printTime();
+  overallMeter.printCumulative();
 }
 
 bool SESAME::SimpleEngine::stop() {

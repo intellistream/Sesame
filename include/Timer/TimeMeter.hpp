@@ -23,7 +23,7 @@ struct T_TIMER {
    * online_increment_timer_pre: start of accumulate online timer ( start of every xx s)
    * online_timer: end of the online increment part
    * */
-  timespec  online_increment_timer_pre, online_timer;
+  timespec  online_increment_timer_pre,onlineAccTimer, online_timer;
 
   /**
    * initialTimerStart: Start of initial part
@@ -134,7 +134,7 @@ class TimeMeter {
   long onlineTime = 0;
   long dataInsertTime = 0;
   long onlineClusterUpdateTime = 0;
-  std::vector<long> recordOnline;
+  std::vector<long> recordOverall;
 
   long outlierDetectionTime = 0;// if possible
   long pruneTime = 0;   // if possible
@@ -164,6 +164,7 @@ class TimeMeter {
 
 
   void  onlineAccMeasure();
+  void  onlineAccEMeasure();
   //end of online part
   void  onlineEndMeasure();
   void MeterOnlineAccUSEC();
@@ -259,7 +260,7 @@ class TimeMeter {
                          bool outlierBuffer, bool refine);//int64_t total_results,
    /** print out the execution time statistics of stream clustering algorithms */
    void printTime(bool initial,bool snapshot, bool outlierBuffer,bool finalCluster);//
-   void printCumulative(bool offline);
+   void printCumulative();
 //TODO the code below will be removed later
   /*
   #ifndef BEGIN_MEASURE_INITIALIZE

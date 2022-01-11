@@ -35,7 +35,6 @@ long SESAME::TimeMeter::MeterUSEC( timespec startAcc,  timespec endAcc){
 //the overall start and end time of every part
 void SESAME::TimeMeter::overallStartMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.start);
- // clock_gettime(CLOCK_REALTIME, &timer.overallPre);
 }
 
 void SESAME::TimeMeter::overallEndMeasure(){
@@ -49,7 +48,7 @@ void  SESAME::TimeMeter::overallAccMeasure(){
 
 
 void SESAME::TimeMeter::OverallPreUpdate(){
-  timespec now={0,0};
+/*  timespec now={0,0};
   clock_gettime(CLOCK_REALTIME, &now);
   if(MeterUSEC(timer.overallPre, now)/1000000L >= interval)
   {
@@ -59,56 +58,8 @@ void SESAME::TimeMeter::OverallPreUpdate(){
     timer.recordOverall.push_back(overallPreTime);
   }
   else
-    InsertJudge = false;
+    InsertJudge = false;*/
 }
-
-
-long  SESAME::TimeMeter::MeterOverallUSEC(){
-  long overall = MeterUSEC(timer.start,timer.end);
-  setOverallTime(overall);
- // timer.recordOverall.push_back(overall);
-  return overall;
-}
-
-/**
- * Online Accumulate time calculate:
- * onlineAccMeasure: measure the start of Accumulate online part
- * onlineEndMeasure:  measure the end of Accumulate online part
- * MeterOnlineAccUSEC: calculate the current elapsed time of online part and push the result
- * every Interval second
- * */
-//start of online part
-void  SESAME::TimeMeter::onlineAccMeasure(){
-  clock_gettime(CLOCK_REALTIME, &timer.online_increment_timer_pre);
-}
-
-
-//end of online part
-void  SESAME::TimeMeter::onlineEndMeasure(){
-  clock_gettime(CLOCK_REALTIME, &timer.online_timer);
-}
-
-void SESAME::TimeMeter::MeterOnlineAccUSEC(){
- //onlineTime += MeterUSEC(timer.online_increment_timer_pre,timer.online_timer);
- //if(InsertJudge)
-   //timer.recordOnline.push_back(onlineTime);
-   intervalCnt++;
-   onlineTime = MeterUSEC(timer.start,timer.online_timer);
-   if(intervalCnt==interval)
-   {
-     recordOnline.push_back(onlineTime);
-   }
-}
-
-long SESAME::TimeMeter::MeterOnlineUSEC(){
-  onlineTime = MeterUSEC(timer.start,timer.online_timer);
-  return onlineTime;
-}
-
-long SESAME::TimeMeter::getOnlineEtime(){
-  return onlineTime;
-}
-
 //start of initial  part
 void  SESAME::TimeMeter::initialMeasure(){
   clock_gettime(CLOCK_REALTIME, &timer.initialTimerStart);
@@ -123,6 +74,48 @@ long  SESAME::TimeMeter::MeterInitialUSEC(){
   long overall = MeterUSEC(timer.initialTimerStart,timer.initialTimer);
   setInitialTime(overall);
   return overall;
+}
+
+long  SESAME::TimeMeter::MeterOverallUSEC(){
+  long overall = MeterUSEC(timer.start,timer.end);
+  setOverallTime(overall);
+  return overall;
+}
+//end of online part
+void  SESAME::TimeMeter::onlineEndMeasure(){
+  clock_gettime(CLOCK_REALTIME, &timer.online_timer);
+}
+
+long SESAME::TimeMeter::MeterOnlineUSEC(){
+  onlineTime = MeterUSEC(timer.start,timer.online_timer);
+  return onlineTime;
+}
+/**
+ * Online Accumulate time calculate:
+ * onlineAccMeasure: measure the start of Accumulate online part
+ * onlineEndMeasure:  measure the end of Accumulate online part
+ * MeterOnlineAccUSEC: calculate the current elapsed time of online part and push the result
+ * every Interval second
+ * */
+//start of online part
+void  SESAME::TimeMeter::onlineAccMeasure(){
+  clock_gettime(CLOCK_REALTIME, &timer.online_increment_timer_pre);
+}
+void  SESAME::TimeMeter::onlineAccEMeasure(){
+  clock_gettime(CLOCK_REALTIME, &timer.onlineAccTimer);
+  MeterOnlineAccUSEC();
+}
+
+void SESAME::TimeMeter::MeterOnlineAccUSEC(){
+   intervalCnt++;
+   overallPreTime += MeterUSEC(timer.online_increment_timer_pre,timer.onlineAccTimer);
+   if(intervalCnt%interval==0)  recordOverall.push_back(overallPreTime);
+
+}
+
+
+long SESAME::TimeMeter::getOnlineEtime(){
+  return onlineTime;
 }
 
 //start of data Insert  part
@@ -328,10 +321,16 @@ void SESAME::TimeMeter::printTime( bool initial,bool snapshot,bool outlierBuffer
   if(finalCluster)//
     std::cout<< "final cluster: "<<finalClusterTime << ", count "<<timer.periodicalCluCnt<< std::endl;
 }
-void SESAME::TimeMeter::printCumulative(bool offline){
+void SESAME::TimeMeter::printCumulative(){
   std::cout << "Cumulative Overall Time every "<<interval<<" tuples (Count in ns)\n";
-  for(int i=0;i<recordOnline.size();i++)   std::cout <<recordOnline.at(i)<<"\n";
-  if(offline) std::cout <<refinementTime<<"\n"<<std::endl;
+  for(int i=0;i<recordOverall.size();i++) {
+    std::cout <<recordOverall.at(i)<<"\n";
+    if(i==recordOverall.size()-1)
+    {
+      std::cout <<recordOverall.at(i)+MeterUSEC(timer.refinementStart,timer.refinementTimer)<<"\n"<<std::endl;
+    }
+  }
+
 }
 /**
  * print overall time of the algorithms
