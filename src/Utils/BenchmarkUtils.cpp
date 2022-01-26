@@ -8,6 +8,7 @@
 #include <Evaluation/Evaluation.hpp>
 #include <Evaluation/Purity.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
+#include <Utils/UtilityFunctions.hpp>
 #include <filesystem>
 
 using namespace std;
@@ -357,6 +358,12 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   engine.run();
 
   while (!sinkPtr->isFinished());//wait for sink to stop.
+
+
+  std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
+  std::vector<SESAME::PointPtr> centers = sinkPtr->getResults();
+  std::vector<SESAME::PointPtr> outputs;
+  SESAME::UtilityFunctions::groupByCenters(inputs, centers, outputs, cmd_params.dimension);
 
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());

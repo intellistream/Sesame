@@ -256,7 +256,7 @@ SESAME::PointPtr SESAME::CoresetTree::chooseCentre(TreeNodePtr node) {
 
   //stores the nodecost if node is split with the best centre
   double minCost = node->cost;
-  PointPtr bestCentre;
+  PointPtr bestCentre = DataStructureFactory::createPoint();
 
   //loop counter variable
   int i;
@@ -284,7 +284,7 @@ SESAME::PointPtr SESAME::CoresetTree::chooseCentre(TreeNodePtr node) {
       }
     }
   }
-  if (bestCentre->getIndex() == 0) {
+  if (bestCentre->getIndex() == -1) {
     return node->points[0];
   } else {
     return bestCentre;
@@ -426,11 +426,11 @@ void SESAME::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre, int newC
   for (i = 0; i < parent->n; i++) {
     PointPtr centre = determineClosestCentre(parent->points[i], parent->centre, newCentre);
     if (centre->getIndex() == newCentre->getIndex()) {
-      newPoints.push_back(parent->points[i]->copy());
+      newPoints.push_back(parent->points[i]);
       newPoints[indexNew]->setClusteringCenter(newCentreIndex);
       indexNew++;
     } else if (centre->getIndex() == parent->centre->getIndex()) {
-      oldPoints.push_back(parent->points[i]->copy());
+      oldPoints.push_back(parent->points[i]);
       indexOld++;
     } else {
       SESAME_INFO("ERROR !!! NO CENTER NEAREST !! \n");

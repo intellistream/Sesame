@@ -31,8 +31,11 @@ void SESAME::StreamKM::Initilize() {
  * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
  */
 void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
-  this->window->insertPoint(input);
-  this->inputs.push_back(input);
+  if(input->getIndex() == 999){
+    cout<< 111;
+  }
+  this->window->insertPoint(input->copy());
+//  this->inputs.push_back(input);
 }
 
 /**
