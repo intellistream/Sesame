@@ -28,10 +28,10 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
   //copy the choosen point
   if (j < n_1) {
-    centres.push_back(setA[j]->copy());//TODO: ???? why re-set setA[j]?
+    centres[choosenPoints] = setA[j]->copy();//TODO: ???? why re-set setA[j]?
   } else {
     j = j - n_1;
-    centres.push_back(setB[j]->copy());//TODO: ???? why re-set setB[j]?
+    centres[choosenPoints] = setB[j]->copy();//TODO: ???? why re-set setB[j]?
   }
 //  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
   TreeNodePtr root = DataStructureFactory::createTreeNode();
@@ -44,10 +44,10 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
       TreeNodePtr leaf = selectNode(root);
       PointPtr centre = chooseCentre(leaf);
       split(leaf, centre, choosenPoints);
-      centres.push_back(centre->copy());
+      centres[choosenPoints] = centre->copy();
     } else {
       //create a dummy point
-      centres.push_back(root->centre->copy());
+      centres[choosenPoints] = root->centre->copy();
       int l;
       for (l = 0; l < centres[choosenPoints]->getDimension(); l++) {
         centres[choosenPoints]->setFeatureItem(-1 * 1000000, l);
@@ -70,7 +70,7 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
       int index = setA[i]->getClusteringCenter();
       if (centres[index]->getIndex() != setA[i]->getIndex()) {
-        centres[index]->setWeight(setA[i]->getWeight());
+        centres[index]->setWeight(centres[index]->getWeight() + setA[i]->getWeight());
         int l;
         for (l = 0; l < setA[i]->getDimension(); l++) {
           if (setA[i]->getWeight() != 0.0) {
@@ -83,7 +83,7 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
 
       int index = setB[i - n_1]->getClusteringCenter();
       if (centres[index]->getIndex() != setB[i - n_1]->getIndex()) {
-        centres[index]->setWeight(setB[i - n_1]->getWeight());
+        centres[index]->setWeight(centres[index]->getWeight() + setB[i - n_1]->getWeight());
         int l;
         for (l = 0; l < setB[i - n_1]->getDimension(); l++) {
           if (setB[i - n_1]->getWeight() != 0.0) {

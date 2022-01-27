@@ -50,7 +50,7 @@ datastructure for managing all O(log(n)) windows
    * @param dimension
    * @param coresetSize
    */
-  void initWindow();
+  void initWindow(int num);
 
 /**
 inserts a single point into the bucketmanager
