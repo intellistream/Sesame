@@ -17,7 +17,7 @@ void SESAME::CoresetTree::unionTreeCoreset(int k,
                                            std::vector<PointPtr> &setB,
                                            std::vector<PointPtr> &centres) {
 
-  SESAME_DEBUG("Computing coreset...");
+//  SESAME_DEBUG("Computing coreset...");
   //total number of points
   int n = n_1 + n_2;
   //choose the first centre (each point has the same probability of being choosen)

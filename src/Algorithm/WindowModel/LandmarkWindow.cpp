@@ -44,7 +44,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
   //check if there is enough space in the first window
   int cursize = this->windowManager.windows[0].cursize;
   if (cursize >= this->windowManager.maxWindowSize) {
-    SESAME_DEBUG("Window 0 is full");
+//    SESAME_DEBUG("Window 0 is full");
     //start spillover process
     int curWindow = 0;
     int nextWindow = 1;
@@ -71,8 +71,8 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // if next window is full
 //      SESAME_DEBUG(
 //          "Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
-      SESAME_DEBUG(
-          "Window " << nextWindow << " is full");
+//      SESAME_DEBUG(
+//          "Window " << nextWindow << " is full");
       //copy the points in the current window to the next spillover and continue
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
@@ -89,7 +89,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
 //        SESAME_DEBUG("Window " << nextWindow
 //                         << " is full, Continue! construct the coreset using points in window and spillover "
 //                         << curWindow << " and store it in the spillover " << nextWindow);
-        SESAME_DEBUG("Window " << nextWindow << " is full");
+//        SESAME_DEBUG("Window " << nextWindow << " is full");
         this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
                                      this->windowManager.maxWindowSize,
                                      this->windowManager.maxWindowSize,

@@ -118,7 +118,7 @@ void CountNode(const SESAME::DPNodePtr &node, int &num) {
   }
 }
 void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
-  double curTime = (input->getIndex() + 1) / 10;
+  double curTime = input->getTimeStamp() / 100000;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
     timerMeter.clusterUpdateAccMeasure();
