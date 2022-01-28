@@ -30,11 +30,16 @@ class DBStream : public Algorithm
       std::vector<MicroClusterPtr> microClusters;
       SESAME::WeightedAdjacencyList weightedAdjacencyList;
       std::vector<MicroClusterPtr> microClusterNN;//micro clusters found in function findFixedRadiusNN
-      int weakEntry;//W_weak, weak entries
+      double weakEntry;//W_weak, weak entries
       double aWeakEntry;
-      clock_t startTime;
-      clock_t pointArrivingTime;
-      clock_t lastCleanTime;
+      timespec startTime;
+      timespec lastArrivingTime0;
+      timespec pointArrivingTime0;
+      timespec lastCleanTime0;
+
+      int lastArrivingTime;
+      int  pointArrivingTime;
+      int  lastCleanTime;
       int microClusterIndex;
       //Final output of clusters
       Clusters finalClusters;
@@ -54,8 +59,8 @@ class DBStream : public Algorithm
 
       void update(PointPtr dataPoint);
       bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
-      std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint);
-      void cleanUp(clock_t nowTime);
+      std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint, double decayFactor);
+      void cleanUp(timespec nowTime);
      //The underline has moved to offline refinement
       /*  void reCluster(double threshold);
       void insertIntoGraph(int microClusterId,int OtherId);

@@ -24,15 +24,16 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.radiusFactor = cmd_params.radiusFactor;
   this->CluStreamParam.initBuffer = cmd_params.initBuffer;
   this->CluStreamParam.offlineTimeWindow = cmd_params.offlineTimeWindow;
+  this->pointsFitted = 0;
+  this->pointsForgot = 0;
+  this->pointsMerged = 0;
 }
 SESAME::CluStream::~CluStream() {
 
 }
 
 void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData) {
-  pointsFitted = 0;
-  pointsForgot = 0;
-  pointsMerged = 0;
+
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {
     microClusters.push_back(DataStructureFactory::createMicroCluster(CluStreamParam.dimension, i));
   }
@@ -267,13 +268,15 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   subtractMiroCluster =
       DataStructureFactory::createSnapshot(microClusters, (int) ((now - startTime) / CLOCKS_PER_SEC));
   //SESAME_INFO("Now Micro Cluster is...");
+  /*
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {
     std::stringstream result, re2;
     std::copy(subtractMiroCluster->microClusters[i]->id.begin(),
               subtractMiroCluster->microClusters[i]->id.end(),
               std::ostream_iterator<int>(re2, " "));
+
 //    SESAME_INFO("The ID is " << re2.str() << "weight is " << subtractMiroCluster->microClusters[i]->weight);
-  }
+  } */
 
   //The offline is to observe a process of data stream clustering
   if (CluStreamParam.offlineTimeWindow != 0) {//

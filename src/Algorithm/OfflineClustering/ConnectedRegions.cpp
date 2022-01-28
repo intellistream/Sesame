@@ -13,12 +13,15 @@ SESAME::ConnectedRegions::ConnectedRegions(double alpha, double weightMin){
 void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& microClusters,
 
                                             SESAME::WeightedAdjacencyList weightedAdjacencyList) {
-  SESAME_INFO("alpha."<<alpha<<" weightMin is "<<weightMin);
+
   WeightedAdjacencyList::iterator iterW;
   for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++){
+    std::cout<<" 1 weight "<<iterW->first.microCluster1->weight
+    <<"2 weight "<<iterW->first.microCluster2->weight<<std::endl;
     if (iterW->first.microCluster1->weight >= weightMin &&iterW->first.microCluster2->weight >= weightMin){
       double val = 2*iterW->second->weight / (iterW->first.microCluster1->weight+iterW->first.microCluster2->weight);
-      if (val > alpha) {
+      std::cout<<val<<" in this pair\n";
+      if (val > weightMin) {
         insertIntoGraph( microClusters,
                          iterW->first.microCluster1->id.front(),
                          iterW->first.microCluster2->id.front());
@@ -27,9 +30,7 @@ void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& micro
                         iterW->first.microCluster2->id.front(),
                         iterW->first.microCluster1->id.front());
 
-      }
-      else
-      {
+      } else {
         insertIntoGraph(microClusters,
                         iterW->first.microCluster1->id.front());
         insertIntoGraph(microClusters,

@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include <Algorithm/WindowModel/WindowModel.hpp>
+#include <Timer/TimeMeter.hpp>
 namespace SESAME {
 class DampedWindow;
 typedef std::shared_ptr<DampedWindow> DampedWindowPtr;
@@ -19,7 +20,8 @@ class DampedWindow : WindowModel {
   double base;
   double lambda;
   DampedWindow(double base, double lambda);
-  double decayFunction(clock_t startTime, clock_t currentTimestamp) const;
+  long decayFunction(timespec startTime, timespec currentTimestamp) const;
+  double decayFunction(int startTime, int currentTimestamp) const;
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_WINDOWMODEL_DAMPEDWINDOW_HPP_

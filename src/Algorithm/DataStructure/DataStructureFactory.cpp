@@ -88,8 +88,8 @@ void SESAME::DataStructureFactory::clearMicroClusterPair(MicroClusterPairPtr mic
   microClusterPair.reset();
 }
 
-SESAME::AdjustedWeightPtr SESAME::DataStructureFactory::createAdjustedWeight(double weight, clock_t pointTime){
-  return std::make_shared<SESAME::AdjustedWeight>(weight,pointTime);
+SESAME::AdjustedWeightPtr SESAME::DataStructureFactory::createAdjustedWeight(double weight, int pointTime, timespec pointTime0){
+  return std::make_shared<SESAME::AdjustedWeight>(weight,pointTime,pointTime0);
 }
 void SESAME::DataStructureFactory::clearAdjustedWeight(SESAME::AdjustedWeightPtr adjustedWeight){
   adjustedWeight.reset();

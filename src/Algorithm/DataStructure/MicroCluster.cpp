@@ -82,9 +82,8 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
 }
 
 //Used only in DBStream
-void SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor)
+void SESAME::MicroCluster::insert(PointPtr datapoint)//,double decayFactor
 {
-  decayWeight(decayFactor);
   weight++;
   double val = exp(-(pow(3 * this->distance / radius, 2) / 2));
   for(int i=0; i<LS.size(); i++)
@@ -305,8 +304,9 @@ SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
 double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint){
 
   double temp=0;
+  double diff=0;
   for(int i=0; i<dimension; i++){
-    double diff=centroid[i]-datapoint->getFeatureItem(i);
+    diff=centroid[i]-datapoint->getFeatureItem(i);
     temp+=(diff*diff);
   }
   return sqrt(temp);

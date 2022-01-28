@@ -166,7 +166,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
               case 'C': cmd_params.cleanUpInterval = atoi(optarg);
               SESAME_INFO("configure cmd_params.cleanUpInterval: " << cmd_params.cleanUpInterval);
               break;
-              case 'w': cmd_params.weightMin = atoi(optarg);
+              case 'w': cmd_params.weightMin = atof(optarg);
               SESAME_INFO("configure cmd_params.weightMin: " << cmd_params.weightMin);
               break;
               case 'P': cmd_params.alpha = atof(optarg);
@@ -293,6 +293,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                   SESAME::DataSinkPtr sinkPtr,
                                   SESAME::AlgorithmPtr algoPtr) {
   std::cout<<"data number: "<<cmd_params.pointNumber<<std::endl;
+
   switch (cmd_params.algoType) {
     case SESAME::CluStreamType:
       std::cout << "Algorithm: CluStream "
