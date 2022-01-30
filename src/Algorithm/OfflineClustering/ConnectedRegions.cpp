@@ -16,8 +16,8 @@ void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& micro
 
   WeightedAdjacencyList::iterator iterW;
   for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++){
-    std::cout<<" cluster 1 weight "<<iterW->first.microCluster1->weight
-    <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is "<<weightMin<<std::endl;
+  //  std::cout<<" cluster 1 weight "<<iterW->first.microCluster1->weight
+  //  <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is "<<weightMin<<std::endl;
     if (iterW->first.microCluster1->weight >= weightMin &&iterW->first.microCluster2->weight >= weightMin){
       double val = 2*iterW->second->weight / (iterW->first.microCluster1->weight+iterW->first.microCluster2->weight);
       if (val > weightMin) {
@@ -82,7 +82,7 @@ void SESAME::ConnectedRegions::insertIntoGraph( std::vector<MicroClusterPtr> mic
 void SESAME::ConnectedRegions::findConnectedComponents(std::vector<SESAME::MicroClusterPtr> microClusters){
  // SESAME_INFO("micro clusters "<<microClusters.size());
  // SESAME_INFO("connectivity Graph "<<connecvtivityGraphId.size());
-  std::cout<<"micro clusters "<<microClusters.size()<<"connectivity size is "<< connecvtivityGraphId.size()<<std::endl;
+  //std::cout<<"micro clusters "<<microClusters.size()<<"connectivity size is "<< connecvtivityGraphId.size()<<std::endl;
   unordered_map<int,std::vector<int>>::iterator iter;
   //This variable just for indicating the id of micro cluster which forming macro clusters
   for (iter = connecvtivityGraphId.begin(); iter != connecvtivityGraphId.end(); iter++){
