@@ -16,11 +16,10 @@ void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& micro
 
   WeightedAdjacencyList::iterator iterW;
   for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++){
-    std::cout<<" 1 weight "<<iterW->first.microCluster1->weight
-    <<"2 weight "<<iterW->first.microCluster2->weight<<std::endl;
+    std::cout<<" cluster 1 weight "<<iterW->first.microCluster1->weight
+    <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is "<<weightMin<<std::endl;
     if (iterW->first.microCluster1->weight >= weightMin &&iterW->first.microCluster2->weight >= weightMin){
       double val = 2*iterW->second->weight / (iterW->first.microCluster1->weight+iterW->first.microCluster2->weight);
-      std::cout<<val<<" in this pair\n";
       if (val > weightMin) {
         insertIntoGraph( microClusters,
                          iterW->first.microCluster1->id.front(),
@@ -52,9 +51,10 @@ void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& micro
 
 void SESAME::ConnectedRegions::insertIntoGraph( std::vector<MicroClusterPtr> microClusters,
                       int microClusterId,int OtherId){
+
   if (connecvtivityGraphId.find(microClusterId)!=connecvtivityGraphId.end())
   {
-    if(std::find(connecvtivityGraphId[microClusterId].begin(),connecvtivityGraphId[microClusterId].end(),OtherId)==connecvtivityGraphId[microClusterId].end())
+  //  if(std::find(connecvtivityGraphId[microClusterId].begin(),connecvtivityGraphId[microClusterId].end(),OtherId)==connecvtivityGraphId[microClusterId].end())
       connecvtivityGraphId[microClusterId].push_back(OtherId);
   } else{
     auto microCluster = std::find_if(microClusters.begin(), microClusters.end(),SESAME::finderMicroCluster(microClusterId));
@@ -82,7 +82,7 @@ void SESAME::ConnectedRegions::insertIntoGraph( std::vector<MicroClusterPtr> mic
 void SESAME::ConnectedRegions::findConnectedComponents(std::vector<SESAME::MicroClusterPtr> microClusters){
  // SESAME_INFO("micro clusters "<<microClusters.size());
  // SESAME_INFO("connectivity Graph "<<connecvtivityGraphId.size());
-
+  std::cout<<"micro clusters "<<microClusters.size()<<"connectivity size is "<< connecvtivityGraphId.size()<<std::endl;
   unordered_map<int,std::vector<int>>::iterator iter;
   //This variable just for indicating the id of micro cluster which forming macro clusters
   for (iter = connecvtivityGraphId.begin(); iter != connecvtivityGraphId.end(); iter++){
@@ -95,14 +95,16 @@ void SESAME::ConnectedRegions::findConnectedComponents(std::vector<SESAME::Micro
       for(int iterValue : iter->second)
       {
         auto microClusterElement = std::find_if(microClusters.begin(), microClusters.end(),SESAME::finderMicroCluster(iterValue));
-        if (!(*microClusterElement)->visited)
-        {
-          newCluster.push_back((*microClusterElement));
-          (*microClusterElement)->visited = true;
-          idList.push_back((*microClusterElement)->id.front());
+        if(microClusterElement!= microClusters.end()){
+          if (!(*microClusterElement)->visited){
+            newCluster.push_back((*microClusterElement));
+            (*microClusterElement)->visited = true;
+            idList.push_back((*microClusterElement)->id.front());
+          }
         }
       }
       this->finalClusters.push_back(newCluster);
+
       //just used for examine reform ,need to delete later
      // std::stringstream result;
      // std::copy(idList.begin(),idList.end(),std::ostream_iterator<int>(result, " "));
@@ -114,6 +116,7 @@ void SESAME::ConnectedRegions::findConnectedComponents(std::vector<SESAME::Micro
 
 std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink(){
  // SESAME_INFO("Start resize "<<finalClusters.size());
+
   std::vector<SESAME::PointPtr> points;
   for(auto iter=0; iter!=finalClusters.size();iter++)
   {   //initialize pseudo point of macro clusters

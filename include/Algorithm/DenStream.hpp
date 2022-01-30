@@ -38,15 +38,15 @@ class DenStreamParams : public AlgorithmParameters {
         std::vector <MicroClusterPtr> pMicroClusters;
         std::vector <MicroClusterPtr> oMicroClusters;
         clock_t startTime;
-        clock_t pointArrivingTime;
-        clock_t lastUpdateTime;//for calculating time interval
+        int pointArrivingTime;//clock_t
+        int lastPointTime;
+        int lastUpdateTime;//for calculating time interval
         double Tp;
         TimeMeter timerMeter;
         int pMicroClusterIndex;
         int oMicroClusterIndex;
 
         DenStream(param_t &cmd_params);
-
         ~DenStream();
         void Initilize() override;
         void runOnlineClustering(PointPtr input) override;

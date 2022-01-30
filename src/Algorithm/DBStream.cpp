@@ -42,14 +42,11 @@ void SESAME::DBStream::Initilize() {
   this->pointArrivingTime=0;
   this->lastCleanTime=0;
   this->lastArrivingTime=0;
-  clock_gettime(CLOCK_REALTIME, & this->lastArrivingTime0);
-  clock_gettime(CLOCK_REALTIME, & this->pointArrivingTime0);
-  clock_gettime(CLOCK_REALTIME, & this->lastCleanTime0);
-
   this->weakEntry= pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.cleanUpInterval);
   this->aWeakEntry=weakEntry*dbStreamParams.alpha;
-  std::cout<<"weakEntry"<<weakEntry<<std::endl;
-  std::cout<<"aWeakEntry"<<aWeakEntry<<std::endl;
+
+ // std::cout<<"weakEntry"<<weakEntry<<std::endl;
+  //std::cout<<"aWeakEntry"<<aWeakEntry<<std::endl;
   this->microClusterIndex=-1;
   connectedRegions = ConnectedRegions(dbStreamParams.alpha, dbStreamParams.weightMin);
  }
@@ -76,8 +73,8 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
 
    SESAME_INFO("micro clusters "<<microClusters.size());
    SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());
-   std::cout<<"micro clusters "<<microClusters.size();
-   std::cout<<"weightedAdjacencyList  "<<weightedAdjacencyList.size();
+   std::cout<<"micro clusters "<<microClusters.size()<<std::endl;
+   std::cout<<"weightedAdjacencyList  "<<weightedAdjacencyList.size()<<std::endl;
    connectedRegions.connection(microClusters,
                                weightedAdjacencyList);
    std::cout<<"Cluster size is "<<connectedRegions.finalClusters.size()<<std::endl;
@@ -102,12 +99,11 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
 void SESAME::DBStream::update(PointPtr dataPoint){
   //timerMeter.clusterUpdateAccMeasure();
   this->pointArrivingTime=dataPoint->getIndex();
-  clock_gettime(CLOCK_REALTIME, & this->pointArrivingTime0);
- // double decayFactor=dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
+  clock_gettime(CLOCK_REALTIME, &this->pointArrivingTime0);
+  double decayFactor = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
   //TODO this one is using timespec to calculate time
-  long decayFactor0=dampedWindow->decayFunction(lastArrivingTime0,this->pointArrivingTime0);
-
-  this->microClusterNN=findFixedRadiusNN(dataPoint,decayFactor0);//decayFactor
+  //double decayFactor0 = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
+  this->microClusterNN = findFixedRadiusNN(dataPoint,decayFactor);//decayFactor
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
   //timerMeter.clusterUpdateEndMeasure();
 
@@ -126,18 +122,21 @@ void SESAME::DBStream::update(PointPtr dataPoint){
     for (int i = 0; i < sizeNN; i++) {
       //timerMeter.dataInsertAccMeasure();
       microClusterNN[i]->insert(dataPoint); // just update weight //
+     // std::cout<<" cluster "<<microClusterNN[i]->id.front()<<"th weight is "<<microClusterNN[i]->weight<<std::endl;
     //  timerMeter.dataInsertEndMeasure();
     //  timerMeter.clusterUpdateAccMeasure();
       for (int j = i + 1; j < sizeNN; j++) {
+
         MicroClusterPair microClusterPair(microClusterNN[i], microClusterNN.at(j));
         if (weightedAdjacencyList.find(microClusterPair) != weightedAdjacencyList.end())
         {
           //update existing micro cluster pair in the graph
-        //  int startT= weightedAdjacencyList[microClusterPair]->updateTime;
-       //   double decayValue = dampedWindow->decayFunction(startT,this->pointArrivingTime);
+         int startT= weightedAdjacencyList[microClusterPair]->updateTime;
+          double decayValue = dampedWindow->decayFunction(startT,this->pointArrivingTime);
           //Timespec
-          long decayValue0 = dampedWindow->decayFunction(startTime,this->pointArrivingTime0);
-          weightedAdjacencyList[microClusterPair]->add(this->pointArrivingTime,decayValue0);
+         // timespec startT= weightedAdjacencyList[microClusterPair]->updateTime0;
+          //double decayValue0 = dampedWindow->decayFunction(startT,this->pointArrivingTime0);
+          weightedAdjacencyList[microClusterPair]->add(this->pointArrivingTime,decayValue);
         } else {
           AdjustedWeightPtr adjustedWeight =
               SESAME::DataStructureFactory::createAdjustedWeight(1,this->pointArrivingTime,
@@ -156,12 +155,12 @@ void SESAME::DBStream::update(PointPtr dataPoint){
  // timerMeter.clusterUpdateAccMeasure();
 
  //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.cleanUpInterval && dataPoint->getIndex()!=0)
- //if ((pointArrivingTime)% dbStreamParams.cleanUpInterval==0)
- long interval = (pointArrivingTime0.tv_sec * 1000000L + pointArrivingTime0.tv_nsec / 1000L)
- - ((startTime).tv_sec * 1000000L + (startTime).tv_nsec / 1000L);
-  if(interval/1000L%dbStreamParams.cleanUpInterval==0 )
+ if ((pointArrivingTime)% dbStreamParams.cleanUpInterval==0)
+ //long interval = (pointArrivingTime0.tv_sec * 1000000L + pointArrivingTime0.tv_nsec / 1000L)
+ //- ((startTime).tv_sec * 1000000L + (startTime).tv_nsec / 1000L);
+ // if(interval/1000L%dbStreamParams.cleanUpInterval==0 )
  {
-    cleanUp(pointArrivingTime0);//pointArrivingTime
+    cleanUp(pointArrivingTime);//pointArrivingTime
 
    this->lastCleanTime=this->pointArrivingTime;
  }
@@ -200,7 +199,7 @@ bool SESAME::DBStream::checkMove( std::vector<MicroClusterPtr> microClustersList
   return true;
 }
 
-void  SESAME::DBStream::cleanUp(timespec nowTime){
+void  SESAME::DBStream::cleanUp(int nowTime){
   std::vector<MicroClusterPtr> removeMicroCluster;
   std::vector<MicroClusterPtr>::size_type iter;
   //Check the current micro Clusters whether they have weak MCs
@@ -225,9 +224,9 @@ void  SESAME::DBStream::cleanUp(timespec nowTime){
    if ( exist1!=removeMicroCluster.end()|| exist2!=removeMicroCluster.end()){
      iterW=weightedAdjacencyList.erase(iterW);
    } else {
-       //double decayFactor=dampedWindow->decayFunction(iterW->second->updateTime,nowTime);
-       long decayFactor0=dampedWindow->decayFunction(iterW->second->updateTime0,nowTime);
-       if (iterW->second->getCurrentWeight(decayFactor0) < aWeakEntry)
+       double decayFactor=dampedWindow->decayFunction(iterW->second->updateTime,nowTime);
+       //double decayFactor0=dampedWindow->decayFunction(iterW->second->updateTime0,nowTime);
+       if (iterW->second->getCurrentWeight(decayFactor) < aWeakEntry)
          iterW=weightedAdjacencyList.erase(iterW);
        else
          iterW++;

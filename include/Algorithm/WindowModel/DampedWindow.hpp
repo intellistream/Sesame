@@ -20,7 +20,7 @@ class DampedWindow : WindowModel {
   double base;
   double lambda;
   DampedWindow(double base, double lambda);
-  long decayFunction(timespec startTime, timespec currentTimestamp) const;
+  double decayFunction(timespec startTime, timespec currentTimestamp) const;
   double decayFunction(int startTime, int currentTimestamp) const;
 };
 }

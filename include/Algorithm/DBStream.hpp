@@ -60,7 +60,7 @@ class DBStream : public Algorithm
       void update(PointPtr dataPoint);
       bool checkMove( std::vector<MicroClusterPtr> microClusters) const;
       std::vector<MicroClusterPtr> findFixedRadiusNN(PointPtr dataPoint, double decayFactor);
-      void cleanUp(timespec nowTime);
+      void cleanUp(int nowTime);
      //The underline has moved to offline refinement
       /*  void reCluster(double threshold);
       void insertIntoGraph(int microClusterId,int OtherId);

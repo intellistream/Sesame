@@ -15,11 +15,12 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
   LST=0;
   SST=0;
   this->visited=false;
-  this->createTime=clock();
+  this->createTime=0;
   this->lastUpdateTime=this->createTime;
   radius=0;
   visited=false;
 }
+
 //Create MC, only initialization, only used for DBStream as it has user-defined fixed radius
 SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
   this->dimension=dimension;
@@ -28,7 +29,7 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,doub
   LST=0;
   SST=0;
   this->visited=false;
-  this->createTime=clock();
+  this->createTime=0;
   this->lastUpdateTime=this->createTime;
   this->radius=radius;
 
@@ -55,12 +56,14 @@ SESAME::MicroCluster::~MicroCluster()
 void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
 {
   weight++;
+
   for (int i = 0; i < dimension; i++) {
     double data = datapoint->getFeatureItem(i);
     LS.push_back(data);
     SS.push_back(data * data);
     centroid.push_back(data);
   }
+  this->createTime=datapoint->getIndex();
   LST+=timestamp;
   SST+=timestamp*timestamp;
 }
@@ -75,7 +78,6 @@ void SESAME::MicroCluster::insert(PointPtr datapoint,int timestamp)
     LS[i]+=data;
     SS[i]+=data*data;
   }
-
   LST+=timestamp;
   SST+=timestamp*timestamp;
   centroid=std::move(getCentroid());
@@ -91,7 +93,7 @@ void SESAME::MicroCluster::insert(PointPtr datapoint)//,double decayFactor
     double data=datapoint->getFeatureItem(i);
     LS[i] = centroid.at(i) + val * (data - centroid.at(i));
   }
-  lastUpdateTime=clock();
+  lastUpdateTime=datapoint->getIndex();
 }
 
 double SESAME::MicroCluster::getDistance(PointPtr datapoint){
@@ -128,7 +130,7 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
     for (int i = 0; i < this->dimension; i++) {
       centroid.at(i) = LS.at(i) / weight;
     }
-    this->lastUpdateTime=clock();
+    this->lastUpdateTime= datapoint->getIndex();
     result=true;
   }
   else

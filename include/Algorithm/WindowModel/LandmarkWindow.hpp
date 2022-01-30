@@ -102,7 +102,7 @@ Data Structure representing all orders of snapshots
 * elapsedTime: the current elapsed time
 * @Return: void
 */
-  void pyramidalWindowProcess(clock_t startTime,const MicroClusters& microClusters);
+  void pyramidalWindowProcess(int elapsedTime,const MicroClusters& microClusters);
 /**
    * @Description: this function stores snapshots into the pyramidal window data structure
    * @Param: currentOrder: the ith order  snapshots stored into

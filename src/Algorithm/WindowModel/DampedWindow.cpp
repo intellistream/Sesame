@@ -8,7 +8,7 @@ SESAME::DampedWindow::DampedWindow(double base, double lambda){
   this->lambda=lambda;
 }
 
-long SESAME::DampedWindow::decayFunction(timespec startTime, timespec currentTimestamp) const
+double SESAME::DampedWindow::decayFunction(timespec startTime, timespec currentTimestamp) const
 {
   long elapsedTime = (((currentTimestamp).tv_sec * 1000000L + (currentTimestamp).tv_nsec / 1000L)
       - ((startTime).tv_sec * 1000000L + (startTime).tv_nsec / 1000L));

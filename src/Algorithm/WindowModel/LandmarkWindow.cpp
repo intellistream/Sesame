@@ -194,10 +194,8 @@ void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
     * @Return: void
     */
 //TODO Still need to debug
-void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,const SESAME::MicroClusters& microClusters){
+void SESAME::LandmarkWindow::pyramidalWindowProcess(int elapsedTime,const SESAME::MicroClusters& microClusters){
   int i=-1;
-  clock_t now= clock();
-  int elapsedTime=(int)((now-startTime)/CLOCKS_PER_SEC);
   if(elapsedTime>0) {
     this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
     //NOTE: snapshot when elapsed time =0 always add to the front of latest T order

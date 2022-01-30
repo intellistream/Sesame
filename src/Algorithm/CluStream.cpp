@@ -29,11 +29,9 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->pointsMerged = 0;
 }
 SESAME::CluStream::~CluStream() {
-
 }
 
 void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData) {
-
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {
     microClusters.push_back(DataStructureFactory::createMicroCluster(CluStreamParam.dimension, i));
   }
@@ -49,7 +47,8 @@ void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPt
   for (int i = 0; i < CluStreamParam.initBuffer; i++) {
     int clusterId = initialData[i]->getClusteringCenter();
     // SESAME_INFO("the belonging micro cluster id is !"<<clusterId);
-    int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+    // int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+    int timestamp =  initialData[i]->getIndex();
     if (microClusters[clusterId]->weight == 0)
       microClusters[clusterId]->init(initialData[i], timestamp);
     else
@@ -79,19 +78,21 @@ void SESAME::CluStream::incrementalCluster(PointPtr data) { // 1. Determine clos
     }
   }
   double radius = calRadius(closestCluster);
+  timerMeter.dataInsertEndMeasure();
   if (minDistance < radius) {
     insertIntoCluster(data, closestCluster);
-    timerMeter.dataInsertEndMeasure();
-
+    return;
   }
 /** 3. Date does not fit  -- free
  * some space to insert a new micro cluster
  * */
 // 3.1 delete oldest one & create a new cluster
   timerMeter.clusterUpdateAccMeasure();
-  deleteCreateCluster(data);
-// 3.2 merge two closest clusters & create a new cluster
-  MergeCreateCluster(data);
+  if(!deleteCreateCluster(data))
+  {
+    // 3.2 merge two closest clusters & create a new cluster
+    MergeCreateCluster(data);
+  }
   timerMeter.clusterUpdateEndMeasure();
 }
 
@@ -120,15 +121,17 @@ double SESAME::CluStream::calRadius(MicroClusterPtr closestCluster) {
 void SESAME::CluStream::insertIntoCluster(PointPtr data, MicroClusterPtr operateCluster) {
   // SESAME_INFO("This data fits");
   pointsFitted++;
-  int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+//  int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+  int timestamp= data->getIndex();
   operateCluster->insert(data, timestamp);
 }
 
 //Delete the oldest cluster and create new one case
-void SESAME::CluStream::deleteCreateCluster(PointPtr data) {
+bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
   // 3.1 Try to forget old micro clusters
 
-  int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+  //int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+   int elapsedTime = data->getIndex();
   int threshold = 0; // Kernels before this can be forgotten
   if (elapsedTime - this->CluStreamParam.timeWindow >= 0)
     threshold = elapsedTime - this->CluStreamParam.timeWindow;
@@ -140,9 +143,10 @@ void SESAME::CluStream::deleteCreateCluster(PointPtr data) {
       microClusters[i] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
       microClusters[i]->init(std::move(data), elapsedTime);
       pointsForgot++;
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 // Merge two closest clusters & create a new cluster
@@ -165,12 +169,13 @@ void SESAME::CluStream::MergeCreateCluster(PointPtr data) {
   }
   int newId = this->CluStreamParam.clusterNumber + pointsForgot + pointsMerged;
   microClusters[closestA]->merge(microClusters[closestB]);
-  int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+ // int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+  int elapsedTime = data->getIndex();
   DataStructureFactory::clearMicroCluster(microClusters[closestB]);
   microClusters[closestB] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
   microClusters[closestB]->init(std::move(data), elapsedTime);
   pointsMerged++;
-
+  return;
 }
 
 void SESAME::CluStream::microClusterToPoint(std::vector<MicroClusterPtr> &microClusters,
@@ -194,19 +199,10 @@ double SESAME::CluStream::distance(dataPoint a, dataPoint b, int dim) {
 }
 
 void SESAME::CluStream::Initilize() {
-  /*SESAME_INFO("configure cmd_params.pointNumber: " << CluStreamParam.pointNumber);
-  SESAME_INFO("configure cmd_params.initBuffer: " << CluStreamParam.initBuffer);
-  SESAME_INFO("configure cmd_params.lastArrivingNum: " << CluStreamParam.lastArrivingNum);
-  SESAME_INFO("configure cmd_params.timeWindow: " << CluStreamParam.timeWindow);
-  SESAME_INFO("configure cmd_params.timeInterval: " << CluStreamParam.timeInterval);
-  SESAME_INFO("configure cmd_params.clusterNumber: " << CluStreamParam.clusterNumber);
-  SESAME_INFO("configure cmd_params.offlineClusterNumber: " << CluStreamParam.offlineClusterNumber);
-  SESAME_INFO("configure cmd_params.radiusFactor: " << CluStreamParam.radiusFactor);
-  SESAME_INFO("configure cmd_params.offlineTimeWindow: " << CluStreamParam.offlineTimeWindow);*/
   this->window = WindowFactory::createLandmarkWindow();
   this->window->pyramidalWindow.timeInterval = this->CluStreamParam.timeInterval;
   this->startTime = clock();
-  this->lastUpdateTime=this->startTime;
+  this->lastUpdateTime = 0;
   window->initPyramidalWindow(this->window->pyramidalWindow.timeInterval);
 
 }
@@ -229,8 +225,9 @@ void SESAME::CluStream::Initilize() {
 void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
   if (!this->initilized) {
     Initilize();
-    this->initialInputs.push_back(input);
-    if (this->initialInputs.size() == this->CluStreamParam.initBuffer) {//TODO: fix this hard code @Zhenyu
+    this->initialInputs.push_back(input->copy());
+    if (this->initialInputs.size() == this->CluStreamParam.initBuffer) {
+      //TODO: fix this hard code @Zhenyu
       timerMeter.initialMeasure();
       vector <PointPtr> initData;//initialData
       initOffline(this->initialInputs,initData);
@@ -240,17 +237,17 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
     }
   } else{
     int interval;
-    clock_t now = clock();
-    interval = (int) ((now - lastUpdateTime) / CLOCKS_PER_SEC);
-    timerMeter.snapshotAccMeasure();
-    if (interval >= 1)
-    {
-      window->pyramidalWindowProcess(startTime, microClusters);
-      lastUpdateTime = now;
-    }
-    timerMeter.snapshotEndMeasure();
-    incrementalCluster(input);
+    interval = input->getIndex() - lastUpdateTime;
 
+    //TODO we just assume take a snapshot per 1000 points
+    if (interval >= 1000)
+    { timerMeter.snapshotAccMeasure();
+      window->pyramidalWindowProcess(interval, microClusters);
+      lastUpdateTime =  input->getIndex();
+      timerMeter.snapshotEndMeasure();
+    }
+
+    incrementalCluster(input->copy());
   }
 }
 
@@ -264,7 +261,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
  // SESAME_INFO("Start offline...");
   SESAME::SnapshotPtr landmarkSnapshot;
   SESAME::SnapshotPtr subtractMiroCluster;
-  //If offlineTimeWindow ==0, Only Observe the end results of micro clusters
+  //If offlineTimeWindow = 0, Only Observe the end results of micro clusters
   subtractMiroCluster =
       DataStructureFactory::createSnapshot(microClusters, (int) ((now - startTime) / CLOCKS_PER_SEC));
   //SESAME_INFO("Now Micro Cluster is...");

@@ -26,16 +26,16 @@ class MicroCluster {
 
   std::vector<int> id;
   dataPoint centroid;
-  dataPoint LS;//  the sum of the data values for each dimension
-  dataPoint SS;// the sum of the squares of  the data values for each dimension
-  int LST; //  the sum of the time stamps Ti~... Tin
-  int SST;//the sum of the squares of the time stamps  Til... Tin
+  dataPoint LS; // the sum of the data values for each dimension
+  dataPoint SS; // the sum of the squares of  the data values for each dimension
+  int LST; // the sum of the time stamps Ti~... Tin
+  int SST; // the sum of the squares of the time stamps  Til... Tin
   double weight; //number of data point in the clusters
   int dimension;
-  double radius;//Used in DBStream
+  double radius; //Used in DBStream
   //the parameters below is unique for DenStream
-  clock_t createTime;
-  clock_t lastUpdateTime;
+  int createTime;
+  int lastUpdateTime;
   bool visited;
 
   //TODO 1. Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
