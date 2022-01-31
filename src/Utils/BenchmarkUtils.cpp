@@ -45,7 +45,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    c = getopt_long(argc, argv, "A:a:B:b:C:c:D:d:E:e:g:h:i:j:k:L:l:M:m:N:n:O:o:P:p:Q:q:R:r:s:S:T:t:u:w:W:x:X",
+    c = getopt_long(argc, argv, "A:a:B:b:C:c:D:d:E:e:g:i:j:k:L:l:M:m:N:n:O:o:P:p:Q:q:R:r:s:S:T:t:u:w:W:x:X:h",
 
                     long_options, &option_index);
 
