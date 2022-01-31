@@ -121,7 +121,8 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
     SSPre[i] *= decayFactor;
     SSPre[i] += data * data;
   }
-  if (getRadius() < epsilon)
+  bool judge;
+  if (getRadius(decayFactor,judge) < epsilon)
   {
     LS = LSPre;
     SS = SSPre;
@@ -229,11 +230,12 @@ double SESAME::MicroCluster::getRadius(double radiusFactor){
 }
 
 //Calculate the radius of the current micro cluster in DenStream
-double SESAME::MicroCluster::getRadius(){
+double SESAME::MicroCluster::getRadius(double decayFactor,bool judge){
   double radius = 0;
   for (int i = 0; i < this->dimension; i++) {
-    radius += (SS.at(i) - (pow(LS.at(i), 2) / weight));
+    radius += (SS.at(i) - (pow(LS.at(i), 2) / (weight*decayFactor+1)));
   }
+  judge=true;
   return sqrt(radius / weight);
 }
 

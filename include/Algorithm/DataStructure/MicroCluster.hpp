@@ -55,7 +55,7 @@ class MicroCluster {
   void updateId(MicroClusterPtr other);
 
   void resetID(int index);   //Used in DenStream
-  double getRadius();  //Used in DenStream
+  double getRadius(double decayFactor,bool judge);  //Used in DenStream
 
   double getRelevanceStamp(int lastArrivingNum) const;
   double getMutime() const;
