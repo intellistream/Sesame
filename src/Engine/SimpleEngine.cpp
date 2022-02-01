@@ -64,8 +64,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   SESAME_INFO("Algorithm start to process data");
   overallMeter.START_MEASURE();
   overallMeter.overallStartMeasure();
-  //We set observing interval for cumulative time: every 30 tuples
- // overallMeter.setInterval(30);
+  //We set observing interval for cumulative time: every 100 tuples
+  overallMeter.setInterval(100);
   //initialization
 
   algoPtr->Initilize();
@@ -73,27 +73,26 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
-    //  std::cout<<
       auto item = sourcePtr->get();
-   //   overallMeter.onlineAccMeasure();
+      overallMeter.onlineAccMeasure();
       algoPtr->runOnlineClustering(item);
-   //   overallMeter.onlineAccEMeasure();
+      overallMeter.onlineAccEMeasure();
     }
   }
 
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
-  //  overallMeter.onlineAccMeasure();
+    overallMeter.onlineAccMeasure();
     algoPtr->runOnlineClustering(item);
-  //  overallMeter.onlineAccEMeasure();
+    overallMeter.onlineAccEMeasure();
   }
- // overallMeter.onlineEndMeasure();
+  overallMeter.onlineEndMeasure();
 
   // run offline clustering
- // overallMeter.refinementStartMeasure();
+  overallMeter.refinementStartMeasure();
   algoPtr->runOfflineClustering(sinkPtr);
   SESAME_INFO("Engine sourceEnd process data");
-//  overallMeter.refinementEndMeasure();
+  overallMeter.refinementEndMeasure();
 
   overallMeter.overallEndMeasure();
   overallMeter.END_MEASURE();
@@ -104,7 +103,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
   printTime();
-//  overallMeter.printCumulative();
+  overallMeter.printCumulative();
 }
 
 bool SESAME::SimpleEngine::stop() {
@@ -124,7 +123,7 @@ int SESAME::SimpleEngine::assignID() {
 void SESAME::SimpleEngine::printTime() {
   SESAME_INFO("Engine takes " << overallMeter.MeterUSEC() << " useconds to finish.");
   std::cout <<  "Engine takes " << overallMeter.MeterUSEC() << " useconds to finish."<< std::endl;
-  //std::cout << "Online Time: " << overallMeter.MeterOnlineUSEC()<< "\n"
-  //<< "Refinement Time: " << overallMeter.MeterRefinementUSEC()<< "\n"
- std::cout<<  "Overall Time: " << overallMeter.MeterOverallUSEC()<< "\n"<< std::endl;
+  std::cout << "Online Time: " << overallMeter.MeterOnlineUSEC()<< "\n"
+  << "Refinement Time: " << overallMeter.MeterRefinementUSEC()<< "\n"
+  <<  "Overall Time: " << overallMeter.MeterOverallUSEC()<< "\n"<< std::endl;
 }
