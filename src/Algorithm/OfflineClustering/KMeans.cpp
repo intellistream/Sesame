@@ -76,7 +76,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
         }
         weightSquare.push_back(pow(Min, 2));
         sum += pow(Min, 2);
-        // here we only need to store D2(x)
+        // here we only need to store D2.txt(x)
       }
     }
 
