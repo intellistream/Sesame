@@ -26,16 +26,16 @@ class MicroCluster {
 
   std::vector<int> id;
   dataPoint centroid;
-  dataPoint LS;//  the sum of the data values for each dimension
-  dataPoint SS;// the sum of the squares of  the data values for each dimension
-  int LST; //  the sum of the time stamps Ti~... Tin
-  int SST;//the sum of the squares of the time stamps  Til... Tin
+  dataPoint LS; // the sum of the data values for each dimension
+  dataPoint SS; // the sum of the squares of  the data values for each dimension
+  int LST; // the sum of the time stamps Ti~... Tin
+  int SST; // the sum of the squares of the time stamps  Til... Tin
   double weight; //number of data point in the clusters
   int dimension;
-  double radius;//Used in DBStream
+  double radius; //Used in DBStream
   //the parameters below is unique for DenStream
-  clock_t createTime;
-  clock_t lastUpdateTime;
+  int createTime;
+  int lastUpdateTime;
   bool visited;
 
   //TODO 1. Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
@@ -49,13 +49,13 @@ class MicroCluster {
   void init(PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);//Used in CluStream
   bool insert(PointPtr datapoint,double decayFactor,double epsilon);// DenStream
-  void insert(PointPtr datapoint, double decayFactor);//DBStream
+  void insert(PointPtr datapoint);//DBStream //, double decayFactor
   void merge(MicroClusterPtr other);
   void subtractClusterVector(MicroClusterPtr other);
   void updateId(MicroClusterPtr other);
 
   void resetID(int index);   //Used in DenStream
-  double getRadius();  //Used in DenStream
+  double getRadius(double decayFactor,bool judge);  //Used in DenStream
 
   double getRelevanceStamp(int lastArrivingNum) const;
   double getMutime() const;

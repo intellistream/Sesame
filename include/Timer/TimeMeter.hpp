@@ -23,7 +23,7 @@ struct T_TIMER {
    * online_increment_timer_pre: start of accumulate online timer ( start of every xx s)
    * online_timer: end of the online increment part
    * */
-  timespec  online_increment_timer_pre, online_timer;
+  timespec  online_increment_timer_pre,onlineAccTimer, online_timer;
 
   /**
    * initialTimerStart: Start of initial part
@@ -35,17 +35,16 @@ struct T_TIMER {
    *  accumulate for data point coming
    *  dataInsertTimer_pre: start of accumulated data insertion timer ( start of every xx s)
    *  dataInsertTimer: end of the online increment part
-   *  //TODO : I THINK THIS ONE HARDLY COMES IN HANDY :)
    **/
 
   timespec dataInsertTimer_pre , dataInsertTimer;//accumulate.
 
   /**
  *  accumulate for data point coming
- *  conceptDriftTimer_pre: start of accumulated concept drift timer ( start of every xx s)
- *  conceptDriftTimer: end of the concept Drift part
+ *  clusterUpdateTimer_pre: start of accumulated cluster update timer ( start of every xx s)
+ *  clusterUpdateTimer: end of the cluster update part
  **/
-  timespec conceptDriftTimer_pre, conceptDriftTimer;//accumulate.
+  timespec clusterUpdateTimer_pre, clusterUpdateTimer;//accumulate.
   /**
  *  accumulate for data point coming
  *  outlierDetectionTimer_pre: start of accumulated outlier Detection timer ( start of every xx s)
@@ -66,10 +65,9 @@ struct T_TIMER {
 *  accumulate for data point coming
 *  pruneTimer_pre: start of accumulated snapshot timer
 *  pruneTimer: end of the snapshot part
- TODO : I THINK THIS ONE HARDLY COMES IN HANDY :)
 **/
   timespec snapshotTimer_pre , snapshotTimer ;//accumulate (Special for CluStream key design)
-
+  timespec finalCluster_pre , finalClusterTimer ;//accumulate (Special for online or periodical forming final cluster)
 
 
   /**
@@ -99,8 +97,11 @@ struct T_TIMER {
 
   std::vector<long> snapshot;
 
-  int pruneCnt;
-  int snapshotCnt;
+  std::vector<long> finalCluster;
+
+  int pruneCnt=0;
+  int snapshotCnt=0;
+  int periodicalCluCnt=0;
 
   /*
   uint64_t overall_timer, online_increment_timer_pre, online_increment_timer;//accumulate for data point coming,
@@ -124,21 +125,23 @@ struct T_TIMER {
 class TimeMeter {
  private:
   struct timespec start, stop;
-  int interval;
+  int interval =1 ,intervalCnt=0;
   T_TIMER timer;
   bool InsertJudge=false;
   //the overall elapsed time of every part
   long overallTime = 0;
+  long overallPreTime =0;
   long onlineTime = 0;
   long dataInsertTime = 0;
-  long conceptDriftTime = 0;
-  long outlierDetectionTime = 0;
+  long onlineClusterUpdateTime = 0;
+  std::vector<long> recordOverall;
 
-
+  long outlierDetectionTime = 0;// if possible
   long pruneTime = 0;   // if possible
   long initialTime = 0; // if possible
   long snapshotTime = 0; //if possible
   long refinementTime = 0; //if possible
+  long finalClusterTime = 0; //if possible
   long otherTime = 0;
 
  public:
@@ -161,10 +164,11 @@ class TimeMeter {
 
 
   void  onlineAccMeasure();
+  void  onlineAccEMeasure();
   //end of online part
   void  onlineEndMeasure();
   void MeterOnlineAccUSEC();
-
+  long MeterOnlineUSEC();
 
   //start of initial  part
   void  initialMeasure();
@@ -181,12 +185,12 @@ class TimeMeter {
   long MeterDataInsertUSEC();
 
 
-  //start of concept drift   part
-  void  conceptDriftAccMeasure();
-  //end of concept drift   part
-  void  conceptDriftEndMeasure();
-  void MeterConceptDriftAccUSEC();
-  long MeterConceptDriftUSEC();
+  //start of Online cluster update  part
+  void  clusterUpdateAccMeasure();
+  //end of Online cluster update
+  void  clusterUpdateEndMeasure();
+  void MeterClusterUpdateAccUSEC();
+  long MeterClusterUpdateUSEC();
 
 
   //start of outlier Detection part
@@ -211,9 +215,18 @@ class TimeMeter {
   void MeterSnapshotAccUSEC();
   long MeterSnapshotUSEC();
 
+ //Used for incremental or periodical
+ //start of forming final clusters
+ void  finalClusterAccMeasure();
+ //end of forming final clusters
+ void  finalClusterEndMeasure();
+ void MeterFinalClusterAccUSEC();
+ long MeterFinalClusterUSEC();
+
+
 
   //start of refinement  part
-  void  refinementAccMeasure();
+  void  refinementStartMeasure();
   //end of refinement  part
   void  refinementEndMeasure();
   long MeterRefinementUSEC();
@@ -232,7 +245,7 @@ class TimeMeter {
   void setOverallTime(long overallT);
   void setOnlineTime(long onlineT);
   void setDataInsertTime(long dataInsertT);
-  void setConceptDriftTime(long conceptDriftT);
+  void setClusterUpdateTime(long clusterUpdateT);
   void setOutlierDetectionTime(long outlierDetectionT);
 
   void setInitialTime(long initialT);
@@ -244,8 +257,10 @@ class TimeMeter {
 
   /** print out the execution time statistics of stream clustering algorithms */
   void breakdown_global( bool initial,bool snapshot,
-                         bool prune, bool refine);//int64_t total_results,
-
+                         bool outlierBuffer, bool refine);//int64_t total_results,
+   /** print out the execution time statistics of stream clustering algorithms */
+   void printTime(bool initial,bool snapshot, bool outlierBuffer,bool finalCluster);//
+   void printCumulative();
 //TODO the code below will be removed later
   /*
   #ifndef BEGIN_MEASURE_INITIALIZE

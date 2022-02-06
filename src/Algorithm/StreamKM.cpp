@@ -18,7 +18,7 @@ void SESAME::StreamKM::Initilize() {
   this->window->windowManager.numberOfWindow =
       ceil(log((double) this->StreamKMParam.pointNumber / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
   this->window->windowManager.maxWindowSize = this->StreamKMParam.windowSize;
-  this->window->initWindow();
+  this->window->initWindow(this->StreamKMParam.windowSize);
   this->window->tree = DataStructureFactory::createCoresetTree();
   SESAME_DEBUG(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: "
@@ -31,8 +31,11 @@ void SESAME::StreamKM::Initilize() {
  * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
  */
 void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
-  this->window->insertPoint(input);
-  this->inputs.push_back(input);
+//  if(input->getIndex() == 15100){
+//    cout<< 111;
+//  }
+  this->window->insertPoint(input->copy());
+//  this->inputs.push_back(input);
 }
 
 /**
@@ -43,10 +46,15 @@ void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
  * @param output
  */
 void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
-
+  this->window->timerMeter.printTime(false,false,false,false);
   this->window->getCoresetFromManager(
       this->streamingCoreset); // streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
   int parNumber = this->streamingCoreset.size();
+  for(int i = 0; i < parNumber; i++) {
+    for(int j = 0; j < this->StreamKMParam.dimension; j++) {
+      this->streamingCoreset[i]->setFeatureItem(this->streamingCoreset[i]->getFeatureItem(j) / this->streamingCoreset[i]->getWeight(), j);
+    }
+  }
   vector <PointPtr> centers;
   vector <vector<PointPtr>> groups;
 

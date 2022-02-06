@@ -22,22 +22,22 @@ SESAME::DenStream::~DenStream() {
 
 }
 void SESAME::DenStream::init(vector<PointPtr> &initData) {
-  SESAME_INFO("tp is " << this->Tp);
   this->pMicroClusterIndex = -1;
   this->oMicroClusterIndex = -1;
   for (int i = 0; i < denStreamParams.initBufferSize; i++) {
-    if (initData.at(i)->getClusteringCenter() == noVisited) {
+    if (initData.at(i)->getClusteringCenter() == noVisited)
+    {
       std::vector<int> pointIndex;
       pMicroClusterIndex++;
       MicroClusterPtr newMicroCluster =
-          SESAME::DataStructureFactory::createMicroCluster(denStreamParams.dimension, pMicroClusterIndex);
+          SESAME::DataStructureFactory::createMicroCluster (denStreamParams.dimension,
+                                                           pMicroClusterIndex);
       newMicroCluster->init(initData.at(i), 0);
       pointsNearCorePoint(initData, pointIndex, newMicroCluster);
       if (newMicroCluster->weight <= this->minWeight)//TODO need to change minweight
       {
         pMicroClusterIndex--;
-        for (vector<int>::size_type a = 0; a < pointIndex.size(); a++) {
-          int index = pointIndex.at(a);
+        for(int index : pointIndex) {
           initData.at(index)->setClusteringCenter(noVisited);
         }
       } else
@@ -66,119 +66,135 @@ void SESAME::DenStream::Initilize() {
   this->dbscan =
       std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon, denStreamParams.initBufferSize);
   this->startTime = clock();
-  this->lastUpdateTime = this->startTime;
-  this->pointArrivingTime = this->startTime;
+  this->lastUpdateTime = 0;
+  this->pointArrivingTime = 0;
   this->minWeight = denStreamParams.beta * denStreamParams.mu;
   this->Tp = (double) (1 / denStreamParams.lambda) * (log(minWeight / (minWeight - 1)) / log(denStreamParams.base));
+  if( this->Tp>1000|| this->Tp<=0)
+    this->Tp=1;
 }
 void SESAME::DenStream::runOnlineClustering(PointPtr input) {
-
   if (!this->isInitial) {
     Initilize();
     input->setClusteringCenter(noVisited);
     this->initialBuffer.push_back(input);
     if (this->initialBuffer.size() == this->denStreamParams.initBufferSize) {
+      //Initialize part
+      timerMeter.initialMeasure();
       init(this->initialBuffer);
       this->isInitial = true;
+      timerMeter.initialEndMeasure();
     }
   } else {
-    this->pointArrivingTime = clock();
+    this->pointArrivingTime = input->getIndex();
     merge(input);
-    clock_t now=clock();
-    double elapsedTime = (double) ( this->lastUpdateTime -now) / CLOCKS_PER_SEC;
+    int elapsedTime =  this->pointArrivingTime - this->lastUpdateTime;
+    timerMeter.clusterUpdateAccMeasure();
     if (elapsedTime >=this->Tp ) {
-      SESAME_INFO("Check"<<elapsedTime);
+     // SESAME_INFO("Check "<<elapsedTime);
       for (int iter = 0; iter < pMicroClusters.size(); iter++) {
         if (pMicroClusters.at(iter)->weight < minWeight) {
           pMicroClusters.erase(pMicroClusters.begin() + iter);
-          SESAME_INFO("NOW PMC number is: " << this->pMicroClusterIndex);
+          //SESAME_INFO("NOW PMC number is: " << this->pMicroClusterIndex);
         }
       }
-      if (oMicroClusters.size() != 0) {
+      if (!oMicroClusters.empty()) {
         for (int iter = 0; iter < oMicroClusters.size(); iter++) {
-          double a = (-(denStreamParams.lambda) * floor(((pointArrivingTime - oMicroClusters.at(iter)->createTime)
-              / CLOCKS_PER_SEC + this->Tp)));
-          double b = (-denStreamParams.lambda * this->Tp);
+          double a = -(denStreamParams.lambda) *(pointArrivingTime - oMicroClusters.at(iter)->createTime+ this->Tp);
+          double b = -denStreamParams.lambda * this->Tp;
           double Xi = (pow(denStreamParams.base, a) - 1) / (pow(denStreamParams.base, b) - 1);
           // SESAME_INFO("NOW Xi  "<<Xi);
           if (oMicroClusters.at(iter)->weight < Xi) {
             oMicroClusters.erase(oMicroClusters.begin() + iter);
-            SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
+        //    SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
           }
         }
       }
-      this->lastUpdateTime =now;
+      timerMeter.clusterUpdateEndMeasure();
+      this->lastUpdateTime = this->pointArrivingTime;
     }
-    // SESAME_INFO("Insert Succeed "<<iterpoint);
+    this->lastPointTime= this->pointArrivingTime;
   }
-  iterpoint++;
 }
 
 void SESAME::DenStream::merge(PointPtr dataPoint) {
-  int index = -1;
+  bool index = false;
   if (!this->pMicroClusters.empty()) {
+    timerMeter.dataInsertAccMeasure();
     index = mergeToMicroCluster(dataPoint, this->pMicroClusters);
-    //SESAME_INFO("Merge into PMC! "<<iterpoint<<","<< index<<",");
+    timerMeter.dataInsertEndMeasure();
+  //  std::cout<<"Merge into PMC! "<<pMicroClusters.size()<<","<< index<<","<<std::endl;
   }
-
-  if (index < 0 && !this->oMicroClusters.empty()) {
-    index = mergeToMicroCluster(dataPoint, this->oMicroClusters);
-    // SESAME_INFO("Merge into OMC! "<<iterpoint<<","<< index<<",");
-    if (index >= 0) {
-      double decayFactor =
-          this->dampedWindow->decayFunction(this->oMicroClusters.at(index)->lastUpdateTime, pointArrivingTime);
-      //SESAME_INFO("Merge INTO OMC! "<<iterpoint<<","<<index);
-      if ((this->oMicroClusters.at(index)->weight) * decayFactor > minWeight) {
-        // SESAME_INFO("erase OMC and turn into PMC! ");
-        pMicroClusterIndex++;
-        oMicroClusters.at(index)->resetID(pMicroClusterIndex);
-        pMicroClusters.push_back(oMicroClusters.at(index)->copy());
-        oMicroClusters.erase(oMicroClusters.begin() + index);
-
-      }
-    }
-
+  if (!index && !this->oMicroClusters.empty()) {
+    index = mergeToOMicroCluster(dataPoint, this->oMicroClusters);
+   // std::cout<<"Merge into OMC! "<<oMicroClusters.size()<<","<< index<<","<<std::endl;
   }
-  if (index < 0) {
+   timerMeter.outlierDetectionAccMeasure();
+  if (!index) {
     oMicroClusterIndex++;
     MicroClusterPtr
-        newOMicroCluster = DataStructureFactory::createMicroCluster(denStreamParams.dimension, oMicroClusterIndex);
+        newOMicroCluster = DataStructureFactory::createMicroCluster(denStreamParams.dimension,
+                                                                    oMicroClusterIndex);
     newOMicroCluster->init(dataPoint, 0);
-    oMicroClusters.push_back(newOMicroCluster->copy());
-    // SESAME_INFO("Create new OMC! "<<iterpoint<<","<<oMicroClusterIndex);
+    oMicroClusters.push_back(newOMicroCluster);
   }
+  timerMeter.outlierDetectionEndMeasure();
 }
-int SESAME::DenStream::mergeToMicroCluster(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
-  int index = nearestNeighbor(dataPoint, microClusters);
-  if (index != -1) {
-    double decayFactor = this->dampedWindow->decayFunction(pointArrivingTime, clock());
-    if (!microClusters.at(index)->insert(dataPoint, decayFactor, denStreamParams.epsilon))
-      index = -1;
+
+
+bool SESAME::DenStream::mergeToMicroCluster(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
+  bool index = false;
+  MicroClusterPtr MC = nearestNeighbor(dataPoint, microClusters);
+  double decayFactor = this->dampedWindow->decayFunction(lastPointTime, pointArrivingTime);
+  if (MC!=NULL&& MC->insert(dataPoint, decayFactor, denStreamParams.epsilon)) {
+      index = true;
   }
   return index;
 }
-int SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
-  int index = -1;
+
+bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters ){
+  bool index = false;
+  timerMeter.dataInsertAccMeasure();
+  MicroClusterPtr MC = nearestNeighbor(dataPoint, microClusters);
+  double decayFactor = this->dampedWindow->decayFunction(lastPointTime, pointArrivingTime);
+  if (MC!=NULL&& MC->insert(dataPoint, decayFactor, denStreamParams.epsilon)) {
+    index = true;
+    double decayValue =
+        this->dampedWindow->decayFunction(MC->lastUpdateTime, pointArrivingTime);
+    if (MC->weight * decayValue > minWeight) {
+      pMicroClusterIndex++;
+      MC->resetID(pMicroClusterIndex);
+      pMicroClusters.push_back(MC);
+      std::remove(oMicroClusters.begin(), oMicroClusters.end(), MC);
+    }
+  }
+  timerMeter.dataInsertEndMeasure();
+  return index;
+}
+
+SESAME::MicroClusterPtr SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
+  MicroClusterPtr targetMC=NULL;
   double dist = 0, minDist = std::numeric_limits<double>::max();
   for (vector<MicroClusterPtr>::size_type i = 0; i < microClusters.size(); i++) {
     dist = microClusters.at(i)->calCentroidDistance(dataPoint);
     if (dist < minDist) {
       minDist = dist;
-      index = i;
+      targetMC = microClusters.at(i);
     }
   }
 
-  return index;
+  return targetMC;
 }
 
 void SESAME::DenStream::runOfflineClustering(DataSinkPtr sinkPtr) {
-  SESAME_INFO("Finish online");
+ // SESAME_INFO("Finish online");
   vector<PointPtr> transformedPoints;
   std::vector<std::vector<PointPtr>> oldGroups;
   microClusterToPoint(pMicroClusters, transformedPoints);
   this->dbscan->run(transformedPoints);
 
   this->dbscan->produceResult(transformedPoints, sinkPtr);
+  timerMeter.printTime(true,false,true,false);
 
 }
 void SESAME::DenStream::microClusterToPoint(std::vector<MicroClusterPtr> &microClusters,

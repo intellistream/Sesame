@@ -36,11 +36,14 @@ void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
 
   // print information
   if (indexs.size() != numberOfCenters) SESAME_INFO("ERROR!!! number of centers in indexs is not right!");
-  cout << "Randomly selected indexes:";
+  //TODO : I commented out the following output
+  /*
+   * cout << "Randomly selected indexes:";
   for (int index : indexs) {
     cout << index << " ";
   }
   cout << endl;
+   */
 }
 
 /**
@@ -55,7 +58,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
 
   default_random_engine e(time(NULL));
   uniform_real_distribution<double> u(0.0, 1.0);
-  cout << "KMeans++ randomly select indexes: ";
+  //cout << "KMeans++ randomly select indexes: ";
   int times = 0;
   while (times < numberOfCenters) {
     double sum = 0;
@@ -73,7 +76,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
         }
         weightSquare.push_back(pow(Min, 2));
         sum += pow(Min, 2);
-        // here we only need to store D2(x)
+        // here we only need to store D2.txt(x)
       }
     }
 
@@ -91,7 +94,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
         if (count(indexs.begin(), indexs.end(), leftOver.at(i)->getIndex()) == 0) {
           indexs.push_back(leftOver.at(i)->getIndex());
           centers.push_back(leftOver.at(i)->copy());
-          cout << leftOver.at(i)->getIndex() << " ";
+         // cout << leftOver.at(i)->getIndex() << " ";
           break;
         }
       }
@@ -99,7 +102,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
     }
     times++;
   }
-  cout << endl;
+ // cout << endl;
 }
 
 /**

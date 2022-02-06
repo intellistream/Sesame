@@ -227,7 +227,7 @@ double SESAME::CMMDriver::computeWeight(double deltaTime) {
 }
 /*here we assume that the data comes every 10 seconds
  * */
-void SESAME::CMM::CMMCost(int dimension,
+double SESAME::CMM::CMMCost(int dimension,
                           const std::vector<PointPtr> &inputs,
                           const std::vector<PointPtr> &center) {
   std::vector<double> CMMValues;
@@ -255,8 +255,11 @@ void SESAME::CMM::CMMCost(int dimension,
       cmm.voteMap();  // TODO: change voteMap according to the paper
       double cmmValue = cmm.compCMM();
       CMMValues.push_back(cmmValue);
+      std::cout << "cmm: " << cmmValue << std::endl;
     }
   }
   double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
-  SESAME_INFO("CMM Average Value:" << sum / CMMValues.size());
+  return sum / (CMMValues.size() - 1);
+
+ //SESAME_DEBUG("CMM Average Value:" << sum / CMMValues.size());
 }

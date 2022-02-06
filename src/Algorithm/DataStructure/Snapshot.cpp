@@ -37,8 +37,8 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapS
         tempMinDistance=elapsedTimeSnapshot;
         finalOrder=i;
         indexSnapshot=a;
-        SESAME_INFO(" this one Elapsed Time is "<< elapsedTimeSnapshot<<",elapsed time is "<<tempMinDistance);
-        SESAME_INFO(" in order  "<< finalOrder<<",  "<<tempMinDistance<<"th snapshots shared ptr");
+//        SESAME_INFO(" this one Elapsed Time is "<< elapsedTimeSnapshot<<",elapsed time is "<<tempMinDistance);
+        //SESAME_INFO(" in order  "<< finalOrder<<",  "<<tempMinDistance<<"th snapshots shared ptr");
       }
     }
     i++;
@@ -46,14 +46,14 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapS
 
   SnapshotPtr nearestSnapshot=DataStructureFactory::createSnapshot(orderSnapShots[finalOrder][indexSnapshot]->microClusters,
                                                                    orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
-  SESAME_INFO("close landmark "<< tempMinDistance);
-  SESAME_INFO("just for contrast : "<< orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
+ // SESAME_INFO("close landmark "<< tempMinDistance);
+ // SESAME_INFO("just for contrast : "<< orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
   return nearestSnapshot;
 }
 SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurrent,
                                                         const SnapshotPtr&  snapshotLandmark, unsigned int clusterNumber)
 {
-  SESAME_INFO("Start substract "<<snapshotCurrent->elapsedTime<<" LANDMARK ET "<<snapshotLandmark->elapsedTime);
+//  SESAME_INFO("Start substract "<<snapshotCurrent->elapsedTime<<" LANDMARK ET "<<snapshotLandmark->elapsedTime);
   for(unsigned int i=0; i<clusterNumber; i++) {   //If the micro cluster raised from merging
     if(snapshotCurrent->microClusters[i]->id.size()>1) {
       for(unsigned int j=0; j<clusterNumber; j++) {

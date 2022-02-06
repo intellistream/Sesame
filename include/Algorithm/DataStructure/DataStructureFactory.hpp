@@ -50,7 +50,7 @@ class DataStructureFactory {
 
   static MicroClusterPairPtr createMicroClusterPair(MicroClusterPtr microCluster1,MicroClusterPtr microCluster2);
   static void clearMicroClusterPair(MicroClusterPairPtr microClusterPair);
-  static AdjustedWeightPtr createAdjustedWeight(double weight, clock_t pointTime);
+  static AdjustedWeightPtr createAdjustedWeight(double weight, int pointTime, timespec pointTime0);
   static void clearAdjustedWeight(AdjustedWeightPtr adjustedWeight);
 };
 }
