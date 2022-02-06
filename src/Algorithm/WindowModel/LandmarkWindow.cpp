@@ -16,10 +16,18 @@
  * @param: dimension
  * @param: windowSize
  */
-void SESAME::LandmarkWindow::initWindow() {
+void SESAME::LandmarkWindow::initWindow(int num) {
   int i;
   for (i = 0; i < this->windowManager.numberOfWindow; i++) {
     Window blankWindow;
+    vector<PointPtr> p_list;
+    vector<PointPtr> s_list;
+    for(int j = 0; j< num; j++){
+      p_list.push_back(DataStructureFactory::createPoint(0,0,0,0,0));
+      s_list.push_back(DataStructureFactory::createPoint(0,0,0,0,0));
+    }
+    blankWindow.points = p_list;
+    blankWindow.spillover = s_list;
     blankWindow.cursize = 0;
     this->windowManager.windows.push_back(blankWindow);
   }
@@ -36,37 +44,39 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
   //check if there is enough space in the first window
   int cursize = this->windowManager.windows[0].cursize;
   if (cursize >= this->windowManager.maxWindowSize) {
-    SESAME_DEBUG("Window 0 is full");
+//    SESAME_DEBUG("Window 0 is full");
     //start spillover process
     int curWindow = 0;
     int nextWindow = 1;
 
     // check if the next window is empty
     if (this->windowManager.windows[nextWindow].cursize == 0) {
-      SESAME_DEBUG("Window " << nextWindow << " is not full, move window " << curWindow << " points to window "
-                       << nextWindow);
+      timerMeter.dataInsertAccMeasure();
+//      SESAME_DEBUG("Window " << nextWindow << " is not full, move window " << curWindow << " points to window "
+//                       << nextWindow);
 
       // if empty, copy the window
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].points.push_back(
-            this->windowManager.windows[curWindow].points[i]->copy());
+        this->windowManager.windows[nextWindow].points[i] = this->windowManager.windows[curWindow].points[i]->copy();
       }
       // window is now full
       this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
       // first window is now set empty
       this->windowManager.windows[curWindow].cursize = 0;
       cursize = 0;
+      timerMeter.dataInsertAccMeasure();
     } else {
-
+      timerMeter.clusterUpdateAccMeasure();
       // if next window is full
-      SESAME_DEBUG(
-          "Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
+//      SESAME_DEBUG(
+//          "Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
+//      SESAME_DEBUG(
+//          "Window " << nextWindow << " is full");
       //copy the points in the current window to the next spillover and continue
       int i;
       for (i = 0; i < this->windowManager.maxWindowSize; i++) {
-        this->windowManager.windows[nextWindow].spillover.push_back(
-            this->windowManager.windows[curWindow].points[i]->copy());
+        this->windowManager.windows[nextWindow].spillover[i] = this->windowManager.windows[curWindow].points[i]->copy();
       }
       this->windowManager.windows[0].cursize = 0;
       cursize = 0;
@@ -76,9 +86,10 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // as long as the next window is full output the coreset to the next spillover, using points in
       // the next window and spillover
       while (this->windowManager.windows[nextWindow].cursize == this->windowManager.maxWindowSize) {
-        SESAME_DEBUG("Window " << nextWindow
-                         << " is full, Continue! construct the coreset using points in window and spillover "
-                         << curWindow << " and store it in the spillover " << nextWindow);
+//        SESAME_DEBUG("Window " << nextWindow
+//                         << " is full, Continue! construct the coreset using points in window and spillover "
+//                         << curWindow << " and store it in the spillover " << nextWindow);
+//        SESAME_DEBUG("Window " << nextWindow << " is full");
         this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
                                      this->windowManager.maxWindowSize,
                                      this->windowManager.maxWindowSize,
@@ -91,9 +102,9 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
         curWindow++;
         nextWindow++;
       }
-      SESAME_DEBUG("Window " << nextWindow
-                       << " is not full, End! construct the coreset using points in window and spillover "
-                       << curWindow << " and store the it in the last spillover");
+//      SESAME_DEBUG("Window " << nextWindow
+//                       << " is not full, End! construct the coreset using points in window and spillover "
+//                       << curWindow << " and store the it in the last spillover");
       // if the next window is empty, just do the same operation and store the constructed coreset into
       // the next spillover, now the next window is empty but next spillover is full
       this->tree->unionTreeCoreset(this->windowManager.maxWindowSize,
@@ -104,12 +115,15 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
                                    this->windowManager.windows[nextWindow].points);
       this->windowManager.windows[curWindow].cursize = 0;
       this->windowManager.windows[nextWindow].cursize = this->windowManager.maxWindowSize;
+      timerMeter.clusterUpdateEndMeasure();
     }
 
   }
+  timerMeter.dataInsertAccMeasure();
   // if the first window is not full, just insert point into it
-  this->windowManager.windows[0].points.push_back(point->copy());//   .copy(point);
+  this->windowManager.windows[0].points[cursize] = point->copy();//   .copy(point);
   this->windowManager.windows[0].cursize++;
+  timerMeter.dataInsertEndMeasure();
 }
 
 /**
@@ -130,13 +144,10 @@ std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std:
       == this->windowManager.maxWindowSize) {
     coreset = this->windowManager.windows[this->windowManager.numberOfWindow - 1].points;
 
-  } else if (this->windowManager.windows[this->windowManager.numberOfWindow - 1].cursize == 0) {
-    coreset = this->windowManager.windows[this->windowManager.numberOfWindow - 2].points;
   } else {
     //find the first nonempty bucket
-
     for (i = 0; i < this->windowManager.numberOfWindow; i++) {
-      if (this->windowManager.windows[i].cursize != 0) {
+      if (this->windowManager.windows[i].cursize == this->windowManager.maxWindowSize) {
         coreset = this->windowManager.windows[i].points;
         break;
       }
@@ -183,10 +194,8 @@ void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
     * @Return: void
     */
 //TODO Still need to debug
-void SESAME::LandmarkWindow::pyramidalWindowProcess(clock_t startTime,const SESAME::MicroClusters& microClusters){
+void SESAME::LandmarkWindow::pyramidalWindowProcess(int elapsedTime,const SESAME::MicroClusters& microClusters){
   int i=-1;
-  clock_t now= clock();
-  int elapsedTime=(int)((now-startTime)/CLOCKS_PER_SEC);
   if(elapsedTime>0) {
     this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
     //NOTE: snapshot when elapsed time =0 always add to the front of latest T order

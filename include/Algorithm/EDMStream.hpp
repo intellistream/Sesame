@@ -41,6 +41,7 @@ class EDMStream : public Algorithm {
   DPTreePtr dpTree;
   OutPtr outres;
   CachePtr cache;
+  TimeMeter timerMeter;
   std::unordered_set<ClusterPtr> clusters;
 
   EDMStream(param_t &cmd_params);

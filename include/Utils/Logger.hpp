@@ -150,17 +150,17 @@ static log4cxx::LoggerPtr SESAMELogger(log4cxx::Logger::getLogger("SESAME"));
             LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
         } while (0)
     #define SESAME_DEBUG(TEXT)                                                                                                          \
-        do {                                                                                                                         \
-            LOG4CXX_DEBUG(SESAMELogger, TEXT);                                                                                          \
-        } while (0)
+    //    do {                                                                                                                         \
+    //        LOG4CXX_DEBUG(SESAMELogger, TEXT);                                                                                          \
+    //    } while (0)
     #define SESAME_TRACE(TEXT)                                                                                                          \
         do {                                                                                                                         \
             LOG4CXX_TRACE(SESAMELogger, TEXT);                                                                                          \
         } while (0)
     #define SESAME_INFO(TEXT)                                                                                                           \
-        do {                                                                                                                         \
-            LOG4CXX_INFO(SESAMELogger, TEXT);                                                                                           \
-        } while (0)
+       //do {                                                                                                                         \
+      //     LOG4CXX_INFO(SESAMELogger, TEXT);                                                                                           \
+     //   } while (0)
     #define SESAME_WARNING(TEXT)                                                                                                        \
         do {                                                                                                                         \
             LOG4CXX_WARN(SESAMELogger, TEXT);                                                                                           \

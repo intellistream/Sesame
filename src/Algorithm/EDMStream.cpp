@@ -84,6 +84,7 @@ void SESAME::EDMStream::delCluster() {
 SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double time) {
   SESAME::PointPtr curP = p;
   if (!this->EDMParam.isInit) {
+    timerMeter.initialMeasure();
     auto cc = cache->add(curP, time);
     if (cache->isFull()) {
       // draw decision graph
@@ -91,13 +92,19 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
       this->alpha = computeAlpha(); //TODO: what does it mean?
       SESAME_DEBUG("alpha = " << this->alpha);
       this->EDMParam.isInit = true;
+    timerMeter.initialEndMeasure();
     }
     return cc;
   } else {
+    timerMeter.dataInsertAccMeasure();
     auto nn = streamProcess(curP, opt, time);
-
+    timerMeter.dataInsertEndMeasure();
+    timerMeter.clusterUpdateAccMeasure();
     this->dpTree->adjustCluster(clusters);
+    timerMeter.clusterUpdateEndMeasure();
+    timerMeter.outlierDetectionAccMeasure();
     delCluster();
+    timerMeter.outlierDetectionEndMeasure();
     return nn;
   }
 }
@@ -111,15 +118,21 @@ void CountNode(const SESAME::DPNodePtr &node, int &num) {
   }
 }
 void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
-  double curTime = (input->getIndex() + 1) / 10;
+  double curTime = input->getTimeStamp() / 100000;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
+    timerMeter.clusterUpdateAccMeasure();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
+    timerMeter.clusterUpdateEndMeasure();
+
+    timerMeter.outlierDetectionAccMeasure();
     this->delCluster();
+    timerMeter.outlierDetectionEndMeasure();
   }
 }
 void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
+  timerMeter.printTime(true,false,true,false);
   SESAME_DEBUG("Cluster number: "<< this->clusters.size());
   int i = 0;
   int num = 0;

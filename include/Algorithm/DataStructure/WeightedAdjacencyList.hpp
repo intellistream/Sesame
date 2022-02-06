@@ -36,13 +36,14 @@ struct EqualKey
     {
   bool operator() (const MicroClusterPair &MCPair1, const MicroClusterPair &MCPair2) const
   {
-     bool equal=false;
-    if( MCPair1.microCluster1->id.front()==MCPair2.microCluster1->id.front() &&MCPair1.microCluster2->id.front()==MCPair2.microCluster2->id.front() )
-      equal=true;
-    if(MCPair1.microCluster1->id.front() ==MCPair2.microCluster2->id.front() &&MCPair1.microCluster2->id.front()==MCPair2.microCluster1->id.front() )
-      equal=true;
 
-    return equal;
+    if( MCPair1.microCluster1->id.front()==MCPair2.microCluster1->id.front()
+    &&MCPair1.microCluster2->id.front()==MCPair2.microCluster2->id.front() )
+      return true;
+    if(MCPair1.microCluster1->id.front() ==MCPair2.microCluster2->id.front()
+    &&MCPair1.microCluster2->id.front()==MCPair2.microCluster1->id.front() )
+      return true;
+    return false;
   }
     };
 
@@ -52,9 +53,11 @@ typedef std::shared_ptr<AdjustedWeight> AdjustedWeightPtr;
 class AdjustedWeight{
  public:
   double weight;
-  clock_t updateTime;
-  AdjustedWeight(double weight, clock_t pointTime);
-  void add(clock_t startTime,double decayValue);
+  int updateTime=0;//
+  timespec updateTime0;
+  AdjustedWeight(double weight, int pointTime, timespec pointTime0);//clock_t pointTime
+  void add(int startTime,double decayValue);
+  void add(timespec startTime,double decayValue);
   double getCurrentWeight(double decayFactor);
 };
 

@@ -93,7 +93,7 @@ class CMMDriver {
 class CMM {
  private:
  public:
-  static void CMMCost(int dimension,
+  static double CMMCost(int dimension,
                       const std::vector<PointPtr> &inputs,
                       const std::vector<PointPtr> &center);
 };

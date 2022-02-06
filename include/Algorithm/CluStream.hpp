@@ -44,7 +44,7 @@ class CluStream : public Algorithm {
   int pointsForgot;
   int pointsMerged;
   clock_t startTime;
-  clock_t lastUpdateTime;
+  int lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
   TimeMeter timerMeter;
@@ -59,7 +59,7 @@ class CluStream : public Algorithm {
   void incrementalCluster(PointPtr data);
   double calRadius(MicroClusterPtr closestCluster);
   void insertIntoCluster(PointPtr data, MicroClusterPtr closestCluster);
-  void deleteCreateCluster(PointPtr data);
+  bool deleteCreateCluster(PointPtr data);
   void MergeCreateCluster(PointPtr data);
   void microClusterToPoint(MicroClusters &microClusters, vector <PointPtr> &points) const;
   static double distance(dataPoint a, dataPoint b, int dim);

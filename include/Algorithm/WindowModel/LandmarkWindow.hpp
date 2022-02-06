@@ -15,6 +15,7 @@
 #include <vector>
 #include <Algorithm/DataStructure/Point.hpp>
 #include <Algorithm/DataStructure/CoresetTree.hpp>
+#include <Timer/TimeMeter.hpp>
 #include <Algorithm/WindowModel/WindowModel.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
 namespace SESAME {
@@ -42,14 +43,14 @@ datastructure for managing all O(log(n)) windows
   };
 
   WindowManager windowManager;
-
+  TimeMeter timerMeter;
   SESAME::CoresetTreePtr tree;
   /**
    * initialize windows in the window manager.
    * @param dimension
    * @param coresetSize
    */
-  void initWindow();
+  void initWindow(int num);
 
 /**
 inserts a single point into the bucketmanager
@@ -101,7 +102,7 @@ Data Structure representing all orders of snapshots
 * elapsedTime: the current elapsed time
 * @Return: void
 */
-  void pyramidalWindowProcess(clock_t startTime,const MicroClusters& microClusters);
+  void pyramidalWindowProcess(int elapsedTime,const MicroClusters& microClusters);
 /**
    * @Description: this function stores snapshots into the pyramidal window data structure
    * @Param: currentOrder: the ith order  snapshots stored into

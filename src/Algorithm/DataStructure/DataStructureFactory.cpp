@@ -34,11 +34,11 @@ void SESAME::DataStructureFactory::clearCoresetTree(SESAME::CoresetTreePtr tree)
   tree.reset();
 }
 
-SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(int id, int dimension){
-  return std::make_shared<SESAME::MicroCluster>( id, dimension);
+SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(int dimension, int id){
+  return std::make_shared<SESAME::MicroCluster>(dimension, id);
 }
 SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
-  return std::make_shared<SESAME::MicroCluster>( dimension, id,dataPoint,radius);
+  return std::make_shared<SESAME::MicroCluster>(dimension,id,dataPoint,radius);
 }
 void SESAME::DataStructureFactory::clearMicroCluster(SESAME::MicroClusterPtr microCluster){
   microCluster.reset();
@@ -88,8 +88,8 @@ void SESAME::DataStructureFactory::clearMicroClusterPair(MicroClusterPairPtr mic
   microClusterPair.reset();
 }
 
-SESAME::AdjustedWeightPtr SESAME::DataStructureFactory::createAdjustedWeight(double weight, clock_t pointTime){
-  return std::make_shared<SESAME::AdjustedWeight>(weight,pointTime);
+SESAME::AdjustedWeightPtr SESAME::DataStructureFactory::createAdjustedWeight(double weight, int pointTime, timespec pointTime0){
+  return std::make_shared<SESAME::AdjustedWeight>(weight,pointTime,pointTime0);
 }
 void SESAME::DataStructureFactory::clearAdjustedWeight(SESAME::AdjustedWeightPtr adjustedWeight){
   adjustedWeight.reset();
