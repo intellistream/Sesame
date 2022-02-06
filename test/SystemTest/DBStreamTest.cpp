@@ -18,15 +18,15 @@ TEST(SystemTest, DBStreamTest) {
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 15120;
-  cmd_params.dimension = 5;
+  cmd_params.pointNumber = 542;
+  cmd_params.dimension = 2;
   cmd_params.base=2;
-  cmd_params.lambda = 0.998;
-  cmd_params.radius = 2;
-  cmd_params.cleanUpInterval = 1500;
-  cmd_params.weightMin=0.25;
-  cmd_params.alpha=0.3;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
+  cmd_params.lambda = 0.25;
+  cmd_params.radius = 0.8;
+  cmd_params.cleanUpInterval = 100;
+  cmd_params.weightMin=0.1;
+  cmd_params.alpha=0.15;
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/D2.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;
 

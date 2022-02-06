@@ -20,9 +20,9 @@ SESAME::DBStream::DBStream(param_t &cmd_params){
   this->dbStreamParams.dimension = cmd_params.dimension;
   this->dbStreamParams.radius=cmd_params.radius;
   this->dbStreamParams.lambda=cmd_params.lambda;
-  this->dbStreamParams.cleanUpInterval=cmd_params.cleanUpInterval;
-  this->dbStreamParams.weightMin=cmd_params.weightMin;
-  this->dbStreamParams.alpha=cmd_params.alpha;
+  this->dbStreamParams.cleanUpInterval=100;
+  this->dbStreamParams.weightMin= 0.1;
+  this->dbStreamParams.alpha=0.15;
   this->dbStreamParams.base=cmd_params.base;
 }
 SESAME::DBStream:: ~DBStream()

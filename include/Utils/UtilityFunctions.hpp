@@ -26,7 +26,7 @@
 #define CMM_KNN 10
 #define CMM_A 0.998
 #define CMM_LAMDA 1
-#define CMM_THRESHOLD 1000
+#define CMM_THRESHOLD 542
 
 /*
 Determines when Lloyd terminates (should be between 0 and 1)

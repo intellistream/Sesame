@@ -66,7 +66,7 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT, (int)result.size());
+  pointToGroup(result, GT, 2);
   pointToGroup(input, sample, (int)center.size());
 
   double sum = 0;
@@ -76,8 +76,9 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
   if(!result.empty()) {
     SESAME_DEBUG("Purity:" << sum / (double)result.size());
     purity=sum / (double)result.size();
-  } else
-  {SESAME_DEBUG("Purity: 0");
-    purity=0;}
+  } else{
+    SESAME_DEBUG("Purity: 0");
+    purity=0;
+  }
   return purity;
 }

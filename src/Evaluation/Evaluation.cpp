@@ -21,6 +21,6 @@ void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
 
  double CMM = SESAME::CMM::CMMCost(dimension,inputs,center);
  std::cout << "Accuracy:\n"
- <<"CMM: " << round(CMM * 10000) / 10000 <<
+ <<"AveCMM: " << round(CMM * 10000) / 10000 <<
  "\npurity: " << round(purity * 10000) / 10000 << std::endl;
 }

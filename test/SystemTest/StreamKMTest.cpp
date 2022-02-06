@@ -19,11 +19,11 @@ TEST(SystemTest, StreamKMTest) {
   param_t cmd_params;
   cmd_params.pointNumber = 5000;
   cmd_params.seed = 10;
-  cmd_params.clusterNumber = 54;
-  cmd_params.dimension = 5;
-  cmd_params.coresetSize = 4900;
+  cmd_params.clusterNumber = 5;
+  cmd_params.dimension = 54;
+  cmd_params.coresetSize = 100;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::StreamKMeansType;
