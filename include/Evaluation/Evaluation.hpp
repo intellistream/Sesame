@@ -16,7 +16,7 @@ class Evaluation {
  public:
   static void runEvaluation(//int numberOfPoints,
                            // int numberOfCenters,
-                            int dimension,
+                            int dimension,int GTClusterNumber,
                             const std::vector<PointPtr> &inputs,
                             const std::vector<PointPtr> &results);
 

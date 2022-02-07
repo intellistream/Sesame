@@ -16,16 +16,16 @@
 TEST(SystemTest, BirchTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-
+  // [542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 15120;
-  cmd_params.thresholdDistance = 40;
-  cmd_params.maxInternalNodes = 30;
-  cmd_params.maxLeafNodes = 30;
-  cmd_params.dimension = 54;
+  cmd_params.pointNumber = 3000;
+  cmd_params.thresholdDistance = 0.1;
+  cmd_params.maxInternalNodes = 40;
+  cmd_params.maxLeafNodes = 20;
+  cmd_params.dimension = 2;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D12.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::BirchType;
 

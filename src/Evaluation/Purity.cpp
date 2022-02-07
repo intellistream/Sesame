@@ -59,14 +59,14 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
 
 double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
-                               int dimension) {
+                               int dimension, int GTclusterNumber) {
   double purity;
   std::vector<PointPtr> input;
   UtilityFunctions::groupByCenters(result, center, input, dimension);
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT, 2);
+  pointToGroup(result, GT, GTclusterNumber);
   pointToGroup(input, sample, (int)center.size());
 
   double sum = 0;

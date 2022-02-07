@@ -17,8 +17,9 @@ TEST(SystemTest, DenStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
+  //[542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
   param_t cmd_params;
-  cmd_params.pointNumber = 542;
+  cmd_params.pointNumber = 872;
   cmd_params.dimension = 2;
   cmd_params.minPoints=2;
   cmd_params.epsilon=0.01;//0.1
@@ -27,7 +28,7 @@ TEST(SystemTest, DenStreamTest) {
   cmd_params.mu=6;
   cmd_params.beta=0.25;
   cmd_params.initBuffer = 100;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/D2.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D3.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DenStreamType;
 

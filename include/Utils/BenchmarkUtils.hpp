@@ -36,6 +36,7 @@ struct param_t {
   int offlineTimeWindow;
   int maxInternalNodes;
   int maxLeafNodes;
+  int GTClusterNumber;
   double thresholdDistance;
   //used in DenStream(unique)
   unsigned int minPoints;
