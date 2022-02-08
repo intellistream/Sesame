@@ -17,9 +17,11 @@ TEST(SystemTest, DenStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
-  //[542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
+
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
   param_t cmd_params;
-  cmd_params.pointNumber = 872;
+  cmd_params.pointNumber = 999;
   cmd_params.dimension = 2;
   cmd_params.minPoints=2;
   cmd_params.epsilon=0.01;//0.1

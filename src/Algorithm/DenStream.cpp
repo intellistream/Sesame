@@ -1,4 +1,3 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/23.
@@ -73,7 +72,8 @@ void SESAME::DenStream::Initilize() {
   if( this->Tp>1000|| this->Tp<=0)
     this->Tp=1;
 }
-void SESAME::DenStream::runOnlineClustering(PointPtr input) {
+void SESAME::DenStream::runOnlineClustering(PointPtr in) {
+  PointPtr input = in->copy();
   if (!this->isInitial) {
     Initilize();
     input->setClusteringCenter(noVisited);

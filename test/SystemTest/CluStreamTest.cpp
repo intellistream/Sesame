@@ -14,12 +14,13 @@
 TEST(SystemTest, CluStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-  //[542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 1795;
+  cmd_params.pointNumber = 3000;
   cmd_params.dimension = 2;
-  cmd_params.clusterNumber = 10;
+  cmd_params.clusterNumber = 9;
   cmd_params.lastArrivingNum = 10;
   cmd_params.timeWindow = 10;
   cmd_params.timeInterval = 8;
@@ -27,7 +28,9 @@ TEST(SystemTest, CluStreamTest) {
   cmd_params.radiusFactor =2;
   cmd_params.initBuffer = 20;
   cmd_params.offlineTimeWindow = 0;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D12.txt";
+  cmd_params.GTClusterNumber = 9;
+  cmd_params.timeDecay = true;
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D9.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::CluStreamType;
 

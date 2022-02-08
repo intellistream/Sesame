@@ -62,12 +62,15 @@ void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
 
   this->km.runKMeans(this->StreamKMParam.clusterNumber,
                      parNumber,
+                     centers,
                      this->streamingCoreset,
                      oldGroups,
                      newGroups,
                      true);
   // store the result input output
-  this->km.produceResult(oldGroups, sinkPtr);
+  for(int i = 0; i < centers.size(); i++) {
+    sinkPtr->put(centers[i]->copy());
+  }
 //  this->km.storeResult(oldGroups, centers);
 //  this->km.groupPointsByCenters((int) centers.size(), (int) this->inputs.size(),
 //                                const_cast<vector <PointPtr> &>(this->inputs), centers, groups);

@@ -364,6 +364,9 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> centers = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> outputs;
+  if(centers.size() == 0){
+    std::cout << "ERROR! No output centers!" << std::endl;
+  }
   SESAME::UtilityFunctions::groupByCenters(inputs, centers, outputs, cmd_params.dimension);
 
   //Store results.
@@ -374,7 +377,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   SESAME::Evaluation::runEvaluation(//cmd_params.pointNumber,
                                  //   sinkPtr->getResults().size(),
-                                    cmd_params.dimension, cmd_params.GTClusterNumber,
+                                    cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
                                     sourcePtr->getInputs(),
                                     sinkPtr->getResults());
 

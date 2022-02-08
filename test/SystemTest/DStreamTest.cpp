@@ -15,17 +15,20 @@ TEST(SystemTest, DStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
-  //[542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
   param_t cmd_params;
-  cmd_params.pointNumber =3000;
+  cmd_params.pointNumber = 3000;
   cmd_params.dimension = 2;
   cmd_params.lambda= 0.998;
   cmd_params.beta=0.15;
   cmd_params.cm = 1;
   cmd_params.cl = 0.01;
   cmd_params.gridWidth= 0.001;
+  cmd_params.GTClusterNumber = 9;
+  cmd_params.timeDecay = true;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D12.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D9.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DStreamType;
 

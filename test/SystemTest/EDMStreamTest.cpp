@@ -13,8 +13,8 @@
 TEST(SystemTest, EDMStreamTest) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-//[542, 872, 999, 1270, 1441,1795,2001,2435,2591,2804,3000]
-
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
@@ -26,9 +26,13 @@ TEST(SystemTest, EDMStreamTest) {
   cmd_params.delta = 10;
   cmd_params.beta = 0.001;
   cmd_params.opt = 2;
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
+  cmd_params.GTClusterNumber = 9;
+  cmd_params.timeDecay = true;
 
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D12.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D9.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::EDMStreamType;
 

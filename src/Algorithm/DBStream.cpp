@@ -102,7 +102,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   double decayFactor = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
   //TODO this one is using timespec to calculate time
   //double decayFactor0 = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
-  this->microClusterNN = findFixedRadiusNN(dataPoint,decayFactor);//decayFactor
+  this->microClusterNN = findFixedRadiusNN(dataPoint->copy(),decayFactor);//decayFactor
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
   timerMeter.clusterUpdateEndMeasure();
   /* *
@@ -120,7 +120,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   } else {
     for (int i = 0; i < sizeNN; i++) {
       timerMeter.dataInsertAccMeasure();
-      microClusterNN[i]->insert(dataPoint); // just update weight //
+      microClusterNN[i]->insert(dataPoint->copy()); // just update weight //
      // std::cout<<" cluster "<<microClusterNN[i]->id.front()<<"th weight is "<<microClusterNN[i]->weight<<std::endl;
      timerMeter.dataInsertEndMeasure();
       timerMeter.clusterUpdateAccMeasure();

@@ -23,6 +23,7 @@
 
 struct param_t {
   int pointNumber;
+  bool timeDecay;
   int clusterNumber;
   int dimension;
   int coresetSize;

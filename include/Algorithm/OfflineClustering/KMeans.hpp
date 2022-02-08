@@ -41,6 +41,7 @@ class KMeans : public SESAME::OfflineClustering {
   void produceResult(std::vector<std::vector<PointPtr>> &groups, DataSinkPtr sinkPtr);
   void runKMeans(int numberOfCenters,
                  int numberOfInput,
+                 std::vector<PointPtr> &centers,
                  std::vector<PointPtr> &input,
                  std::vector<std::vector<PointPtr>> &oldGroups,
                  std::vector<std::vector<PointPtr>> &newGroups,

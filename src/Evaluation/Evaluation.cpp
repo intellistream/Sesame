@@ -10,7 +10,7 @@
 void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
                                        //int numberOfCenters,
                                        int dimension,
-                                       int GTClusterNumber,
+                                       int GTClusterNumber,bool decay,
                                        const std::vector<PointPtr> &inputs,
                                        const std::vector<PointPtr> &center) {
  /*SESAME::Euclidean::euclideanCost(numberOfPoints,
@@ -18,7 +18,7 @@ void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
                                    dimension,
                                    inputs,
                                    center);*/
- double purity =  SESAME::Purity::purityCost(center, inputs, dimension, GTClusterNumber);
+ double purity =  SESAME::Purity::purityCost(center, inputs, dimension, GTClusterNumber, decay);
 
  double CMM = SESAME::CMM::CMMCost(dimension,inputs,center);
  std::cout << "Accuracy:\n"

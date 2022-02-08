@@ -111,6 +111,9 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
       features.push_back(out.at(i)->getFeatureItem(j));
     }
     int cl = input.at(i)->getClusteringCenter();
+    if(cl == -1){
+      std::cout << 1;
+    }
     SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(out.at(i)->getIndex(),
                                                        (long)out.at(i)->getIndex(), time, features, a, lambda, cl);
     if(CL.count(cl)){
@@ -162,6 +165,9 @@ void SESAME::CMMDriver::voteMap() {
       if (m.second > max) {
         max = m.second;
         label = m.first;
+        if(label == -1) {
+          std::cout << 1;
+        }
       }
     }
     if (label == -1) {
