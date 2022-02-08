@@ -300,7 +300,6 @@ bool SESAME::DStream::adjustLabels()
             {
               CharacteristicVector characteristicVec1 = this->gridList.find(grid)->second;
               CharacteristicVector characteristicVec2 = this->gridList.find(gridNeighbourhood)->second;
-              //System.out.print(" 1: "+cv1.toString()+", 2: "+cv2.toString());
               int class1 = characteristicVec1.label;
               int class2 = characteristicVec2.label;
               // ...and if neighbouring grid isn't already in the same cluster as grid...
@@ -853,7 +852,7 @@ bool SESAME::DStream::checkIfSporadic(CharacteristicVector characteristicVec)
 	 */
 double SESAME::DStream::densityThresholdFunction(clock_t tg, double cl, double lambda, int NGrids)
 {
-  return (cl * (1.0 - dampedWindow->decayFunction(clock()+CLOCKS_PER_SEC,tg)))/(NGrids * (1.0 - lambda));
+  return (cl * (1.0 - pow(lambda, ((double)(pointArrivingTime-tg)/CLOCKS_PER_SEC+1.0))))/(NGrids * (1.0 - lambda));
 }
 
 /**
