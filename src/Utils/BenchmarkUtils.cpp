@@ -375,9 +375,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
 
 
-  SESAME::Evaluation::runEvaluation(//cmd_params.pointNumber,
-                                 //   sinkPtr->getResults().size(),
-                                    cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
+  SESAME::Evaluation::runEvaluation(cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
                                     sourcePtr->getInputs(),
                                     sinkPtr->getResults());
 

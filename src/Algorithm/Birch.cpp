@@ -204,13 +204,15 @@ void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.dataInsertAccMeasure();
+    timerMeter.clusterUpdateAccMeasure();
     updateNLS(curNode, point, true);
-    timerMeter.dataInsertEndMeasure();
+    timerMeter.clusterUpdateEndMeasure();
   } else{
     while(1) {
+      timerMeter.dataInsertAccMeasure();
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
+        timerMeter.dataInsertEndMeasure();
         timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
         if(curCF->getN() == 0) {
@@ -235,9 +237,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         }
 
       } else{
-        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
-        timerMeter.dataInsertEndMeasure();
       }
     }
   }

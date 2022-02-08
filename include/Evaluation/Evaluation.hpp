@@ -14,9 +14,7 @@ namespace SESAME {
 
 class Evaluation {
  public:
-  static void runEvaluation(//int numberOfPoints,
-                           // int numberOfCenters,
-                            int dimension,int GTClusterNumber, bool decay,
+  static void runEvaluation(int dimension,int GTClusterNumber, bool decay,
                             const std::vector<PointPtr> &inputs,
                             const std::vector<PointPtr> &results);
 

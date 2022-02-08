@@ -52,16 +52,16 @@ SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, 
   double coef = pow(this->EDMParam.a, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
   auto nn = dpTree->findNN(p, coef, opt, time);
+  timerMeter.outlierDetectionAccMeasure();
   if (nn == nullptr || nn->GetDis() > dpTree->GetCluR()) {
-
     nn = outres->insert(p, time);
     if (nn->GetRho() > this->minRho) {
       outres->remove(nn);
       dpTree->insert(nn, opt);
     }
   }
-
   dpTree->deleteInact(outres, this->minRho, time);
+  timerMeter.outlierDetectionEndMeasure();
   return nn;
 }
 double SESAME::EDMStream::computeAlpha() {
@@ -101,10 +101,8 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
     timerMeter.dataInsertEndMeasure();
     timerMeter.clusterUpdateAccMeasure();
     this->dpTree->adjustCluster(clusters);
-    timerMeter.clusterUpdateEndMeasure();
-    timerMeter.outlierDetectionAccMeasure();
     delCluster();
-    timerMeter.outlierDetectionEndMeasure();
+    timerMeter.clusterUpdateEndMeasure();
     return nn;
   }
 }
@@ -124,11 +122,8 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
     timerMeter.clusterUpdateAccMeasure();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
-    timerMeter.clusterUpdateEndMeasure();
-
-    timerMeter.outlierDetectionAccMeasure();
     this->delCluster();
-    timerMeter.outlierDetectionEndMeasure();
+    timerMeter.clusterUpdateEndMeasure();
   }
 }
 void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {

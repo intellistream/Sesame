@@ -7,9 +7,7 @@
 #include <cmath>
 #include <Utils/Logger.hpp>
 
-void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
-                                       //int numberOfCenters,
-                                       int dimension,
+void SESAME::Evaluation::runEvaluation(int dimension,
                                        int GTClusterNumber,bool decay,
                                        const std::vector<PointPtr> &inputs,
                                        const std::vector<PointPtr> &center) {
