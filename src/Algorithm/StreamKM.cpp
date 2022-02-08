@@ -13,6 +13,7 @@
 
 void SESAME::StreamKM::Initilize() {
   // initial the landmark window
+  timerMeter.initialMeasure();
   UtilityFunctions::init_genrand(this->StreamKMParam.seed);
   this->window = WindowFactory::createLandmarkWindow();
   this->window->windowManager.numberOfWindow =
@@ -23,6 +24,7 @@ void SESAME::StreamKM::Initilize() {
   SESAME_DEBUG(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: "
           << this->StreamKMParam.dimension);
+  timerMeter.initialEndMeasure();
 }
 
 /**
@@ -66,6 +68,7 @@ void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
                      this->streamingCoreset,
                      oldGroups,
                      newGroups,
+                     this->StreamKMParam.seed,
                      true);
   // store the result input output
   for(int i = 0; i < centers.size(); i++) {
