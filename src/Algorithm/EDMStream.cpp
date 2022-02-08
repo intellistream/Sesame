@@ -49,9 +49,11 @@ void SESAME::EDMStream::InitDP(double time) {
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, double time) {
+  timerMeter.dataInsertAccMeasure();
   double coef = pow(this->EDMParam.a, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
   auto nn = dpTree->findNN(p, coef, opt, time);
+  timerMeter.dataInsertEndMeasure();
   timerMeter.outlierDetectionAccMeasure();
   if (nn == nullptr || nn->GetDis() > dpTree->GetCluR()) {
     nn = outres->insert(p, time);
@@ -96,9 +98,7 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
     }
     return cc;
   } else {
-    timerMeter.dataInsertAccMeasure();
     auto nn = streamProcess(curP, opt, time);
-    timerMeter.dataInsertEndMeasure();
     timerMeter.clusterUpdateAccMeasure();
     this->dpTree->adjustCluster(clusters);
     delCluster();
