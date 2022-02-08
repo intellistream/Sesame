@@ -24,10 +24,10 @@ TEST(SystemTest, DBStreamTest) {
   cmd_params.dimension = 2;
   cmd_params.base=2;
   cmd_params.lambda = 0.25;
-  cmd_params.radius = 0.2;
+  cmd_params.radius = 0.01;
   cmd_params.cleanUpInterval = 100;
   cmd_params.weightMin = 0.1;
-  cmd_params.alpha = 0.15;
+  cmd_params.alpha = 0.4;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/D3.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;
