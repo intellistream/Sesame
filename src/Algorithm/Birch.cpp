@@ -128,12 +128,14 @@ void SESAME::Birch::selectChild(vector<SESAME::NodePtr> &children, SESAME::Point
 
 // calculate the radius of a cluster
 double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
+  timerMeter.dataInsertAccMeasure();
   double denominator = 0;
   double radius = 0;
   for(int i = 0; i < point->getDimension(); i++) {
     denominator += pow(centroid->getFeatureItem(i) - point->getFeatureItem(i), 2);
   }
   radius = sqrt(denominator);
+  timerMeter.dataInsertEndMeasure();
   return radius;
 }
 
@@ -204,26 +206,26 @@ void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.clusterUpdateAccMeasure();
+    timerMeter.dataInsertAccMeasure();
     updateNLS(curNode, point, true);
-    timerMeter.clusterUpdateEndMeasure();
+    timerMeter.dataInsertEndMeasure();
   } else{
     while(1) {
-      timerMeter.dataInsertAccMeasure();
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
-        timerMeter.dataInsertEndMeasure();
-        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
+        timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
         calculateCentroid(curCF, centroid);
+        timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
+          timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          timerMeter.clusterUpdateEndMeasure();
+          timerMeter.dataInsertEndMeasure();
           // means this point could get included in this cluster
           //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
@@ -231,13 +233,16 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         } else {
           // concept drift adaption
           // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
+          timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
           timerMeter.clusterUpdateEndMeasure();
           break;
         }
 
       } else{
+        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
+        timerMeter.dataInsertEndMeasure();
       }
     }
   }

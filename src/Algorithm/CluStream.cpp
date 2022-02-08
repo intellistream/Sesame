@@ -92,8 +92,10 @@ void SESAME::CluStream::incrementalCluster(PointPtr data) { // 1. Determine clos
   timerMeter.clusterUpdateAccMeasure();
   if(!deleteCreateCluster(data))
   {
+
     // 3.2 merge two closest clusters & create a new cluster
     MergeCreateCluster(data);
+
   }
   timerMeter.clusterUpdateEndMeasure();
 }
@@ -145,10 +147,13 @@ bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
       microClusters[i] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
       microClusters[i]->init(std::move(data), elapsedTime);
       pointsForgot++;
+
       return true;
     }
   }
+
   return false;
+
 }
 
 // Merge two closest clusters & create a new cluster
@@ -320,7 +325,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   for(int i = 0; i < centers.size(); i++) {
     sinkPtr->put(centers[i]->copy());
   }
-  timerMeter.printTime(true, true,false,false);//
+  timerMeter.printTime(true, true,true,false);//
 
 }
 
