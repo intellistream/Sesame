@@ -21,20 +21,20 @@ TEST(SystemTest, DenStreamTest) {
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
   // [3, 3, 4, 6, 6, 7, 9, 9]
   param_t cmd_params;
-  cmd_params.pointNumber = 529;
-  cmd_params.dimension = 2;
-  cmd_params.minPoints= 4;
-  cmd_params.epsilon=0.015;//0.1
+  cmd_params.pointNumber = 3000;
+  cmd_params.dimension = 54;
+  cmd_params.minPoints= 10;
+  cmd_params.epsilon=20;//0.1
   cmd_params.base=2;
   cmd_params.lambda= 0.25;
-  cmd_params.mu=4;
+  cmd_params.mu=5;
   cmd_params.beta=0.25;
-  cmd_params.initBuffer = 200;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D6.txt";
+  cmd_params.initBuffer = 500;
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DenStreamType;
-  cmd_params.GTClusterNumber = 6;
-  cmd_params.timeDecay = true;
+  cmd_params.GTClusterNumber = 7;
+  cmd_params.timeDecay = false;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

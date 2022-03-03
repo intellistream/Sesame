@@ -20,13 +20,13 @@ TEST(SystemTest, StreamKMTest) {
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
   cmd_params.seed = 10;
-  cmd_params.clusterNumber = 9;
-  cmd_params.dimension = 2;
-  cmd_params.coresetSize = 100;
-  cmd_params.GTClusterNumber = 9;
-  cmd_params.timeDecay = true;
+  cmd_params.clusterNumber = 7;
+  cmd_params.dimension = 54;
+  cmd_params.coresetSize = 600;
+  cmd_params.GTClusterNumber = 7;
+  cmd_params.timeDecay = false;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/Diamond/D9.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::StreamKMeansType;
