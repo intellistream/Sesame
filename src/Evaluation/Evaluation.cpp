@@ -7,9 +7,8 @@
 #include <cmath>
 #include <Utils/Logger.hpp>
 
-void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
-                                       //int numberOfCenters,
-                                       int dimension,
+void SESAME::Evaluation::runEvaluation(int dimension,
+                                       int GTClusterNumber,bool decay,
                                        const std::vector<PointPtr> &inputs,
                                        const std::vector<PointPtr> &center) {
  /*SESAME::Euclidean::euclideanCost(numberOfPoints,
@@ -17,10 +16,10 @@ void SESAME::Evaluation::runEvaluation(//int numberOfPoints,
                                    dimension,
                                    inputs,
                                    center);*/
- double purity =  SESAME::Purity::purityCost(center, inputs, dimension);
+ double purity =  SESAME::Purity::purityCost(center, inputs, dimension, GTClusterNumber, decay);
 
  double CMM = SESAME::CMM::CMMCost(dimension,inputs,center);
  std::cout << "Accuracy:\n"
- <<"CMM: " << round(CMM * 10000) / 10000 <<
+ <<"AveCMM: " << round(CMM * 10000) / 10000 <<
  "\npurity: " << round(purity * 10000) / 10000 << std::endl;
 }

@@ -214,16 +214,16 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  * @Return:
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
-  cmd_params.pointNumber = 15120; // number of the data points in the dataset, use the whole dataset to run benchmark
+  cmd_params.pointNumber = 542; // number of the data points in the dataset, use the whole dataset to run benchmark
   cmd_params.seed = 1;
-  cmd_params.clusterNumber = 30;
+  cmd_params.clusterNumber = 2;
   cmd_params.dimension = 54;
   cmd_params.coresetSize = 100;
   cmd_params.lastArrivingNum = 60;
   cmd_params.timeWindow = 6;
   cmd_params.timeInterval = 4;
-  cmd_params.onlineClusterNumber = 15;
-  cmd_params.radiusFactor = 70;
+  cmd_params.onlineClusterNumber = 10;
+  cmd_params.radiusFactor = 2;
   cmd_params.initBuffer = 500;
   cmd_params.offlineTimeWindow = 2;
   cmd_params.maxLeafNodes = 3;
@@ -238,10 +238,10 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
 
   // EDMStream
   cmd_params.a = 0.998;
-  cmd_params.cacheNum = 1000;
-  cmd_params.radius = 250;
+  cmd_params.cacheNum = 100;
+  cmd_params.radius = 0.1;
   cmd_params.lambda = 1;
-  cmd_params.delta = 1500;
+  cmd_params.delta = 10;
   cmd_params.beta = 0.0021;
   cmd_params.opt = 2;
 
@@ -249,7 +249,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::CluStreamType;
+  cmd_params.algoType = SESAME::DBStreamType;
 }
 
 
@@ -364,6 +364,9 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> centers = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> outputs;
+  if(centers.size() == 0){
+    std::cout << "ERROR! No output centers!" << std::endl;
+  }
   SESAME::UtilityFunctions::groupByCenters(inputs, centers, outputs, cmd_params.dimension);
 
   //Store results.
@@ -372,9 +375,7 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
 
 
-  SESAME::Evaluation::runEvaluation(//cmd_params.pointNumber,
-                                 //   sinkPtr->getResults().size(),
-                                    cmd_params.dimension,
+  SESAME::Evaluation::runEvaluation(cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
                                     sourcePtr->getInputs(),
                                     sinkPtr->getResults());
 

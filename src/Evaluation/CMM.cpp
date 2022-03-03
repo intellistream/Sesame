@@ -100,10 +100,10 @@ SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda) {
   //this->k = k;
 }
 void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
-                             const std::vector<PointPtr> &center, int dimension, double weight) {
+                             const std::vector<PointPtr> &center, int dimension, double time) {
   // time ? weight ?
   std::vector<PointPtr> out;
-  SESAME::UtilityFunctions::groupByCenters(input, center,out,dimension);
+  SESAME::UtilityFunctions::groupByCenters(input, center,out, dimension);
   // convert to the predicted clustering center index
   for(int i = 0; i < out.size(); i++) {
     std::vector<double> features;
@@ -111,8 +111,11 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
       features.push_back(out.at(i)->getFeatureItem(j));
     }
     int cl = input.at(i)->getClusteringCenter();
+    if(cl == -1){
+      std::cout << 1;
+    }
     SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(out.at(i)->getIndex(),
-                                                       (long)out.at(i)->getIndex(), weight, features, a, lambda, cl);
+                                                       (long)out.at(i)->getIndex(), time, features, a, lambda, cl);
     if(CL.count(cl)){
       CL[cl]->add(p);
     } else {
@@ -134,8 +137,6 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
       C.insert(std::pair<int , CMMClusterPtr>(ci, c));
       Clist.push_back(c);
     }
-
-
   }
 }
 void SESAME::CMMDriver::voteMap() {
@@ -158,12 +159,15 @@ void SESAME::CMMDriver::voteMap() {
         map.insert(std::pair<int, double>(truth, p->weight));
       }
     }
-    int label = -1;
+    int label = 1;
     double max = 0;
     for(auto &m:map) {
       if (m.second > max) {
         max = m.second;
         label = m.first;
+        if(label == -1) {
+          std::cout << 1;
+        }
       }
     }
     if (label == -1) {
@@ -233,31 +237,42 @@ double SESAME::CMM::CMMCost(int dimension,
   std::vector<double> CMMValues;
   CMMValues.push_back(0);
   int start = 0;
-  double pre_time = 0;
-  for (int i = 0; i < inputs.size(); i++) {
-    // segment the stream data into horizons(windows) according to threshold
-    CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
-    double weight = cmm.computeWeight(i / 2 - pre_time);
-    if(weight >= CMM_THRESHOLD) {
-      pre_time = i * 2;
+//  double pre_time = 0;
+//  for (int i = 0; i < inputs.size(); i++) {
+//    // segment the stream data into horizons(windows) according to threshold
+//    CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
+//    double weight = cmm.computeWeight(i / 2 - pre_time);
+    for (int i = 25; i < inputs.size(); i+=25) {
+      // segment the stream data into horizons(windows) according to threshold
+      CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
       std::vector<PointPtr> seg;
       for(; start < i; start ++) {
         seg.push_back(inputs.at(start));
       }
-      // here we set weight to 1
-      cmm.load(seg, center, dimension, weight); // according to arrival rate, can adjust if necessary
-      /*Transform the pre and GT data into specific CMM structures
-       * Clist: predicted clusters
-       * CList: GT clusters
-       * C:(PClusterID, PCluster)
-       * CL:(GTClusterID, GTCluster)
-       * */
-      cmm.voteMap();  // TODO: change voteMap according to the paper
+      cmm.load(seg, center, dimension, i*10);
+      cmm.voteMap();
       double cmmValue = cmm.compCMM();
+//    double weight = cmm.computeWeight(i / 2 - pre_time);
+//    if(weight >= CMM_THRESHOLD) {
+//      pre_time = i * 2;
+//      std::vector<PointPtr> seg;
+//      for(; start < i; start ++) {
+//        seg.push_back(inputs.at(start));
+//      }
+//      // here we set weight to 1
+//      cmm.load(seg, center, dimension, weight); // according to arrival rate, can adjust if necessary
+//      /*Transform the pre and GT data into specific CMM structures
+//       * Clist: predicted clusters
+//       * CList: GT clusters
+//       * C:(PClusterID, PCluster)
+//       * CL:(GTClusterID, GTCluster)
+//       * */
+//      cmm.voteMap();  // TODO: change voteMap according to the paper
+//      double cmmValue = cmm.compCMM();
       CMMValues.push_back(cmmValue);
-      std::cout << "cmm: " << cmmValue << std::endl;
+//      std::cout << "cmm: " << cmmValue << std::endl;
+
     }
-  }
   double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
   return sum / (CMMValues.size() - 1);
 

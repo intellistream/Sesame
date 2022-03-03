@@ -35,9 +35,11 @@ void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPt
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {
     microClusters.push_back(DataStructureFactory::createMicroCluster(CluStreamParam.dimension, i));
   }
+  std::vector<PointPtr> centers;
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
   this->kmeans->runKMeans(CluStreamParam.clusterNumber,
                           CluStreamParam.initBuffer,
+                          centers,
                           initData,
                           oldGroups,
                           newGroups,
@@ -90,8 +92,10 @@ void SESAME::CluStream::incrementalCluster(PointPtr data) { // 1. Determine clos
   timerMeter.clusterUpdateAccMeasure();
   if(!deleteCreateCluster(data))
   {
+
     // 3.2 merge two closest clusters & create a new cluster
     MergeCreateCluster(data);
+
   }
   timerMeter.clusterUpdateEndMeasure();
 }
@@ -143,10 +147,13 @@ bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
       microClusters[i] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
       microClusters[i]->init(std::move(data), elapsedTime);
       pointsForgot++;
+
       return true;
     }
   }
+
   return false;
+
 }
 
 // Merge two closest clusters & create a new cluster
@@ -307,15 +314,19 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
 
  // SESAME_INFO("offline Cluster Number " << this->CluStreamParam.offlineClusterNumber << "Total number of p: " << TransformedSnapshot.size());
 
+  std::vector<PointPtr> centers;
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-  this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,
+  this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.clusterNumber,centers,
                           TransformedSnapshot, oldGroups, newGroups, true);
   //Count overall time
 
   // store the result input output
-  this->kmeans->produceResult(oldGroups, sinkPtr);
-  timerMeter.printTime(true, true,false,false);//
+  for(int i = 0; i < centers.size(); i++) {
+    sinkPtr->put(centers[i]->copy());
+  }
+  timerMeter.printTime(true, true,true,false);//
+
 
 }
 

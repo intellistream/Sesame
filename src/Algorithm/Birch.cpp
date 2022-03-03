@@ -29,7 +29,8 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
     sinkPtr->put(centroid->copy());
   }
   timerMeter.printTime(false,false,false,false);
-  SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+
 //  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 //  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
 //                          middleCentroids,oldGroups,newGroups, true);
@@ -128,12 +129,14 @@ void SESAME::Birch::selectChild(vector<SESAME::NodePtr> &children, SESAME::Point
 
 // calculate the radius of a cluster
 double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
+  timerMeter.dataInsertAccMeasure();
   double denominator = 0;
   double radius = 0;
   for(int i = 0; i < point->getDimension(); i++) {
     denominator += pow(centroid->getFeatureItem(i) - point->getFeatureItem(i), 2);
   }
   radius = sqrt(denominator);
+  timerMeter.dataInsertEndMeasure();
   return radius;
 }
 
@@ -213,22 +216,27 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
       if(curNode->getIsLeaf()) {
         timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
+        timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
         calculateCentroid(curCF, centroid);
+        timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
+          timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          timerMeter.clusterUpdateEndMeasure();
+          timerMeter.dataInsertEndMeasure();
+
           // means this point could get included in this cluster
-          SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
+          //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
           // Normally insert the data point into the tree leafNode without concept drift
         } else {
           // concept drift adaption
-          SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
+          // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
+          timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
           timerMeter.clusterUpdateEndMeasure();
           break;
@@ -246,7 +254,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
 // concept drift adaption
 void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   if(curNode->getParents().empty()) { // means current node is root node
-    SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
+    //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
     NodePtr newRoot = make_shared<CFNode>();
     newRoot->setIsLeaf(false);
     newRoot->setChild(curNode);
@@ -278,13 +286,13 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
     parent->setChild(newNode);
     if(parent->getChildren().size() <= this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
-      SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it");
+      //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it");
 
       // update the parent node
       updateNLS(parent, point, true);
     } else{
-      SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
-      SESAME_DEBUG("split a new parent node from the old one ");
+     // SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
+      //SESAME_DEBUG("split a new parent node from the old one ");
       bool CurNodeIsLeaf = true;
       while(true) {
         NodePtr parParent;
@@ -370,10 +378,10 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
-          SESAME_DEBUG("b < B, remove the old node and insert the new nodeA and nodeB into the parent node");
+          //SESAME_DEBUG("b < B, remove the old node and insert the new nodeA and nodeB into the parent node");
           break;
         }else {
-          SESAME_DEBUG("b >= B, parent node of the current interior node capacity reaches the threshold B");
+          //SESAME_DEBUG("b >= B, parent node of the current interior node capacity reaches the threshold B");
           curNode = curNode->getParents()[0];
           parent = parParent;
           CurNodeIsLeaf = false;

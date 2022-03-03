@@ -237,12 +237,11 @@ void SESAME::KMeans::produceResult(std::vector<std::vector<SESAME::PointPtr>> &g
 
 void SESAME::KMeans::runKMeans(int numberOfCenters,
                                int numberOfInput,
+                               std::vector<PointPtr> &centers,
                                std::vector<PointPtr> &input,
                                std::vector<std::vector<PointPtr>> &oldGroups,
                                std::vector<std::vector<PointPtr>> &newGroups,
                                bool KMeansPP) {
-
-  std::vector<PointPtr> centers; // store the changing clustering centers
 
   bool flagToStop = false;
 
