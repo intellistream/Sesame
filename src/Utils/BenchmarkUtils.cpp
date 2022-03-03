@@ -246,7 +246,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.opt = 2;
 
   cmd_params.datasetOption = 0;
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/D2.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;
