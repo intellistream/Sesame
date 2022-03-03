@@ -4,7 +4,7 @@
 #include <Utils/UtilityFunctions.hpp>
 #include <Evaluation/Purity.hpp>
 #include <Utils/Logger.hpp>
-
+#include <cmath>
 /**
  * @Description: Please note that the order of the cluster index has to be consecutive
  */
@@ -31,13 +31,13 @@ void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
 /**
  * @Description: count the number of the elements in clusterA contained in clusterB?
  */
-int SESAME::Purity::calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &groupA,
+double SESAME::Purity::calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &groupA,
                                             std::vector<SESAME::PointPtr> &groupB) {
-  int count = 0;
+  double count = 0;
   for(const auto& elA:groupA) {
     for(const auto& elB:groupB) {
       if(elA->getIndex() == elB->getIndex()) {
-        count++;
+        count += elA->getWeight();
         break;
       }
     }
@@ -49,9 +49,9 @@ int SESAME::Purity::calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &group
  * @Description: return the max count of the cluster
  */
 double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample, std::vector<std::vector<PointPtr>> &GT) {
-  int max = 0;
+  double max = 0;
   for(auto& re:GT) {
-    int temp = calculateBelongsFromTwo(singleSample, re);
+    double temp = calculateBelongsFromTwo(singleSample, re);
     if(max <= temp) max = temp;
   }
   return max;
@@ -59,14 +59,32 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
 
 double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
-                               int dimension) {
+                               int dimension, int GTclusterNumber, bool decay) {
   double purity;
+  double size = 0;
   std::vector<PointPtr> input;
   UtilityFunctions::groupByCenters(result, center, input, dimension);
+  for(int i = 0; i < input.size(); i++){
+    double w = 1;
+    if(decay){ // 分段函数来设置weight
+      if(input.size() - input[i]->getIndex() <= 101) {
+        w = 1;
+      } else if(input[i]->getIndex() < input.size() / 100) {
+        w = 0;
+      } else {
+        w = double (input[i]->getIndex() - input.size() / 100) / double (input.size() - 100 -input.size() / 100);
+      }
+    } else {
+      w = 1;
+    }
+    input[i]->setWeight(w);
+    size += w;
+  }
+
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT, (int)result.size());
+  pointToGroup(result, GT, GTclusterNumber);
   pointToGroup(input, sample, (int)center.size());
 
   double sum = 0;
@@ -74,10 +92,11 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
     sum += getMaxBelongs(el, GT);
   }
   if(!result.empty()) {
-    SESAME_DEBUG("Purity:" << sum / (double)result.size());
-    purity=sum / (double)result.size();
-  } else
-  {SESAME_DEBUG("Purity: 0");
-    purity=0;}
+    SESAME_DEBUG("Purity:" << sum / size);
+    purity=sum / size;
+  } else{
+    SESAME_DEBUG("Purity: 0");
+    purity=0;
+  }
   return purity;
 }

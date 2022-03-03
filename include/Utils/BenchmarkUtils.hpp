@@ -23,6 +23,7 @@
 
 struct param_t {
   int pointNumber;
+  bool timeDecay;
   int clusterNumber;
   int dimension;
   int coresetSize;
@@ -36,6 +37,7 @@ struct param_t {
   int offlineTimeWindow;
   int maxInternalNodes;
   int maxLeafNodes;
+  int GTClusterNumber;
   double thresholdDistance;
   //used in DenStream(unique)
   unsigned int minPoints;

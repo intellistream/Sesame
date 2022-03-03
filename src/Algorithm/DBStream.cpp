@@ -20,9 +20,9 @@ SESAME::DBStream::DBStream(param_t &cmd_params){
   this->dbStreamParams.dimension = cmd_params.dimension;
   this->dbStreamParams.radius=cmd_params.radius;
   this->dbStreamParams.lambda=cmd_params.lambda;
-  this->dbStreamParams.cleanUpInterval=cmd_params.cleanUpInterval;
-  this->dbStreamParams.weightMin=cmd_params.weightMin;
-  this->dbStreamParams.alpha=cmd_params.alpha;
+  this->dbStreamParams.cleanUpInterval=100;
+  this->dbStreamParams.weightMin= 0.1;
+  this->dbStreamParams.alpha=0.15;
   this->dbStreamParams.base=cmd_params.base;
 }
 SESAME::DBStream:: ~DBStream()
@@ -82,7 +82,8 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
    for(auto & point : points)
      sinkPtr->put(point->copy());
 
-   // timerMeter.printTime(false,false,false,false);
+    timerMeter.printTime(false,false,true,false);
+
  }
 /**
  * @Description: Insert data point into existing MCs,
@@ -96,15 +97,17 @@ void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
  * @Return: void
  */
 void SESAME::DBStream::update(PointPtr dataPoint){
-  timerMeter.clusterUpdateAccMeasure();
+  timerMeter.dataInsertAccMeasure();
+
   this->pointArrivingTime=dataPoint->getIndex();
   clock_gettime(CLOCK_REALTIME, &this->pointArrivingTime0);
   double decayFactor = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
   //TODO this one is using timespec to calculate time
   //double decayFactor0 = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
-  this->microClusterNN = findFixedRadiusNN(dataPoint,decayFactor);//decayFactor
+  this->microClusterNN = findFixedRadiusNN(dataPoint->copy(),decayFactor);//decayFactor
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
-  timerMeter.clusterUpdateEndMeasure();
+  timerMeter.dataInsertEndMeasure();
+
   /* *
    * If this point fits in no micro clusters
    * */
@@ -120,7 +123,8 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   } else {
     for (int i = 0; i < sizeNN; i++) {
       timerMeter.dataInsertAccMeasure();
-      microClusterNN[i]->insert(dataPoint); // just update weight //
+      microClusterNN[i]->insert(dataPoint->copy()); // just update weight //
+
      // std::cout<<" cluster "<<microClusterNN[i]->id.front()<<"th weight is "<<microClusterNN[i]->weight<<std::endl;
      timerMeter.dataInsertEndMeasure();
       timerMeter.clusterUpdateAccMeasure();
@@ -151,7 +155,8 @@ void SESAME::DBStream::update(PointPtr dataPoint){
       for (const MicroClusterPtr& microCluster : microClusterNN) microCluster->move();
     timerMeter.clusterUpdateEndMeasure();
   }
-  timerMeter.clusterUpdateAccMeasure();
+  timerMeter.outlierDetectionAccMeasure();
+
 
  //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.cleanUpInterval && dataPoint->getIndex()!=0)
  if ((pointArrivingTime)% dbStreamParams.cleanUpInterval==0)
@@ -163,7 +168,8 @@ void SESAME::DBStream::update(PointPtr dataPoint){
 
    this->lastCleanTime=this->pointArrivingTime;
  }
- timerMeter.clusterUpdateEndMeasure();
+ timerMeter.outlierDetectionEndMeasure();
+
 }
 
 

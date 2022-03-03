@@ -24,3 +24,4 @@
 /benchmark/build/
 /benchmark/release/
 /cmake-*
+/debug
