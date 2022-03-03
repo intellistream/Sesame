@@ -74,6 +74,7 @@ void SESAME::DenStream::Initilize() {
 }
 void SESAME::DenStream::runOnlineClustering(PointPtr in) {
   PointPtr input = in->copy();
+
   if (!this->isInitial) {
     Initilize();
     input->setClusteringCenter(noVisited);
@@ -94,6 +95,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr in) {
       timerMeter.clusterUpdateAccMeasure();
       //timerMeter.outlierDetectionAccMeasure();
       //SESAME_INFO("Check "<<elapsedTime);
+
       for (int iter = 0; iter < pMicroClusters.size(); iter++) {
         if (pMicroClusters.at(iter)->weight < minWeight) {
           pMicroClusters.erase(pMicroClusters.begin() + iter);
@@ -101,6 +103,7 @@ void SESAME::DenStream::runOnlineClustering(PointPtr in) {
         }
       }
      // timerMeter.outlierDetectionEndMeasure();
+
       if (!oMicroClusters.empty()) {
         for (int iter = 0; iter < oMicroClusters.size(); iter++) {
           double a = -(denStreamParams.lambda) *(pointArrivingTime - oMicroClusters.at(iter)->createTime+ this->Tp);
@@ -136,6 +139,7 @@ void SESAME::DenStream::merge(PointPtr dataPoint) {
    // std::cout<<"Merge into OMC! "<<oMicroClusters.size()<<","<< index<<","<<std::endl;
   }
   timerMeter.outlierDetectionAccMeasure();
+
   if (!index) {
     oMicroClusterIndex++;
     MicroClusterPtr
@@ -167,6 +171,7 @@ bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <Mi
         this->dampedWindow->decayFunction(MC->lastUpdateTime, pointArrivingTime);
     timerMeter.outlierDetectionEndMeasure();
     timerMeter.clusterUpdateAccMeasure();
+
     if (MC->weight * decayValue > minWeight) {
       pMicroClusterIndex++;
       MC->resetID(pMicroClusterIndex);

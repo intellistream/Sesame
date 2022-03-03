@@ -17,13 +17,14 @@ TEST(SystemTest, EDMStreamTest) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.dimension = 54;
+  cmd_params.pointNumber = 5000;
+  cmd_params.dimension = 5;
   cmd_params.a = 0.998;
   cmd_params.cacheNum = 100;
   cmd_params.radius = 0.1;//220
   cmd_params.lambda = 1;
   cmd_params.delta = 10;
+
   cmd_params.beta = 0.001;
   cmd_params.opt = 2;
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
@@ -32,7 +33,7 @@ TEST(SystemTest, EDMStreamTest) {
   cmd_params.timeDecay = true;
 
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::EDMStreamType;
 

@@ -271,6 +271,7 @@ double SESAME::CMM::CMMCost(int dimension,
 //      double cmmValue = cmm.compCMM();
       CMMValues.push_back(cmmValue);
 //      std::cout << "cmm: " << cmmValue << std::endl;
+
     }
   double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
   return sum / (CMMValues.size() - 1);

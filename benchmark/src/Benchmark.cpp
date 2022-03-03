@@ -37,6 +37,8 @@ int main(int argc, char **argv) {
   cmd_params.thresholdDistance = 10;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
+
+
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::StreamKMeansType;
   BenchmarkUtils::parseArgs(argc, argv, cmd_params);

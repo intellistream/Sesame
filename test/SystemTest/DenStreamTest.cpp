@@ -25,12 +25,14 @@ TEST(SystemTest, DenStreamTest) {
   cmd_params.dimension = 54;
   cmd_params.minPoints= 10;
   cmd_params.epsilon=20;//0.1
+
   cmd_params.base=2;
   cmd_params.lambda= 0.25;
   cmd_params.mu=5;
   cmd_params.beta=0.25;
   cmd_params.initBuffer = 500;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DenStreamType;
   cmd_params.GTClusterNumber = 7;

@@ -98,9 +98,13 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
     }
     return cc;
   } else {
+    timerMeter.dataInsertAccMeasure();
     auto nn = streamProcess(curP, opt, time);
+
     timerMeter.clusterUpdateAccMeasure();
     this->dpTree->adjustCluster(clusters);
+    timerMeter.clusterUpdateEndMeasure();
+    timerMeter.outlierDetectionAccMeasure();
     delCluster();
     timerMeter.clusterUpdateEndMeasure();
     return nn;
@@ -122,6 +126,9 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
     timerMeter.clusterUpdateAccMeasure();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
+    timerMeter.clusterUpdateEndMeasure();
+
+    timerMeter.outlierDetectionAccMeasure();
     this->delCluster();
     timerMeter.clusterUpdateEndMeasure();
   }

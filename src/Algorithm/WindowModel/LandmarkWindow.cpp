@@ -68,6 +68,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       timerMeter.dataInsertEndMeasure();
     } else {
       timerMeter.dataInsertAccMeasure();
+
       // if next window is full
 //      SESAME_DEBUG(
 //          "Window " << nextWindow << " is full, move window " << curWindow << " to spillover " << nextWindow);
@@ -87,6 +88,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
       // the next window and spillover
       while (this->windowManager.windows[nextWindow].cursize == this->windowManager.maxWindowSize) {
         timerMeter.clusterUpdateAccMeasure();
+
 //        SESAME_DEBUG("Window " << nextWindow
 //                         << " is full, Continue! construct the coreset using points in window and spillover "
 //                         << curWindow << " and store it in the spillover " << nextWindow);
@@ -105,6 +107,7 @@ void SESAME::LandmarkWindow::insertPoint(PointPtr point) {
         timerMeter.clusterUpdateEndMeasure();
       }
       timerMeter.clusterUpdateAccMeasure();
+
 //      SESAME_DEBUG("Window " << nextWindow
 //                       << " is not full, End! construct the coreset using points in window and spillover "
 //                       << curWindow << " and store the it in the last spillover");

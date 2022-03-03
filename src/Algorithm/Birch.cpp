@@ -30,6 +30,7 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
   }
   timerMeter.printTime(false,false,false,false);
   //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+
 //  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 //  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
 //                          middleCentroids,oldGroups,newGroups, true);
@@ -213,6 +214,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
     while(1) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
+        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
         timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
@@ -226,6 +228,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
           timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
           timerMeter.dataInsertEndMeasure();
+
           // means this point could get included in this cluster
           //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;

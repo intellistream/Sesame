@@ -31,6 +31,7 @@ TEST(SystemTest, CluStreamTest) {
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::CluStreamType;
 

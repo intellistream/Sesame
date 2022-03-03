@@ -48,6 +48,7 @@ void SESAME::DStream::Initilize() {
 void SESAME::DStream::runOnlineClustering(PointPtr input) {
   if (!this->isInitial){
     // SESAME_INFO("Start initialize...");
+
     Initilize();
     this->isInitial = true;
     for(int i = 0 ; i < dStreamParams.dimension ; i++)
