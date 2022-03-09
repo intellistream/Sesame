@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 
 
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::StreamKMeansType;
+  cmd_params.algoType = SESAME::BirchType;
   BenchmarkUtils::parseArgs(argc, argv, cmd_params);
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
