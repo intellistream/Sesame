@@ -2,10 +2,10 @@
 // Created by 1124a on 2021/8/20.
 //
 #include <Algorithm/OfflineClustering/DBSCAN.hpp>
-SESAME::DBSCAN::DBSCAN(unsigned int minPts, float eps, int size){
+SESAME::DBSCAN::DBSCAN(unsigned int minPts, float eps){
   this->minPoints = minPts;
   this->epsilon = eps;
-  this->pointSize = size;
+  //this->pointSize = size;
   this->clusterID = 0;
 }
 

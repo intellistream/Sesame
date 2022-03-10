@@ -1,32 +1,55 @@
 //
 // Created by tuidan on 2021/8/24.
 //
-#include <Algorithm/Birch.hpp>
+#include <Algorithm/DesignAspect/V1.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-void SESAME::Birch::Initilize() {
+void SESAME::V1::Initilize() {
   this->cfTree = DataStructureFactory::createCFTree();
-  this->cfTree->setB(BirchParam.maxInternalNodes);
-  this->cfTree->setL(BirchParam.maxLeafNodes);
-  this->cfTree->setT(BirchParam.thresholdDistance);
+  this->cfTree->setB(V1Param.maxInternalNodes);
+  this->cfTree->setL(V1Param.maxLeafNodes);
+  this->cfTree->setT(V1Param.thresholdDistance);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
 }
 
 
-void SESAME::Birch::runOnlineClustering(const SESAME::PointPtr input) {
-    // insert the root
+void SESAME::V1::runOnlineClustering(const SESAME::PointPtr input) {
+  // insert the root
   forwardInsert(input);
 }
 
 
-void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::V1::runOfflineClustering(DataSinkPtr sinkPtr) {
+  std::vector<PointPtr> onlineCenters;
   for(int i = 0; i < this->leafNodes.size(); i++) {
-    PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dimension, 0);
-    for(int j = 0; j < BirchParam.dimension; j++) {
+    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V1Param.dimension, 0);
+    for(int j = 0; j < V1Param.dimension; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
     }
-    sinkPtr->put(centroid->copy());
+    onlineCenters.push_back(centroid->copy());
+  }
+
+  vector <PointPtr> offlineCenters;
+  vector <vector<PointPtr>> groups;
+
+  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+
+  // here if clusterNumber is lower than online cluster center number, we choose to skip offline.
+  if(onlineCenters.size() <= this->V1Param.clusterNumber){
+    offlineCenters = onlineCenters;
+  } else{
+    this->km.runKMeans(this->V1Param.clusterNumber,
+                       onlineCenters.size(),
+                       offlineCenters,
+                       onlineCenters,
+                       oldGroups,
+                       newGroups,
+                       true);
+  }
+  // store the result input output
+  for(int i = 0; i < offlineCenters.size(); i++) {
+    sinkPtr->put(offlineCenters[i]->copy());
   }
   timerMeter.printTime(false,false,false,false);
   //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
@@ -37,18 +60,19 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
 //  this->kmeans->produceResult(oldGroups, sinkPtr);
 }
 
-SESAME::Birch::Birch(param_t &cmd_params) {
-  this->BirchParam.pointNumber = cmd_params.pointNumber;
-  this->BirchParam.dimension = cmd_params.dimension;
-  this->BirchParam.maxInternalNodes = cmd_params.maxInternalNodes;
-  this->BirchParam.maxLeafNodes = cmd_params.maxLeafNodes;
-  this->BirchParam.thresholdDistance = cmd_params.thresholdDistance;
+SESAME::V1::V1(param_t &cmd_params) {
+  this->V1Param.pointNumber = cmd_params.pointNumber;
+  this->V1Param.dimension = cmd_params.dimension;
+  this->V1Param.maxInternalNodes = cmd_params.maxInternalNodes;
+  this->V1Param.maxLeafNodes = cmd_params.maxLeafNodes;
+  this->V1Param.thresholdDistance = cmd_params.thresholdDistance;
+  this->V1Param.clusterNumber = cmd_params.clusterNumber;
 }
-SESAME::Birch::~Birch() {
+SESAME::V1::~V1() {
 
 }
 // when a new point insert into the CF, update the CF N, LS and SS
-void SESAME::Birch::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool updateAll){
+void SESAME::V1::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool updateAll){
   SESAME::NodePtr nodeSearch = node;
   while(true) {
     SESAME::CFPtr cf = nodeSearch->getCF();
@@ -76,7 +100,7 @@ void SESAME::Birch::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bo
 // centroid index: -1(virtual)
 // centroid feature: mean of the feature of cluster points
 // centroid cluster: -1
-void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid) {
+void SESAME::V1::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid) {
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
   vector<double> ls = cf->getLS();
@@ -84,7 +108,7 @@ void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centr
 }
 
 // use Manhattan Distance
-void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
+void SESAME::V1::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
   SESAME::PointPtr centroid = make_shared<SESAME::Point>();
   SESAME::CFPtr curCF = node->getCF();
@@ -95,7 +119,7 @@ void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::No
 }
 
 // use Manhattan Distance
-double SESAME::Birch::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
+double SESAME::V1::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
   SESAME::PointPtr centroidA = make_shared<SESAME::Point>();
   SESAME::PointPtr centroidB = make_shared<SESAME::Point>();
@@ -110,7 +134,7 @@ double SESAME::Birch::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodeP
 }
 
 // select the closest child cluster according to Manhattan Distance
-void SESAME::Birch::selectChild(vector<SESAME::NodePtr> &children, SESAME::PointPtr &insertPoint, SESAME::NodePtr &node) {
+void SESAME::V1::selectChild(vector<SESAME::NodePtr> &children, SESAME::PointPtr &insertPoint, SESAME::NodePtr &node) {
   double dist = 0;
   double temp = 0;
   pointToClusterDist(insertPoint, children.at(0), dist);
@@ -125,7 +149,7 @@ void SESAME::Birch::selectChild(vector<SESAME::NodePtr> &children, SESAME::Point
 }
 
 // calculate the radius of a cluster
-double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
+double SESAME::V1::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
   timerMeter.dataInsertAccMeasure();
   double denominator = 0;
   double radius = 0;
@@ -137,7 +161,7 @@ double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr 
   return radius;
 }
 
-void SESAME::Birch::calculateCorDistance(vector<vector<double>> &distance, vector<SESAME::NodePtr> &nodes) {
+void SESAME::V1::calculateCorDistance(vector<vector<double>> &distance, vector<SESAME::NodePtr> &nodes) {
   // initialization: create a metrics with nxn
   for(int i = 0; i < nodes.size(); i++) {
     vector<double> row;
@@ -157,7 +181,7 @@ void SESAME::Birch::calculateCorDistance(vector<vector<double>> &distance, vecto
   }
 }
 
-void SESAME::Birch::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
+void SESAME::V1::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   SESAME::CFPtr curCF = curNode->getCF();
   curCF->setN(curCF->getN() + 1);
   vector<double> newLs;
@@ -170,7 +194,7 @@ void SESAME::Birch::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr 
   curCF->setLS(newLs);
 }
 
-void SESAME::Birch::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent) {
+void SESAME::V1::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent) {
   SESAME::CFPtr childCF = child->getCF();
   SESAME::CFPtr parCF = parent->getCF();
   parCF->setN(parCF->getN() + childCF->getN());
@@ -184,7 +208,7 @@ void SESAME::Birch::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &pa
   parCF->setSS(newSs);
 }
 
-void SESAME::Birch::initializeCF(SESAME::CFPtr &cf, int dimension) {
+void SESAME::V1::initializeCF(SESAME::CFPtr &cf, int dimension) {
   vector<double> ls = cf->getLS();
   vector<double> ss = cf->getSS();
   for(int i = 0; i < dimension; i++) {
@@ -195,13 +219,13 @@ void SESAME::Birch::initializeCF(SESAME::CFPtr &cf, int dimension) {
   cf->setSS(ss);
 }
 
-void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
+void SESAME::V1::clearChildParents(vector<SESAME::NodePtr> &children) {
   for(auto child : children) {
     child->clearParents();
   }
 }
 
-void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
+void SESAME::V1::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     timerMeter.dataInsertAccMeasure();
@@ -249,7 +273,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
 }
 
 // concept drift adaption
-void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
+void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   if(curNode->getParent() == nullptr) { // means current node is root node
     //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
     NodePtr newRoot = make_shared<CFNode>();
@@ -290,7 +314,7 @@ void SESAME::Birch::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr
       // update the parent node
       updateNLS(parent, point, true);
     } else{
-     // SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
+      // SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
       //SESAME_DEBUG("split a new parent node from the old one ");
       bool CurNodeIsLeaf = true;
       while(true) {

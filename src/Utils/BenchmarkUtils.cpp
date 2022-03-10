@@ -346,6 +346,28 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
       << "   thresholdDistance: " << cmd_params.thresholdDistance
       <<"\n";
       break;
+    case SESAME::V1Stream:
+      std::cout << "Algorithm: BirchV1 "
+                << "maxLeafNode: " << cmd_params.maxLeafNodes
+                << "   maxInnerNodes: " << cmd_params.maxInternalNodes
+                << "   thresholdDistance: " << cmd_params.thresholdDistance
+                << "   ClusterNumber: " << cmd_params.clusterNumber
+                <<"\n";
+      break;
+    case SESAME::V2Stream:
+      std::cout << "Algorithm: BirchV2 "
+                << "maxLeafNode: " << cmd_params.maxLeafNodes
+                << "   maxInnerNodes: " << cmd_params.maxInternalNodes
+                << "   thresholdDistance: " << cmd_params.thresholdDistance
+                <<"\n";
+      break;
+    case SESAME::V3Stream:
+      std::cout << "Algorithm: BirchV3 "
+                << "maxLeafNode: " << cmd_params.maxLeafNodes
+                << "   maxInnerNodes: " << cmd_params.maxInternalNodes
+                << "   thresholdDistance: " << cmd_params.thresholdDistance
+                <<"\n";
+      break;
     case SESAME::EDMStreamType:
       std::cout << "Algorithm: EDMStream "
       << "CacheNum: " << cmd_params.cacheNum
@@ -372,8 +394,6 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
-
-
 
   SESAME::Evaluation::runEvaluation(cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
                                     sourcePtr->getInputs(),

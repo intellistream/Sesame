@@ -40,17 +40,14 @@ class CFNode {
   CFPtr curCF;
   bool isLeaf;
   std::vector<NodePtr> children;
-  std::vector<NodePtr> parent;
-  std:: vector<SESAME::PointPtr> clusterPoints;
+  NodePtr parent;
   int index;
  public:
   CFNode();
   ~CFNode();
   SESAME::CFPtr getCF();
   void setCF(SESAME::CFPtr &cf);
-  void insertPoint(PointPtr &p);
-  std::vector<SESAME::PointPtr> getPoints();
-  std::vector<SESAME::NodePtr> getParents();
+  SESAME::NodePtr getParent();
   int getIndex() const;
   std::vector<SESAME::NodePtr> getChildren();
   void removeChild(SESAME::NodePtr &child);

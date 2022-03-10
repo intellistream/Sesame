@@ -23,7 +23,7 @@ namespace SESAME {
 //#define BORDER_POINT 2
 class DBSCAN : public SESAME::OfflineClustering {
  public:
-  DBSCAN(unsigned int minPts, float eps, int size);
+  DBSCAN(unsigned int minPts, float eps);
   ~DBSCAN();
   void run(std::vector<PointPtr> &input);
   vector<int> calculateCluster(std::vector<PointPtr> &input,PointPtr &point) const;

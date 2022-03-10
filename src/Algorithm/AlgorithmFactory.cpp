@@ -11,6 +11,7 @@
 #include <Algorithm/Birch.hpp>
 #include <Algorithm/EDMStream.hpp>
 #include <Algorithm/DStream.hpp>
+#include <Algorithm/DesignAspect/V1.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
@@ -39,6 +40,18 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     return (SESAME::AlgorithmPtr) dbStream;
   }
   if (cmd_params.algoType == DStreamType) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V1Stream) {
+    shared_ptr<V1> v1stream = std::make_shared<V1>(cmd_params);
+    return (SESAME::AlgorithmPtr) v1stream;
+  }
+  if (cmd_params.algoType == V2Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V3Stream) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dStream;
   }

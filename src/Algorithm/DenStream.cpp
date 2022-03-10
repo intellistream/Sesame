@@ -63,7 +63,7 @@ void SESAME::DenStream::pointsNearCorePoint(vector<PointPtr> &initData,
 void SESAME::DenStream::Initilize() {
   this->dampedWindow = WindowFactory::createDampedWindow(denStreamParams.base, denStreamParams.lambda);
   this->dbscan =
-      std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon, denStreamParams.initBufferSize);
+      std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon);
   this->startTime = clock();
   this->lastUpdateTime = 0;
   this->pointArrivingTime = 0;

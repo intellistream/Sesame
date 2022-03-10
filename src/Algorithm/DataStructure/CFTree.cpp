@@ -38,7 +38,7 @@ void SESAME::CFTree::initialTree(int b, int l, double t) {
 SESAME::CFPtr SESAME::CFNode::getCF() {
   return this->curCF;
 }
-std::vector<SESAME::NodePtr> SESAME::CFNode::getParents() {
+SESAME::NodePtr SESAME::CFNode::getParent() {
   return this->parent;
 }
 int SESAME::CFNode::getIndex() const {
@@ -52,7 +52,7 @@ void SESAME::CFNode::setNode(CFPtr &Node) {
   this->curCF = Node;
 }
 void SESAME::CFNode::setParent(NodePtr &Parent) {
-  this->parent.push_back(Parent);
+  this->parent = Parent->copy();
 }
 void SESAME::CFNode::setIndex(int Index) {
   this->index = Index;
@@ -66,12 +66,6 @@ SESAME::CFNode::CFNode() {
 }
 SESAME::CFNode::~CFNode() {
 
-}
-void SESAME::CFNode::insertPoint(PointPtr &p) {
-  this->clusterPoints.push_back(p->copy());
-}
-std::vector<SESAME::PointPtr> SESAME::CFNode::getPoints() {
-  return this->clusterPoints;
 }
 bool SESAME::CFNode::getIsLeaf() {
   return this->isLeaf;
@@ -89,8 +83,9 @@ void SESAME::CFNode::setCF(CFPtr &cf) {
   this->curCF->setLS(ls);
   this->curCF->setSS(ss);
 }
+// when need to clear the parent node, directly set the index = -1
 void SESAME::CFNode::clearParents() {
-  std::vector <NodePtr>().swap(this->parent);
+  this->parent->setIndex(-1);
 }
 void SESAME::CFNode::removeChild(NodePtr &child) {
   for(int i = 0; i < this->children.size(); i++){
