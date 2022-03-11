@@ -23,20 +23,18 @@ void SESAME::V2::runOnlineClustering(const SESAME::PointPtr input) {
 
 
 void SESAME::V2::runOfflineClustering(DataSinkPtr sinkPtr) {
+  std::vector<PointPtr> onlineCenters;
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, V2Param.dimension, 0);
     for(int j = 0; j < V2Param.dimension; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
     }
-    sinkPtr->put(centroid->copy());
+    onlineCenters.push_back(centroid->copy());
   }
-  timerMeter.printTime(false,false,false,false);
-  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
+  this->dbscan->run(onlineCenters);
 
-//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-//  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
-//                          middleCentroids,oldGroups,newGroups, true);
-//  this->kmeans->produceResult(oldGroups, sinkPtr);
+  this->dbscan->produceResult(onlineCenters, sinkPtr);
+  timerMeter.printTime(false,false,false,false);
 }
 
 SESAME::V2::V2(param_t &cmd_params) {
