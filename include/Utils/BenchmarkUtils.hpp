@@ -39,9 +39,12 @@ struct param_t {
   int maxLeafNodes;
   int GTClusterNumber;
   double thresholdDistance;
-  //used in DenStream(unique)
+
+  // used in DBSCAN
   unsigned int minPoints;
   double epsilon;
+
+  // used in DenStream(unique)
   double base;
   double lambda;
   double mu;
@@ -57,6 +60,7 @@ struct param_t {
   int cleanUpInterval;
   double weightMin;
   double alpha;
+
   //used in DStream
   double cm;
   double cl;
@@ -65,7 +69,14 @@ struct param_t {
   std::string outputPath;
   SESAME::algoType algoType;
   int datasetOption;
-  bool executeOffline;
+
+  // used in design aspect
+  bool executeOffline; // determine whether to run the offline refinement
+  int landmark; // this is the index of landmark point[start from 0](determine to process the algorithm from which algorithm)
+  int slidingCount;
+  int slidingTime;
+
+
 };
 
 class BenchmarkUtils {

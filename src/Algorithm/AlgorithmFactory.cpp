@@ -12,6 +12,8 @@
 #include <Algorithm/EDMStream.hpp>
 #include <Algorithm/DStream.hpp>
 #include <Algorithm/DesignAspect/V1.hpp>
+#include <Algorithm/DesignAspect/V2.hpp>
+#include <Algorithm/DesignAspect/V3.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
@@ -48,13 +50,38 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     return (SESAME::AlgorithmPtr) v1stream;
   }
   if (cmd_params.algoType == V2Stream) {
-    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
-    return (SESAME::AlgorithmPtr) dStream;
+    shared_ptr<V2> V2Stream = std::make_shared<V2>(cmd_params);
+    return (SESAME::AlgorithmPtr) V2Stream;
   }
   if (cmd_params.algoType == V3Stream) {
+    shared_ptr<V3> V3Stream = std::make_shared<V3>(cmd_params);
+    return (SESAME::AlgorithmPtr) V3Stream;
+  }
+  if (cmd_params.algoType == V4Stream) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dStream;
   }
+  if (cmd_params.algoType == V5Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V6Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V7Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V8Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+  if (cmd_params.algoType == V9Stream) {
+    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) dStream;
+  }
+
   throw std::invalid_argument("Unsupported");
 
 }

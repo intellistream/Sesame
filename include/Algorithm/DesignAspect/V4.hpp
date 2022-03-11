@@ -1,9 +1,9 @@
 //
-// Created by tuidan on 2022/3/10.
+// Created by tuidan on 2022/3/11.
 //
 
-#ifndef SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V3_HPP_
-#define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V3_HPP_
+#ifndef SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_
+#define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/OfflineClustering/KMeans.hpp>
@@ -56,4 +56,4 @@ class V3 : public Algorithm {
   void clearChildParents(vector<SESAME::NodePtr> &children);
 };
 }
-#endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V3_HPP_
+#endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_
