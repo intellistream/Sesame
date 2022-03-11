@@ -48,16 +48,8 @@ void SESAME::V1::runOfflineClustering(DataSinkPtr sinkPtr) {
                        true);
   }
   // store the result input output
-  for(int i = 0; i < offlineCenters.size(); i++) {
-    sinkPtr->put(offlineCenters[i]->copy());
-  }
+  this->km.produceResult(oldGroups,sinkPtr);
   timerMeter.printTime(false,false,false,false);
-  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
-
-//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-//  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
-//                          middleCentroids,oldGroups,newGroups, true);
-//  this->kmeans->produceResult(oldGroups, sinkPtr);
 }
 
 SESAME::V1::V1(param_t &cmd_params) {

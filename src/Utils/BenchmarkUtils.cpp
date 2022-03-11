@@ -250,6 +250,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;
+  cmd_params.executeOffline = false;
 }
 
 
@@ -384,12 +385,18 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
 
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
-  std::vector<SESAME::PointPtr> centers = sinkPtr->getResults();
+  std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> outputs;
-  if(centers.size() == 0){
-    std::cout << "ERROR! No output centers!" << std::endl;
+  if(results.empty()){
+    std::cout << "ERROR! No output!" << std::endl;
   }
-  SESAME::UtilityFunctions::groupByCenters(inputs, centers, outputs, cmd_params.dimension);
+  // TODO: be sure the output clusterID start from 0!
+  if(cmd_params.executeOffline) {
+    SESAME::UtilityFunctions::groupByCentersWithOffline(inputs, results, outputs, cmd_params.dimension);
+  } else {
+    // the output is the clustering center so we need to help every input data find its nearest center
+    SESAME::UtilityFunctions::groupByCenters(inputs, results, outputs, cmd_params.dimension);
+  }
 
   //Store results.
   algoPtr->store(cmd_params.outputPath, cmd_params.dimension, sinkPtr->getResults());

@@ -322,9 +322,10 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   //Count overall time
 
   // store the result input output
-  for(int i = 0; i < centers.size(); i++) {
-    sinkPtr->put(centers[i]->copy());
-  }
+  this->kmeans->produceResult(oldGroups,sinkPtr);
+//  for(int i = 0; i < centers.size(); i++) {
+//    sinkPtr->put(centers[i]->copy());
+//  }
   timerMeter.printTime(true, true,true,false);//
 
 

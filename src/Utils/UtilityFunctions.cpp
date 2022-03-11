@@ -91,7 +91,27 @@ void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input
         dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
       }
       if(min > dis) {
-        output.at(i)->setClusteringCenter(j + 1);
+        output.at(i)->setClusteringCenter(j);
+        min = dis;
+      }
+    }
+  }
+
+}
+void SESAME::UtilityFunctions::groupByCentersWithOffline(const std::vector<PointPtr> &input,
+                                                         const std::vector<PointPtr> &centers,
+                                                         std::vector<PointPtr> &output,
+                                                         int dimension) {
+  for(int i = 0; i < input.size(); i++) {
+    output.push_back(input.at(i)->copy());
+    auto min = DBL_MAX;
+    for(int j = 0; j < centers.size(); j++) {
+      double dis = 0;
+      for(int k = 0; k < dimension; k++) {
+        dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
+      }
+      if(min > dis) {
+        output.at(i)->setClusteringCenter(centers.at(j)->getClusteringCenter());
         min = dis;
       }
     }

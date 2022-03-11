@@ -26,7 +26,6 @@ class V2 : public Algorithm {
 
  public:
   V2Parameter V2Param;
-  std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
   std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering

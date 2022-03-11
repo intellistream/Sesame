@@ -34,6 +34,7 @@ TEST(SystemTest, CluStreamTest) {
 
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::CluStreamType;
+  cmd_params.executeOffline = true;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

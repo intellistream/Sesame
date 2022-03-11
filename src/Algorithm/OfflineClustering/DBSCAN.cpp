@@ -45,7 +45,7 @@ int SESAME::DBSCAN::expandCluster( std::vector<PointPtr> &input,PointPtr &point,
       if (judgeCorePoint(input.at(index),point))  // check if the seed point in input is the core point?
         indexCorePoint=iterSeeds;
     }
-    clusterSeeds.erase(clusterSeeds.begin()+indexCorePoint);
+    clusterSeeds.erase(clusterSeeds.begin() + indexCorePoint);
 
 
     for( vector<int>::size_type i = 0, currentSize = clusterSeeds.size(); i < currentSize; i++ ) // ++i or i++?

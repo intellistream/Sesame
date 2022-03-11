@@ -10,7 +10,7 @@
  */
 void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
                                   std::vector<std::vector<PointPtr>> &group, int number) {
-  int count = 0, k = 1; // TODO: cluster ID starting from 1 ?
+  int count = 0, k = 0; // TODO: check the output cluster ID starting from 0?
   bool stop = false;
   while(!stop) {
     std::vector<SESAME::PointPtr> cluster;
@@ -20,7 +20,7 @@ void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
         count++;
       }
     }
-    if(k == number + 1) stop = true;
+    if(k == number) stop = true;
     else {
       group.push_back(cluster);
       k++;

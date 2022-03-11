@@ -65,6 +65,7 @@ struct param_t {
   std::string outputPath;
   SESAME::algoType algoType;
   int datasetOption;
+  bool executeOffline;
 };
 
 class BenchmarkUtils {

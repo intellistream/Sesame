@@ -30,7 +30,7 @@ TEST(SystemTest, StreamKMTest) {
   SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::StreamKMeansType;
-
+  cmd_params.executeOffline = true;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

@@ -49,6 +49,10 @@ class UtilityFunctions {
                       const std::vector<PointPtr> &centers,
                       std::vector<PointPtr> &output,
                       int dimension);
+  static void groupByCentersWithOffline(const std::vector<PointPtr> &input,
+                             const std::vector<PointPtr> &centers,
+                             std::vector<PointPtr> &output,
+                             int dimension);
 };
 }
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

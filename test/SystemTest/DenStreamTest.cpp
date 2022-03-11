@@ -37,6 +37,7 @@ TEST(SystemTest, DenStreamTest) {
   cmd_params.algoType = SESAME::DenStreamType;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
+  cmd_params.executeOffline = true;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

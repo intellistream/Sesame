@@ -7,9 +7,9 @@ add_executable(Google_Tests_run
         SystemTest/DenStreamTest.cpp
         SystemTest/DBStreamTest.cpp
         SystemTest/DStreamTest.cpp
-        SystemTest/DesignAspect/V1.cpp
-        SystemTest/DesignAspect/V2.cpp
-        SystemTest/DesignAspect/V3.cpp
+        SystemTest/DesignAspect/V1Test.cpp
+        SystemTest/DesignAspect/V2Test.cpp
+        SystemTest/DesignAspect/V3Test.cpp
         )
 
 # linking Google_Tests_run with sesame_lib which will be tested

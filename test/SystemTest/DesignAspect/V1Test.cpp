@@ -32,6 +32,8 @@ TEST(DesignTest, V1Test) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::V1Stream;
+  cmd_params.executeOffline = true;
+
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
