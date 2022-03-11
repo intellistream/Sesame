@@ -42,13 +42,13 @@ int SESAME::DBSCAN::expandCluster( std::vector<PointPtr> &input,PointPtr &point,
       index=clusterSeeds.at(iterSeeds);
 
       input.at(index)->setClusteringCenter(clusterID);
-      if (judgeCorePoint(input.at(index),point))
+      if (judgeCorePoint(input.at(index),point))  // check if the seed point in input is the core point?
         indexCorePoint=iterSeeds;
     }
     clusterSeeds.erase(clusterSeeds.begin()+indexCorePoint);
 
 
-    for( vector<int>::size_type i = 0, currentSize = clusterSeeds.size(); i < currentSize; ++i )
+    for( vector<int>::size_type i = 0, currentSize = clusterSeeds.size(); i < currentSize; i++ ) // ++i or i++?
     {
       vector<int> clusterNeighbors = calculateCluster(input,input.at(clusterSeeds[i]));
       if ( clusterNeighbors.size() >= minPoints )
