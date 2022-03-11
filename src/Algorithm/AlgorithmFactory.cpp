@@ -14,6 +14,7 @@
 #include <Algorithm/DesignAspect/V1.hpp>
 #include <Algorithm/DesignAspect/V2.hpp>
 #include <Algorithm/DesignAspect/V3.hpp>
+#include <Algorithm/DesignAspect/V4.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
@@ -58,8 +59,8 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     return (SESAME::AlgorithmPtr) V3Stream;
   }
   if (cmd_params.algoType == V4Stream) {
-    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
-    return (SESAME::AlgorithmPtr) dStream;
+    shared_ptr<V4> V4Stream = std::make_shared<V4>(cmd_params);
+    return (SESAME::AlgorithmPtr) V4Stream;
   }
   if (cmd_params.algoType == V5Stream) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);

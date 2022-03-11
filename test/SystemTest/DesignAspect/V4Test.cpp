@@ -13,7 +13,7 @@
 #include <Sinks/DataSinkFactory.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
-TEST(DesignTest, V3Test) {
+TEST(DesignTest, V4Test) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
@@ -27,12 +27,12 @@ TEST(DesignTest, V3Test) {
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
-  cmd_params.landmark = 1000;
+  cmd_params.slidingCount = 1000;
 
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V3Stream;
+  cmd_params.algoType = SESAME::V4Stream;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

@@ -12,7 +12,7 @@
 #include <Utils/BenchmarkUtils.hpp>
 namespace SESAME {
 
-class V3Parameter : public AlgorithmParameters {
+class V5Parameter : public AlgorithmParameters {
  public:
   int maxInternalNodes; // B
   int maxLeafNodes; // L
@@ -20,19 +20,19 @@ class V3Parameter : public AlgorithmParameters {
   int landmark;
 };
 
-class V3 : public Algorithm {
+class V5 : public Algorithm {
 
  public:
-  V3Parameter V3Param;
+  V5Parameter V5Param;
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
   vector<NodePtr> leafNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
-  V3(param_t &cmd_params);
+  V5(param_t &cmd_params);
 
-  ~V3();
+  ~V5();
 
   void Initilize() override;
 

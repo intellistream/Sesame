@@ -18,7 +18,7 @@ void SESAME::V2::Initilize() {
 
 void SESAME::V2::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
-  forwardInsert(input);
+  forwardInsert(input->copy());
 }
 
 

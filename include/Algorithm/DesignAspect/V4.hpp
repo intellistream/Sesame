@@ -12,27 +12,29 @@
 #include <Utils/BenchmarkUtils.hpp>
 namespace SESAME {
 
-class V3Parameter : public AlgorithmParameters {
+class V4Parameter : public AlgorithmParameters {
  public:
   int maxInternalNodes; // B
   int maxLeafNodes; // L
   double thresholdDistance; // T
-  int landmark;
+  int slidingCount;
 };
 
-class V3 : public Algorithm {
+class V4 : public Algorithm {
 
  public:
-  V3Parameter V3Param;
+  V4Parameter V4Param;
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
-  NodePtr root;
-  vector<NodePtr> leafNodes;
+  SESAME::NodePtr root;
+  vector<SESAME::NodePtr> leafNodes;
   CFTreePtr cfTree;
+  std::vector<SESAME::PointPtr> slidingWindowPoints; // points stored in the sliding window
+  std::vector<SESAME::NodePtr> SlidingWindowNodes; // every point in the sliding window will insert into a corresponding node
   TimeMeter timerMeter;
-  V3(param_t &cmd_params);
+  V4(param_t &cmd_params);
 
-  ~V3();
+  ~V4();
 
   void Initilize() override;
 
@@ -54,6 +56,9 @@ class V3 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
   void clearChildParents(vector<SESAME::NodePtr> &children);
+
+  // additionally add a function to incrementally delete the first come point in the sliding window rather than rebuild the whole tree
+  void deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_

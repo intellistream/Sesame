@@ -73,9 +73,7 @@ struct param_t {
   // used in design aspect
   bool executeOffline; // determine whether to run the offline refinement
   int landmark; // this is the index of landmark point[start from 0](determine to process the algorithm from which algorithm)
-  int slidingCount;
-  int slidingTime;
-
+  int slidingCount; // since we test the count-based sliding window, this is the count number
 
 };
 

@@ -17,7 +17,7 @@ void SESAME::V3::Initilize() {
 void SESAME::V3::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
   if(input->getIndex() >= this->V3Param.landmark){
-    forwardInsert(input);
+    forwardInsert(input->copy());
   }
 }
 
