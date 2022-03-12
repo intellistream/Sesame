@@ -16,7 +16,7 @@ void SESAME::V4::Initilize() {
 
 void SESAME::V4::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
-  if(this->slidingWindowPoints.size() >= this->V4Param.slidingCount){
+  if(this->slidingWindowPoints.size() == this->V4Param.slidingCount){
     this->slidingWindowPoints.push_back(input->copy());
     forwardInsert(input->copy());
     deletePointFromTree(this->SlidingWindowNodes[0], this->slidingWindowPoints[0]);
@@ -235,6 +235,7 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     timerMeter.dataInsertAccMeasure();
+    this->SlidingWindowNodes.push_back(curNode);
     updateNLS(curNode, point, true);
     timerMeter.dataInsertEndMeasure();
   } else{
@@ -244,7 +245,7 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
         timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
         timerMeter.dataInsertAccMeasure();
-        if(curCF->getN() == 0) {
+        if(curCF->getN() == 0 and curCF->getLS().size() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
@@ -259,6 +260,7 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
           break;
           // Normally insert the data point into the tree leafNode without concept drift
         } else {
+          // create a new node to store the point
           timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
           timerMeter.clusterUpdateEndMeasure();
@@ -317,8 +319,8 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
       // update the parent node
       updateNLS(parent, point, true);
     } else{
-      // SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
-      //SESAME_DEBUG("split a new parent node from the old one ");
+      // SESAME_DEBUG("l > L, current leaf node capacity reaches the threshold L");
+      //SESAME_DEBUG("split a new leaf node from the old one ");
       bool CurNodeIsLeaf = true;
       while(true) {
         NodePtr parParent;
