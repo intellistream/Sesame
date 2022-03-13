@@ -16,8 +16,6 @@
 TEST(DesignTest, V1Test) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-  // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;

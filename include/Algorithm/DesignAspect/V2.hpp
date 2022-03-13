@@ -29,7 +29,7 @@ class V2 : public Algorithm {
   int leafMask = 0;
   NodePtr root;
   std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering
-  vector<NodePtr> leafNodes;
+  vector<NodePtr> clusterNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V2(param_t &cmd_params);

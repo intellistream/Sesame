@@ -17,7 +17,8 @@ class V5Parameter : public AlgorithmParameters {
   int maxInternalNodes; // B
   int maxLeafNodes; // L
   double thresholdDistance; // T
-  int landmark;
+  double alpha;
+  double lambda;
 };
 
 class V5 : public Algorithm {
@@ -27,7 +28,8 @@ class V5 : public Algorithm {
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
-  vector<NodePtr> leafNodes;
+  vector<NodePtr> allNodes;
+  vector<NodePtr> clusterNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V5(param_t &cmd_params);
@@ -54,6 +56,8 @@ class V5 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
   void clearChildParents(vector<SESAME::NodePtr> &children);
+
+  void updateTimeWeight();
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V5_HPP_

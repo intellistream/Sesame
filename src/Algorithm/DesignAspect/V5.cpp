@@ -13,30 +13,36 @@ void SESAME::V5::Initilize() {
   this->root->setIsLeaf(true);
 }
 
+void SESAME::V5::updateTimeWeight() {
+  for(auto el: this->allNodes) {
+    auto cf = el->getCF();
+    auto ls = cf->getLS();
+    auto ss = cf->getSS();
+    for(int i = 0; i < this->V5Param.dimension; i++) {
+      ls[i] *= pow(this->V5Param.alpha, -1 * this->V5Param.lambda);
+      ss[i] *= pow(this->V5Param.alpha, -2 * this->V5Param.lambda);
+    }
+    cf->setLS(ls);
+    cf->setSS(ss);
+  }
+}
 
 void SESAME::V5::runOnlineClustering(const SESAME::PointPtr input) {
-  // insert the root
-  if(input->getIndex() >= this->V5Param.landmark){
-    forwardInsert(input->copy());
-  }
+  // insert the point into the CF-Tree
+  forwardInsert(input->copy());
+  updateTimeWeight();
 }
 
 
 void SESAME::V5::runOfflineClustering(DataSinkPtr sinkPtr) {
-  for(int i = 0; i < this->leafNodes.size(); i++) {
+  for(int i = 0; i < this->clusterNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, V5Param.dimension, 0);
     for(int j = 0; j < V5Param.dimension; j++) {
-      centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
+      centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
     }
     sinkPtr->put(centroid->copy());
   }
   timerMeter.printTime(false,false,false,false);
-  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
-
-//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-//  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
-//                          middleCentroids,oldGroups,newGroups, true);
-//  this->kmeans->produceResult(oldGroups, sinkPtr);
 }
 
 SESAME::V5::V5(param_t &cmd_params) {
@@ -45,7 +51,8 @@ SESAME::V5::V5(param_t &cmd_params) {
   this->V5Param.maxInternalNodes = cmd_params.maxInternalNodes;
   this->V5Param.maxLeafNodes = cmd_params.maxLeafNodes;
   this->V5Param.thresholdDistance = cmd_params.thresholdDistance;
-  this->V5Param.landmark = cmd_params.landmark;
+  this->V5Param.lambda = cmd_params.lambda;
+  this->V5Param.alpha = cmd_params.alpha;
 }
 SESAME::V5::~V5() {
 
@@ -190,6 +197,7 @@ void SESAME::V5::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
 void SESAME::V5::initializeCF(SESAME::CFPtr &cf, int dimension) {
   vector<double> ls = cf->getLS();
   vector<double> ss = cf->getSS();
+  cf->setN(0);
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
@@ -254,13 +262,15 @@ void SESAME::V5::forwardInsert(SESAME::PointPtr point){
 // concept drift adaption
 void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   if(curNode->getParent() == nullptr) { // means current node is root node
-    //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
+    // l <= L, create a new leaf node and insert the point into it(root change)
     NodePtr newRoot = make_shared<CFNode>();
+    this->allNodes.push_back(newRoot);
     newRoot->setIsLeaf(false);
     newRoot->setChild(curNode);
     curNode->setParent(newRoot);
 
     NodePtr newNode = make_shared<CFNode>();
+    this->allNodes.push_back(newNode);
     newNode->setIsLeaf(true);
     newNode->setParent(newRoot);
     vector<double> curLS = curNode->getCF()->getLS();
@@ -271,73 +281,73 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
     // here we need to remove the old root and add the new one into the leafnodes set
-    this->leafNodes.push_back(newRoot);
-
-
+    this->clusterNodes.push_back(newRoot);
     // update the parent node
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
     this->root = newRoot;
-
   } else{
     NodePtr parent = curNode->getParent();
     NodePtr newNode = make_shared<CFNode>();
+    this->allNodes.push_back(newNode);
     newNode->setIsLeaf(true);
     newNode->setParent(parent);
     parent->setChild(newNode);
     updateNLS(newNode, point, false);
     if(parent->getChildren().size() < this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
-      //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it");
-
-      // update the parent node
+      // l <= L, create a new leaf node and insert the point into it
+      // update the parent node and all nodes on the path to root node
       updateNLS(parent, point, true);
     } else{
-      // SESAME_DEBUG("l > L, parent node of the current leaf node capacity reaches the threshold L");
-      //SESAME_DEBUG("split a new parent node from the old one ");
-      bool CurNodeIsLeaf = true;
+      // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
+      bool CurNodeIsClus = true;
       while(true) {
         NodePtr parParent;
         if(parent->getParent() == nullptr) {
+          // if the parent node is the root, we need to create a new root as a parParent
           parParent = make_shared<CFNode>();
           parParent->setIsLeaf(false);
+          this->allNodes.push_back(parParent); // insert the new created parParent node into the allNode list
           this->root = parParent;
+          // since the parent node's nls has not been updated by the point, so we directly copy the nls in parent node to the parParent one
           CFPtr parCF = parent->getCF();
           parParent->setCF(parCF);
         } else{
+          // if the parent node is not the root, we can get the parParent one directly
           parParent = parent->getParent();
-          parParent->removeChild(parent);
         }
+        // we need to create a new parent node since the old one has to split
         NodePtr newParentA = make_shared<CFNode>();
-        NodePtr newParentB = make_shared<CFNode>();
+        // insert the new parent into the allNode list
+        this->allNodes.push_back(newParentA);
+        // we also need to insert the new parent node into the clusterNode list if its children is a leaf node.
         if(parent->getChildren().at(0)->getIsLeaf()) {
-          for(int i = 0; i < this->leafNodes.size(); i++) {
-            if(this->leafNodes.at(i)->getIndex() == parent->getIndex()) {
-              this->leafNodes.erase(this->leafNodes.begin() + i);
-            }
-          }
           newParentA->setIndex(++this->leafMask);
-          newParentB->setIndex(++this->leafMask);
-          this->leafNodes.push_back(newParentA);
-          this->leafNodes.push_back(newParentB);
+          this->clusterNodes.push_back(newParentA);
         }
-
-
-        newParentB->setIsLeaf(false);
+        // we only create a new parent rather and keep the old parent node as the split two sub-nodes
+        // so we need to refresh the old parent node as a blank one and treat it as a new parent B
+        parent->setIsLeaf(false);
         newParentA->setIsLeaf(false);
-        newParentB->setParent(parParent);
+        parent->setParent(parParent); // link the parparent node and the new created new parent A
         newParentA->setParent(parParent);
-        parParent->setChild(newParentB);
         parParent->setChild(newParentA);
+        // clean cf of the old parent node and initialize the cf of new parent A (ls and ss all have d number of 0)
         CFPtr cfA = newParentA->getCF();
-        CFPtr cfB = newParentB->getCF();
+        CFPtr cfB = parent->getCF();
+        std::vector<double>ls, ss;
+        cfB->setN(0);
+        cfB->setLS(ls);
+        cfB->setSS(ss);
         initializeCF(cfA, point->getDimension());
         initializeCF(cfB, point->getDimension());
-
+        // split the child nodes of the old parent nodes
         vector<NodePtr> broNodes = parent->getChildren();
+        std::vector<NodePtr> blankChildren;
+        parent->setChildren(blankChildren);
         vector<vector<double>> corCFDistance;
-        calculateCorDistance(corCFDistance, broNodes);
-
+        calculateCorDistance(corCFDistance, broNodes); //  calculate the distance between each two brother nodes
         // choose two farthest CFs as seedA and seedB
         int seedA = 0;
         int seedB = 0;
@@ -351,48 +361,50 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
             }
           }
         }
-
         // insert the child node into the nearest seed(A / B)
         clearChildParents(broNodes);
-        // insert seedA node into parent A
+        // insert seedA node into new parent A and link them
         newParentA->setChild(broNodes[seedA]);
         broNodes[seedA]->setParent(newParentA);
         addNodeNLSToNode(broNodes[seedA], newParentA);
-        // insert seedB node into parent B
-        newParentB->setChild(broNodes[seedB]);
-        broNodes[seedB]->setParent(newParentB);
-        addNodeNLSToNode(broNodes[seedB], newParentB);
-        // split other nodes into A and B
+        // insert seed B node into new parent B and link them
+        parent->setChild(broNodes[seedB]);
+        broNodes[seedB]->setParent(parent);
+        addNodeNLSToNode(broNodes[seedB], parent);
+        // if other one brother node is near seed A then split it into new parent A, otherwise new parent B.
         for(int i = 0; i < broNodes.size(); i++) {
           if(i != seedA and i != seedB){
             if(corCFDistance[i][seedA] < corCFDistance[i][seedB]) {
               newParentA->setChild(broNodes[i]);
-              addNodeNLSToNode(broNodes[i], newParentA);
+              addNodeNLSToNode(broNodes[i], newParentA); // since the brother nodes list contains the one we insert our point, so after this function, the parent node's nls are also updated.
               broNodes[i]->clearParents();
               broNodes[i]->setParent(newParentA);
             }else {
-              newParentB->setChild(broNodes[i]);
-              addNodeNLSToNode(broNodes[i], newParentB);
+              parent->setChild(broNodes[i]);
+              addNodeNLSToNode(broNodes[i], parent);
               broNodes[i]->clearParents();
-              broNodes[i]->setParent(newParentB);
+              broNodes[i]->setParent(parent);
             }
           }
         }
-        if(CurNodeIsLeaf){
+        // if the current node(parent) is a cluster nodes, then we need to update the nls of its parent using new point.
+        // we only update the parparent in the first loop.
+        if(CurNodeIsClus){
           updateNLS(parParent, point, true);
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
-          //SESAME_DEBUG("b < B, remove the old node and insert the new nodeA and nodeB into the parent node");
+          // b < B, remove the old node and insert the new nodeA and nodeB into the parent node.
           break;
         }else {
-          //SESAME_DEBUG("b >= B, parent node of the current interior node capacity reaches the threshold B");
+          // b >= B, parent node of the current interior node capacity reaches the threshold B.
           curNode = curNode->getParent();
           parent = parParent;
-          CurNodeIsLeaf = false;
+          CurNodeIsClus = false;
         }
       }
     }
   }
 }
+
 

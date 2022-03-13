@@ -60,6 +60,9 @@ void SESAME::CFNode::setIndex(int Index) {
 void SESAME::CFNode::setChild(NodePtr &child) {
   this->children.push_back(child);
 }
+void SESAME::CFNode::setChildren(std::vector<NodePtr> children) {
+  this->children = children;
+}
 SESAME::CFNode::CFNode() {
   this->curCF = std::make_shared<CF>();
   this->isLeaf = true;

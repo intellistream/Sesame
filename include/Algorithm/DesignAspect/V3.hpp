@@ -27,7 +27,7 @@ class V3 : public Algorithm {
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
-  vector<NodePtr> leafNodes;
+  vector<NodePtr> clusterNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V3(param_t &cmd_params);

@@ -58,6 +58,7 @@ class CFNode {
   void setIndex(int Index);
   void setParent(SESAME::NodePtr &Parent);
   void setChild(SESAME::NodePtr &child);
+  void setChildren(std::vector<NodePtr> children);
   void clearParents();
 };
 }

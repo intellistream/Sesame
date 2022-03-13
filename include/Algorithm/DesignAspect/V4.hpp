@@ -27,7 +27,7 @@ class V4 : public Algorithm {
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   SESAME::NodePtr root;
-  vector<SESAME::NodePtr> leafNodes;
+  vector<SESAME::NodePtr> clusterNodes;
   CFTreePtr cfTree;
   std::vector<SESAME::PointPtr> slidingWindowPoints; // points stored in the sliding window
   std::vector<SESAME::NodePtr> SlidingWindowNodes; // every point in the sliding window will insert into a corresponding node

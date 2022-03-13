@@ -28,7 +28,7 @@ class V1 : public Algorithm {
   int leafMask = 0;
   NodePtr root;
   KMeans km;
-  vector<NodePtr> leafNodes;
+  vector<NodePtr> clusterNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V1(param_t &cmd_params);

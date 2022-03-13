@@ -16,8 +16,6 @@
 TEST(DesignTest, V5Test) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
-  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-  // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
@@ -27,7 +25,8 @@ TEST(DesignTest, V5Test) {
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
-  cmd_params.landmark = 1000;
+  cmd_params.lambda = 1.25;
+  cmd_params.alpha = 2;
 
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
