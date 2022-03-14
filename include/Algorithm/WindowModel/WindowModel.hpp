@@ -25,10 +25,9 @@ private:
   int landmark;
 
 public:
-  Landmark(const StreamClusteringAlgorithmParameters &param)
+  Landmark(const StreamClusteringParam &param)
       : landmark(param.landmark) {}
   bool addPoint(const PointPtr input) { return input->getIndex() >= landmark; }
-  bool delPoint() { return false; }
 };
 
 class Sliding : WindowModel {
@@ -37,7 +36,7 @@ private:
   int size;
 
 public:
-  Sliding(const StreamClusteringAlgorithmParameters &param)
+  Sliding(const StreamClusteringParam &param)
       : slidingCount(param.slidingCount) {}
   bool addPoint(const PointPtr input) {
     ++size;
@@ -57,10 +56,9 @@ private:
   double alpha, lambda;
 
 public:
-  Damped(const StreamClusteringAlgorithmParameters &param)
+  Damped(const StreamClusteringParam &param)
       : alpha(param.alpha), lambda(param.lambda) {}
   bool addPoint(const PointPtr input) { return true; }
-  bool delPoint() { return false; }
 };
 
 } // namespace SESAME

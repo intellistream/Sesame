@@ -17,7 +17,7 @@ class OutlierDetection {};
 
 class Distance : public OutlierDetection {
 public:
-  Distance(const StreamClusteringAlgorithmParameters &param) {}
+  Distance(const StreamClusteringParam &param) {}
   // TODO
 };
 

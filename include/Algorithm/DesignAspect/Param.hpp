@@ -10,7 +10,7 @@
 
 namespace SESAME {
 
-class StreamClusteringAlgorithmParameters {
+class StreamClusteringParam {
 public:
   int pointNumber;
   int dimension;

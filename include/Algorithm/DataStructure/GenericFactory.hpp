@@ -2,7 +2,7 @@
 // (https://github.com/intellistream)
 
 //
-// Created by wzr on 2022/3/14.
+// Created by wzru on 2022/3/14.
 //
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_GENERICFACTORY_HPP_

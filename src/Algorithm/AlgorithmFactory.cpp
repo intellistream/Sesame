@@ -92,8 +92,8 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     using W = Landmark;
     using D = ClusteringFeaturesTree;
     using O = Distance;
-    shared_ptr<StreamClusteringAlgorithm<W, D, O>> generic =
-        std::make_shared<StreamClusteringAlgorithm<W, D, O>>(cmd_params);
+    shared_ptr<StreamClustering<W, D, O>> generic =
+        std::make_shared<StreamClustering<W, D, O>>(cmd_params);
     return (AlgorithmPtr)generic;
   }
   throw std::invalid_argument("Unsupported");

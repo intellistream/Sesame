@@ -31,7 +31,7 @@ private:
   double
       thresholdDistance; // threshold radius of each sub cluster in leaf nodes
 public:
-  CFTree(const StreamClusteringAlgorithmParameters &param);
+  CFTree(const StreamClusteringParam &param);
   CFTree(int b, int l, double t);
   ~CFTree();
   int getB() const;
@@ -79,7 +79,7 @@ private:
 public:
   class Node;
   using NodePtr = std::shared_ptr<Node>;
-  ClusteringFeaturesTree(const StreamClusteringAlgorithmParameters &param);
+  ClusteringFeaturesTree(const StreamClusteringParam &param);
   ClusteringFeaturesTree(int maxInternalNodes, int maxLeafNodes,
                          double thresholdDistance);
   ~ClusteringFeaturesTree();

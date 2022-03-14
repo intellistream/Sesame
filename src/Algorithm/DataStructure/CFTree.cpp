@@ -7,7 +7,7 @@
 
 namespace SESAME {
 
-CFTree::CFTree(const StreamClusteringAlgorithmParameters &param)
+CFTree::CFTree(const StreamClusteringParam &param)
     : maxInternalNodes(param.maxInternalNodes),
       maxLeafNodes(param.maxLeafNodes),
       thresholdDistance(param.thresholdDistance) {}
@@ -61,7 +61,7 @@ void CFNode::removeChild(NodePtr &child) {
 }
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(
-    const StreamClusteringAlgorithmParameters &param)
+    const StreamClusteringParam &param)
     : ClusteringFeaturesTree(param.maxInternalNodes, param.maxLeafNodes,
                              param.thresholdDistance) {}
 
