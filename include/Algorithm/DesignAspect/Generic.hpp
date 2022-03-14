@@ -49,6 +49,7 @@ StreamClusteringAlgorithm<W, D, O>::StreamClusteringAlgorithm(
     const param_t &cmd_params) {
   Param.pointNumber = cmd_params.pointNumber;
   Param.dimension = cmd_params.dimension;
+  Param.clusterNumber = cmd_params.clusterNumber;
 }
 
 template <typename W, typename D, typename O>
