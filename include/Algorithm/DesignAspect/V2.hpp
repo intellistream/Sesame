@@ -20,6 +20,7 @@ class V2Parameter : public AlgorithmParameters {
   double thresholdDistance; // T
   unsigned int minPoints;//minimum point of core point in DBSCAN
   double epsilon;//maximum distance if point belongs to the density area of core point
+  int landmark;
 };
 
 class V2 : public Algorithm {

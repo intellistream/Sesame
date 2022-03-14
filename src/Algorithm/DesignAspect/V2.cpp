@@ -18,8 +18,9 @@ void SESAME::V2::Initilize() {
 
 void SESAME::V2::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
-  forwardInsert(input->copy());
-}
+  if(input->getIndex() >= this->V2Param.landmark){
+    forwardInsert(input->copy());
+  }}
 
 
 void SESAME::V2::runOfflineClustering(DataSinkPtr sinkPtr) {

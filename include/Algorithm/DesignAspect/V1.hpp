@@ -18,6 +18,7 @@ class V1Parameter : public AlgorithmParameters {
   int maxLeafNodes; // L
   double thresholdDistance; // T
   int clusterNumber;
+  int landmark;
 };
 
 class V1 : public Algorithm {
