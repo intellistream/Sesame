@@ -4,11 +4,15 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_
+
+#include "Algorithm/DataStructure/FeatureVector.hpp"
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/DesignAspect/Param.hpp"
+
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <Algorithm/DataStructure/FeatureVector.hpp>
-#include <Algorithm/DataStructure/Point.hpp>
+
 namespace SESAME {
 
 // define the share point of the class object
@@ -18,13 +22,14 @@ typedef std::shared_ptr<CFNode> NodePtr;
 typedef std::shared_ptr<CFTree> CFTreePtr;
 
 class CFTree {
- private:
+private:
   int maxInternalNodes; // max CF number of each internal node
-  int maxLeafNodes; // max CF number of each leaf node
-  double thresholdDistance; // threshold radius of each sub cluster in leaf nodes
- public:
+  int maxLeafNodes;     // max CF number of each leaf node
+  double
+      thresholdDistance; // threshold radius of each sub cluster in leaf nodes
+public:
+  CFTree(const StreamClusteringAlgorithmParameters &param);
   CFTree(int b, int l, double t);
-  void initialTree(int b, int l, double t);
   ~CFTree();
   int getB() const;
   int getL() const;
@@ -34,32 +39,32 @@ class CFTree {
   void setT(double t);
 };
 
-
 class CFNode {
- private:
+private:
   CFPtr curCF;
   bool isLeaf;
   std::vector<NodePtr> children;
   NodePtr parent;
   int index;
- public:
+
+public:
   CFNode();
   ~CFNode();
-  SESAME::CFPtr getCF();
-  void setCF(SESAME::CFPtr &cf);
-  SESAME::NodePtr getParent();
+  CFPtr getCF();
+  void setCF(CFPtr &cf);
+  NodePtr getParent();
   int getIndex() const;
-  std::vector<SESAME::NodePtr> getChildren();
-  void removeChild(SESAME::NodePtr &child);
-  SESAME::NodePtr copy();
+  std::vector<NodePtr> getChildren();
+  void removeChild(NodePtr &child);
+  NodePtr copy();
   bool getIsLeaf();
   void setIsLeaf(bool leaf);
-  void setNode(SESAME::CFPtr &Node);
+  void setNode(CFPtr &Node);
   void setIndex(int Index);
-  void setParent(SESAME::NodePtr &Parent);
-  void setChild(SESAME::NodePtr &child);
+  void setParent(NodePtr &Parent);
+  void setChild(NodePtr &child);
   void setChildren(std::vector<NodePtr> children);
   void clearParents();
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_
+} // namespace SESAME
+#endif // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_

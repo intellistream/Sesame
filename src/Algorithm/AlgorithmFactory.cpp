@@ -4,19 +4,21 @@
 // Created by Shuhao Zhang on 26/07/2021.
 //
 
-#include <Algorithm/StreamKM.hpp>
-#include <Algorithm/CluStream.hpp>
-#include <Algorithm/DenStream.hpp>
-#include <Algorithm/DBStream.hpp>
-#include <Algorithm/Birch.hpp>
-#include <Algorithm/EDMStream.hpp>
-#include <Algorithm/DStream.hpp>
-#include <Algorithm/DesignAspect/V1.hpp>
-#include <Algorithm/DesignAspect/V2.hpp>
-#include <Algorithm/DesignAspect/V3.hpp>
-#include <Algorithm/DesignAspect/V4.hpp>
-#include <Algorithm/DesignAspect/V5.hpp>
-#include <Algorithm/AlgorithmFactory.hpp>
+#include "Algorithm/StreamKM.hpp"
+#include "Algorithm/CluStream.hpp"
+#include "Algorithm/DenStream.hpp"
+#include "Algorithm/DBStream.hpp"
+#include "Algorithm/Birch.hpp"
+#include "Algorithm/EDMStream.hpp"
+#include "Algorithm/DStream.hpp"
+#include "Algorithm/DesignAspect/V1.hpp"
+#include "Algorithm/DesignAspect/V2.hpp"
+#include "Algorithm/DesignAspect/V3.hpp"
+#include "Algorithm/DesignAspect/V4.hpp"
+#include "Algorithm/DesignAspect/V5.hpp"
+#include "Algorithm/DesignAspect/Generic.hpp"
+#include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 
 SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algoType == SESAME::StreamKMeansType) {
@@ -83,7 +85,13 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
     return (SESAME::AlgorithmPtr) dStream;
   }
-
+  if (cmd_params.algoType == Generic) {
+    using W = LandmarkWindow;
+    using D = CFTree;
+    using O = Distance;
+    shared_ptr<StreamClusteringAlgorithm<W, D, O> > generic = std::make_shared<StreamClusteringAlgorithm<W, D, O> >(cmd_params);
+    return (SESAME::AlgorithmPtr) generic;
+  }
   throw std::invalid_argument("Unsupported");
 
 }

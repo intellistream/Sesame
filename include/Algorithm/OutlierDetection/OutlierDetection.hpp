@@ -10,8 +10,11 @@ namespace SESAME {
 class OutlierDetection;
 typedef std::shared_ptr<OutlierDetection> OutlierDetectionPtr;
 
-class OutlierDetection {
+class OutlierDetection {};
 
+class Distance : public OutlierDetection {
+  // TODO
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_OUTLIERDETECTION_OUTLIERDETECTION_HPP_
+
+} // namespace SESAME
+#endif // SESAME_INCLUDE_ALGORITHM_OUTLIERDETECTION_OUTLIERDETECTION_HPP_

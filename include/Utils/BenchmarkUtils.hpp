@@ -7,19 +7,20 @@
 #ifndef ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 #define ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Sources/DataSource.hpp"
+#include "Sinks/DataSink.hpp"
+#include "Algorithm/Algorithm.hpp"
+#include "Evaluation/Evaluation.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cstdio>
 #include <cstdlib>
 #include <getopt.h>
-#include <Algorithm/DataStructure/Point.hpp>
 #include <memory>
 #include <vector>
-#include <Sources/DataSource.hpp>
-#include <Sinks/DataSink.hpp>
-#include <Algorithm/Algorithm.hpp>
-#include <Evaluation/Evaluation.hpp>
 
 struct param_t {
   int pointNumber;
