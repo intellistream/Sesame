@@ -59,6 +59,12 @@ void CFNode::removeChild(NodePtr &child) {
     }
   }
 }
+bool SESAME::CFNode::getIsOutlier() {
+  return this->isOutlier;
+}
+void SESAME::CFNode::setIsOutlier(bool flag) {
+  this->isOutlier = flag;
+}
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(
     const StreamClusteringParam &param)

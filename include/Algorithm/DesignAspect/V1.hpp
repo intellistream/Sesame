@@ -19,6 +19,7 @@ class V1Parameter : public AlgorithmParameters {
   double thresholdDistance; // T
   int clusterNumber;
   int landmark;
+  int distanceOutliers;
 };
 
 class V1 : public Algorithm {
@@ -30,6 +31,7 @@ class V1 : public Algorithm {
   NodePtr root;
   KMeans km;
   vector<NodePtr> clusterNodes;
+  vector<NodePtr> Outliers;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V1(param_t &cmd_params);
@@ -56,6 +58,9 @@ class V1 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
   void clearChildParents(vector<SESAME::NodePtr> &children);
+
+  void removeOutliers();
+  void checkOutliers(NodePtr &node);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V1_HPP_

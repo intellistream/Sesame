@@ -13,9 +13,10 @@ This project aims at building a scalable stream mining library on modern hardwar
 | **~~V3~~** | **~~Landmark~~**             | **~~Distance~~**  | **~~CF-Tree~~** | **~~No~~**         |
 | **~~V4~~** | **~~Sliding(Count-Based)~~** | **~~Distance~~**  | **~~CF-Tree~~** | **~~No~~**         |
 | **~~V5~~** | **~~Damped~~**               | **~~Distance~~**  | **~~CF-Tree~~** | **~~No~~**         |
-| V6         | Landmark                     | Density           | CF-Tree         | No                 |
-| V7         | Landmark                     | Distance          | Macro Cluster   | No                 |
-| V8         | Landmark                     | Distance          | Grid            | No                 |
+| V6         | Landmark                     | No           | CF-Tree         | No                 |
+| V7         | Landmark                     | Density           | CF-Tree         | No                 |
+| V8         | Landmark                     | Distance          | Macro Cluster   | No                 |
+| V9         | Landmark                     | Distance          | Grid            | No                 |
 
 
 

@@ -11,6 +11,27 @@ void SESAME::V3::Initilize() {
   this->cfTree->setT(V3Param.thresholdDistance);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
+  this->root->setIndex(this->leafMask++);
+}
+
+void SESAME::V3::removeOutliers(){
+  for (auto it = this->Outliers.begin(); it != this->Outliers.end();){
+    if (!it->get()->getIsOutlier()) {
+      it = this->Outliers.erase(it);
+    }
+    else
+      ++it;
+  }
+}
+
+void SESAME::V3::checkOutliers(SESAME::NodePtr &node) {
+  if(node->getCF()->getN() < this->V3Param.distanceOutliers and !node->getIsOutlier()) {
+    node->setIsOutlier(true);
+    this->Outliers.push_back(node);
+  } else if(node->getCF()->getN() >= this->V3Param.distanceOutliers) {
+    node->setIsOutlier(false);
+    removeOutliers();
+  }
 }
 
 
@@ -28,6 +49,12 @@ void SESAME::V3::runOfflineClustering(DataSinkPtr sinkPtr) {
     for(int j = 0; j < V3Param.dimension; j++) {
       centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
     }
+    if(this->clusterNodes[i]->getIsOutlier()){
+      centroid->setIsOutlier(true);
+    }
+    else {
+      centroid->setIsOutlier(false);
+    }
     sinkPtr->put(centroid->copy());
   }
   timerMeter.printTime(false,false,false,false);
@@ -40,6 +67,7 @@ SESAME::V3::V3(param_t &cmd_params) {
   this->V3Param.maxLeafNodes = cmd_params.maxLeafNodes;
   this->V3Param.thresholdDistance = cmd_params.thresholdDistance;
   this->V3Param.landmark = cmd_params.landmark;
+  this->V3Param.distanceOutliers = cmd_params.distanceOutliers;
 }
 SESAME::V3::~V3() {
 
@@ -221,6 +249,7 @@ void SESAME::V3::forwardInsert(SESAME::PointPtr point){
           // whether the new radius is lower than threshold T
           timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
+          checkOutliers(curNode);
           timerMeter.dataInsertEndMeasure();
 
           // means this point could get included in this cluster
@@ -264,10 +293,11 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->getCF()->setSS(curSS);
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
-    // here we need to remove the old root and add the new one into the leafnodes set
+    // here we need to add the new root into the leafnodes set
     // update the parent node
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
+    checkOutliers(newRoot);
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -275,15 +305,17 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newNode->setIsLeaf(true);
     newNode->setParent(parent);
     parent->setChild(newNode);
+    // insert the new created node into the outliers
     updateNLS(newNode, point, false);
     if(parent->getChildren().size() < this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
       updateNLS(parent, point, true);
+      checkOutliers(parent);
     } else{
       // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
-      bool CurNodeIsClus = true;
+      bool CurNodeIsLeaf = true;
       while(true) {
         NodePtr parParent;
         if(parent->getParent() == nullptr) {
@@ -369,8 +401,10 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         }
         // if the current node(parent) is a cluster nodes, then we need to update the nls of its parent using new point.
         // we only update the parparent in the first loop.
-        if(CurNodeIsClus){
+        if(CurNodeIsLeaf){
           updateNLS(parParent, point, true);
+          checkOutliers(parent);
+          checkOutliers(newParentA);
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
@@ -380,7 +414,7 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
           // b >= B, parent node of the current interior node capacity reaches the threshold B.
           curNode = curNode->getParent();
           parent = parParent;
-          CurNodeIsClus = false;
+          CurNodeIsLeaf = false;
         }
       }
     }

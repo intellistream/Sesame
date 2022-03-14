@@ -26,6 +26,8 @@ TEST(DesignTest, V4Test) {
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.slidingCount = 1000;
+  cmd_params.detectOutliers = true;
+  cmd_params.distanceOutliers = 10;
 
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";

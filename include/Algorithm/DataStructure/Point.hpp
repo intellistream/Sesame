@@ -20,6 +20,7 @@ class Point {
   double cost;
   double minDist;
   int timestamp;
+  bool isOutlier;
  private:
   // the distance to the nearest data point
   int clusteringCenter;  // using index to identify
@@ -48,6 +49,8 @@ class Point {
   SESAME::PointPtr copy();
   void setTimeStamp(int t);
   int getTimeStamp() const;
+  bool getIsOutlier();
+  void setIsOutlier(bool flag);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_

@@ -46,6 +46,7 @@ class CFNode {
 private:
   CFPtr curCF;
   bool isLeaf;
+  bool isOutlier;
   std::vector<NodePtr> children;
   NodePtr parent;
   int index;
@@ -68,6 +69,8 @@ public:
   void setChild(NodePtr &child);
   void setChildren(std::vector<NodePtr> children);
   void clearParents();
+  void setIsOutlier(bool flag);
+  bool getIsOutlier();
 };
 
 class ClusteringFeaturesTree {

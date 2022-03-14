@@ -63,7 +63,7 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
   double purity;
   double size = 0;
   std::vector<PointPtr> input;
-  UtilityFunctions::groupByCenters(result, center, input, dimension);
+  UtilityFunctions::groupByCenters(result, center, input, dimension, false);
   for(int i = 0; i < input.size(); i++){
     double w = 1;
     if(decay){ // 分段函数来设置weight

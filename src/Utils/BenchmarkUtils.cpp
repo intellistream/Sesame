@@ -251,6 +251,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.outputPath = "results.txt";
   cmd_params.algoType = SESAME::DBStreamType;
   cmd_params.executeOffline = false;
+  cmd_params.detectOutliers = false;
 }
 
 
@@ -397,10 +398,11 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
   // TODO: be sure the output clusterID start from 0!
   if(cmd_params.executeOffline) {
-    SESAME::UtilityFunctions::groupByCentersWithOffline(inputs, results, outputs, cmd_params.dimension);
+    SESAME::UtilityFunctions::groupByCentersWithOffline(inputs, results, outputs, cmd_params.dimension, cmd_params.detectOutliers);
+    // 使用offline的算法不管是否detect outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier clustering center
   } else {
     // the output is the clustering center so we need to help every input data find its nearest center
-    SESAME::UtilityFunctions::groupByCenters(inputs, results, outputs, cmd_params.dimension);
+    SESAME::UtilityFunctions::groupByCenters(inputs, results, outputs, cmd_params.dimension, cmd_params.detectOutliers);
   }
 
   //Store results.

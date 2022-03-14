@@ -112,3 +112,9 @@ double SESAME::Point::getMinDist() const {
 void SESAME::Point::setMinDist(double min_dist) {
   minDist = min_dist;
 }
+void SESAME::Point::setIsOutlier(bool flag) {
+  this->isOutlier = flag;
+}
+bool SESAME::Point::getIsOutlier() {
+  return this->isOutlier;
+}

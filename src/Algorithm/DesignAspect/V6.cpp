@@ -1,82 +1,51 @@
 //
 // Created by tuidan on 2021/8/24.
 //
-#include <Algorithm/DesignAspect/V4.hpp>
+#include <Algorithm/DesignAspect/V6.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-void SESAME::V4::Initilize() {
+void SESAME::V6::Initilize() {
   this->cfTree = DataStructureFactory::createCFTree();
-  this->cfTree->setB(V4Param.maxInternalNodes);
-  this->cfTree->setL(V4Param.maxLeafNodes);
-  this->cfTree->setT(V4Param.thresholdDistance);
+  this->cfTree->setB(V6Param.maxInternalNodes);
+  this->cfTree->setL(V6Param.maxLeafNodes);
+  this->cfTree->setT(V6Param.thresholdDistance);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
-  this->root->setIndex(this->leafMask++);
-}
-
-void SESAME::V4::removeOutliers(){
-  for (auto it = this->Outliers.begin(); it != this->Outliers.end();){
-    if (!it->get()->getIsOutlier()) {
-      it = this->Outliers.erase(it);
-    }
-    else
-      ++it;
-  }
-}
-
-void SESAME::V4::checkOutliers(SESAME::NodePtr &node) {
-  if(node->getCF()->getN() < this->V4Param.distanceOutliers and !node->getIsOutlier()) {
-    node->setIsOutlier(true);
-    this->Outliers.push_back(node);
-  } else if(node->getCF()->getN() >= this->V4Param.distanceOutliers) {
-    node->setIsOutlier(false);
-    removeOutliers();
-  }
 }
 
 
-void SESAME::V4::runOnlineClustering(const SESAME::PointPtr input) {
+void SESAME::V6::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
-  if(this->slidingWindowPoints.size() == this->V4Param.slidingCount){
-    this->slidingWindowPoints.push_back(input->copy());
-    forwardInsert(input->copy());
-    deletePointFromTree(this->SlidingWindowNodes[0], this->slidingWindowPoints[0]);
-    this->slidingWindowPoints.erase(this->slidingWindowPoints.begin()); // delete the first come point
-    this->SlidingWindowNodes.erase(this->SlidingWindowNodes.begin()); // delete the node inserted by first come point
-  } else {
-    this->slidingWindowPoints.push_back(input->copy());
+  if(input->getIndex() >= this->V6Param.landmark){
     forwardInsert(input->copy());
   }
 }
 
 
-void SESAME::V4::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::V6::runOfflineClustering(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->clusterNodes.size(); i++) {
-    if(!this->clusterNodes[i]->getIsOutlier()) {
-      PointPtr centroid = DataStructureFactory::createPoint(i, 1, V4Param.dimension, 0);
-      for(int j = 0; j < V4Param.dimension; j++) {
-        centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
-      }
-      sinkPtr->put(centroid->copy());
+    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V6Param.dimension, 0);
+    for(int j = 0; j < V6Param.dimension; j++) {
+      centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
     }
+    sinkPtr->put(centroid->copy());
   }
   timerMeter.printTime(false,false,false,false);
 }
 
-SESAME::V4::V4(param_t &cmd_params) {
-  this->V4Param.pointNumber = cmd_params.pointNumber;
-  this->V4Param.dimension = cmd_params.dimension;
-  this->V4Param.maxInternalNodes = cmd_params.maxInternalNodes;
-  this->V4Param.maxLeafNodes = cmd_params.maxLeafNodes;
-  this->V4Param.thresholdDistance = cmd_params.thresholdDistance;
-  this->V4Param.slidingCount = cmd_params.slidingCount;
-  this->V4Param.distanceOutliers = cmd_params.distanceOutliers;
+SESAME::V6::V6(param_t &cmd_params) {
+  this->V6Param.pointNumber = cmd_params.pointNumber;
+  this->V6Param.dimension = cmd_params.dimension;
+  this->V6Param.maxInternalNodes = cmd_params.maxInternalNodes;
+  this->V6Param.maxLeafNodes = cmd_params.maxLeafNodes;
+  this->V6Param.thresholdDistance = cmd_params.thresholdDistance;
+  this->V6Param.landmark = cmd_params.landmark;
 }
-SESAME::V4::~V4() {
+SESAME::V6::~V6() {
 
 }
 // when a new point insert into the CF, update the CF N, LS and SS
-void SESAME::V4::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool updateAll){
+void SESAME::V6::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool updateAll){
   SESAME::NodePtr nodeSearch = node;
   while(true) {
     SESAME::CFPtr cf = nodeSearch->getCF();
@@ -101,30 +70,10 @@ void SESAME::V4::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool 
   }
 }
 
-void SESAME::V4::deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point){
-  SESAME::NodePtr nodeSearch = node;
-  while(true) {
-    SESAME::CFPtr cf = nodeSearch->getCF();
-    vector<double> tmpLS = cf->getLS();
-    vector<double> tmpSS = cf->getSS();
-    cf->setN(cf->getN() - 1);
-    for(int i = 0; i < point->getDimension(); i++){
-      tmpLS[i] -= point->getFeatureItem(i);
-      tmpSS[i] -= pow(point->getFeatureItem(i), 2);
-    }
-    cf->setLS(tmpLS);
-    cf->setSS(tmpSS);
-    if(nodeSearch->getParent() != nullptr) {
-      nodeSearch = nodeSearch->getParent();
-    } else break;
-  }
-}
-
-
 // centroid index: -1(virtual)
 // centroid feature: mean of the feature of cluster points
 // centroid cluster: -1
-void SESAME::V4::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid) {
+void SESAME::V6::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid) {
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
   vector<double> ls = cf->getLS();
@@ -132,7 +81,7 @@ void SESAME::V4::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
 }
 
 // use Manhattan Distance
-void SESAME::V4::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
+void SESAME::V6::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
   SESAME::PointPtr centroid = make_shared<SESAME::Point>();
   SESAME::CFPtr curCF = node->getCF();
@@ -143,7 +92,7 @@ void SESAME::V4::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
 }
 
 // use Manhattan Distance
-double SESAME::V4::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
+double SESAME::V6::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
   SESAME::PointPtr centroidA = make_shared<SESAME::Point>();
   SESAME::PointPtr centroidB = make_shared<SESAME::Point>();
@@ -158,7 +107,7 @@ double SESAME::V4::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr 
 }
 
 // select the closest child cluster according to Manhattan Distance
-void SESAME::V4::selectChild(vector<SESAME::NodePtr> &children, SESAME::PointPtr &insertPoint, SESAME::NodePtr &node) {
+void SESAME::V6::selectChild(vector<SESAME::NodePtr> &children, SESAME::PointPtr &insertPoint, SESAME::NodePtr &node) {
   double dist = 0;
   double temp = 0;
   pointToClusterDist(insertPoint, children.at(0), dist);
@@ -173,7 +122,7 @@ void SESAME::V4::selectChild(vector<SESAME::NodePtr> &children, SESAME::PointPtr
 }
 
 // calculate the radius of a cluster
-double SESAME::V4::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
+double SESAME::V6::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
   timerMeter.dataInsertAccMeasure();
   double denominator = 0;
   double radius = 0;
@@ -185,7 +134,7 @@ double SESAME::V4::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &ce
   return radius;
 }
 
-void SESAME::V4::calculateCorDistance(vector<vector<double>> &distance, vector<SESAME::NodePtr> &nodes) {
+void SESAME::V6::calculateCorDistance(vector<vector<double>> &distance, vector<SESAME::NodePtr> &nodes) {
   // initialization: create a metrics with nxn
   for(int i = 0; i < nodes.size(); i++) {
     vector<double> row;
@@ -205,7 +154,7 @@ void SESAME::V4::calculateCorDistance(vector<vector<double>> &distance, vector<S
   }
 }
 
-void SESAME::V4::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
+void SESAME::V6::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   SESAME::CFPtr curCF = curNode->getCF();
   curCF->setN(curCF->getN() + 1);
   vector<double> newLs;
@@ -218,7 +167,7 @@ void SESAME::V4::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &po
   curCF->setLS(newLs);
 }
 
-void SESAME::V4::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent) {
+void SESAME::V6::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent) {
   SESAME::CFPtr childCF = child->getCF();
   SESAME::CFPtr parCF = parent->getCF();
   parCF->setN(parCF->getN() + childCF->getN());
@@ -232,7 +181,7 @@ void SESAME::V4::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
   parCF->setSS(newSs);
 }
 
-void SESAME::V4::initializeCF(SESAME::CFPtr &cf, int dimension) {
+void SESAME::V6::initializeCF(SESAME::CFPtr &cf, int dimension) {
   vector<double> ls = cf->getLS();
   vector<double> ss = cf->getSS();
   for(int i = 0; i < dimension; i++) {
@@ -243,17 +192,16 @@ void SESAME::V4::initializeCF(SESAME::CFPtr &cf, int dimension) {
   cf->setSS(ss);
 }
 
-void SESAME::V4::clearChildParents(vector<SESAME::NodePtr> &children) {
+void SESAME::V6::clearChildParents(vector<SESAME::NodePtr> &children) {
   for(auto child : children) {
     child->clearParents();
   }
 }
 
-void SESAME::V4::forwardInsert(SESAME::PointPtr point){
+void SESAME::V6::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     timerMeter.dataInsertAccMeasure();
-    this->SlidingWindowNodes.push_back(curNode);
     updateNLS(curNode, point, true);
     timerMeter.dataInsertEndMeasure();
   } else{
@@ -263,7 +211,7 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
         timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
         timerMeter.dataInsertAccMeasure();
-        if(curCF->getN() == 0 and curCF->getLS().size() == 0) {
+        if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
@@ -272,14 +220,16 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
           timerMeter.dataInsertAccMeasure();
-          this->SlidingWindowNodes.push_back(curNode);
           updateNLS(curNode, point, true);
-          checkOutliers(curNode);
           timerMeter.dataInsertEndMeasure();
+
+          // means this point could get included in this cluster
+          //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
           // Normally insert the data point into the tree leafNode without concept drift
         } else {
-          // create a new node to store the point
+          // concept drift adaption
+          // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
           timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
           timerMeter.clusterUpdateEndMeasure();
@@ -296,9 +246,9 @@ void SESAME::V4::forwardInsert(SESAME::PointPtr point){
 }
 
 // concept drift adaption
-void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
+void SESAME::V6::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
   if(curNode->getParent() == nullptr) { // means current node is root node
-    //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
+    // l <= L, create a new leaf node and insert the point into it(root change)
     NodePtr newRoot = make_shared<CFNode>();
     newRoot->setIsLeaf(false);
     newRoot->setChild(curNode);
@@ -315,13 +265,9 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
     // here we need to remove the old root and add the new one into the leafnodes set
-    this->clusterNodes.push_back(newRoot);
-
     // update the parent node
     newRoot->setChild(newNode);
-    this->SlidingWindowNodes.push_back(newNode);
     updateNLS(newNode, point, true);
-    checkOutliers(newRoot);
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -329,14 +275,12 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newNode->setIsLeaf(true);
     newNode->setParent(parent);
     parent->setChild(newNode);
-    this->SlidingWindowNodes.push_back(newNode);
     updateNLS(newNode, point, false);
     if(parent->getChildren().size() < this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
       updateNLS(parent, point, true);
-      checkOutliers(parent);
     } else{
       // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
       bool CurNodeIsClus = true;
@@ -427,8 +371,6 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // we only update the parparent in the first loop.
         if(CurNodeIsClus){
           updateNLS(parParent, point, true);
-          checkOutliers(parent);
-          checkOutliers(newParentA);
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {

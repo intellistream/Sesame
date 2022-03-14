@@ -4,4 +4,7 @@ add_source_sesame(
         V3.cpp
         V4.cpp
         V5.cpp
+        V6.cpp
+        V7.cpp
+        V8.cpp
 )

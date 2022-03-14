@@ -1,9 +1,6 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
-
 //
-// Created by tuidan on 2021/8/25.
+// Created by tuidan on 2022/3/14.
 //
-
 
 #include <filesystem>
 #include <gtest/gtest.h>
@@ -13,7 +10,7 @@
 #include <Sinks/DataSinkFactory.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
-TEST(DesignTest, V3Test) {
+TEST(DesignTest, V6Test) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
@@ -26,13 +23,11 @@ TEST(DesignTest, V3Test) {
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.landmark = 1000;
-  cmd_params.detectOutliers = true;
-  cmd_params.distanceOutliers = 10;
-
+  cmd_params.detectOutliers = false;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V3Stream;
+  cmd_params.algoType = SESAME::V6Stream;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

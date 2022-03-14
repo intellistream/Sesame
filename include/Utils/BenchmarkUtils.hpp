@@ -75,6 +75,9 @@ struct param_t {
   bool executeOffline; // determine whether to run the offline refinement
   int landmark; // this is the index of landmark point[start from 0](determine to process the algorithm from which algorithm)
   int slidingCount; // since we test the count-based sliding window, this is the count number
+  bool detectOutliers; // whether detect outliers
+  int distanceOutliers; // the number of neighbors of the point within the radius R below which is an outlier
+  int densityOutliers; // the density value of the point to be treated as an outlier
 
 };
 

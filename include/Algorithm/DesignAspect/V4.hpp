@@ -18,6 +18,7 @@ class V4Parameter : public AlgorithmParameters {
   int maxLeafNodes; // L
   double thresholdDistance; // T
   int slidingCount;
+  int distanceOutliers;
 };
 
 class V4 : public Algorithm {
@@ -28,6 +29,7 @@ class V4 : public Algorithm {
   int leafMask = 0;
   SESAME::NodePtr root;
   vector<SESAME::NodePtr> clusterNodes;
+  vector<NodePtr> Outliers;
   CFTreePtr cfTree;
   std::vector<SESAME::PointPtr> slidingWindowPoints; // points stored in the sliding window
   std::vector<SESAME::NodePtr> SlidingWindowNodes; // every point in the sliding window will insert into a corresponding node
@@ -59,6 +61,9 @@ class V4 : public Algorithm {
 
   // additionally add a function to incrementally delete the first come point in the sliding window rather than rebuild the whole tree
   void deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point);
+
+  void removeOutliers();
+  void checkOutliers(NodePtr &node);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_

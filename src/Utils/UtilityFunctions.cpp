@@ -81,19 +81,35 @@ std::shared_ptr<std::barrier<>> SESAME::UtilityFunctions::createBarrier(int coun
 void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input,
                                               const std::vector<PointPtr> &centers,
                                               std::vector<PointPtr> &output,
-                                              int dimension) {
+                                              int dimension,
+                                              bool detectOutlier) {
+  int firstOutlierCenterID = -1;
+  int selectCenterIndex = -1;
+  int count = 0;
   for(int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
     for(int j = 0; j < centers.size(); j++) {
       double dis = 0;
       for(int k = 0; k < dimension; k++) {
-        dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
+        dis += pow((output.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
       }
       if(min > dis) {
-        output.at(i)->setClusteringCenter(j);
+        selectCenterIndex = j;
         min = dis;
       }
+    }
+    if(detectOutlier){
+      if(!centers[selectCenterIndex]->getIsOutlier()) {
+        output[i]->setClusteringCenter(count++);
+      } else if(firstOutlierCenterID == -1) {
+        output[i]->setClusteringCenter(count++);
+        firstOutlierCenterID = count;
+      } else {
+        output[i]->setClusteringCenter(firstOutlierCenterID);
+      }
+    } else {
+      output[i]->setClusteringCenter(firstOutlierCenterID);
     }
   }
 
@@ -101,7 +117,14 @@ void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input
 void SESAME::UtilityFunctions::groupByCentersWithOffline(const std::vector<PointPtr> &input,
                                                          const std::vector<PointPtr> &centers,
                                                          std::vector<PointPtr> &output,
-                                                         int dimension) {
+                                                         int dimension,
+                                                         bool detectOutlier) {
+  // 因为如果要detect outlier， centers的clusteringID是从-1开始，-1代表outlier，否则就是从0开始，这里需要处理成都是从0开始
+  if(detectOutlier) {
+    for(auto center : centers) {
+      center->setClusteringCenter(center->getClusteringCenter() + 1);
+    }
+  }
   for(int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
@@ -111,10 +134,9 @@ void SESAME::UtilityFunctions::groupByCentersWithOffline(const std::vector<Point
         dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
       }
       if(min > dis) {
-        output.at(i)->setClusteringCenter(centers.at(j)->getClusteringCenter());
+        output[i]->setClusteringCenter(centers[j]->getClusteringCenter());
         min = dis;
       }
     }
   }
-
 }
