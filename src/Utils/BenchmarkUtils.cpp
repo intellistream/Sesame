@@ -375,6 +375,11 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
       << "   Radius: " << cmd_params.radius
       << "   MinDelta: " << cmd_params.delta
       <<"\n";
+    case SESAME::Generic:
+      std::cout << "Algorithm: Generic "
+                << "maxLeafNode: " << cmd_params.maxLeafNodes
+                << "   maxInnerNodes: " << cmd_params.maxInternalNodes
+                <<"\n";
   default:break;
   }
   SESAME::SimpleEngine engine(sourcePtr, sinkPtr, algoPtr);//TODO: create multithread engine in future.
