@@ -89,7 +89,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     return (AlgorithmPtr)dStream;
   }
   if (cmd_params.algoType == Generic) {
-    using W = LandmarkWindow;
+    using W = Landmark;
     using D = ClusteringFeaturesTree;
     using O = Distance;
     shared_ptr<StreamClusteringAlgorithm<W, D, O>> generic =

@@ -3,6 +3,7 @@
 //
 
 #include "Algorithm/DataStructure/CFTree.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 
 namespace SESAME {
 
@@ -64,16 +65,29 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
     : ClusteringFeaturesTree(param.maxInternalNodes, param.maxLeafNodes,
                              param.thresholdDistance) {}
 
-ClusteringFeaturesTree::ClusteringFeaturesTree(int maxInternalNodes = 0, int maxLeafNodes = 0,
+ClusteringFeaturesTree::ClusteringFeaturesTree(int maxInternalNodes = 0,
+                                               int maxLeafNodes = 0,
                                                double thresholdDistance = 0.0)
-    : maxInternalNodes(maxInternalNodes), maxLeafNodes(maxLeafNodes), thresholdDistance(thresholdDistance) {}
+    : maxInternalNodes(maxInternalNodes), maxLeafNodes(maxLeafNodes),
+      thresholdDistance(thresholdDistance),
+      root(GenericFactory::create<Node>()) {}
 
 ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
-int ClusteringFeaturesTree::getMaxInternalNodes() const { return this->maxInternalNodes; }
-int ClusteringFeaturesTree::getMaxLeafNodes() const { return this->maxLeafNodes; }
-double ClusteringFeaturesTree::getThresholdDistance() const { return this->thresholdDistance; }
-void ClusteringFeaturesTree::setMaxInternalNodes(int b) { this->maxInternalNodes = b; }
-void ClusteringFeaturesTree::setThresholdDistance(double t) { this->thresholdDistance = t; }
+int ClusteringFeaturesTree::getMaxInternalNodes() const {
+  return this->maxInternalNodes;
+}
+int ClusteringFeaturesTree::getMaxLeafNodes() const {
+  return this->maxLeafNodes;
+}
+double ClusteringFeaturesTree::getThresholdDistance() const {
+  return this->thresholdDistance;
+}
+void ClusteringFeaturesTree::setMaxInternalNodes(int b) {
+  this->maxInternalNodes = b;
+}
+void ClusteringFeaturesTree::setThresholdDistance(double t) {
+  this->thresholdDistance = t;
+}
 void ClusteringFeaturesTree::setMaxLeafNodes(int l) { this->maxLeafNodes = l; }
 
 } // namespace SESAME

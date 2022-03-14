@@ -21,13 +21,9 @@
 #include "Algorithm/DataStructure/TreeNode.hpp"
 #include "Algorithm/DataStructure/WeightedAdjacencyList.hpp"
 
-namespace SESAME {
+#include <memory>
 
-namespace GenericFactory {
-template <class T, class... Ts> shared_ptr<T> create(Ts &&... ts) {
-  return make_shared<T>(std::forward<Ts>(ts)...);
-}
-}; // namespace GenericFactory
+namespace SESAME {
 
 class DataStructureFactory {
 public:
