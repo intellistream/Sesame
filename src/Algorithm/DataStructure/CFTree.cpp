@@ -5,6 +5,9 @@
 #include "Algorithm/DataStructure/CFTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 
+#include <limits>
+#include <vector>
+
 namespace SESAME {
 
 CFTree::CFTree(const StreamClusteringParam &param)
@@ -62,15 +65,10 @@ void CFNode::removeChild(NodePtr &child) {
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(
     const StreamClusteringParam &param)
-    : ClusteringFeaturesTree(param.maxInternalNodes, param.maxLeafNodes,
-                             param.thresholdDistance) {}
-
-ClusteringFeaturesTree::ClusteringFeaturesTree(int maxInternalNodes = 0,
-                                               int maxLeafNodes = 0,
-                                               double thresholdDistance = 0.0)
-    : maxInternalNodes(maxInternalNodes), maxLeafNodes(maxLeafNodes),
-      thresholdDistance(thresholdDistance),
-      root(GenericFactory::create<Node>()) {}
+    : maxInternalNodes(param.maxInternalNodes),
+      maxLeafNodes(param.maxLeafNodes),
+      thresholdDistance(param.thresholdDistance),
+      root(GenericFactory::create<Node>(param.dimension)) {}
 
 ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
 int ClusteringFeaturesTree::getMaxInternalNodes() const {
@@ -89,5 +87,86 @@ void ClusteringFeaturesTree::setThresholdDistance(double t) {
   this->thresholdDistance = t;
 }
 void ClusteringFeaturesTree::setMaxLeafNodes(int l) { this->maxLeafNodes = l; }
+
+void ClusteringFeaturesTree::insert(
+    PointPtr point,
+    std::vector<ClusteringFeaturesTree::NodePtr> &clusterNodes) {
+  auto curNode = root;
+  if (curNode->getNumNodes() == 0) {
+    // timerMeter.dataInsertAccMeasure();
+    curNode->update(point, true);
+    // timerMeter.dataInsertEndMeasure();
+  } else {
+    while (1) {
+      auto childrenNode = curNode->getChildren();
+      if (curNode->getIsLeaf()) {
+        // timerMeter.clusterUpdateAccMeasure();
+        // timerMeter.dataInsertAccMeasure();
+        auto centroid = curNode->centroid();
+        // timerMeter.dataInsertEndMeasure();
+        if (point->radius(centroid) <=
+            getThresholdDistance()) { // concept drift detection
+          // whether the new radius is lower than threshold T
+          // timerMeter.dataInsertAccMeasure();
+          curNode->update(point, true);
+          // timerMeter.dataInsertEndMeasure();
+
+          // means this point could get included in this cluster
+          // SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point
+          // into the leaf node...");
+          break;
+          // Normally insert the data point into the tree leafNode without
+          // concept drift
+        } else {
+          // concept drift adaption
+          // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node
+          // capacity reaches the threshold T");
+          // timerMeter.clusterUpdateAccMeasure();
+          curNode->backwardEvolution(this, point, clusterNodes);
+          // timerMeter.clusterUpdateEndMeasure();
+          break;
+        }
+
+      } else {
+        // timerMeter.dataInsertAccMeasure();
+        curNode = closestChild(childrenNode, point);
+        // timerMeter.dataInsertEndMeasure();
+      }
+    }
+  }
+}
+
+std::vector<std::vector<double>> ClusteringFeaturesTree::calcAdjacencyMatrix(
+    const std::vector<ClusteringFeaturesTree::NodePtr> &nodes) {
+  int n = nodes.size();
+  std::vector<std::vector<double>> adjacencyMatrix(n,
+                                                   std::vector<double>(n, 0.0));
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+      auto centroid1 = nodes[i]->centroid();
+      auto centroid2 = nodes[j]->centroid();
+      auto distance = centroid1->distance(centroid2);
+      adjacencyMatrix[i][j] = distance;
+      adjacencyMatrix[j][i] = distance;
+    }
+  }
+  return adjacencyMatrix;
+}
+
+ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::closestChild(
+    const std::vector<ClusteringFeaturesTree::NodePtr> &children,
+    PointPtr point) {
+  double minDistance = std::numeric_limits<double>::max();
+  NodePtr closestChild = nullptr;
+  for (auto child : children) {
+    auto centroid = child->centroid();
+    auto distance = centroid->distance(point);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestChild = child;
+    }
+  }
+  return closestChild;
+}
 
 } // namespace SESAME
