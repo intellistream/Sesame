@@ -114,8 +114,8 @@ public:
     NodePtr getParent() { return parent; }
     int getIndex() const { return index; }
     const std::vector<NodePtr> &getChildren() { return children; }
-    void removeChild(NodePtr &child) {
-      std::ranges::remove_if(children, [&](NodePtr &c) { return c == child; });
+    void removeChild(NodePtr child) {
+      std::ranges::remove_if(children, [&](auto &c) { return c->getIndex() == child->getIndex(); });
     }
     // NodePtr copy();
     bool getIsLeaf() const { return isLeaf; }
@@ -151,8 +151,9 @@ public:
         ls[i] += val;
         ss[i] += val * val;
       }
-      if (getParent() != nullptr && all) {
-        getParent()->update(point, all);
+      auto p = getParent();
+      if (p != nullptr && all) {
+        p->update(point, all);
       }
     }
     PointPtr centroid() {
@@ -260,7 +261,7 @@ public:
             parParent->addChild(newParentA);
             // clean cf of the old parent node and initialize the cf of new
             // parent A (ls and ss all have d number of 0)
-            parent->setCF(point->getDimension());
+            newParentA->setCF(point->getDimension());
             parent->setCF(point->getDimension());
             // split the child nodes of the old parent nodes
             auto broNodes = parent->getChildren();
