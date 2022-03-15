@@ -27,7 +27,11 @@
 #define CMM_A 0.998
 #define CMM_LAMDA 1
 #define CMM_THRESHOLD 542
-
+#define UNCLASSIFIED (-2)
+#define CORE_POINT 1
+#define NOISE (-1)
+#define SUCCESS 0
+#define FAILURE (-3)
 /*
 Determines when Lloyd terminates (should be between 0 and 1)
 */

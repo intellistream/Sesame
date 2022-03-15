@@ -109,7 +109,7 @@ void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input
         output[i]->setClusteringCenter(firstOutlierCenterID);
       }
     } else {
-      output[i]->setClusteringCenter(firstOutlierCenterID);
+      output[i]->setClusteringCenter(selectCenterIndex);
     }
   }
 

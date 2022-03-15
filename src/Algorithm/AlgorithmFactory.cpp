@@ -68,7 +68,7 @@ SESAME::AlgorithmPtr SESAME::AlgorithmFactory::create(param_t &cmd_params) {
     return (SESAME::AlgorithmPtr) V5Stream;
   }
   if (cmd_params.algoType == V6Stream) {
-    shared_ptr<V6> V6Stream = std::make_shared<V6>(cmd_params);
+    shared_ptr<DStream> V6Stream = std::make_shared<DStream>(cmd_params);
     return (SESAME::AlgorithmPtr) V6Stream;
   }
   if (cmd_params.algoType == V7Stream) {

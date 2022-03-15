@@ -3,6 +3,7 @@
 //
 #include <Algorithm/DesignAspect/V1.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
+#include <Utils/UtilityFunctions.hpp>
 
 void SESAME::V1::Initilize() {
   this->cfTree = DataStructureFactory::createCFTree();
@@ -51,7 +52,7 @@ void SESAME::V1::runOfflineClustering(DataSinkPtr sinkPtr) {
       centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
     }
     if(this->clusterNodes[i]->getIsOutlier()) {
-      centroid->setClusteringCenter(-1);
+      centroid->setClusteringCenter(NOISE);
       sinkPtr->put(centroid->copy());
     } else {
       onlineCenters.push_back(centroid->copy());
