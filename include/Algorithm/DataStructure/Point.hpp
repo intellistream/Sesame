@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 19/07/2021.
@@ -6,6 +7,7 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
+
 #include <memory>
 #include <vector>
 
@@ -14,19 +16,20 @@ class Point;
 typedef std::shared_ptr<Point> PointPtr;
 
 class Point {
- private:
-  int index; // 1,2,3,4,5....
+private:
+  int index;     // 1,2,3,4,5....
   double weight; // considering the outdated effect
   double cost;
   double minDist;
   int timestamp;
   bool isOutlier;
- private:
+
+private:
   // the distance to the nearest data point
-  int clusteringCenter;  // using index to identify
-  int dimension;// feature Length
-  std::vector<double> *feature;//TODO: need to think how to remove * here.
- public:
+  int clusteringCenter;         // using index to identify
+  int dimension;                // feature Length
+  std::vector<double> *feature; // TODO: need to think how to remove * here.
+public:
   Point();
   Point(int index, double weight, int dimension, double cost);
   Point(int index, double weight, int dimension, double cost, int timestamp);
@@ -51,6 +54,8 @@ class Point {
   int getTimeStamp() const;
   bool getIsOutlier();
   void setIsOutlier(bool flag);
+  double radius(PointPtr centroid);
+  double distance(PointPtr centroid);
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
+} // namespace SESAME
+#endif // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
