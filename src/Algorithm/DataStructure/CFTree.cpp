@@ -5,6 +5,7 @@
 #include "Algorithm/DataStructure/CFTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 
+
 #include <limits>
 #include <vector>
 
@@ -62,6 +63,43 @@ void CFNode::removeChild(NodePtr &child) {
     }
   }
 }
+bool SESAME::CFNode::getIsOutlier() {
+  return this->isOutlier;
+}
+void SESAME::CFNode::setIsOutlier(bool flag) {
+  this->isOutlier = flag;
+}
+
+ClusteringFeaturesTree::ClusteringFeaturesTree(
+    const StreamClusteringParam &param)
+    : ClusteringFeaturesTree(param.maxInternalNodes, param.maxLeafNodes,
+                             param.thresholdDistance) {}
+
+ClusteringFeaturesTree::ClusteringFeaturesTree(int maxInternalNodes = 0,
+                                               int maxLeafNodes = 0,
+                                               double thresholdDistance = 0.0)
+    : maxInternalNodes(maxInternalNodes), maxLeafNodes(maxLeafNodes),
+      thresholdDistance(thresholdDistance),
+      root(GenericFactory::create<Node>()) {}
+
+ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
+int ClusteringFeaturesTree::getMaxInternalNodes() const {
+  return this->maxInternalNodes;
+}
+int ClusteringFeaturesTree::getMaxLeafNodes() const {
+  return this->maxLeafNodes;
+}
+double ClusteringFeaturesTree::getThresholdDistance() const {
+  return this->thresholdDistance;
+}
+void ClusteringFeaturesTree::setMaxInternalNodes(int b) {
+  this->maxInternalNodes = b;
+}
+void ClusteringFeaturesTree::setThresholdDistance(double t) {
+  this->thresholdDistance = t;
+}
+void ClusteringFeaturesTree::setMaxLeafNodes(int l) { this->maxLeafNodes = l; }
+
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(
     const StreamClusteringParam &param)

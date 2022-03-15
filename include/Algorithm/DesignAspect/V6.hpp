@@ -1,43 +1,38 @@
 //
-// Created by tuidan on 2022/3/10.
+// Created by tuidan on 2022/3/14.
 //
 
-#ifndef SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
-#define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
+#ifndef SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V6_HPP_
+#define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V6_HPP_
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
+#include <Algorithm/OfflineClustering/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-#include <Algorithm/OfflineClustering/DBSCAN.hpp>
-
 namespace SESAME {
 
-class V2Parameter : public AlgorithmParameters {
+class V6Parameter : public AlgorithmParameters {
  public:
   int maxInternalNodes; // B
   int maxLeafNodes; // L
   double thresholdDistance; // T
-  unsigned int minPoints;//minimum point of core point in DBSCAN
-  double epsilon;//maximum distance if point belongs to the density area of core point
   int landmark;
-  int distanceOutliers;
 };
 
-class V2 : public Algorithm {
+class V6 : public Algorithm {
 
  public:
-  V2Parameter V2Param;
+  V6Parameter V6Param;
+  std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
-  std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering
   vector<NodePtr> clusterNodes;
-  vector<NodePtr> Outliers;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
-  V2(param_t &cmd_params);
+  V6(param_t &cmd_params);
 
-  ~V2();
+  ~V6();
 
   void Initilize() override;
 
@@ -59,9 +54,6 @@ class V2 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
   void clearChildParents(vector<SESAME::NodePtr> &children);
-
-  void removeOutliers();
-  void checkOutliers(NodePtr &node);
 };
 }
-#endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
+#endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V6_HPP_

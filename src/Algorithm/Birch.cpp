@@ -45,7 +45,6 @@ SESAME::Birch::Birch(param_t &cmd_params) {
   this->BirchParam.thresholdDistance = cmd_params.thresholdDistance;
 }
 SESAME::Birch::~Birch() {
-
 }
 // when a new point insert into the CF, update the CF N, LS and SS
 void SESAME::Birch::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool updateAll){

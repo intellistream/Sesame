@@ -6,6 +6,7 @@
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
+
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
@@ -47,6 +48,7 @@ class CFNode {
 private:
   CFPtr curCF;
   bool isLeaf;
+  bool isOutlier;
   std::vector<NodePtr> children;
   NodePtr parent;
   int index;
@@ -69,6 +71,8 @@ public:
   void setChild(NodePtr &child);
   void setChildren(std::vector<NodePtr> children);
   void clearParents();
+  void setIsOutlier(bool flag);
+  bool getIsOutlier();
 };
 
 class ClusteringFeaturesTree {
@@ -107,6 +111,7 @@ public:
     std::vector<double> ls, ss;
 
   public:
+
     Node(int d = 0)
         : dim(d), ls(std::vector<double>(d, 0.0)),
           ss(std::vector<double>(d, 0.0)){};

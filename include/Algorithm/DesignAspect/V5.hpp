@@ -19,6 +19,7 @@ class V5Parameter : public AlgorithmParameters {
   double thresholdDistance; // T
   double alpha;
   double lambda;
+  int distanceOutliers;
 };
 
 class V5 : public Algorithm {
@@ -30,6 +31,7 @@ class V5 : public Algorithm {
   NodePtr root;
   vector<NodePtr> allNodes;
   vector<NodePtr> clusterNodes;
+  vector<NodePtr> Outliers;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V5(param_t &cmd_params);
@@ -58,6 +60,9 @@ class V5 : public Algorithm {
   void clearChildParents(vector<SESAME::NodePtr> &children);
 
   void updateTimeWeight();
+
+  void removeOutliers();
+  void checkOutliers(NodePtr &node);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V5_HPP_

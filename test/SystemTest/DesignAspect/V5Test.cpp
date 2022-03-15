@@ -27,6 +27,8 @@ TEST(DesignTest, V5Test) {
   cmd_params.timeDecay = false;
   cmd_params.lambda = 1.25;
   cmd_params.alpha = 2;
+  cmd_params.detectOutliers = true;
+  cmd_params.distanceOutliers = 10;
 
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";

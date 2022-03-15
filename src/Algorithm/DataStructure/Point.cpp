@@ -103,5 +103,10 @@ double Point::radius(PointPtr centroid) {
   }
   return sqrt(sum);
 }
+void SESAME::Point::setIsOutlier(bool flag) {
+  this->isOutlier = flag;
+}
+bool SESAME::Point::getIsOutlier() {
+  return this->isOutlier;
+}
 
-} // namespace SESAME

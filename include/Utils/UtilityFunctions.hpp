@@ -27,7 +27,11 @@
 #define CMM_A 0.998
 #define CMM_LAMDA 1
 #define CMM_THRESHOLD 542
-
+#define UNCLASSIFIED (-2)
+#define CORE_POINT 1
+#define NOISE (-1)
+#define SUCCESS 0
+#define FAILURE (-3)
 /*
 Determines when Lloyd terminates (should be between 0 and 1)
 */
@@ -48,11 +52,11 @@ class UtilityFunctions {
   static void groupByCenters(const std::vector<PointPtr> &input,
                       const std::vector<PointPtr> &centers,
                       std::vector<PointPtr> &output,
-                      int dimension);
+                      int dimension, bool detectOutlier);
   static void groupByCentersWithOffline(const std::vector<PointPtr> &input,
                              const std::vector<PointPtr> &centers,
                              std::vector<PointPtr> &output,
-                             int dimension);
+                             int dimension, bool detectOutlier);
 };
 }
 #endif //SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

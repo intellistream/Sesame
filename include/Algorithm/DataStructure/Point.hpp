@@ -22,6 +22,7 @@ private:
   double cost;
   double minDist;
   int timestamp;
+  bool isOutlier;
 
 private:
   // the distance to the nearest data point
@@ -51,6 +52,8 @@ public:
   SESAME::PointPtr copy();
   void setTimeStamp(int t);
   int getTimeStamp() const;
+  bool getIsOutlier();
+  void setIsOutlier(bool flag);
   double radius(PointPtr centroid);
   double distance(PointPtr centroid);
 };

@@ -18,6 +18,7 @@ class V3Parameter : public AlgorithmParameters {
   int maxLeafNodes; // L
   double thresholdDistance; // T
   int landmark;
+  int distanceOutliers;
 };
 
 class V3 : public Algorithm {
@@ -28,6 +29,7 @@ class V3 : public Algorithm {
   int leafMask = 0;
   NodePtr root;
   vector<NodePtr> clusterNodes;
+  vector<NodePtr> Outliers;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V3(param_t &cmd_params);
@@ -54,6 +56,9 @@ class V3 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
   void clearChildParents(vector<SESAME::NodePtr> &children);
+
+  void removeOutliers();
+  void checkOutliers(NodePtr &node);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V3_HPP_

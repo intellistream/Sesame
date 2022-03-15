@@ -73,8 +73,8 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     return (AlgorithmPtr)V5Stream;
   }
   if (cmd_params.algoType == V6Stream) {
-    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
-    return (AlgorithmPtr)dStream;
+    shared_ptr<DStream> V6Stream = std::make_shared<DStream>(cmd_params);
+    return (SESAME::AlgorithmPtr) V6Stream;
   }
   if (cmd_params.algoType == V7Stream) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);

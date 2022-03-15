@@ -13,13 +13,10 @@
 #include <Sinks/DataSink.hpp>
 #include <memory>
 #include <Algorithm/OfflineClustering/OfflineClustering.hpp>
+#include <Utils/UtilityFunctions.hpp>
 
 namespace SESAME {
-#define UNCLASSIFIED (-1)
-#define CORE_POINT 1
-#define NOISE (-2)
-#define SUCCESS 0
-#define FAILURE (-3)
+
 //#define BORDER_POINT 2
 class DBSCAN : public SESAME::OfflineClustering {
  public:

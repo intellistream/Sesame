@@ -45,6 +45,7 @@ private:
   WindowPtr w;
   DataPtr d;
   OutlierPtr o;
+
   std::vector<typename D::NodePtr> clusterNodes;
   static constexpr bool has_delpoint = requires(const W &w) { w.delPoint(); };
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
@@ -60,6 +61,7 @@ StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
   Param.pointNumber = cmd_params.pointNumber;
   Param.dimension = cmd_params.dimension;
   Param.clusterNumber = cmd_params.clusterNumber;
+
   if constexpr (is_landmark)
     Param.landmark = cmd_params.landmark;
   if constexpr (is_cftree)
@@ -95,6 +97,7 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
                                       std::vector<PointPtr> results) {}
 
 template <typename W, typename D, typename O>
+
 void StreamClustering<W, D, O>::forwardInsert(PointPtr point) {
   d->insert(point, clusterNodes);
 }

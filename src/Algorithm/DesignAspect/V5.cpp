@@ -11,6 +11,27 @@ void SESAME::V5::Initilize() {
   this->cfTree->setT(V5Param.thresholdDistance);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
+  this->root->setIndex(this->leafMask++);
+}
+
+void SESAME::V5::removeOutliers(){
+  for (auto it = this->Outliers.begin(); it != this->Outliers.end();){
+    if (!it->get()->getIsOutlier()) {
+      it = this->Outliers.erase(it);
+    }
+    else
+      ++it;
+  }
+}
+
+void SESAME::V5::checkOutliers(SESAME::NodePtr &node) {
+  if(node->getCF()->getN() < this->V5Param.distanceOutliers and !node->getIsOutlier()) {
+    node->setIsOutlier(true);
+    this->Outliers.push_back(node);
+  } else if(node->getCF()->getN() >= this->V5Param.distanceOutliers) {
+    node->setIsOutlier(false);
+    removeOutliers();
+  }
 }
 
 void SESAME::V5::updateTimeWeight() {
@@ -36,11 +57,13 @@ void SESAME::V5::runOnlineClustering(const SESAME::PointPtr input) {
 
 void SESAME::V5::runOfflineClustering(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->clusterNodes.size(); i++) {
-    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V5Param.dimension, 0);
-    for(int j = 0; j < V5Param.dimension; j++) {
-      centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
+    if(!this->clusterNodes[i]->getIsOutlier()) {
+      PointPtr centroid = DataStructureFactory::createPoint(i, 1, V5Param.dimension, 0);
+      for(int j = 0; j < V5Param.dimension; j++) {
+        centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
+      }
+      sinkPtr->put(centroid->copy());
     }
-    sinkPtr->put(centroid->copy());
   }
   timerMeter.printTime(false,false,false,false);
 }
@@ -53,6 +76,7 @@ SESAME::V5::V5(param_t &cmd_params) {
   this->V5Param.thresholdDistance = cmd_params.thresholdDistance;
   this->V5Param.lambda = cmd_params.lambda;
   this->V5Param.alpha = cmd_params.alpha;
+  this->V5Param.distanceOutliers = cmd_params.distanceOutliers;
 }
 SESAME::V5::~V5() {
 
@@ -235,6 +259,7 @@ void SESAME::V5::forwardInsert(SESAME::PointPtr point){
           // whether the new radius is lower than threshold T
           timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
+          checkOutliers(curNode);
           timerMeter.dataInsertEndMeasure();
 
           // means this point could get included in this cluster
@@ -285,6 +310,7 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     // update the parent node
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
+    checkOutliers(newRoot);
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -299,6 +325,7 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
       updateNLS(parent, point, true);
+      checkOutliers(parent);
     } else{
       // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
       bool CurNodeIsClus = true;
@@ -391,6 +418,8 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // we only update the parparent in the first loop.
         if(CurNodeIsClus){
           updateNLS(parParent, point, true);
+          checkOutliers(parent);
+          checkOutliers(newParentA);
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
