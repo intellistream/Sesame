@@ -124,7 +124,7 @@ void ClusteringFeaturesTree::insert(
           // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node
           // capacity reaches the threshold T");
           // timerMeter.clusterUpdateAccMeasure();
-          curNode->backwardEvolution(this, point, clusterNodes);
+          curNode->backwardEvolution(shared_from_this(), point, clusterNodes);
           // timerMeter.clusterUpdateEndMeasure();
           break;
         }

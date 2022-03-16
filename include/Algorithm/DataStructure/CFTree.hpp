@@ -75,7 +75,8 @@ public:
   bool getIsOutlier();
 };
 
-class ClusteringFeaturesTree {
+class ClusteringFeaturesTree
+    : std::enable_shared_from_this<ClusteringFeaturesTree> {
 private:
   int maxInternalNodes; // max CF number of each internal node
   int maxLeafNodes;     // max CF number of each leaf node
@@ -86,7 +87,7 @@ private:
 public:
   class Node;
   using NodePtr = std::shared_ptr<Node>;
-  using TreePtr = ClusteringFeaturesTree *;
+  using TreePtr = std::shared_ptr<ClusteringFeaturesTree>;
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
   int getMaxInternalNodes() const;
@@ -111,7 +112,6 @@ public:
     std::vector<double> ls, ss;
 
   public:
-
     Node(int d = 0)
         : dim(d), ls(std::vector<double>(d, 0.0)),
           ss(std::vector<double>(d, 0.0)){};
@@ -120,7 +120,9 @@ public:
     int getIndex() const { return index; }
     const std::vector<NodePtr> &getChildren() { return children; }
     void removeChild(NodePtr child) {
-      std::ranges::remove_if(children, [&](auto &c) { return c->getIndex() == child->getIndex(); });
+      std::ranges::remove_if(children, [&](auto &c) {
+        return c->getIndex() == child->getIndex();
+      });
     }
     // NodePtr copy();
     bool getIsLeaf() const { return isLeaf; }
