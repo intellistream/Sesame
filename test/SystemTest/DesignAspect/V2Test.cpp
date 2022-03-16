@@ -26,6 +26,7 @@ TEST(DesignTest, V2Test) {
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.minPoints = 10;
+  cmd_params.landmark = 1000;
   cmd_params.epsilon = 200; // 0.1
   cmd_params.detectOutliers = true;
   cmd_params.distanceOutliers = 10;

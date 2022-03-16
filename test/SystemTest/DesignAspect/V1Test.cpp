@@ -26,6 +26,7 @@ cmd_params.clusterNumber = 6;
 cmd_params.dimension = 54;
 cmd_params.GTClusterNumber = 7;
 cmd_params.timeDecay = false;
+cmd_params.landmark = 1000;
 cmd_params.detectOutliers = true;
 cmd_params.distanceOutliers = 10;
 

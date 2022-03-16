@@ -73,7 +73,7 @@ int Point::getTimeStamp() const { return this->timestamp; }
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
 int Point::getDimension() const { return this->dimension; }
-int Point::getFeatureLength() { return (int)this->feature->size(); }
+int Point::getFeatureLength() { return (int) this->feature->size(); }
 
 double Point::getDisTo(PointPtr p) {
   double distance = 0;
@@ -109,4 +109,6 @@ void SESAME::Point::setIsOutlier(bool flag) {
 bool SESAME::Point::getIsOutlier() {
   return this->isOutlier;
 }
+}
+
 

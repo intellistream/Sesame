@@ -70,3 +70,9 @@ void SESAME::CF::setSS(std::vector<double> & newSs) {
 SESAME::CFPtr SESAME::CF::copy() {
   return std::make_shared<CF>(*this);
 }
+bool SESAME::CF::getIsOutlier() {
+  return this->isOutler;
+}
+void SESAME::CF::setIsOutlier(bool flag) {
+  this->isOutler = flag;
+}
