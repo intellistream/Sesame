@@ -25,7 +25,20 @@ using namespace std;
 namespace SESAME {
 
 template <typename W, typename D, typename O>
-class StreamClustering : public Algorithm {
+concept StreamClusteringConcept = requires {
+  requires requires(W w, PointPtr p) {
+    { w.addPoint(p) }
+    ->std::same_as<bool>;
+  };
+  requires requires(D d, PointPtr p, std::vector<typename D::NodePtr> vn) {
+    { d.insert(p, vn, vn) }
+    ->std::same_as<void>;
+  };
+};
+
+template <typename W, typename D, typename O>
+requires StreamClusteringConcept<W, D, O> class StreamClustering
+    : public Algorithm {
 public:
   // StreamClustering();
   StreamClustering(const param_t &param);
@@ -46,7 +59,7 @@ private:
   DataPtr d;
   OutlierPtr o;
 
-  std::vector<typename D::NodePtr> clusterNodes;
+  std::vector<typename D::NodePtr> clusterNodes, outliers;
   static constexpr bool has_delpoint = requires(const W &w) { w.delPoint(); };
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
   static constexpr bool is_cftree =
@@ -97,9 +110,8 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
                                       std::vector<PointPtr> results) {}
 
 template <typename W, typename D, typename O>
-
 void StreamClustering<W, D, O>::forwardInsert(PointPtr point) {
-  d->insert(point, clusterNodes);
+  d->insert(point, clusterNodes, outliers);
 }
 
 } // namespace SESAME

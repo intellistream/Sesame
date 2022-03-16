@@ -92,7 +92,8 @@ void ClusteringFeaturesTree::setMaxLeafNodes(int l) { this->maxLeafNodes = l; }
 
 void ClusteringFeaturesTree::insert(
     PointPtr point,
-    std::vector<ClusteringFeaturesTree::NodePtr> &clusterNodes) {
+    std::vector<ClusteringFeaturesTree::NodePtr> &clusterNodes,
+    std::vector<ClusteringFeaturesTree::NodePtr> &outliers) {
   auto curNode = root;
   if (curNode->getNumNodes() == 0) {
     // timerMeter.dataInsertAccMeasure();
@@ -111,6 +112,8 @@ void ClusteringFeaturesTree::insert(
           // whether the new radius is lower than threshold T
           // timerMeter.dataInsertAccMeasure();
           curNode->update(point, true);
+          // TODO
+          
           // timerMeter.dataInsertEndMeasure();
 
           // means this point could get included in this cluster

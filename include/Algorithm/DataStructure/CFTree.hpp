@@ -96,7 +96,8 @@ public:
   void setMaxInternalNodes(int b);
   void setMaxLeafNodes(int l);
   void setThresholdDistance(double t);
-  void insert(PointPtr point, std::vector<NodePtr> &clusterNodes);
+  void insert(PointPtr point, std::vector<NodePtr> &clusterNodes,
+              std::vector<NodePtr> &outliers);
   NodePtr root;
   std::vector<std::vector<double>>
   calcAdjacencyMatrix(const std::vector<NodePtr> &nodes);
