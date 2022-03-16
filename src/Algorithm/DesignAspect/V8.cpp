@@ -59,9 +59,8 @@ SESAME::V8::V8(param_t &cmd_params) {
   this->V8Param.landmark = cmd_params.landmark;
   this->V8Param.distanceOutliers = cmd_params.distanceOutliers;
 }
-SESAME::V8::~V8() {
+SESAME::V8::~V8() {}
 
-}
 // when a new point insert into the CF, update the CF N, LS and SS
 void SESAME::V8::updateNLS(SESAME::CFPtr &currentCF, SESAME::PointPtr &point){
   vector<double> tmpLS = currentCF->getLS();
@@ -88,7 +87,7 @@ void SESAME::V8::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
   vector<double> ls = cf->getLS();
-  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i) / (double)ls.size(), i);
+  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i) / (double)cf->getN(), i);
 }
 
 // use Euclidean Distance

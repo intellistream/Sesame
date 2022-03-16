@@ -16,7 +16,7 @@ TEST(DesignTest, V8Test) {
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 4000;
+  cmd_params.thresholdDistance = 3000;
   cmd_params.maxInternalNodes = 40;
   cmd_params.maxLeafNodes = 20;
   cmd_params.dimension = 54;

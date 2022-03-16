@@ -70,10 +70,6 @@ void SESAME::CFNode::setIsOutlier(bool flag) {
   this->isOutlier = flag;
 }
 
-ClusteringFeaturesTree::ClusteringFeaturesTree(
-    const StreamClusteringParam &param)
-    : ClusteringFeaturesTree(param.maxInternalNodes, param.maxLeafNodes,
-                             param.thresholdDistance) {}
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(int maxInternalNodes = 0,
                                                int maxLeafNodes = 0,
@@ -107,24 +103,6 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
       maxLeafNodes(param.maxLeafNodes),
       thresholdDistance(param.thresholdDistance),
       root(GenericFactory::create<Node>(param.dimension)) {}
-
-ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
-int ClusteringFeaturesTree::getMaxInternalNodes() const {
-  return this->maxInternalNodes;
-}
-int ClusteringFeaturesTree::getMaxLeafNodes() const {
-  return this->maxLeafNodes;
-}
-double ClusteringFeaturesTree::getThresholdDistance() const {
-  return this->thresholdDistance;
-}
-void ClusteringFeaturesTree::setMaxInternalNodes(int b) {
-  this->maxInternalNodes = b;
-}
-void ClusteringFeaturesTree::setThresholdDistance(double t) {
-  this->thresholdDistance = t;
-}
-void ClusteringFeaturesTree::setMaxLeafNodes(int l) { this->maxLeafNodes = l; }
 
 void ClusteringFeaturesTree::insert(
     PointPtr point,

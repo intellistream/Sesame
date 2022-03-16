@@ -77,7 +77,7 @@ void SESAME::V6::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
   vector<double> ls = cf->getLS();
-  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i) / (double)ls.size(), i);
+  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i) / cf->getN(), i);
 }
 
 // use Manhattan Distance
@@ -87,7 +87,7 @@ void SESAME::V6::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
-    dist += abs(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i));
+    dist += pow(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i), 2);
   }
 }
 
@@ -101,7 +101,7 @@ double SESAME::V6::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr 
   calculateCentroid(curCFA, centroidA);
   calculateCentroid(curCFB, centroidB);;
   for(int i = 0; i < centroidA->getDimension(); i++) {
-    dist += abs(centroidA->getFeatureItem(i) - centroidB->getFeatureItem(i));
+    dist += pow(centroidA->getFeatureItem(i) - centroidB->getFeatureItem(i), 2);
   }
   return dist;
 }

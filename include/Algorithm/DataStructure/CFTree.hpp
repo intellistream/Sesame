@@ -77,6 +77,9 @@ public:
 
 class ClusteringFeaturesTree {
 private:
+  ClusteringFeaturesTree(int maxInternalNodes,
+                         int maxLeafNodes,
+                         double thresholdDistance);
   int maxInternalNodes; // max CF number of each internal node
   int maxLeafNodes;     // max CF number of each leaf node
   double
