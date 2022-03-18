@@ -77,7 +77,9 @@ struct param_t {
   int slidingCount; // since we test the count-based sliding window, this is the count number
   bool detectOutliers; // whether detect outliers
   int distanceOutliers; // the number of neighbors of the point within the radius R below which is an outlier
-  int densityOutliers; // the density value of the point to be treated as an outlier
+  double densityThreshold; // the density value of the point to be treated as an outlier
+  double neighborDistance; // the distance value of the point to judge neighborhoods
+  int outlierClusterCapacity;  // transfer outlier cluster and true cluster
 
 };
 
