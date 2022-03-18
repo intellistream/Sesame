@@ -25,7 +25,20 @@ using namespace std;
 namespace SESAME {
 
 template <typename W, typename D, typename O>
-class StreamClustering : public Algorithm {
+concept StreamClusteringConcept = requires {
+  requires requires(W w, PointPtr p) {
+    { w.addPoint(p) }
+    ->std::same_as<bool>;
+  };
+  requires requires(D d, PointPtr p, std::vector<typename D::NodePtr> vn) {
+    { d.insert(p, vn) }
+    ->std::same_as<void>;
+  };
+};
+
+template <typename W, typename D, typename O>
+requires StreamClusteringConcept<W, D, O> class StreamClustering
+    : public Algorithm {
 public:
   // StreamClustering();
   StreamClustering(const param_t &param);
@@ -46,7 +59,7 @@ private:
   DataPtr d;
   OutlierPtr o;
 
-  std::vector<typename D::NodePtr> clusterNodes;
+  std::vector<typename D::NodePtr> clusterNodes, outliers;
   static constexpr bool has_delpoint = requires(const W &w) { w.delPoint(); };
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
   static constexpr bool is_cftree =
@@ -64,10 +77,11 @@ StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
 
   if constexpr (is_landmark)
     Param.landmark = cmd_params.landmark;
-  if constexpr (is_cftree)
+  if constexpr (is_cftree) {
     Param.maxInternalNodes = cmd_params.maxInternalNodes;
-  Param.maxLeafNodes = cmd_params.maxLeafNodes;
-  Param.thresholdDistance = cmd_params.thresholdDistance;
+    Param.maxLeafNodes = cmd_params.maxLeafNodes;
+    Param.thresholdDistance = cmd_params.thresholdDistance;
+  }
 }
 
 template <typename W, typename D, typename O>
@@ -80,7 +94,7 @@ void StreamClustering<W, D, O>::Initilize() {
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
   if (w->addPoint(input)) {
-    forwardInsert(input->copy());
+    forwardInsert(input);
   }
   if constexpr (has_delpoint) {
     if (w->delPoint()) {
@@ -99,7 +113,7 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
 template <typename W, typename D, typename O>
 
 void StreamClustering<W, D, O>::forwardInsert(PointPtr point) {
-  d->insert(point, clusterNodes);
+  d->insert(point, outliers);
 }
 
 } // namespace SESAME
