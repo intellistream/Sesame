@@ -78,6 +78,9 @@ public:
 class ClusteringFeaturesTree
     : std::enable_shared_from_this<ClusteringFeaturesTree> {
 private:
+  ClusteringFeaturesTree(int maxInternalNodes,
+                         int maxLeafNodes,
+                         double thresholdDistance);
   int maxInternalNodes; // max CF number of each internal node
   int maxLeafNodes;     // max CF number of each leaf node
   double
@@ -113,6 +116,7 @@ public:
     std::vector<double> ls, ss;
 
   public:
+
     Node(int d = 0)
         : dim(d), ls(std::vector<double>(d, 0.0)),
           ss(std::vector<double>(d, 0.0)){};

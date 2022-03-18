@@ -111,6 +111,7 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
                                       std::vector<PointPtr> results) {}
 
 template <typename W, typename D, typename O>
+
 void StreamClustering<W, D, O>::forwardInsert(PointPtr point) {
   d->insert(point, clusterNodes, outliers);
 }

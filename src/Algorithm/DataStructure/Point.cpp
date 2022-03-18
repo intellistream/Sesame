@@ -73,7 +73,7 @@ int Point::getTimeStamp() const { return this->timestamp; }
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
 int Point::getDimension() const { return this->dimension; }
-int Point::getFeatureLength() { return (int)this->feature->size(); }
+int Point::getFeatureLength() { return (int) this->feature->size(); }
 
 double Point::getDisTo(PointPtr p) {
   double distance = 0;
@@ -103,7 +103,12 @@ double Point::radius(PointPtr centroid) {
   }
   return sqrt(sum);
 }
-void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
-bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
+void SESAME::Point::setIsOutlier(bool flag) {
+  this->isOutlier = flag;
+}
+bool SESAME::Point::getIsOutlier() {
+  return this->isOutlier;
+}
+}
 
-} // namespace SESAME
+
