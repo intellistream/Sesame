@@ -77,10 +77,11 @@ StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
 
   if constexpr (is_landmark)
     Param.landmark = cmd_params.landmark;
-  if constexpr (is_cftree)
+  if constexpr (is_cftree) {
     Param.maxInternalNodes = cmd_params.maxInternalNodes;
-  Param.maxLeafNodes = cmd_params.maxLeafNodes;
-  Param.thresholdDistance = cmd_params.thresholdDistance;
+    Param.maxLeafNodes = cmd_params.maxLeafNodes;
+    Param.thresholdDistance = cmd_params.thresholdDistance;
+  }
 }
 
 template <typename W, typename D, typename O>
