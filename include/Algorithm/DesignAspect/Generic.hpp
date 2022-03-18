@@ -31,7 +31,7 @@ concept StreamClusteringConcept = requires {
     ->std::same_as<bool>;
   };
   requires requires(D d, PointPtr p, std::vector<typename D::NodePtr> vn) {
-    { d.insert(p, vn, vn) }
+    { d.insert(p, vn) }
     ->std::same_as<void>;
   };
 };
@@ -94,7 +94,7 @@ void StreamClustering<W, D, O>::Initilize() {
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
   if (w->addPoint(input)) {
-    forwardInsert(input->copy());
+    forwardInsert(input);
   }
   if constexpr (has_delpoint) {
     if (w->delPoint()) {
@@ -113,7 +113,7 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
 template <typename W, typename D, typename O>
 
 void StreamClustering<W, D, O>::forwardInsert(PointPtr point) {
-  d->insert(point, clusterNodes, outliers);
+  d->insert(point, outliers);
 }
 
 } // namespace SESAME
