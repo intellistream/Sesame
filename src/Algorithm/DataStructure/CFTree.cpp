@@ -116,7 +116,7 @@ void ClusteringFeaturesTree::insert(
 
       } else {
         // timerMeter.dataInsertAccMeasure();
-        curNode = closestChild(childrenNode, point);
+        curNode = closestNode(childrenNode, point);
         // timerMeter.dataInsertEndMeasure();
       }
     }
@@ -272,20 +272,56 @@ std::vector<std::vector<double>> ClusteringFeaturesTree::calcAdjacencyMatrix(
   return adjacencyMatrix;
 }
 
-ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::closestChild(
-    const std::vector<ClusteringFeaturesTree::NodePtr> &children,
-    PointPtr point) {
+ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::closestNode(
+    const std::vector<ClusteringFeaturesTree::NodePtr> &nodes, PointPtr point) {
   double minDistance = std::numeric_limits<double>::max();
-  NodePtr closestChild = nullptr;
-  for (auto child : children) {
+  NodePtr closestNode = nullptr;
+  for (auto child : nodes) {
     auto centroid = child->centroid();
     auto distance = centroid->distance(point);
     if (distance < minDistance) {
       minDistance = distance;
-      closestChild = child;
+      closestNode = child;
     }
   }
-  return closestChild;
+  return closestNode;
+}
+
+ClusteringFeaturesList::ClusteringFeaturesList(
+    const StreamClusteringParam &param)
+    : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
+      maxLeafNodes(param.maxLeafNodes),
+      thresholdDistance(param.thresholdDistance) {}
+
+ClusteringFeaturesList::~ClusteringFeaturesList() {}
+
+void ClusteringFeaturesList::insert(
+    PointPtr point, std::vector<ClusteringFeaturesList::NodePtr> &outliers) {
+  if (nodes.empty()) {
+    auto node = GenericFactory::create<Node>(dim);
+    nodes.push_back(node);
+    node->update(point);
+    // TODO: outlier
+  } else {
+    auto node = closestNode(nodes, point);
+    node->update(point);
+    // TODO: outlier
+  }
+}
+
+ClusteringFeaturesList::NodePtr ClusteringFeaturesList::closestNode(
+    const std::vector<ClusteringFeaturesList::NodePtr> &nodes, PointPtr point) {
+  double minDistance = std::numeric_limits<double>::max();
+  NodePtr closestNode = nullptr;
+  for (auto child : nodes) {
+    auto centroid = child->centroid();
+    auto distance = centroid->distance(point);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestNode = child;
+    }
+  }
+  return closestNode;
 }
 
 } // namespace SESAME
