@@ -97,6 +97,9 @@ void SESAME::V7::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
           addNodeNLSToNode(outCluster, curNode, true);
           break;
         } else {
+          if(outCluster->getCF()->getN() == 0) {
+            std::cout << 1;
+          }
           backwardEvolution(curNode, center, outCluster);
           break;
         }
@@ -310,7 +313,7 @@ void SESAME::V7::forwardInsert(SESAME::PointPtr point){
     updateNLS(curNode, point, true);
     timerMeter.dataInsertEndMeasure();
   } else{
-    if(checkoutDensity(point)) {
+//    if(checkoutDensity(point)) {
       while(1) {
         vector<NodePtr> childrenNode = curNode->getChildren();
         if(curNode->getIsLeaf()) {
@@ -337,6 +340,7 @@ void SESAME::V7::forwardInsert(SESAME::PointPtr point){
             // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
             timerMeter.clusterUpdateAccMeasure();
             auto nullNode = make_shared<CFNode>();
+            nullNode->setIndex(-1);
             backwardEvolution(curNode, point, nullNode);
             timerMeter.clusterUpdateEndMeasure();
             break;
@@ -347,9 +351,9 @@ void SESAME::V7::forwardInsert(SESAME::PointPtr point){
           timerMeter.dataInsertEndMeasure();
         }
       }
-    } else {
-      insertPointIntoOutliers(point);
-    }
+//    } else {
+//      insertPointIntoOutliers(point);
+//    }
   }
 }
 
@@ -375,7 +379,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     // here we need to remove the old root and add the new one into the leafnodes set
     // update the parent node
     newRoot->setChild(newNode);
-    if(cluster == nullptr) {
+    if(cluster->getIndex() == -1) {
       updateNLS(newNode, point, true);
     } else {
       addNodeNLSToNode(cluster, newNode, true);
@@ -387,7 +391,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newNode->setIsLeaf(true);
     newNode->setParent(parent);
     parent->setChild(newNode);
-    if(cluster == nullptr) {
+    if(cluster->getIndex() == -1) {
       updateNLS(newNode, point, false);
     } else {
       addNodeNLSToNode(cluster, newNode, false);
@@ -396,7 +400,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
-      if(cluster == nullptr) {
+      if(cluster->getIndex() == -1) {
         updateNLS(parent, point, false);
       } else {
         addNodeNLSToNode(cluster, parent, false);
@@ -490,7 +494,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // if the current node(parent) is a cluster nodes, then we need to update the nls of its parent using new point.
         // we only update the parparent in the first loop.
         if(CurNodeIsClus){
-          if(cluster == nullptr) {
+          if(cluster->getIndex() == -1) {
             updateNLS(parParent, point, true);
           } else {
             addNodeNLSToNode(cluster, parParent, true);

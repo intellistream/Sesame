@@ -17,6 +17,8 @@
 #include "Algorithm/DesignAspect/V3.hpp"
 #include "Algorithm/DesignAspect/V4.hpp"
 #include "Algorithm/DesignAspect/V5.hpp"
+#include "Algorithm/DesignAspect/V6.hpp"
+#include "Algorithm/DesignAspect/V7.hpp"
 #include "Algorithm/DesignAspect/V8.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
@@ -74,8 +76,8 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     return (AlgorithmPtr)V5Stream;
   }
   if (cmd_params.algoType == V6Stream) {
-    shared_ptr<DStream> V6Stream = std::make_shared<V6>(cmd_params);
-    return (V6::AlgorithmPtr) V6Stream;
+    shared_ptr<V6> V6Stream = std::make_shared<V6>(cmd_params);
+    return (AlgorithmPtr) V6Stream;
   }
   if (cmd_params.algoType == V7Stream) {
     shared_ptr<V7> V7Stream = std::make_shared<V7>(cmd_params);

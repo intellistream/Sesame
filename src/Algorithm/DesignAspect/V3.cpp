@@ -117,6 +117,7 @@ void SESAME::V3::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
   for(int i = 0; i < insertPoint->getDimension(); i++) {
     dist += pow(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i), 2);
   }
+  dist = sqrt(dist);
 }
 
 // use Manhattan Distance
@@ -131,7 +132,7 @@ double SESAME::V3::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr 
   for(int i = 0; i < centroidA->getDimension(); i++) {
     dist += pow(centroidA->getFeatureItem(i) - centroidB->getFeatureItem(i), 2);
   }
-  return dist;
+  return sqrt(dist);
 }
 
 // select the closest child cluster according to Manhattan Distance
@@ -249,7 +250,7 @@ void SESAME::V3::forwardInsert(SESAME::PointPtr point){
           // whether the new radius is lower than threshold T
           timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          checkOutliers(curNode);
+//          checkOutliers(curNode);
           timerMeter.dataInsertEndMeasure();
 
           // means this point could get included in this cluster
@@ -297,7 +298,7 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     // update the parent node
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
-    checkOutliers(newRoot);
+//    checkOutliers(newRoot);
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -312,7 +313,7 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
       updateNLS(parent, point, true);
-      checkOutliers(parent);
+//      checkOutliers(parent);
     } else{
       // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
       bool CurNodeIsLeaf = true;
@@ -403,8 +404,8 @@ void SESAME::V3::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // we only update the parparent in the first loop.
         if(CurNodeIsLeaf){
           updateNLS(parParent, point, true);
-          checkOutliers(parent);
-          checkOutliers(newParentA);
+//          checkOutliers(parent);
+//          checkOutliers(newParentA);
         }
 
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
