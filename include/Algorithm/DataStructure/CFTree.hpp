@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <ranges>
 #include <vector>
@@ -75,6 +76,37 @@ public:
   bool getIsOutlier();
 };
 
+template <typename T> concept NodeConcept = requires(T t) { t->centroid(); };
+
+template <NodeConcept T>
+std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
+  int n = nodes.size();
+  std::vector<std::vector<double>> adjMatrix(n, std::vector<double>(n, 0.0));
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+      auto centroid1 = nodes[i]->centroid(), centroid2 = nodes[j]->centroid();
+      auto distance = centroid1->distance(centroid2);
+      adjMatrix[i][j] = distance, adjMatrix[j][i] = distance;
+    }
+  }
+  return adjMatrix;
+}
+
+template <NodeConcept T>
+T closestNode(const std::vector<T> &nodes, PointPtr point) {
+  double minDist = std::numeric_limits<double>::max();
+  T closestNode = nullptr;
+  for (auto child : nodes) {
+    auto centroid = child->centroid();
+    auto distance = centroid->distance(point);
+    if (distance < minDist) {
+      minDist = distance;
+      closestNode = child;
+    }
+  }
+  return closestNode;
+}
+
 struct ClusteringFeatures {
   // 原CF结构体，numPoints是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
   int numPoints = 0;
@@ -98,9 +130,6 @@ public:
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
   void insert(PointPtr point, std::vector<NodePtr> &outliers);
-  std::vector<std::vector<double>>
-  calcAdjacencyMatrix(const std::vector<NodePtr> &nodes);
-  NodePtr closestNode(const std::vector<NodePtr> &children, PointPtr point);
   void backwardEvolution(NodePtr node, PointPtr point);
   NodePtr root;
   struct Node : std::enable_shared_from_this<Node> {
@@ -167,10 +196,6 @@ public:
   ClusteringFeaturesList(const StreamClusteringParam &param);
   ~ClusteringFeaturesList();
   void insert(PointPtr point, std::vector<NodePtr> &outliers);
-  std::vector<std::vector<double>>
-  calcAdjacencyMatrix(const std::vector<NodePtr> &nodes);
-  NodePtr closestNode(const std::vector<NodePtr> &nodes, PointPtr point);
-  void backwardEvolution(NodePtr node, PointPtr point);
   std::vector<NodePtr> nodes;
   struct Node : std::enable_shared_from_this<Node> {
     NodePtr parent;

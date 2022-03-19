@@ -189,7 +189,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
         auto broNodes = parent->children;
         parent->children.clear();
         auto adjMatrix =
-            calcAdjacencyMatrix(broNodes); //  calculate the distance between
+            calcAdjMatrix(broNodes); //  calculate the distance between
                                            //  each two brother nodes
         // choose two farthest CFs as seedA and seedB
         int seedA = 0, seedB = 0;
@@ -255,37 +255,6 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
   }
 }
 
-std::vector<std::vector<double>> ClusteringFeaturesTree::calcAdjacencyMatrix(
-    const std::vector<ClusteringFeaturesTree::NodePtr> &nodes) {
-  int n = nodes.size();
-  std::vector<std::vector<double>> adjacencyMatrix(n,
-                                                   std::vector<double>(n, 0.0));
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      auto centroid1 = nodes[i]->centroid();
-      auto centroid2 = nodes[j]->centroid();
-      auto distance = centroid1->distance(centroid2);
-      adjacencyMatrix[i][j] = distance;
-      adjacencyMatrix[j][i] = distance;
-    }
-  }
-  return adjacencyMatrix;
-}
-
-ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::closestNode(
-    const std::vector<ClusteringFeaturesTree::NodePtr> &nodes, PointPtr point) {
-  double minDistance = std::numeric_limits<double>::max();
-  NodePtr closestNode = nullptr;
-  for (auto child : nodes) {
-    auto centroid = child->centroid();
-    auto distance = centroid->distance(point);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestNode = child;
-    }
-  }
-  return closestNode;
-}
 
 ClusteringFeaturesList::ClusteringFeaturesList(
     const StreamClusteringParam &param)
@@ -307,21 +276,6 @@ void ClusteringFeaturesList::insert(
     node->update(point);
     // TODO: outlier
   }
-}
-
-ClusteringFeaturesList::NodePtr ClusteringFeaturesList::closestNode(
-    const std::vector<ClusteringFeaturesList::NodePtr> &nodes, PointPtr point) {
-  double minDistance = std::numeric_limits<double>::max();
-  NodePtr closestNode = nullptr;
-  for (auto child : nodes) {
-    auto centroid = child->centroid();
-    auto distance = centroid->distance(point);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestNode = child;
-    }
-  }
-  return closestNode;
 }
 
 } // namespace SESAME
