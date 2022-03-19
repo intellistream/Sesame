@@ -214,12 +214,12 @@ void SESAME::V2::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
 }
 
 void SESAME::V2::initializeCF(SESAME::CFPtr &cf, int dimension) {
-  vector<double> ls = cf->getLS();
-  vector<double> ss = cf->getSS();
+  vector<double> ls, ss;
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
+  cf->setN(0);
   cf->setLS(ls);
   cf->setSS(ss);
 }
@@ -297,6 +297,7 @@ void SESAME::V2::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->getCF()->setSS(curSS);
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
+    this->clusterNodes.push_back(newRoot);
     // here we need to remove the old root and add the new one into the leafnodes set
     // update the parent node
     newRoot->setChild(newNode);
@@ -352,9 +353,6 @@ void SESAME::V2::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         CFPtr cfA = newParentA->getCF();
         CFPtr cfB = parent->getCF();
         std::vector<double>ls, ss;
-        cfB->setN(0);
-        cfB->setLS(ls);
-        cfB->setSS(ss);
         initializeCF(cfA, point->getDimension());
         initializeCF(cfB, point->getDimension());
         // split the child nodes of the old parent nodes

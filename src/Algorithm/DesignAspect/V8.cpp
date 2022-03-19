@@ -137,17 +137,15 @@ double SESAME::V8::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &ce
 
 
 void SESAME::V8::initializeCF(SESAME::CFPtr &cf, int dimension) {
-  vector<double> ls = cf->getLS();
-  vector<double> ss = cf->getSS();
-  cf->setN(0);
+  vector<double> ls, ss;
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
+  cf->setN(0);
   cf->setLS(ls);
   cf->setSS(ss);
 }
-
 
 void SESAME::V8::forwardInsert(SESAME::PointPtr point){
   if(this->Clusters.size() == 0) {

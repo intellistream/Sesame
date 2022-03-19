@@ -231,12 +231,12 @@ void SESAME::V1::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
 }
 
 void SESAME::V1::initializeCF(SESAME::CFPtr &cf, int dimension) {
-  vector<double> ls = cf->getLS();
-  vector<double> ss = cf->getSS();
+  vector<double> ls, ss;
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
+  cf->setN(0);
   cf->setLS(ls);
   cf->setSS(ss);
 }
@@ -319,6 +319,7 @@ void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->setChild(newNode);
     updateNLS(newNode, point, true);
     checkOutliers(newRoot);
+    this->clusterNodes.push_back(newRoot);
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -368,10 +369,6 @@ void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // clean cf of the old parent node and initialize the cf of new parent A (ls and ss all have d number of 0)
         CFPtr cfA = newParentA->getCF();
         CFPtr cfB = parent->getCF();
-        std::vector<double>ls, ss;
-        cfB->setN(0);
-        cfB->setLS(ls);
-        cfB->setSS(ss);
         initializeCF(cfA, point->getDimension());
         initializeCF(cfB, point->getDimension());
         // split the child nodes of the old parent nodes
