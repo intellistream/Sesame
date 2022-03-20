@@ -94,7 +94,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algoType == Generic) {
     using W = Landmark;
     using D = ClusteringFeaturesTree;
-    using O = Distance;
+    using O = DistanceDetection;
     shared_ptr<StreamClustering<W, D, O>> generic =
         std::make_shared<StreamClustering<W, D, O>>(cmd_params);
     return (AlgorithmPtr)generic;

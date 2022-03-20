@@ -36,8 +36,9 @@ class DensityDetection : public OutlierDetection {
 public:
   DensityDetection(const StreamClusteringParam &param) {}
   template <NodeConcept T> bool check(T node, PointPtr point) {
-    vector<T> neighborNodes;
-    auto distance = 0.0, neighborDensity = 0.0, neighborNeighborDensity = 0.0;
+    // vector<T> neighborNodes;
+    // auto distance = 0.0, neighborDensity = 0.0, neighborNeighborDensity =
+    // 0.0;
     // TODO
     return false;
     // for (auto cluster : this->clusterNodes) {
