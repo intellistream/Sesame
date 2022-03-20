@@ -19,7 +19,8 @@ class V5Parameter : public AlgorithmParameters {
   double thresholdDistance; // T
   double alpha;
   double lambda;
-  int distanceOutliers;
+  double outlierDistanceThreshold;
+  double outlierClusterCapacity;
 };
 
 class V5 : public Algorithm {
@@ -31,7 +32,7 @@ class V5 : public Algorithm {
   NodePtr root;
   vector<NodePtr> allNodes;
   vector<NodePtr> clusterNodes;
-  vector<NodePtr> Outliers;
+  vector<NodePtr> outlierNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V5(param_t &cmd_params);
@@ -46,7 +47,7 @@ class V5 : public Algorithm {
  private:
 
   void forwardInsert(PointPtr point);
-  void backwardEvolution(NodePtr &curNode, PointPtr &point);
+  void backwardEvolution(NodePtr &curNode, PointPtr &point, SESAME::NodePtr &cluster);
   void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
   double calculateRadius(PointPtr &point, PointPtr &centroid);
   void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
@@ -56,13 +57,13 @@ class V5 : public Algorithm {
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
   void initializeCF(CFPtr &cf, int dimension);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
-  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
+  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);
 
   void updateTimeWeight();
-
-  void removeOutliers();
-  void checkOutliers(NodePtr &node);
+  bool checkoutOutlier(SESAME::PointPtr &point);
+  void insertPointIntoOutliers(SESAME::PointPtr &point);
+  void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V5_HPP_

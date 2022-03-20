@@ -18,7 +18,8 @@ class V4Parameter : public AlgorithmParameters {
   int maxLeafNodes; // L
   double thresholdDistance; // T
   int slidingCount;
-  int distanceOutliers;
+  double outlierDistanceThreshold;
+  double outlierClusterCapacity;
 };
 
 class V4 : public Algorithm {
@@ -29,7 +30,7 @@ class V4 : public Algorithm {
   int leafMask = 0;
   SESAME::NodePtr root;
   vector<SESAME::NodePtr> clusterNodes;
-  vector<NodePtr> Outliers;
+  vector<NodePtr> outlierNodes;
   CFTreePtr cfTree;
   std::vector<SESAME::PointPtr> slidingWindowPoints; // points stored in the sliding window
   std::vector<SESAME::NodePtr> SlidingWindowNodes; // every point in the sliding window will insert into a corresponding node
@@ -46,7 +47,7 @@ class V4 : public Algorithm {
  private:
 
   void forwardInsert(PointPtr point);
-  void backwardEvolution(NodePtr &curNode, PointPtr &point);
+  void backwardEvolution(NodePtr &curNode, PointPtr &point, SESAME::NodePtr &cluster);
   void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
   double calculateRadius(PointPtr &point, PointPtr &centroid);
   void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
@@ -56,14 +57,15 @@ class V4 : public Algorithm {
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
   void initializeCF(CFPtr &cf, int dimension);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
-  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
+  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);
 
   // additionally add a function to incrementally delete the first come point in the sliding window rather than rebuild the whole tree
   void deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point);
 
-  void removeOutliers();
-  void checkOutliers(NodePtr &node);
+  bool checkoutOutlier(SESAME::PointPtr &point);
+  void insertPointIntoOutliers(SESAME::PointPtr &point);
+  void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V4_HPP_

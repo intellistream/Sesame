@@ -103,7 +103,7 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
                              const std::vector<PointPtr> &center, int dimension, double time) {
   // time ? weight ?
   std::vector<PointPtr> out;
-  SESAME::UtilityFunctions::groupByCenters(input, center,out, dimension, false);
+  SESAME::UtilityFunctions::groupByCenters(input, center,out, dimension);
   // convert to the predicted clustering center index
   for(int i = 0; i < out.size(); i++) {
     std::vector<double> features;

@@ -9,22 +9,21 @@
  * @Description: Please note that the order of the cluster index has to be consecutive
  */
 void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
-                                  std::vector<std::vector<PointPtr>> &group, int number) {
-  int count = 0, k = 0; // TODO: check the output cluster ID starting from 0?
-  bool stop = false;
-  while(!stop) {
+                                  std::vector<std::vector<PointPtr>> &group) {
+  std::vector<int> indexList;
+  for(auto el : input) {
+    if(std::find(indexList.begin(), indexList.end(), el->getClusteringCenter()) == indexList.end()){
+      indexList.push_back(el->getClusteringCenter());
+    }
+  }
+  for(auto id : indexList) {
     std::vector<SESAME::PointPtr> cluster;
-    for(const auto & i : input) {
-      if(i->getClusteringCenter() == k) {
-        cluster.push_back(i->copy());
-        count++;
+    for(auto el : input) {
+      if(id == el->getClusteringCenter()) {
+        cluster.push_back(el);
       }
-    }
-    if(k == number) stop = true;
-    else {
-      group.push_back(cluster);
-      k++;
-    }
+     }
+    group.push_back(cluster);
   }
 }
 
@@ -59,11 +58,11 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
 
 double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
-                               int dimension, int GTclusterNumber, bool decay) {
+                               int dimension, bool decay) {
   double purity;
   double size = 0;
   std::vector<PointPtr> input;
-  UtilityFunctions::groupByCenters(result, center, input, dimension, false);
+  UtilityFunctions::groupByCenters(result, center, input, dimension);
   for(int i = 0; i < input.size(); i++){
     double w = 1;
     if(decay){ // 分段函数来设置weight
@@ -84,8 +83,8 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT, GTclusterNumber);
-  pointToGroup(input, sample, (int)center.size());
+  pointToGroup(result, GT);
+  pointToGroup(input, sample);
 
   double sum = 0;
   for(auto& el: sample) {

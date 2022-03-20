@@ -182,12 +182,12 @@ void SESAME::V6::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
 }
 
 void SESAME::V6::initializeCF(SESAME::CFPtr &cf, int dimension) {
-  vector<double> ls = cf->getLS();
-  vector<double> ss = cf->getSS();
+  vector<double> ls, ss;
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
+  cf->setN(0);
   cf->setLS(ls);
   cf->setSS(ss);
 }
@@ -201,28 +201,20 @@ void SESAME::V6::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::V6::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.dataInsertAccMeasure();
     updateNLS(curNode, point, true);
-    timerMeter.dataInsertEndMeasure();
   } else{
     while(1) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
-        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
-        timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
         calculateCentroid(curCF, centroid);
-        timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
-          timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          timerMeter.dataInsertEndMeasure();
-
           // means this point could get included in this cluster
           //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
@@ -230,16 +222,11 @@ void SESAME::V6::forwardInsert(SESAME::PointPtr point){
         } else {
           // concept drift adaption
           // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
-          timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
-          timerMeter.clusterUpdateEndMeasure();
           break;
         }
-
       } else{
-        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
-        timerMeter.dataInsertEndMeasure();
       }
     }
   }
@@ -264,6 +251,7 @@ void SESAME::V6::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newRoot->getCF()->setSS(curSS);
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
+    this->clusterNodes.push_back(newRoot);
     // here we need to remove the old root and add the new one into the leafnodes set
     // update the parent node
     newRoot->setChild(newNode);
@@ -316,10 +304,6 @@ void SESAME::V6::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // clean cf of the old parent node and initialize the cf of new parent A (ls and ss all have d number of 0)
         CFPtr cfA = newParentA->getCF();
         CFPtr cfB = parent->getCF();
-        std::vector<double>ls, ss;
-        cfB->setN(0);
-        cfB->setLS(ls);
-        cfB->setSS(ss);
         initializeCF(cfA, point->getDimension());
         initializeCF(cfB, point->getDimension());
         // split the child nodes of the old parent nodes

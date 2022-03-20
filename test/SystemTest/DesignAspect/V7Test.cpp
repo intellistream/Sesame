@@ -15,14 +15,13 @@ TEST(DesignTest, V7Test) {
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 3000;
+  cmd_params.thresholdDistance = 1000;
   cmd_params.maxInternalNodes = 20;
   cmd_params.maxLeafNodes = 40;
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.landmark = 1000;
-  cmd_params.detectOutliers = true;
   cmd_params.neighborDistance = 5000;
   cmd_params.densityThreshold = 0.5;
   cmd_params.outlierClusterCapacity = 10;

@@ -3,6 +3,7 @@
 //
 #include <Algorithm/DesignAspect/V4.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
+#include <cfloat>
 
 void SESAME::V4::Initilize() {
   this->cfTree = DataStructureFactory::createCFTree();
@@ -14,26 +15,88 @@ void SESAME::V4::Initilize() {
   this->root->setIndex(this->leafMask++);
 }
 
-void SESAME::V4::removeOutliers(){
-  for (auto it = this->Outliers.begin(); it != this->Outliers.end();){
-    if (!it->get()->getIsOutlier()) {
-      it = this->Outliers.erase(it);
+// true means point is not an outlier, false means outlier
+bool SESAME::V4::checkoutOutlier(SESAME::PointPtr &point) {
+  auto distance = 0.0;
+  auto minDistance  = DBL_MAX;
+  for(auto cluster : this->clusterNodes) {
+    pointToClusterDist(point, cluster, distance);
+    if(distance < minDistance) {
+      minDistance = distance;
     }
-    else
-      ++it;
   }
+  if(minDistance > this->V4Param.outlierDistanceThreshold) return false;
+  else return true;
 }
 
-void SESAME::V4::checkOutliers(SESAME::NodePtr &node) {
-  if(node->getCF()->getN() < this->V4Param.distanceOutliers and !node->getIsOutlier()) {
-    node->setIsOutlier(true);
-    this->Outliers.push_back(node);
-  } else if(node->getCF()->getN() >= this->V4Param.distanceOutliers) {
-    node->setIsOutlier(false);
-    removeOutliers();
+void SESAME::V4::insertPointIntoOutliers(SESAME::PointPtr &point) {
+  int index = 0;
+  auto distance = DBL_MAX;
+  NodePtr insertCluster;
+  if(this->outlierNodes.empty()){
+    insertCluster = make_shared<CFNode>();
+    updateNLS(insertCluster, point, false);
+    insertCluster->setIndex(0);
+    this->outlierNodes.push_back(insertCluster);  // different
+    this->SlidingWindowNodes.push_back(insertCluster);
+  } else {
+    int i = 0;
+    for(auto outlierCluster : this->outlierNodes) {
+      double temp =0.0;
+      pointToClusterDist(point, outlierCluster, temp);
+      if(temp < distance) {
+        distance = temp;
+        index = i;
+      }
+      i++;
+    }
+    double pointToOutlierDist = 0;
+    insertCluster = this->outlierNodes[index];
+    pointToClusterDist(point, insertCluster, pointToOutlierDist);
+    if(pointToOutlierDist < this->V4Param.thresholdDistance) {
+      updateNLS(insertCluster, point, false);
+      this->outlierNodes.push_back(insertCluster); // different
+    } else {
+      insertCluster = make_shared<CFNode>();
+      updateNLS(insertCluster, point, false);
+      insertCluster->setIndex(this->outlierNodes.size());
+      this->outlierNodes.push_back(insertCluster); // different
+      this->SlidingWindowNodes.push_back(insertCluster);
+    }
   }
+  checkOutlierTransferCluster(insertCluster);
 }
 
+void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
+  if(outCluster->getCF()->getN() >= this->V4Param.outlierClusterCapacity){
+    // need to transfer outlier cluster into real cluster
+    this->outlierNodes.erase(this->outlierNodes.begin() + outCluster->getIndex());
+    auto curNode = this->root;
+    PointPtr center = make_shared<Point>();
+    auto cf = outCluster->getCF();
+    calculateCentroid(cf, center);
+    while(1) {
+      vector<NodePtr> childrenNode = curNode->getChildren();
+      if(curNode->getIsLeaf()) {
+        CFPtr curCF = curNode->getCF();
+        if(curCF->getN() == 0) {
+          initializeCF(curCF, center->getDimension());
+        }
+        PointPtr centroid = make_shared<Point>();
+        calculateCentroid(curCF, centroid);
+        if(calculateRadius(center,  centroid) <= this->cfTree->getT()) { // concept drift detection
+          addNodeNLSToNode(outCluster, curNode, true);
+          break;
+        } else {
+          backwardEvolution(curNode, center, outCluster);
+          break;
+        }
+      } else{
+        selectChild(childrenNode, center, curNode);
+      }
+    }
+  }
+}
 
 void SESAME::V4::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
@@ -67,11 +130,13 @@ SESAME::V4::V4(param_t &cmd_params) {
   this->V4Param.pointNumber = cmd_params.pointNumber;
   this->V4Param.dimension = cmd_params.dimension;
   this->V4Param.maxInternalNodes = cmd_params.maxInternalNodes;
-  this->V4Param.maxLeafNodes = cmd_params.maxLeafNodes;
-  this->V4Param.thresholdDistance = cmd_params.thresholdDistance;
+  this->V4Param.maxLeafNodes = cmd_params.maxLeafNodes; // 1
+  this->V4Param.thresholdDistance = cmd_params.thresholdDistance; // b
   this->V4Param.slidingCount = cmd_params.slidingCount;
-  this->V4Param.distanceOutliers = cmd_params.distanceOutliers;
+  this->V4Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
+  this->V4Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
 }
+
 SESAME::V4::~V4() {
 
 }
@@ -140,6 +205,7 @@ void SESAME::V4::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
   for(int i = 0; i < insertPoint->getDimension(); i++) {
     dist += pow(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i), 2);
   }
+  dist = sqrt(dist);
 }
 
 // use Manhattan Distance
@@ -154,7 +220,7 @@ double SESAME::V4::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr 
   for(int i = 0; i < centroidA->getDimension(); i++) {
     dist += pow(centroidA->getFeatureItem(i) - centroidB->getFeatureItem(i), 2);
   }
-  return dist;
+  return sqrt(dist);
 }
 
 // select the closest child cluster according to Manhattan Distance
@@ -218,27 +284,43 @@ void SESAME::V4::setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &po
   curCF->setLS(newLs);
 }
 
-void SESAME::V4::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent) {
-  SESAME::CFPtr childCF = child->getCF();
-  SESAME::CFPtr parCF = parent->getCF();
-  parCF->setN(parCF->getN() + childCF->getN());
-  vector<double> newLs;
-  vector<double> newSs;
-  for(int i = 0; i < childCF->getLS().size(); i++) {
-    newLs.push_back(childCF->getLS().at(i) + parCF->getLS().at(i));
-    newSs.push_back(childCF->getSS().at(i) + parCF->getSS().at(i));
+void SESAME::V4::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll) {
+  SESAME::NodePtr nodeSearch = parent;
+  while(true) {
+    SESAME::CFPtr childCF = child->getCF();
+    SESAME::CFPtr parCF = nodeSearch->getCF();
+    vector<double> newLs, newSs;
+    if(parCF->getLS().empty()) {
+      parCF->setN(childCF->getN());
+      for(int i = 0; i < this->V4Param.dimension; i++){
+        newLs.push_back((childCF->getLS().at(i)));
+        newSs.push_back((childCF->getSS().at(i)));
+      }
+    } else {
+      parCF->setN(parCF->getN() + childCF->getN());
+      for(int i = 0; i < childCF->getLS().size(); i++) {
+        newLs.push_back(childCF->getLS().at(i) + parCF->getLS().at(i));
+        newSs.push_back(childCF->getSS().at(i) + parCF->getSS().at(i));
+      }
+    }
+    if(newLs.size() != this->V4Param.dimension) {
+      std::cout << "Error!" << std::endl;
+    }
+    parCF->setLS(newLs);
+    parCF->setSS(newSs);
+    if(nodeSearch->getParent() != nullptr  && updateAll) {
+      nodeSearch = nodeSearch->getParent();
+    } else break;
   }
-  parCF->setLS(newLs);
-  parCF->setSS(newSs);
 }
 
 void SESAME::V4::initializeCF(SESAME::CFPtr &cf, int dimension) {
-  vector<double> ls = cf->getLS();
-  vector<double> ss = cf->getSS();
+  vector<double> ls, ss;
   for(int i = 0; i < dimension; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
+  cf->setN(0);
   cf->setLS(ls);
   cf->setSS(ss);
 }
@@ -252,51 +334,45 @@ void SESAME::V4::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::V4::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.dataInsertAccMeasure();
     this->SlidingWindowNodes.push_back(curNode);
     updateNLS(curNode, point, true);
-    timerMeter.dataInsertEndMeasure();
   } else{
-    while(1) {
-      vector<NodePtr> childrenNode = curNode->getChildren();
-      if(curNode->getIsLeaf()) {
-        timerMeter.clusterUpdateAccMeasure();
-        CFPtr curCF = curNode->getCF();
-        timerMeter.dataInsertAccMeasure();
-        if(curCF->getN() == 0 and curCF->getLS().size() == 0) {
-          initializeCF(curCF, point->getDimension());
-        }
-        PointPtr centroid = make_shared<Point>();
-        calculateCentroid(curCF, centroid);
-        timerMeter.dataInsertEndMeasure();
-        if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
-          // whether the new radius is lower than threshold T
-          timerMeter.dataInsertAccMeasure();
-          this->SlidingWindowNodes.push_back(curNode);
-          updateNLS(curNode, point, true);
-          checkOutliers(curNode);
-          timerMeter.dataInsertEndMeasure();
-          break;
-          // Normally insert the data point into the tree leafNode without concept drift
-        } else {
-          // create a new node to store the point
-          timerMeter.clusterUpdateAccMeasure();
-          backwardEvolution(curNode, point);
-          timerMeter.clusterUpdateEndMeasure();
-          break;
-        }
+    if(checkoutOutlier(point)) {
+      while (1) {
+        vector<NodePtr> childrenNode = curNode->getChildren();
+        if (curNode->getIsLeaf()) {
+          CFPtr curCF = curNode->getCF();
+          if (curCF->getN() == 0 and curCF->getLS().size() == 0) {
+            initializeCF(curCF, point->getDimension());
+          }
+          PointPtr centroid = make_shared<Point>();
+          calculateCentroid(curCF, centroid);
+          if (calculateRadius(point, centroid) <= this->cfTree->getT()) { // concept drift detection
+            // whether the new radius is lower than threshold T
+            this->SlidingWindowNodes.push_back(curNode);
+            updateNLS(curNode, point, true);
+            break;
+            // Normally insert the data point into the tree leafNode without concept drift
+          } else {
+            // create a new node to store the point
+            auto nullNode = make_shared<CFNode>();
+            nullNode->setIndex(-1);
+            backwardEvolution(curNode, point, nullNode);
+            break;
+          }
 
-      } else{
-        timerMeter.dataInsertAccMeasure();
-        selectChild(childrenNode, point, curNode);
-        timerMeter.dataInsertEndMeasure();
+        } else {
+          selectChild(childrenNode, point, curNode);
+        }
       }
+    }else{
+      insertPointIntoOutliers(point);
     }
   }
 }
 
 // concept drift adaption
-void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point) {
+void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &point, SESAME::NodePtr &cluster) {
   if(curNode->getParent() == nullptr) { // means current node is root node
     //SESAME_DEBUG("l <= L, create a new leaf node and insert the point into it(root change)");
     NodePtr newRoot = make_shared<CFNode>();
@@ -320,8 +396,11 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     // update the parent node
     newRoot->setChild(newNode);
     this->SlidingWindowNodes.push_back(newNode);
-    updateNLS(newNode, point, true);
-    checkOutliers(newRoot);
+    if(cluster->getIndex() == -1) {
+      updateNLS(newNode, point, true);
+    } else {
+      addNodeNLSToNode(cluster, newNode, true);
+    }
     this->root = newRoot;
   } else{
     NodePtr parent = curNode->getParent();
@@ -330,13 +409,20 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newNode->setParent(parent);
     parent->setChild(newNode);
     this->SlidingWindowNodes.push_back(newNode);
-    updateNLS(newNode, point, false);
+    if(cluster->getIndex() == -1) {
+      updateNLS(newNode, point, false);
+    } else {
+      addNodeNLSToNode(cluster, newNode, false);
+    }
     if(parent->getChildren().size() < this->cfTree->getL()){
       // whether the number of CFs(clusters) in the current leaf node is lower thant threshold L
       // l <= L, create a new leaf node and insert the point into it
       // update the parent node and all nodes on the path to root node
-      updateNLS(parent, point, true);
-      checkOutliers(parent);
+      if(cluster->getIndex() == -1) {
+        updateNLS(parent, point, true);
+      } else {
+        addNodeNLSToNode(cluster, parent, true);
+      }
     } else{
       // l > L, parent node of the current leaf node capacity reaches the threshold L, split a new parent node from the old one
       bool CurNodeIsClus = true;
@@ -372,10 +458,6 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // clean cf of the old parent node and initialize the cf of new parent A (ls and ss all have d number of 0)
         CFPtr cfA = newParentA->getCF();
         CFPtr cfB = parent->getCF();
-        std::vector<double>ls, ss;
-        cfB->setN(0);
-        cfB->setLS(ls);
-        cfB->setSS(ss);
         initializeCF(cfA, point->getDimension());
         initializeCF(cfB, point->getDimension());
         // split the child nodes of the old parent nodes
@@ -402,22 +484,22 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // insert seedA node into new parent A and link them
         newParentA->setChild(broNodes[seedA]);
         broNodes[seedA]->setParent(newParentA);
-        addNodeNLSToNode(broNodes[seedA], newParentA);
+        addNodeNLSToNode(broNodes[seedA], newParentA, false);
         // insert seed B node into new parent B and link them
         parent->setChild(broNodes[seedB]);
         broNodes[seedB]->setParent(parent);
-        addNodeNLSToNode(broNodes[seedB], parent);
+        addNodeNLSToNode(broNodes[seedB], parent, false);
         // if other one brother node is near seed A then split it into new parent A, otherwise new parent B.
         for(int i = 0; i < broNodes.size(); i++) {
           if(i != seedA and i != seedB){
             if(corCFDistance[i][seedA] < corCFDistance[i][seedB]) {
               newParentA->setChild(broNodes[i]);
-              addNodeNLSToNode(broNodes[i], newParentA); // since the brother nodes list contains the one we insert our point, so after this function, the parent node's nls are also updated.
+              addNodeNLSToNode(broNodes[i], newParentA, false); // since the brother nodes list contains the one we insert our point, so after this function, the parent node's nls are also updated.
               broNodes[i]->clearParents();
               broNodes[i]->setParent(newParentA);
             }else {
               parent->setChild(broNodes[i]);
-              addNodeNLSToNode(broNodes[i], parent);
+              addNodeNLSToNode(broNodes[i], parent, false);
               broNodes[i]->clearParents();
               broNodes[i]->setParent(parent);
             }
@@ -426,11 +508,12 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // if the current node(parent) is a cluster nodes, then we need to update the nls of its parent using new point.
         // we only update the parparent in the first loop.
         if(CurNodeIsClus){
-          updateNLS(parParent, point, true);
-          checkOutliers(parent);
-          checkOutliers(newParentA);
+          if(cluster->getIndex() == -1) {
+            updateNLS(parParent, point, true);
+          } else {
+            addNodeNLSToNode(cluster, parParent, true);
+          }
         }
-
         if(parParent->getChildren().size() <= this->cfTree->getB()) {
           // b < B, remove the old node and insert the new nodeA and nodeB into the parent node.
           break;

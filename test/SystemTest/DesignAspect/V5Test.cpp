@@ -17,17 +17,16 @@ TEST(DesignTest, V5Test) {
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 3000;
-  cmd_params.maxInternalNodes = 40;
-  cmd_params.maxLeafNodes = 20;
+  cmd_params.thresholdDistance = 1000;
+  cmd_params.maxInternalNodes = 20;
+  cmd_params.maxLeafNodes = 40;
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.lambda = 1.25;
   cmd_params.alpha = 2;
-  cmd_params.detectOutliers = true;
-  cmd_params.distanceOutliers = 10;
-
+  cmd_params.outlierDistanceThreshold = 5000;
+  cmd_params.outlierClusterCapacity = 10;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
