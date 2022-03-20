@@ -75,8 +75,12 @@ public:
 };
 
 class NoDetection : public OutlierDetection {
+
 public:
   NoDetection(const StreamClusteringParam &param) {}
+  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+    return false;
+  }
   template <NodeConcept T> bool check(T node) { return false; }
 };
 
