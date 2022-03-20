@@ -16,7 +16,8 @@ class V8Parameter : public AlgorithmParameters {
  public:
   double thresholdDistance; // T
   int landmark;
-  int distanceOutliers;
+  double outlierDistanceThreshold;
+  double outlierClusterCapacity;
 };
 
 class V8 : public Algorithm {
@@ -25,7 +26,7 @@ class V8 : public Algorithm {
   V8Parameter V8Param;
   int leafMask = 0;
   vector<CFPtr> Clusters;
-  vector<CFPtr> Outliers;
+  vector<CFPtr> outlierNodes;
   TimeMeter timerMeter;
   V8(param_t &cmd_params);
 
@@ -46,8 +47,9 @@ class V8 : public Algorithm {
   void updateNLS(CFPtr &currentCF, PointPtr &point);
   void initializeCF(CFPtr &cf, int dimension);
 
-  void removeOutliers();
-  void checkOutliers(CFPtr &cf);
+  bool checkoutOutlier(SESAME::PointPtr &point);
+  void insertPointIntoOutliers(SESAME::PointPtr &point);
+  void checkOutlierTransferCluster(SESAME::CFPtr &outCluster);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V8_HPP_

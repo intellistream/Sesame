@@ -23,7 +23,6 @@ TEST(DesignTest, V6Test) {
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
   cmd_params.landmark = 1000;
-  cmd_params.detectOutliers = false;
 
   cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";

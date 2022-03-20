@@ -21,7 +21,8 @@ class V2Parameter : public AlgorithmParameters {
   unsigned int minPoints;//minimum point of core point in DBSCAN
   double epsilon;//maximum distance if point belongs to the density area of core point
   int landmark;
-  int distanceOutliers;
+  double outlierDistanceThreshold;
+  double outlierClusterCapacity;
 };
 
 class V2 : public Algorithm {
@@ -32,7 +33,7 @@ class V2 : public Algorithm {
   NodePtr root;
   std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering
   vector<NodePtr> clusterNodes;
-  vector<NodePtr> Outliers;
+  vector<NodePtr> outlierNodes;
   CFTreePtr cfTree;
   TimeMeter timerMeter;
   V2(param_t &cmd_params);
@@ -47,7 +48,7 @@ class V2 : public Algorithm {
  private:
 
   void forwardInsert(PointPtr point);
-  void backwardEvolution(NodePtr &curNode, PointPtr &point);
+  void backwardEvolution(NodePtr &curNode, PointPtr &point, SESAME::NodePtr &cluster);
   void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
   double calculateRadius(PointPtr &point, PointPtr &centroid);
   void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
@@ -57,11 +58,12 @@ class V2 : public Algorithm {
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
   void initializeCF(CFPtr &cf, int dimension);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
-  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent);
+  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);
 
-  void removeOutliers();
-  void checkOutliers(NodePtr &node);
+  bool checkoutOutlier(SESAME::PointPtr &point);
+  void insertPointIntoOutliers(SESAME::PointPtr &point);
+  void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_

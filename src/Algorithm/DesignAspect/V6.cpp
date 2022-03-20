@@ -201,28 +201,20 @@ void SESAME::V6::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::V6::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.dataInsertAccMeasure();
     updateNLS(curNode, point, true);
-    timerMeter.dataInsertEndMeasure();
   } else{
     while(1) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
-        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
-        timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>();
         calculateCentroid(curCF, centroid);
-        timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
-          timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          timerMeter.dataInsertEndMeasure();
-
           // means this point could get included in this cluster
           //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
           break;
@@ -230,16 +222,11 @@ void SESAME::V6::forwardInsert(SESAME::PointPtr point){
         } else {
           // concept drift adaption
           // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
-          timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
-          timerMeter.clusterUpdateEndMeasure();
           break;
         }
-
       } else{
-        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
-        timerMeter.dataInsertEndMeasure();
       }
     }
   }

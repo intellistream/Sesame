@@ -70,9 +70,9 @@ void SESAME::CF::setSS(std::vector<double> & newSs) {
 SESAME::CFPtr SESAME::CF::copy() {
   return std::make_shared<CF>(*this);
 }
-bool SESAME::CF::getIsOutlier() {
-  return this->isOutler;
+int SESAME::CF::getIndex() {
+  return this->index;
 }
-void SESAME::CF::setIsOutlier(bool flag) {
-  this->isOutler = flag;
+void SESAME::CF::setIndex(int id) {
+  this->index = id;
 }

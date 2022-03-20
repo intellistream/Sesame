@@ -76,7 +76,7 @@ struct param_t {
   int landmark; // this is the index of landmark point[start from 0](determine to process the algorithm from which algorithm)
   int slidingCount; // since we test the count-based sliding window, this is the count number
   bool detectOutliers; // whether detect outliers
-  int distanceOutliers; // the number of neighbors of the point within the radius R below which is an outlier
+  double outlierDistanceThreshold; // the max distance of the incoming point to its nearest clusters
   double densityThreshold; // the density value of the point to be treated as an outlier
   double neighborDistance; // the distance value of the point to judge neighborhoods
   int outlierClusterCapacity;  // transfer outlier cluster and true cluster

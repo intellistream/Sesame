@@ -58,7 +58,7 @@ class V7 : public Algorithm {
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);
-  bool checkoutDensity(SESAME::PointPtr &point);
+  bool checkoutOutlier(SESAME::PointPtr &point);
   void insertPointIntoOutliers(SESAME::PointPtr &point);
   void checkOutlierTransferCluster(SESAME::NodePtr &Outlier);
 };

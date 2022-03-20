@@ -17,7 +17,7 @@ class CF {
   int NumberOfNodes;
   std::vector<double> LS;
   std::vector<double> SS;
-  bool isOutler;
+  int index;
  public:
   CF();
   ~CF();
@@ -30,8 +30,8 @@ class CF {
   void setLS(std::vector<double> &newLs);
   void setSS(std::vector<double> &newSs);
   SESAME::CFPtr copy();
-  bool getIsOutlier();
-  void setIsOutlier(bool flag);
+  int getIndex();
+  void setIndex(int id);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_FEATUREVECTOR_H_
