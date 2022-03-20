@@ -24,7 +24,9 @@ public:
   int landmark;
   int slidingCount;
   double alpha, lambda;
-  int outlierDistanceThreshold, outlierClusterCapacity;
+  double outlierDistanceThreshold;
+  int outlierClusterCapacity;
+  double neighborDistance, densityThreshold;
 };
 
 } // namespace SESAME

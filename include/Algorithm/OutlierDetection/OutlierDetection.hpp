@@ -18,7 +18,7 @@ class OutlierDetection {};
 
 class DistanceDetection : public OutlierDetection {
 private:
-  int outlierDistanceThreshold;
+  double outlierDistanceThreshold;
   int outlierClusterCapacity;
 
 public:
@@ -37,38 +37,40 @@ public:
 };
 
 class DensityDetection : public OutlierDetection {
+  double neighborDistance, densityThreshold;
+  int outlierClusterCapacity;
+
 public:
-  DensityDetection(const StreamClusteringParam &param) {}
-  template <NodeConcept T> bool check(T node, PointPtr point) {
-    // vector<T> neighborNodes;
-    // auto distance = 0.0, neighborDensity = 0.0, neighborNeighborDensity =
-    // 0.0;
-    // TODO
-    return false;
-    // for (auto cluster : this->clusterNodes) {
-    //   pointToClusterDist(point, cluster, distance);
-    //   if (distance < this->V7Param.neighborDistance) {
-    //     neighborNodes.push_back(cluster);
-    //     neighborDensity += cluster->getCF()->getN();
-    //   }
-    // }
-    // for (auto neighbor : neighborNodes) {
-    //   for (auto cluster : this->clusterNodes) {
-    //     if (clusterToClusterDist(cluster, neighbor) <
-    //         this->V7Param.neighborDistance) {
-    //       neighborNeighborDensity += cluster->getCF()->getN();
-    //     }
-    //   }
-    // }
-    // if (neighborNeighborDensity == 0)
-    //   return true;
-    // else {
-    //   double densityScore = neighborDensity / neighborNeighborDensity;
-    //   if (densityScore <= this->V7Param.densityThreshold)
-    //     return false;
-    //   else
-    //     return true;
-    // }
+  DensityDetection(const StreamClusteringParam &param)
+      : neighborDistance(param.neighborDistance),
+        densityThreshold(param.densityThreshold),
+        outlierClusterCapacity(param.outlierClusterCapacity) {}
+  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+    std::vector<T> neighborNodes;
+    int neighborDensity = 0, neighborNeighborDensity = 0;
+    for (auto node : nodes) {
+      auto dist = point->radius(node->centroid());
+      if (dist < neighborDistance) {
+        neighborNodes.push_back(node);
+        neighborDensity += node->cf.numPoints;
+      }
+    }
+    for (auto neighbor : neighborNodes) {
+      for (auto node : nodes) {
+        if (clusterDistance(node, neighbor) < neighborDistance) {
+          neighborNeighborDensity += node->cf.numPoints;
+        }
+      }
+    }
+    if (neighborNeighborDensity == 0)
+      return false;
+    else {
+      return (double)neighborDensity / neighborNeighborDensity <=
+             densityThreshold;
+    }
+  }
+  template <NodeConcept T> bool check(T node) {
+    return node->cf.numPoints < outlierClusterCapacity;
   }
 };
 

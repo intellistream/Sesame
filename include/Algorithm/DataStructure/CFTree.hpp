@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -110,6 +111,16 @@ std::pair<T, double> closestNode(const std::vector<T> &nodes, PointPtr point) {
     }
   }
   return std::make_pair(closestNode, minDist);
+}
+
+template <NodeConcept T> double clusterDistance(T a, T b) {
+  double dist = 0.0;
+  auto ca = a->centroid(), cb = b->centroid();
+  for (int i = 0; i < ca->getDimension(); ++i) {
+    auto val = ca->getFeatureItem(i) - cb->getFeatureItem(i);
+    dist += val * val;
+  }
+  return sqrt(dist);
 }
 
 struct ClusteringFeatures {
