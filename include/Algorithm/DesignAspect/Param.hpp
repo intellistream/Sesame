@@ -25,8 +25,9 @@ public:
   int slidingCount;
   double alpha;
   double lambda;
+  int distanceOutliers;
 };
 
-}
+} // namespace SESAME
 
 #endif

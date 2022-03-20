@@ -76,7 +76,7 @@ public:
   bool getIsOutlier();
 };
 
-template <typename T> concept NodeConcept = requires(T t) { t->centroid(); };
+template <typename T> concept NodeConcept = requires(T t) { t->centroid(); t->cf.numPoints; };
 
 template <NodeConcept T>
 std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
