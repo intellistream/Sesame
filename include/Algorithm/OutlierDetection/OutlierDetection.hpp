@@ -18,17 +18,21 @@ class OutlierDetection {};
 
 class DistanceDetection : public OutlierDetection {
 private:
-  int distanceOutliers;
+  int outlierDistanceThreshold;
+  int outlierClusterCapacity;
 
 public:
   DistanceDetection(const StreamClusteringParam &param)
-      : distanceOutliers(param.distanceOutliers) {}
-  template <NodeConcept T> bool check(T node, PointPtr point) {
-    if (node->cf.numPoints < distanceOutliers) {
-      return true;
-    } else {
+      : outlierDistanceThreshold(param.outlierDistanceThreshold),
+        outlierClusterCapacity(param.outlierClusterCapacity) {}
+  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+    if (nodes.empty())
       return false;
-    }
+    auto dist = closestNode(nodes, point).second;
+    return dist > outlierDistanceThreshold;
+  }
+  template <NodeConcept T> bool check(T node) {
+    return node->cf.numPoints < outlierClusterCapacity;
   }
 };
 

@@ -76,7 +76,12 @@ public:
   bool getIsOutlier();
 };
 
-template <typename T> concept NodeConcept = requires(T t) { t->centroid(); t->cf.numPoints; };
+template <typename T> concept NodeConcept = requires(T t) {
+  t->centroid();
+  t->cf.numPoints;
+  t->index;
+  t->update(GenericFactory::create<Point>());
+};
 
 template <NodeConcept T>
 std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
@@ -93,7 +98,7 @@ std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
 }
 
 template <NodeConcept T>
-T closestNode(const std::vector<T> &nodes, PointPtr point) {
+std::pair<T, double> closestNode(const std::vector<T> &nodes, PointPtr point) {
   double minDist = std::numeric_limits<double>::max();
   T closestNode = nullptr;
   for (auto child : nodes) {
@@ -104,7 +109,7 @@ T closestNode(const std::vector<T> &nodes, PointPtr point) {
       closestNode = child;
     }
   }
-  return closestNode;
+  return std::make_pair(closestNode, minDist);
 }
 
 struct ClusteringFeatures {
@@ -129,9 +134,17 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
-  void insert(PointPtr point, std::vector<NodePtr> &outliers);
-  void backwardEvolution(NodePtr node, PointPtr point);
+  void insert(PointPtr point);
+  void insert(NodePtr node);
+  const std::vector<NodePtr> &getClusterNodes();
+  NodePtr newNode();
+
+private:
+  template <typename T> void backwardEvolution(NodePtr node, T point);
   NodePtr root;
+  std::vector<NodePtr> clusterNodes;
+
+public:
   struct Node : std::enable_shared_from_this<Node> {
     NodePtr parent;
     std::vector<NodePtr> children;
@@ -140,6 +153,7 @@ public:
     ClusteringFeatures cf;
 
     Node(int d = 0, NodePtr p = nullptr) : dim(d), cf(d), parent(p){};
+    Node(PointPtr p) : Node(p->getDimension()) {}
     ~Node() = default;
     void removeChild(NodePtr child) {
       std::ranges::remove_if(children,
@@ -154,12 +168,23 @@ public:
     template <typename T> void setCF(const T &t) {
       this->cf = ClusteringFeatures(t);
     }
-    void update(PointPtr point, bool all) {
+    void update(PointPtr point) {
+      cf.numPoints++;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
         cf.ls[i] += val;
         cf.ss[i] += val * val;
       }
+    }
+    void update(NodePtr node) {
+      cf.numPoints += node->cf.numPoints;
+      for (int i = 0; i < dim; ++i) {
+        cf.ls[i] += node->cf.ls[i];
+        cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
+      }
+    }
+    template <typename T> void update(T point, bool all) {
+      update(point);
       if (parent != nullptr && all) {
         parent->update(point, all);
       }
@@ -171,13 +196,6 @@ public:
       for (int i = 0; i < cf.ls.size(); ++i)
         c->setFeatureItem(cf.ls[i] / cf.numPoints, i);
       return c;
-    }
-    void merge(NodePtr child) {
-      cf.numPoints += child->cf.numPoints;
-      for (int i = 0; i < dim; ++i) {
-        cf.ls[i] += child->cf.ls[i];
-        cf.ss[i] += child->cf.ss[i];
-      }
     }
   };
 };
@@ -195,8 +213,13 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesList(const StreamClusteringParam &param);
   ~ClusteringFeaturesList();
-  void insert(PointPtr point, std::vector<NodePtr> &outliers);
+  void insert(PointPtr point);
+  const std::vector<NodePtr> &getClusterNodes();
+
+private:
   std::vector<NodePtr> nodes;
+
+public:
   struct Node : std::enable_shared_from_this<Node> {
     NodePtr parent;
     std::vector<NodePtr> children;
