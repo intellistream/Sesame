@@ -6,7 +6,7 @@
 #define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V6_HPP_
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>

@@ -113,7 +113,7 @@ void SESAME::V2::runOfflineClustering(DataSinkPtr sinkPtr) {
     }
     onlineCenters.push_back(centroid->copy());
   }
-  this->dbscan->run(V2Param, onlineCenters, sinkPtr);
+  this->dbscan->Run(V2Param, onlineCenters, sinkPtr);
 
 //  this->dbscan->run(onlineCenters);
 //

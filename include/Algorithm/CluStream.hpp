@@ -14,7 +14,7 @@
 #include <cstdio>
 #include <Algorithm/Algorithm.hpp>
 #include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/DataStructure/Snapshot.hpp>
 #include <Utils/BenchmarkUtils.hpp>

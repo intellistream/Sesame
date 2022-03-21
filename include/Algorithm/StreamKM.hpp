@@ -9,7 +9,7 @@
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <iostream>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 

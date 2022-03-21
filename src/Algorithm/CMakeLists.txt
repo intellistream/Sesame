@@ -11,7 +11,7 @@ add_source_sesame(
 )
 add_subdirectory(ConceptDrift)
 add_subdirectory(DataStructure)
-add_subdirectory(OfflineClustering)
+add_subdirectory(OfflineRefinement)
 add_subdirectory(OutlierDetection)
 add_subdirectory(WindowModel)
 add_subdirectory(DesignAspect)
