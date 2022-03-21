@@ -14,6 +14,7 @@ void SESAME::V1::Initilize() {
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
   this->root->setIndex(this->leafMask++);
+  this->km = std::make_shared<KMeans>();
 }
 
 // true means point is not an outlier, false means outlier
@@ -115,25 +116,27 @@ void SESAME::V1::runOfflineClustering(DataSinkPtr sinkPtr) {
     onlineCenters.push_back(centroid->copy());
   }
 
-  vector <PointPtr> offlineCenters;
-  vector <vector<PointPtr>> groups;
-
-  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-
   // here if clusterNumber is lower than online cluster center number, we choose to skip offline.
-  if(onlineCenters.size() <= this->V1Param.clusterNumber){
-    offlineCenters = onlineCenters;
-  } else{
-    this->km.runKMeans(this->V1Param.clusterNumber,
-                       onlineCenters.size(),
-                       offlineCenters,
-                       onlineCenters,
-                       oldGroups,
-                       newGroups,
-                       true);
-  }
+  this->km->run(this->V1Param, onlineCenters, sinkPtr);
+
+//  vector <PointPtr> offlineCenters;
+//  vector <vector<PointPtr>> groups;
+//
+//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+//
+//  // here if clusterNumber is lower than online cluster center number, we choose to skip offline.
+//  if(onlineCenters.size() <= this->V1Param.clusterNumber){
+//    offlineCenters = onlineCenters;
+//  } else{
+//    this->km.runKMeans(this->V1Param.clusterNumber,
+//                       onlineCenters.size(),
+//                       offlineCenters,
+//                       onlineCenters,
+//                       oldGroups,
+//                       newGroups,
+//                       true);
+//  }
   // store the result input output
-  this->km.produceResult(oldGroups,sinkPtr);
   timerMeter.printTime(false,false,false,false);
 }
 
@@ -147,6 +150,7 @@ SESAME::V1::V1(param_t &cmd_params) {
   this->V1Param.clusterNumber = cmd_params.clusterNumber;
   this->V1Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
   this->V1Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
+  this->V1Param.KMeansPP = true;
 }
 SESAME::V1::~V1() {
 

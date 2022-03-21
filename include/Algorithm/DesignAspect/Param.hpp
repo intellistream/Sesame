@@ -12,18 +12,31 @@ namespace SESAME {
 
 class StreamClusteringParam {
 public:
+  // General Params
   int pointNumber;
   int dimension;
+
+  // CF-Tree Params
   int maxInternalNodes;     // B
   int maxLeafNodes;         // L
   double thresholdDistance; // T
+
+  // KMeans / KMeans++ Params
   int clusterNumber;
+  bool KMeansPP;
+
+  // DBSCAN Params
   unsigned int minPoints; // minimum point of core point in DBSCAN
-  double epsilon; // maximum distance if point belongs to the density area of
-                  // core point
+  double epsilon; // maximum distance if point belongs to the density area of core point
+
+  // Landmark Window
   int landmark;
+  // Sliding Window
   int slidingCount;
+  // Damped Window
   double alpha, lambda;
+
+  // Outlier Detection
   double outlierDistanceThreshold;
   int outlierClusterCapacity;
   double neighborDistance, densityThreshold;

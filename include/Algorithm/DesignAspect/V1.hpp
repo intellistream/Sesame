@@ -10,27 +10,18 @@
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
 namespace SESAME {
 
-class V1Parameter : public AlgorithmParameters {
- public:
-  int maxInternalNodes; // B
-  int maxLeafNodes; // L
-  double thresholdDistance; // T
-  int clusterNumber;
-  int landmark;
-  double outlierDistanceThreshold;
-  double outlierClusterCapacity;
-};
 
 class V1 : public Algorithm {
 
  public:
-  V1Parameter V1Param;
+  StreamClusteringParam V1Param;
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   int leafMask = 0;
   NodePtr root;
-  KMeans km;
+  std::shared_ptr<KMeans> km;
   vector<NodePtr> clusterNodes;
   vector<NodePtr> outlierNodes;
   CFTreePtr cfTree;

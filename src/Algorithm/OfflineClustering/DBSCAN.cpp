@@ -2,9 +2,18 @@
 // Created by 1124a on 2021/8/20.
 //
 #include <Algorithm/OfflineClustering/DBSCAN.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
+
 SESAME::DBSCAN::DBSCAN(unsigned int minPts, float eps){
   this->minPoints = minPts;
   this->epsilon = eps;
+  //this->pointSize = size;
+  this->clusterID = 0;
+}
+
+SESAME::DBSCAN::DBSCAN(){
+  this->minPoints = 0;
+  this->epsilon = 0;
   //this->pointSize = size;
   this->clusterID = 0;
 }
@@ -24,6 +33,24 @@ void SESAME::DBSCAN::run(std::vector<PointPtr> &input)
       }
     }
   }
+}
+
+void SESAME::DBSCAN::run(StreamClusteringParam &param, std::vector<PointPtr> &input, SESAME::DataSinkPtr sinkPtr)
+{
+  this->minPoints = param.minPoints;
+  this->epsilon = param.epsilon;
+  //this->pointSize = size;
+  this->clusterID = 0;
+  for(int i=0; i<input.size(); i++) {
+    if ( input[i]->getClusteringCenter() == UNCLASSIFIED )
+    {
+      if ( expandCluster(input,input[i], clusterID) != FAILURE )
+      {
+        clusterID += 1;
+      }
+    }
+  }
+  produceResult(input, sinkPtr);
 }
 
 int SESAME::DBSCAN::expandCluster( std::vector<PointPtr> &input,PointPtr &point, int clusterID) const

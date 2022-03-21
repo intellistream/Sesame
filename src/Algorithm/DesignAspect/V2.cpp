@@ -13,6 +13,7 @@ void SESAME::V2::Initilize() {
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
   this->root->setIndex(this->leafMask++);
+  this->dbscan = std::make_shared<DBSCAN>();
 }
 
 // true means point is not an outlier, false means outlier
@@ -112,9 +113,11 @@ void SESAME::V2::runOfflineClustering(DataSinkPtr sinkPtr) {
     }
     onlineCenters.push_back(centroid->copy());
   }
-  this->dbscan->run(onlineCenters);
+  this->dbscan->run(V2Param, onlineCenters, sinkPtr);
 
-  this->dbscan->produceResult(onlineCenters, sinkPtr);
+//  this->dbscan->run(onlineCenters);
+//
+//  this->dbscan->produceResult(onlineCenters, sinkPtr);
   timerMeter.printTime(false,false,false,false);
 }
 

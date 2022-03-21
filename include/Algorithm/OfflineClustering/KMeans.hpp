@@ -18,6 +18,8 @@
 #include <Utils/Logger.hpp>
 #include <memory>
 #include <Sinks/DataSink.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
+
 namespace SESAME {
 class KMeans : public SESAME::OfflineClustering {
  public:
@@ -46,6 +48,7 @@ class KMeans : public SESAME::OfflineClustering {
                  std::vector<std::vector<PointPtr>> &oldGroups,
                  std::vector<std::vector<PointPtr>> &newGroups,
                  bool KMeansPP);
+  void run(StreamClusteringParam &param, std::vector<PointPtr> &onlineCenters, DataSinkPtr sinkPtr);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_KMEANS_HPP_

@@ -14,6 +14,7 @@
 #include <memory>
 #include <Algorithm/OfflineClustering/OfflineClustering.hpp>
 #include <Utils/UtilityFunctions.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
 
 namespace SESAME {
 
@@ -21,8 +22,10 @@ namespace SESAME {
 class DBSCAN : public SESAME::OfflineClustering {
  public:
   DBSCAN(unsigned int minPts, float eps);
+  DBSCAN();
   ~DBSCAN();
   void run(std::vector<PointPtr> &input);
+  void run(StreamClusteringParam &param, std::vector<PointPtr> &input, SESAME::DataSinkPtr sinkPtr);
   vector<int> calculateCluster(std::vector<PointPtr> &input,PointPtr &point) const;
   int expandCluster(std::vector<PointPtr> &input,PointPtr &point, int clusterID) const;
   static bool judgeCorePoint(PointPtr &point,PointPtr &other);
@@ -33,7 +36,6 @@ class DBSCAN : public SESAME::OfflineClustering {
   unsigned int getMinimumClusterSize() const {return minPoints;}
   double getEpsilonSize() const  {return epsilon;}
   int getClusterID() const {return clusterID;}
- private:
   unsigned int pointSize;
   unsigned int minPoints;
   int clusterID;

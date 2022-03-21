@@ -10,25 +10,14 @@
 #include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 #include <Algorithm/OfflineClustering/DBSCAN.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
 
 namespace SESAME {
-
-class V2Parameter : public AlgorithmParameters {
- public:
-  int maxInternalNodes; // B
-  int maxLeafNodes; // L
-  double thresholdDistance; // T
-  unsigned int minPoints;//minimum point of core point in DBSCAN
-  double epsilon;//maximum distance if point belongs to the density area of core point
-  int landmark;
-  double outlierDistanceThreshold;
-  double outlierClusterCapacity;
-};
 
 class V2 : public Algorithm {
 
  public:
-  V2Parameter V2Param;
+  StreamClusteringParam V2Param;
   int leafMask = 0;
   NodePtr root;
   std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering
