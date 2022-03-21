@@ -78,19 +78,19 @@ public:
 };
 
 template <typename T> concept NodeConcept = requires(T t) {
-  t->centroid();
+  t->Centroid();
   t->cf.numPoints;
   t->index;
-  t->update(GenericFactory::create<Point>());
+  t->Update(GenericFactory::create<Point>());
 };
 
 template <NodeConcept T>
-std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
+std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes) {
   int n = nodes.size();
   std::vector<std::vector<double>> adjMatrix(n, std::vector<double>(n, 0.0));
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
-      auto centroid1 = nodes[i]->centroid(), centroid2 = nodes[j]->centroid();
+      auto centroid1 = nodes[i]->Centroid(), centroid2 = nodes[j]->Centroid();
       auto distance = centroid1->distance(centroid2);
       adjMatrix[i][j] = distance, adjMatrix[j][i] = distance;
     }
@@ -99,23 +99,24 @@ std::vector<std::vector<double>> calcAdjMatrix(const std::vector<T> &nodes) {
 }
 
 template <NodeConcept T>
-std::pair<T, double> closestNode(const std::vector<T> &nodes, PointPtr point) {
+std::pair<T, double> CalcClosestNode(const std::vector<T> &nodes,
+                                     PointPtr point) {
   double minDist = std::numeric_limits<double>::max();
-  T closestNode = nullptr;
+  T node = nullptr;
   for (auto child : nodes) {
-    auto centroid = child->centroid();
+    auto centroid = child->Centroid();
     auto distance = centroid->distance(point);
     if (distance < minDist) {
       minDist = distance;
-      closestNode = child;
+      node = child;
     }
   }
-  return std::make_pair(closestNode, minDist);
+  return std::make_pair(node, minDist);
 }
 
-template <NodeConcept T> double clusterDistance(T a, T b) {
+template <NodeConcept T> double CalcClusterDist(T a, T b) {
   double dist = 0.0;
-  auto ca = a->centroid(), cb = b->centroid();
+  auto ca = a->Centroid(), cb = b->Centroid();
   for (int i = 0; i < ca->getDimension(); ++i) {
     auto val = ca->getFeatureItem(i) - cb->getFeatureItem(i);
     dist += val * val;
@@ -145,15 +146,14 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
-  void insert(PointPtr point);
-  void insert(NodePtr node);
-  const std::vector<NodePtr> &getClusterNodes();
-  NodePtr newNode();
+  void Insert(PointPtr point);
+  void Insert(NodePtr node);
+  const std::vector<NodePtr> &clusters();
 
 private:
   template <typename T> void backwardEvolution(NodePtr node, T point);
-  NodePtr root;
-  std::vector<NodePtr> clusterNodes;
+  NodePtr root_;
+  std::vector<NodePtr> clusters_;
 
 public:
   struct Node : std::enable_shared_from_this<Node> {
@@ -164,22 +164,22 @@ public:
     ClusteringFeatures cf;
 
     Node(int d = 0, NodePtr p = nullptr) : dim(d), cf(d), parent(p){};
-    Node(PointPtr p) : Node(p->getDimension()) {}
+    Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
     ~Node() = default;
-    void removeChild(NodePtr child) {
+    void RemoveChild(NodePtr child) {
       std::ranges::remove_if(children,
                              [&](auto &c) { return c->index == child->index; });
     }
-    bool isLeaf() const { return children.empty(); }
-    void addChild(NodePtr child) {
+    bool IsLeaf() const { return children.empty(); }
+    void AddChild(NodePtr child) {
       children.push_back(child);
       child->parent = shared_from_this();
     }
-    void clearParents() { parent->index = -1; }
-    template <typename T> void setCF(const T &t) {
-      this->cf = ClusteringFeatures(t);
+    void ClearParents() {
+      if (parent != nullptr)
+        parent->index = -1;
     }
-    void update(PointPtr point) {
+    void Update(PointPtr point) {
       cf.numPoints++;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
@@ -187,20 +187,20 @@ public:
         cf.ss[i] += val * val;
       }
     }
-    void update(NodePtr node) {
+    void Update(NodePtr node) {
       cf.numPoints += node->cf.numPoints;
       for (int i = 0; i < dim; ++i) {
         cf.ls[i] += node->cf.ls[i];
         cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
       }
     }
-    template <typename T> void update(T point, bool all) {
-      update(point);
+    template <typename T> void Update(T point, bool all) {
+      Update(point);
       if (parent != nullptr && all) {
-        parent->update(point, all);
+        parent->Update(point, all);
       }
     }
-    PointPtr centroid() {
+    PointPtr Centroid() {
       auto c = GenericFactory::create<Point>();
       c->setIndex(-1);
       c->setClusteringCenter(-1);
@@ -224,56 +224,44 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesList(const StreamClusteringParam &param);
   ~ClusteringFeaturesList();
-  void insert(PointPtr point);
-  const std::vector<NodePtr> &getClusterNodes();
+  void Insert(PointPtr point);
+  void Insert(NodePtr node);
+  const std::vector<NodePtr> &clusters();
 
 private:
-  std::vector<NodePtr> nodes;
+  std::vector<NodePtr> clusters_;
 
 public:
   struct Node : std::enable_shared_from_this<Node> {
-    NodePtr parent;
-    std::vector<NodePtr> children;
     int index = 0;
     const int dim;
     ClusteringFeatures cf;
 
-    Node(int d = 0, NodePtr p = nullptr) : dim(d), cf(d), parent(p){};
+    Node(int d = 0) : dim(d), cf(d){};
+    Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
     ~Node() = default;
-    void removeChild(NodePtr child) {
-      std::ranges::remove_if(children,
-                             [&](auto &c) { return c->index == child->index; });
-    }
-    bool isLeaf() const { return children.empty(); }
-    void addChild(NodePtr child) {
-      children.push_back(child);
-      child->parent = shared_from_this();
-    }
-    void clearParents() { parent->index = -1; }
-    template <typename T> void setCF(const T &t) {
-      this->cf = ClusteringFeatures(t);
-    }
-    void update(PointPtr point) {
+    void Update(PointPtr point) {
+      cf.numPoints++;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
         cf.ls[i] += val;
         cf.ss[i] += val * val;
       }
     }
-    PointPtr centroid() {
+    void Update(NodePtr node) {
+      cf.numPoints += node->cf.numPoints;
+      for (int i = 0; i < dim; ++i) {
+        cf.ls[i] += node->cf.ls[i];
+        cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
+      }
+    }
+    PointPtr Centroid() {
       auto c = GenericFactory::create<Point>();
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)
         c->setFeatureItem(cf.ls[i] / cf.numPoints, i);
       return c;
-    }
-    void merge(NodePtr child) {
-      cf.numPoints += child->cf.numPoints;
-      for (int i = 0; i < dim; ++i) {
-        cf.ls[i] += child->cf.ls[i];
-        cf.ss[i] += child->cf.ss[i];
-      }
     }
   };
 };

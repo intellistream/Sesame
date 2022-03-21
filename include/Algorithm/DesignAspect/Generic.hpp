@@ -25,18 +25,20 @@ namespace SESAME {
 template <typename W, typename D, typename O>
 concept StreamClusteringConcept = requires {
   requires requires(W w, PointPtr p) {
-    { w.addPoint(p) }
+    { w.Add(p) }
+    ->std::same_as<bool>;
+    { w.Del(p) }
     ->std::same_as<bool>;
   };
   requires requires(D d, PointPtr p) {
-    { d.insert(p) }
+    { d.Insert(p) }
     ->std::same_as<void>;
   };
   requires requires(O o, PointPtr p, typename D::NodePtr n,
                     std::vector<typename D::NodePtr> vn) {
-    { o.check(p, vn) }
+    { o.Check(p, vn) }
     ->std::same_as<bool>;
-    { o.check(n) }
+    { o.Check(n) }
     ->std::same_as<bool>;
   };
 };
@@ -58,17 +60,17 @@ private:
   using WindowPtr = std::shared_ptr<W>;
   using DataStructurePtr = std::shared_ptr<D>;
   using OutlierPtr = std::shared_ptr<O>;
+  using Node = typename D::Node;
   using NodePtr = typename D::NodePtr;
   WindowPtr w;
   DataStructurePtr d;
   OutlierPtr o;
 
-  std::vector<NodePtr> outliers;
-  static constexpr bool has_delpoint = requires(const W &w) { w.delPoint(); };
+  std::vector<NodePtr> outliers_;
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
   static constexpr bool is_cftree =
       std::is_same<D, ClusteringFeaturesTree>::value;
-  NodePtr insertOutliers(PointPtr point);
+  NodePtr InsertOutliers(PointPtr point);
 };
 
 template <typename W, typename D, typename O>
@@ -98,29 +100,28 @@ void StreamClustering<W, D, O>::Initilize() {
 
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
-  if (w->addPoint(input)) {
-    if (o->check(input, d->getClusterNodes())) {
-      auto node = insertOutliers(input);
-      if (!o->check(node)) {
-        std::ranges::remove_if(outliers,
+  if (w->Add(input)) {
+    if (o->Check(input, d->clusters())) {
+      auto node = InsertOutliers(input);
+      if (!o->Check(node)) {
+        std::ranges::remove_if(outliers_,
                                [&](const NodePtr &n) { return n == node; });
-        d->insert(node);
+        d->Insert(node);
       }
     } else {
-      d->insert(input);
+      d->Insert(input);
     }
   }
-  if constexpr (has_delpoint) {
-    if (w->delPoint()) {
-      std::cout << "delete" << std::endl;
-    }
+  if (w->Del(input)) {
+    // TODO
+    std::cout << "delete" << std::endl;
   }
 }
 
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {
   std::vector<PointPtr> onlineCenters;
-  auto clusters = d->getClusterNodes();
+  auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
     auto centroid = GenericFactory::create<Point>(i, 1, param.dimension, 0);
     for (int j = 0; j < param.dimension; j++) {
@@ -138,22 +139,20 @@ void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
 
 template <typename W, typename D, typename O>
 StreamClustering<W, D, O>::NodePtr
-StreamClustering<W, D, O>::insertOutliers(PointPtr point) {
-  if (outliers.empty()) {
-    auto node = d->newNode();
-    node->update(point);
+StreamClustering<W, D, O>::InsertOutliers(PointPtr point) {
+  if (outliers_.empty()) {
+    auto node = GenericFactory::create<Node>(point);
     node->index = 0;
-    outliers.push_back(node);
+    outliers_.push_back(node);
     return node;
   } else {
-    auto closest = closestNode(outliers, point);
+    auto closest = CalcClosestNode(outliers_, point);
     if (closest.second < param.thresholdDistance) {
-      closest.first->update(point);
+      closest.first->Update(point);
     } else {
-      auto node = d->newNode();
-      node->update(point);
-      node->index = outliers.size();
-      outliers.push_back(node);
+      auto node = GenericFactory::create<Node>(point);
+      node->index = outliers_.size();
+      outliers_.push_back(node);
     }
     return closest.first;
   }

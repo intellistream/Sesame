@@ -18,46 +18,46 @@ class OutlierDetection {};
 
 class DistanceDetection : public OutlierDetection {
 private:
-  double outlierDistanceThreshold;
-  int outlierClusterCapacity;
+  double outlierDistanceThreshold_;
+  int outlierClusterCapacity_;
 
 public:
   DistanceDetection(const StreamClusteringParam &param)
-      : outlierDistanceThreshold(param.outlierDistanceThreshold),
-        outlierClusterCapacity(param.outlierClusterCapacity) {}
-  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+      : outlierDistanceThreshold_(param.outlierDistanceThreshold),
+        outlierClusterCapacity_(param.outlierClusterCapacity) {}
+  template <NodeConcept T> bool Check(PointPtr point, std::vector<T> nodes) {
     if (nodes.empty())
       return false;
-    auto dist = closestNode(nodes, point).second;
-    return dist > outlierDistanceThreshold;
+    auto dist = CalcClosestNode(nodes, point).second;
+    return dist > outlierDistanceThreshold_;
   }
-  template <NodeConcept T> bool check(T node) {
-    return node->cf.numPoints < outlierClusterCapacity;
+  template <NodeConcept T> bool Check(T node) {
+    return node->cf.numPoints < outlierClusterCapacity_;
   }
 };
 
 class DensityDetection : public OutlierDetection {
-  double neighborDistance, densityThreshold;
-  int outlierClusterCapacity;
+  double neighborDistance_, densityThreshold_;
+  int outlierClusterCapacity_;
 
 public:
   DensityDetection(const StreamClusteringParam &param)
-      : neighborDistance(param.neighborDistance),
-        densityThreshold(param.densityThreshold),
-        outlierClusterCapacity(param.outlierClusterCapacity) {}
-  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+      : neighborDistance_(param.neighborDistance),
+        densityThreshold_(param.densityThreshold),
+        outlierClusterCapacity_(param.outlierClusterCapacity) {}
+  template <NodeConcept T> bool Check(PointPtr point, std::vector<T> nodes) {
     std::vector<T> neighborNodes;
     int neighborDensity = 0, neighborNeighborDensity = 0;
     for (auto node : nodes) {
       auto dist = point->radius(node->centroid());
-      if (dist < neighborDistance) {
+      if (dist < neighborDistance_) {
         neighborNodes.push_back(node);
         neighborDensity += node->cf.numPoints;
       }
     }
     for (auto neighbor : neighborNodes) {
       for (auto node : nodes) {
-        if (clusterDistance(node, neighbor) < neighborDistance) {
+        if (CalcClusterDist(node, neighbor) < neighborDistance_) {
           neighborNeighborDensity += node->cf.numPoints;
         }
       }
@@ -66,11 +66,11 @@ public:
       return false;
     else {
       return (double)neighborDensity / neighborNeighborDensity <=
-             densityThreshold;
+             densityThreshold_;
     }
   }
-  template <NodeConcept T> bool check(T node) {
-    return node->cf.numPoints < outlierClusterCapacity;
+  template <NodeConcept T> bool Check(T node) {
+    return node->cf.numPoints < outlierClusterCapacity_;
   }
 };
 
@@ -78,10 +78,10 @@ class NoDetection : public OutlierDetection {
 
 public:
   NoDetection(const StreamClusteringParam &param) {}
-  template <NodeConcept T> bool check(PointPtr point, std::vector<T> nodes) {
+  template <NodeConcept T> bool Check(PointPtr point, std::vector<T> nodes) {
     return false;
   }
-  template <NodeConcept T> bool check(T node) { return false; }
+  template <NodeConcept T> bool Check(T node) { return false; }
 };
 
 } // namespace SESAME
