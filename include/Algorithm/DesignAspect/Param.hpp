@@ -23,10 +23,12 @@ public:
                   // core point
   int landmark;
   int slidingCount;
-  double alpha;
-  double lambda;
+  double alpha, lambda;
+  double outlierDistanceThreshold;
+  int outlierClusterCapacity;
+  double neighborDistance, densityThreshold;
 };
 
-}
+} // namespace SESAME
 
 #endif

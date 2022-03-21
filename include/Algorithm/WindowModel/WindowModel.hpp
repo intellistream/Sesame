@@ -22,29 +22,29 @@ class WindowModel {};
 
 class Landmark : WindowModel {
 private:
-  int landmark;
+  int landmark_;
 
 public:
-  Landmark(const StreamClusteringParam &param)
-      : landmark(param.landmark) {}
-  bool addPoint(const PointPtr input) { return input->getIndex() >= landmark; }
+  Landmark(const StreamClusteringParam &param) : landmark_(param.landmark) {}
+  bool Add(PointPtr input) { return input->getIndex() >= landmark_; }
+  bool Del(PointPtr input) { return false; }
 };
 
 class Sliding : WindowModel {
 private:
-  int slidingCount;
-  int size;
+  int slidingCount_;
+  int size_;
 
 public:
   Sliding(const StreamClusteringParam &param)
-      : slidingCount(param.slidingCount) {}
-  bool addPoint(const PointPtr input) {
-    ++size;
+      : slidingCount_(param.slidingCount) {}
+  bool Add(const PointPtr input) {
+    ++size_;
     return true;
   }
-  bool delPoint() {
-    if (size > slidingCount) {
-      size = slidingCount;
+  bool Del() {
+    if (size_ > slidingCount_) {
+      size_ = slidingCount_;
       return true;
     }
     return false;
@@ -53,12 +53,13 @@ public:
 
 class Damped : WindowModel {
 private:
-  double alpha, lambda;
+  double alpha_, lambda_;
 
 public:
   Damped(const StreamClusteringParam &param)
-      : alpha(param.alpha), lambda(param.lambda) {}
-  bool addPoint(const PointPtr input) { return true; }
+      : alpha_(param.alpha), lambda_(param.lambda) {}
+  bool Add(const PointPtr input) { return true; }
+  bool Del(const PointPtr input) { return false; }
 };
 
 } // namespace SESAME

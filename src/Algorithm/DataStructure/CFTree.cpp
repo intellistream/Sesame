@@ -72,28 +72,27 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
     : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
       maxLeafNodes(param.maxLeafNodes),
       thresholdDistance(param.thresholdDistance),
-      root(GenericFactory::create<Node>(param.dimension)) {}
+      root_(GenericFactory::New<Node>(param.dimension)) {}
 
-void ClusteringFeaturesTree::insert(
-    PointPtr point, std::vector<ClusteringFeaturesTree::NodePtr> &outliers) {
-  auto curNode = root;
+void ClusteringFeaturesTree::Insert(PointPtr point) {
+  auto curNode = root_;
   if (curNode->cf.numPoints == 0) {
     // timerMeter.dataInsertAccMeasure();
-    curNode->update(point, true);
+    curNode->Update(point, true);
     // timerMeter.dataInsertEndMeasure();
   } else {
     while (1) {
       auto childrenNode = curNode->children;
-      if (curNode->isLeaf()) {
+      if (curNode->IsLeaf()) {
         // timerMeter.clusterUpdateAccMeasure();
         // timerMeter.dataInsertAccMeasure();
-        auto centroid = curNode->centroid();
+        auto centroid = curNode->Centroid();
         // timerMeter.dataInsertEndMeasure();
         if (point->radius(centroid) <=
             thresholdDistance) { // concept drift detection
           // whether the new radius is lower than threshold T
           // timerMeter.dataInsertAccMeasure();
-          curNode->update(point, true);
+          curNode->Update(point, true);
           // TODO: Outlier
 
           // timerMeter.dataInsertEndMeasure();
@@ -116,38 +115,83 @@ void ClusteringFeaturesTree::insert(
 
       } else {
         // timerMeter.dataInsertAccMeasure();
-        curNode = closestChild(childrenNode, point);
+        curNode = CalcClosestNode(childrenNode, point).first;
         // timerMeter.dataInsertEndMeasure();
       }
     }
   }
 }
 
-void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
+void ClusteringFeaturesTree::Insert(NodePtr node) {
+  auto curNode = root_;
+  auto center = node->Centroid();
+  while (1) {
+    auto childrenNode = curNode->children;
+    if (curNode->IsLeaf()) {
+      // timerMeter.clusterUpdateAccMeasure();
+      // timerMeter.dataInsertAccMeasure();
+      auto centroid = curNode->Centroid();
+      // timerMeter.dataInsertEndMeasure();
+      if (center->radius(centroid) <=
+          thresholdDistance) { // concept drift detection
+        // whether the new radius is lower than threshold T
+        // timerMeter.dataInsertAccMeasure();
+        curNode->Update(node, true);
+        // TODO: Outlier
+
+        // timerMeter.dataInsertEndMeasure();
+
+        // means this point could get included in this cluster
+        // SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point
+        // into the leaf node...");
+        break;
+        // Normally insert the data point into the tree leafNode without
+        // concept drift
+      } else {
+        // concept drift adaption
+        // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node
+        // capacity reaches the threshold T");
+        // timerMeter.clusterUpdateAccMeasure();
+        backwardEvolution(curNode, node);
+        // timerMeter.clusterUpdateEndMeasure();
+        break;
+      }
+
+    } else {
+      // timerMeter.dataInsertAccMeasure();
+      curNode = CalcClosestNode(childrenNode, center).first;
+      // timerMeter.dataInsertEndMeasure();
+    }
+  }
+}
+
+template <typename T>
+void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
   if (node->parent == nullptr) { // means current node is root node
     // l <= L, create a new leaf node and insert the point into it(root
     // change)
-    auto newRoot = GenericFactory::create<Node>(dim);
-    newRoot->addChild(node);
+    auto newRoot = GenericFactory::New<Node>(dim);
+    newRoot->AddChild(node);
 
-    auto newNode = GenericFactory::create<Node>(dim, newRoot);
-    newRoot->setCF(node->cf);
+    auto newNode = GenericFactory::New<Node>(dim, newRoot);
+    newRoot->cf = node->cf;
     newRoot->index = leafMask++;
     // here we need to remove the old root and add the new one into the
     // leafnodes set update the parent node
-    newRoot->addChild(newNode);
-    newNode->update(point, true);
-    root = newRoot;
+    newRoot->AddChild(newNode);
+    newNode->Update(input, true);
+    clusters_.push_back(newRoot);
+    root_ = newRoot;
   } else {
     auto parent = node->parent;
-    auto newNode = GenericFactory::create<Node>(dim, parent);
-    newNode->update(point, false);
+    auto newNode = GenericFactory::New<Node>(dim, parent);
+    newNode->Update(input, false);
     if (parent->children.size() < maxLeafNodes) {
-      // whether the number of CFs(clusters) in the current leaf node is
+      // whether the number of CFs(clusters_) in the current leaf node is
       // lower thant threshold L l <= L, create a new leaf node and insert
       // the point into it update the parent node and all nodes on the path
       // to root node
-      parent->update(point, true);
+      parent->Update(input, true);
     } else {
       // l > L, parent node of the current leaf node capacity reaches the
       // threshold L, split a new parent node from the old one
@@ -157,11 +201,11 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
         if (parent->parent == nullptr) {
           // if the parent node is the root, we need to create a new root as
           // a parParent
-          parParent = GenericFactory::create<Node>(dim);
-          root = parParent;
+          parParent = GenericFactory::New<Node>(dim);
+          root_ = parParent;
           // since the parent node's nls has not been updated by the point,
           // so we directly copy the nls in parent node to the parParent one
-          parParent->setCF(parent->cf);
+          parParent->cf = parent->cf;
         } else {
           // if the parent node is not the root, we can get the parParent
           // one directly
@@ -169,12 +213,13 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
         }
         // we need to create a new parent node since the old one has to
         // split
-        auto newParentA = GenericFactory::create<Node>(dim);
+        auto newParentA = GenericFactory::New<Node>(dim);
         // insert the new parent into the allNode list
         // we also need to insert the new parent node into the clusterNode
         // list if its children is a leaf node.
-        if (parent->children[0]->isLeaf()) {
+        if (parent->children[0]->IsLeaf()) {
           newParentA->index = leafMask++;
+          clusters_.push_back(newParentA);
         }
         // we only create a new parent rather and keep the old parent node
         // as the split two sub-nodes so we need to refresh the old parent
@@ -182,15 +227,15 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
 
         parent->parent = parParent; // link the parparent node and the new
                                     // created new parent A
-        parParent->addChild(newParentA);
+        parParent->AddChild(newParentA);
         // clean cf of the old parent node and initialize the cf of new
         // parent A (ls and ss all have d number of 0)
         // split the child nodes of the old parent nodes
         auto broNodes = parent->children;
         parent->children.clear();
         auto adjMatrix =
-            calcAdjacencyMatrix(broNodes); //  calculate the distance between
-                                           //  each two brother nodes
+            CalcAdjMatrix(broNodes); //  calculate the distance between
+                                     //  each two brother nodes
         // choose two farthest CFs as seedA and seedB
         int seedA = 0, seedB = 0;
         double maxDis = 0;
@@ -205,30 +250,30 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
         }
         // insert the child node into the nearest seed(A / B)
         for (auto node : broNodes) {
-          node->clearParents();
+          node->ClearParents();
         }
         // insert seedA node into new parent A and link them
-        newParentA->addChild(broNodes[seedA]);
-        newParentA->merge(broNodes[seedA]);
+        newParentA->AddChild(broNodes[seedA]);
+        newParentA->Update(broNodes[seedA]);
         // insert seed B node into new parent B and link them
-        parent->addChild(broNodes[seedB]);
-        parent->merge(broNodes[seedB]);
+        parent->AddChild(broNodes[seedB]);
+        parent->Update(broNodes[seedB]);
         // if other one brother node is near seed A then split it into new
         // parent A, otherwise new parent B.
         for (int i = 0; i < broNodes.size(); i++) {
           if (i != seedA && i != seedB) {
             if (adjMatrix[i][seedA] < adjMatrix[i][seedB]) {
-              newParentA->addChild(broNodes[i]);
-              newParentA->merge(
+              newParentA->AddChild(broNodes[i]);
+              newParentA->Update(
                   broNodes[i]); // since the brother nodes list contains the
                                 // one we insert our point, so after this
                                 // function, the parent node's nls are also
                                 // updated.
-              broNodes[i]->clearParents();
+              broNodes[i]->ClearParents();
             } else {
-              parent->addChild(broNodes[i]);
-              parent->merge(broNodes[i]);
-              broNodes[i]->clearParents();
+              parent->AddChild(broNodes[i]);
+              parent->Update(broNodes[i]);
+              broNodes[i]->ClearParents();
             }
           }
         }
@@ -236,7 +281,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
         // update the nls of its parent using new point. we only update the
         // parparent in the first loop.
         if (nodeIsClus) {
-          parParent->update(point, true);
+          parParent->Update(input, true);
         }
 
         if (parParent->children.size() <= maxInternalNodes) {
@@ -255,37 +300,37 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, PointPtr point) {
   }
 }
 
-std::vector<std::vector<double>> ClusteringFeaturesTree::calcAdjacencyMatrix(
-    const std::vector<ClusteringFeaturesTree::NodePtr> &nodes) {
-  int n = nodes.size();
-  std::vector<std::vector<double>> adjacencyMatrix(n,
-                                                   std::vector<double>(n, 0.0));
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      auto centroid1 = nodes[i]->centroid();
-      auto centroid2 = nodes[j]->centroid();
-      auto distance = centroid1->distance(centroid2);
-      adjacencyMatrix[i][j] = distance;
-      adjacencyMatrix[j][i] = distance;
-    }
-  }
-  return adjacencyMatrix;
+const std::vector<ClusteringFeaturesTree::NodePtr> &
+ClusteringFeaturesTree::clusters() {
+  return clusters_;
 }
 
-ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::closestChild(
-    const std::vector<ClusteringFeaturesTree::NodePtr> &children,
-    PointPtr point) {
-  double minDistance = std::numeric_limits<double>::max();
-  NodePtr closestChild = nullptr;
-  for (auto child : children) {
-    auto centroid = child->centroid();
-    auto distance = centroid->distance(point);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestChild = child;
-    }
+ClusteringFeaturesList::ClusteringFeaturesList(
+    const StreamClusteringParam &param)
+    : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
+      maxLeafNodes(param.maxLeafNodes),
+      thresholdDistance(param.thresholdDistance) {}
+
+ClusteringFeaturesList::~ClusteringFeaturesList() {}
+
+void ClusteringFeaturesList::Insert(PointPtr point) {
+  if (clusters_.empty()) {
+    auto node = GenericFactory::New<Node>(dim);
+    clusters_.push_back(node);
+    node->Update(point);
+    // TODO: outlier
+  } else {
+    auto node = CalcClosestNode(clusters_, point).first;
+    node->Update(point);
+    // TODO: outlier
   }
-  return closestChild;
+}
+
+void ClusteringFeaturesList::Insert(NodePtr node) { clusters_.push_back(node); }
+
+const std::vector<ClusteringFeaturesList::NodePtr> &
+ClusteringFeaturesList::clusters() {
+  return clusters_;
 }
 
 } // namespace SESAME
