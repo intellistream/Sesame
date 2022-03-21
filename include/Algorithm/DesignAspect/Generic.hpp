@@ -118,7 +118,19 @@ void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
 }
 
 template <typename W, typename D, typename O>
-void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {}
+void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {
+  std::vector<PointPtr> onlineCenters;
+  auto clusters = d->getClusterNodes();
+  for (int i = 0; i < clusters.size(); i++) {
+    auto centroid = GenericFactory::create<Point>(i, 1, param.dimension, 0);
+    for (int j = 0; j < param.dimension; j++) {
+      centroid->setFeatureItem(
+          clusters[i]->cf.ls[j] / clusters[i]->cf.numPoints, j);
+    }
+    onlineCenters.push_back(centroid);
+  }
+  // TODO
+}
 
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
