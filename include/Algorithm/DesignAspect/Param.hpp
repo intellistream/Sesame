@@ -36,7 +36,6 @@ public:
   // Damped Window
   double alpha, lambda;
 
-  // Outlier Detection
   double outlierDistanceThreshold;
   int outlierClusterCapacity;
   double neighborDistance, densityThreshold;
