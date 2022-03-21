@@ -81,7 +81,7 @@ template <typename T> concept NodeConcept = requires(T t) {
   t->Centroid();
   t->cf.numPoints;
   t->index;
-  t->Update(GenericFactory::create<Point>());
+  t->Update(GenericFactory::New<Point>());
 };
 
 template <NodeConcept T>
@@ -201,7 +201,7 @@ public:
       }
     }
     PointPtr Centroid() {
-      auto c = GenericFactory::create<Point>();
+      auto c = GenericFactory::New<Point>();
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)
@@ -256,7 +256,7 @@ public:
       }
     }
     PointPtr Centroid() {
-      auto c = GenericFactory::create<Point>();
+      auto c = GenericFactory::New<Point>();
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)

@@ -14,7 +14,7 @@ namespace SESAME {
 
 namespace GenericFactory {
 
-template <class T, class... Ts> std::shared_ptr<T> create(Ts &&... ts) {
+template <class T, class... Ts> std::shared_ptr<T> New(Ts &&... ts) {
   return std::make_shared<T>(std::forward<Ts>(ts)...);
 }
 

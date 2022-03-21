@@ -93,9 +93,9 @@ StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
 
 template <typename W, typename D, typename O>
 void StreamClustering<W, D, O>::Initilize() {
-  w = GenericFactory::create<W>(param);
-  d = GenericFactory::create<D>(param);
-  o = GenericFactory::create<O>(param);
+  w = GenericFactory::New<W>(param);
+  d = GenericFactory::New<D>(param);
+  o = GenericFactory::New<O>(param);
 }
 
 template <typename W, typename D, typename O>
@@ -123,7 +123,7 @@ void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
-    auto centroid = GenericFactory::create<Point>(i, 1, param.dimension, 0);
+    auto centroid = GenericFactory::New<Point>(i, 1, param.dimension, 0);
     for (int j = 0; j < param.dimension; j++) {
       centroid->setFeatureItem(
           clusters[i]->cf.ls[j] / clusters[i]->cf.numPoints, j);
@@ -141,7 +141,7 @@ template <typename W, typename D, typename O>
 StreamClustering<W, D, O>::NodePtr
 StreamClustering<W, D, O>::InsertOutliers(PointPtr point) {
   if (outliers_.empty()) {
-    auto node = GenericFactory::create<Node>(point);
+    auto node = GenericFactory::New<Node>(point);
     node->index = 0;
     outliers_.push_back(node);
     return node;
@@ -150,7 +150,7 @@ StreamClustering<W, D, O>::InsertOutliers(PointPtr point) {
     if (closest.second < param.thresholdDistance) {
       closest.first->Update(point);
     } else {
-      auto node = GenericFactory::create<Node>(point);
+      auto node = GenericFactory::New<Node>(point);
       node->index = outliers_.size();
       outliers_.push_back(node);
     }

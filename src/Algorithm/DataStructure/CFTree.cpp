@@ -72,7 +72,7 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
     : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
       maxLeafNodes(param.maxLeafNodes),
       thresholdDistance(param.thresholdDistance),
-      root_(GenericFactory::create<Node>(param.dimension)) {}
+      root_(GenericFactory::New<Node>(param.dimension)) {}
 
 void ClusteringFeaturesTree::Insert(PointPtr point) {
   auto curNode = root_;
@@ -170,10 +170,10 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
   if (node->parent == nullptr) { // means current node is root node
     // l <= L, create a new leaf node and insert the point into it(root
     // change)
-    auto newRoot = GenericFactory::create<Node>(dim);
+    auto newRoot = GenericFactory::New<Node>(dim);
     newRoot->AddChild(node);
 
-    auto newNode = GenericFactory::create<Node>(dim, newRoot);
+    auto newNode = GenericFactory::New<Node>(dim, newRoot);
     newRoot->cf = node->cf;
     newRoot->index = leafMask++;
     // here we need to remove the old root and add the new one into the
@@ -184,7 +184,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
     root_ = newRoot;
   } else {
     auto parent = node->parent;
-    auto newNode = GenericFactory::create<Node>(dim, parent);
+    auto newNode = GenericFactory::New<Node>(dim, parent);
     newNode->Update(input, false);
     if (parent->children.size() < maxLeafNodes) {
       // whether the number of CFs(clusters_) in the current leaf node is
@@ -201,7 +201,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         if (parent->parent == nullptr) {
           // if the parent node is the root, we need to create a new root as
           // a parParent
-          parParent = GenericFactory::create<Node>(dim);
+          parParent = GenericFactory::New<Node>(dim);
           root_ = parParent;
           // since the parent node's nls has not been updated by the point,
           // so we directly copy the nls in parent node to the parParent one
@@ -213,7 +213,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         }
         // we need to create a new parent node since the old one has to
         // split
-        auto newParentA = GenericFactory::create<Node>(dim);
+        auto newParentA = GenericFactory::New<Node>(dim);
         // insert the new parent into the allNode list
         // we also need to insert the new parent node into the clusterNode
         // list if its children is a leaf node.
@@ -315,7 +315,7 @@ ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
 void ClusteringFeaturesList::Insert(PointPtr point) {
   if (clusters_.empty()) {
-    auto node = GenericFactory::create<Node>(dim);
+    auto node = GenericFactory::New<Node>(dim);
     clusters_.push_back(node);
     node->Update(point);
     // TODO: outlier
