@@ -27,12 +27,13 @@ public:
 
   // DBSCAN Params
   unsigned int minPoints; // minimum point of core point in DBSCAN
-  double epsilon; // maximum distance if point belongs to the density area of core point
+  double epsilon; // maximum distance if point belongs to the density area of
+                  // core point
 
   // Landmark Window
   int landmark;
   // Sliding Window
-  int slidingCount;
+  int sliding;
   // Damped Window
   double alpha, lambda;
 

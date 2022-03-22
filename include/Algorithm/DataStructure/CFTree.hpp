@@ -6,7 +6,6 @@
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CFTREE_HPP_
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
-
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
@@ -77,13 +76,6 @@ public:
   bool getIsOutlier();
 };
 
-template <typename T> concept NodeConcept = requires(T t) {
-  t->Centroid();
-  t->cf.numPoints;
-  t->index;
-  t->Update(GenericFactory::New<Point>());
-};
-
 template <NodeConcept T>
 std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes) {
   int n = nodes.size();
@@ -148,7 +140,7 @@ public:
   ~ClusteringFeaturesTree();
   void Insert(PointPtr point);
   void Insert(NodePtr node);
-  const std::vector<NodePtr> &clusters();
+  std::vector<NodePtr> &clusters();
 
 private:
   template <typename T> void backwardEvolution(NodePtr node, T point);
@@ -194,6 +186,12 @@ public:
         cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
       }
     }
+    void Scale(double scale) {
+      for (int i = 0; i < dim; ++i) {
+        cf.ls[i] *= scale;
+        cf.ss[i] *= scale * scale;
+      }
+    }
     template <typename T> void Update(T point, bool all) {
       Update(point);
       if (parent != nullptr && all) {
@@ -226,7 +224,7 @@ public:
   ~ClusteringFeaturesList();
   void Insert(PointPtr point);
   void Insert(NodePtr node);
-  const std::vector<NodePtr> &clusters();
+  std::vector<NodePtr> &clusters();
 
 private:
   std::vector<NodePtr> clusters_;
@@ -253,6 +251,12 @@ public:
       for (int i = 0; i < dim; ++i) {
         cf.ls[i] += node->cf.ls[i];
         cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
+      }
+    }
+    void Scale(double scale) {
+      for (int i = 0; i < dim; ++i) {
+        cf.ls[i] *= scale;
+        cf.ss[i] *= scale * scale;
       }
     }
     PointPtr Centroid() {

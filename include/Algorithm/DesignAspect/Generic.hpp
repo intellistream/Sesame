@@ -27,7 +27,7 @@ concept StreamClusteringConcept = requires {
   requires requires(W w, PointPtr p) {
     { w.Add(p) }
     ->std::same_as<bool>;
-    { w.Del(p) }
+    { w.Delete(p) }
     ->std::same_as<bool>;
   };
   requires requires(D d, PointPtr p) {
@@ -65,6 +65,9 @@ private:
   std::shared_ptr<R> r;
 
   std::vector<NodePtr> outliers_;
+  static constexpr bool has_update = requires(const W &w, NodePtr node) {
+    w.Update(node);
+  };
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
   static constexpr bool is_cftree =
       std::is_same<D, ClusteringFeaturesTree>::value;
@@ -111,7 +114,12 @@ void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
       d->Insert(input);
     }
   }
-  if (w->Del(input)) {
+  if constexpr (has_update) {
+    for (auto node : d->clusters()) {
+      w->Update(node);
+    }
+  }
+  if (w->Delete(input)) {
     // TODO
     std::cout << "delete" << std::endl;
   }

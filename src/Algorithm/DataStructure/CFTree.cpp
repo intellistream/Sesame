@@ -300,7 +300,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
   }
 }
 
-const std::vector<ClusteringFeaturesTree::NodePtr> &
+std::vector<ClusteringFeaturesTree::NodePtr> &
 ClusteringFeaturesTree::clusters() {
   return clusters_;
 }
@@ -328,7 +328,7 @@ void ClusteringFeaturesList::Insert(PointPtr point) {
 
 void ClusteringFeaturesList::Insert(NodePtr node) { clusters_.push_back(node); }
 
-const std::vector<ClusteringFeaturesList::NodePtr> &
+std::vector<ClusteringFeaturesList::NodePtr> &
 ClusteringFeaturesList::clusters() {
   return clusters_;
 }

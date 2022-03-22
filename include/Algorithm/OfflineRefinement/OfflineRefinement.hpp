@@ -21,7 +21,10 @@ public:
            DataSinkPtr sinkPtr) {}
 };
 
-class NoRefinement : public OfflineRefinement {};
+class NoRefinement : public OfflineRefinement {
+public:
+  NoRefinement(const StreamClusteringParam &param) {}
+};
 
 } // namespace SESAME
 #endif // SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_

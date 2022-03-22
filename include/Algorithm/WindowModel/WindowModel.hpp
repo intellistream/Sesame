@@ -8,10 +8,11 @@
 #ifndef SESAME_SRC_ALGORITHM_WINDOWMODEL_WINDOW_HPP_
 #define SESAME_SRC_ALGORITHM_WINDOWMODEL_WINDOW_HPP_
 
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
 
-#include <memory>
+#include <cmath>
 
 namespace SESAME {
 
@@ -27,24 +28,23 @@ private:
 public:
   Landmark(const StreamClusteringParam &param) : landmark_(param.landmark) {}
   bool Add(PointPtr input) { return input->getIndex() >= landmark_; }
-  bool Del(PointPtr input) { return false; }
+  bool Delete(PointPtr input) { return false; }
 };
 
 class Sliding : WindowModel {
 private:
-  int slidingCount_;
+  int sliding_;
   int size_;
 
 public:
-  Sliding(const StreamClusteringParam &param)
-      : slidingCount_(param.slidingCount) {}
+  Sliding(const StreamClusteringParam &param) : sliding_(param.sliding) {}
   bool Add(const PointPtr input) {
     ++size_;
     return true;
   }
-  bool Del() {
-    if (size_ > slidingCount_) {
-      size_ = slidingCount_;
+  bool Delete(PointPtr input) {
+    if (size_ > sliding_) {
+      size_ = sliding_;
       return true;
     }
     return false;
@@ -59,7 +59,10 @@ public:
   Damped(const StreamClusteringParam &param)
       : alpha_(param.alpha), lambda_(param.lambda) {}
   bool Add(const PointPtr input) { return true; }
-  bool Del(const PointPtr input) { return false; }
+  bool Delete(const PointPtr input) { return false; }
+  template <NodeConcept T> void Update(T node) {
+    node->Scale(pow(alpha_, -lambda_));
+  }
 };
 
 } // namespace SESAME
