@@ -4,7 +4,7 @@
 // Created by Shuhao Zhang on 20/07/2021.
 //
 
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
@@ -285,7 +285,7 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
   }
 }
 
-void SESAME::KMeans::run(SESAME::StreamClusteringParam &param,
+void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
                          vector<PointPtr> &onlineCenters,
                          SESAME::DataSinkPtr sinkPtr) {
  if(onlineCenters.size() <= param.clusterNumber){

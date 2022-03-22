@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <Algorithm/Algorithm.hpp>
 #include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/OfflineClustering/DBSCAN.hpp>
+#include <Algorithm/OfflineRefinement/DBSCAN.hpp>
 #include <Algorithm/WindowModel/DampedWindow.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 

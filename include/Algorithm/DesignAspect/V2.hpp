@@ -9,7 +9,7 @@
 #include <Sinks/DataSink.hpp>
 #include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-#include <Algorithm/OfflineClustering/DBSCAN.hpp>
+#include <Algorithm/OfflineRefinement/DBSCAN.hpp>
 #include <Algorithm/DesignAspect/Param.hpp>
 
 namespace SESAME {

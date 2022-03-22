@@ -7,7 +7,7 @@
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/DataStructure/WeightedAdjacencyList.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-#include <Algorithm/OfflineClustering/ConnectedRegions.hpp>
+#include <Algorithm/OfflineRefinement/ConnectedRegions.hpp>
 
 namespace SESAME {
 typedef std::vector<std::vector<MicroClusterPtr>> Clusters;

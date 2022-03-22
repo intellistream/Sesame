@@ -22,7 +22,7 @@
 
 namespace SESAME {
 
-template <typename W, typename D, typename O>
+template <typename W, typename D, typename O, typename R>
 concept StreamClusteringConcept = requires {
   requires requires(W w, PointPtr p) {
     { w.Add(p) }
@@ -43,8 +43,8 @@ concept StreamClusteringConcept = requires {
   };
 };
 
-template <typename W, typename D, typename O>
-requires StreamClusteringConcept<W, D, O> class StreamClustering
+template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R> class StreamClustering
     : public Algorithm {
 public:
   StreamClustering(const param_t &param);
@@ -56,15 +56,13 @@ public:
              std::vector<PointPtr> results);
 
 private:
-  StreamClusteringParam param;
-  using WindowPtr = std::shared_ptr<W>;
-  using DataStructurePtr = std::shared_ptr<D>;
-  using OutlierPtr = std::shared_ptr<O>;
   using Node = typename D::Node;
   using NodePtr = typename D::NodePtr;
-  WindowPtr w;
-  DataStructurePtr d;
-  OutlierPtr o;
+  StreamClusteringParam param;
+  std::shared_ptr<W> w;
+  std::shared_ptr<D> d;
+  std::shared_ptr<O> o;
+  std::shared_ptr<R> r;
 
   std::vector<NodePtr> outliers_;
   static constexpr bool is_landmark = std::is_same<W, Landmark>::value;
@@ -73,11 +71,11 @@ private:
   NodePtr InsertOutliers(PointPtr point);
 };
 
-template <typename W, typename D, typename O>
-StreamClustering<W, D, O>::~StreamClustering() {}
+template <typename W, typename D, typename O, typename R>
+StreamClustering<W, D, O, R>::~StreamClustering() {}
 
-template <typename W, typename D, typename O>
-StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
+template <typename W, typename D, typename O, typename R>
+StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params) {
   param.pointNumber = cmd_params.pointNumber;
   param.dimension = cmd_params.dimension;
   param.clusterNumber = cmd_params.clusterNumber;
@@ -91,15 +89,16 @@ StreamClustering<W, D, O>::StreamClustering(const param_t &cmd_params) {
   }
 }
 
-template <typename W, typename D, typename O>
-void StreamClustering<W, D, O>::Initilize() {
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::Initilize() {
   w = GenericFactory::New<W>(param);
   d = GenericFactory::New<D>(param);
   o = GenericFactory::New<O>(param);
+  r = GenericFactory::New<R>(param);
 }
 
-template <typename W, typename D, typename O>
-void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
   if (w->Add(input)) {
     if (o->Check(input, d->clusters())) {
       auto node = InsertOutliers(input);
@@ -118,8 +117,8 @@ void StreamClustering<W, D, O>::runOnlineClustering(PointPtr input) {
   }
 }
 
-template <typename W, typename D, typename O>
-void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::runOfflineClustering(DataSinkPtr ptr) {
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
@@ -130,16 +129,16 @@ void StreamClustering<W, D, O>::runOfflineClustering(DataSinkPtr ptr) {
     }
     onlineCenters.push_back(centroid);
   }
-  // TODO
+  r->Run(param, onlineCenters, ptr);
 }
 
-template <typename W, typename D, typename O>
-void StreamClustering<W, D, O>::store(std::string outputPath, int dimension,
-                                      std::vector<PointPtr> results) {}
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::store(std::string outputPath, int dimension,
+                                         std::vector<PointPtr> results) {}
 
-template <typename W, typename D, typename O>
-StreamClustering<W, D, O>::NodePtr
-StreamClustering<W, D, O>::InsertOutliers(PointPtr point) {
+template <typename W, typename D, typename O, typename R>
+StreamClustering<W, D, O, R>::NodePtr
+StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point) {
   if (outliers_.empty()) {
     auto node = GenericFactory::New<Node>(point);
     node->index = 0;

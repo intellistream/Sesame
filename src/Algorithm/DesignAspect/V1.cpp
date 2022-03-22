@@ -117,7 +117,7 @@ void SESAME::V1::runOfflineClustering(DataSinkPtr sinkPtr) {
   }
 
   // here if clusterNumber is lower than online cluster center number, we choose to skip offline.
-  this->km->run(this->V1Param, onlineCenters, sinkPtr);
+  this->km->Run(this->V1Param, onlineCenters, sinkPtr);
 
 //  vector <PointPtr> offlineCenters;
 //  vector <vector<PointPtr>> groups;

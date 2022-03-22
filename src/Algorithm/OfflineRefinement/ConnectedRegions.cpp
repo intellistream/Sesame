@@ -2,7 +2,7 @@
 // Created by 1124a on 2021/11/23.
 //
 
-#include <Algorithm/OfflineClustering/ConnectedRegions.hpp>
+#include <Algorithm/OfflineRefinement/ConnectedRegions.hpp>
 SESAME::ConnectedRegions::ConnectedRegions(){
 
 }

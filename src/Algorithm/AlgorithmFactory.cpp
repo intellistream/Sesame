@@ -77,7 +77,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   }
   if (cmd_params.algoType == V6Stream) {
     shared_ptr<V6> V6Stream = std::make_shared<V6>(cmd_params);
-    return (AlgorithmPtr) V6Stream;
+    return (AlgorithmPtr)V6Stream;
   }
   if (cmd_params.algoType == V7Stream) {
     shared_ptr<V7> V7Stream = std::make_shared<V7>(cmd_params);
@@ -95,8 +95,9 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     using W = Landmark;
     using D = ClusteringFeaturesTree;
     using O = DistanceDetection;
-    shared_ptr<StreamClustering<W, D, O>> generic =
-        std::make_shared<StreamClustering<W, D, O>>(cmd_params);
+    using R = KMeans;
+    shared_ptr<StreamClustering<W, D, O, R>> generic =
+        std::make_shared<StreamClustering<W, D, O, R>>(cmd_params);
     return (AlgorithmPtr)generic;
   }
   throw std::invalid_argument("Unsupported");
