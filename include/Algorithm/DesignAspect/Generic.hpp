@@ -15,6 +15,7 @@
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -134,12 +135,6 @@ void StreamClustering<W, D, O, R>::runOfflineClustering(DataSinkPtr ptr) {
     onlineCenters.push_back(centroid);
   }
   r->Run(param, onlineCenters, ptr);
-}
-
-template <typename W, typename D, typename O, typename R>
-void StreamClustering<W, D, O, R>::store(std::string outputPath, int dimension,
-                                         std::vector<PointPtr> results) {
-  // TODO
 }
 
 template <typename W, typename D, typename O, typename R>
