@@ -302,6 +302,7 @@ void SESAME::V3::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     updateNLS(curNode, point, true);
+    this->clusterNodes.push_back(curNode);
   } else{
     if(checkoutOutlier(point)) {
       while(true) {
