@@ -25,7 +25,7 @@ TEST(DesignTest, V4Test) {
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
-  cmd_params.slidingCount = 1000;
+  cmd_params.sliding = 1000;
   cmd_params.outlierDistanceThreshold = 3000;
   cmd_params.outlierClusterCapacity = 3;
 

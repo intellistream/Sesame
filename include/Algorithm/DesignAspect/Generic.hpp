@@ -76,15 +76,8 @@ template <typename W, typename D, typename O, typename R>
 StreamClustering<W, D, O, R>::~StreamClustering() {}
 
 template <typename W, typename D, typename O, typename R>
-StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params) {
-  param.pointNumber = cmd_params.pointNumber;
-  param.dimension = cmd_params.dimension;
-  param.clusterNumber = cmd_params.clusterNumber;
-  param.landmark = cmd_params.landmark;
-  param.maxInternalNodes = cmd_params.maxInternalNodes;
-  param.maxLeafNodes = cmd_params.maxLeafNodes;
-  param.thresholdDistance = cmd_params.thresholdDistance;
-}
+StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params)
+    : param(cmd_params) {}
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::Initilize() {
@@ -120,7 +113,6 @@ void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
   if constexpr (has_delete) {
     PointPtr point = w->Delete();
     if (point != nullptr) {
-      // TODO
       if (node_map_.contains(point)) {
         auto node = node_map_[point];
         node->Update(point->Reverse(), true);
@@ -146,7 +138,9 @@ void StreamClustering<W, D, O, R>::runOfflineClustering(DataSinkPtr ptr) {
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::store(std::string outputPath, int dimension,
-                                         std::vector<PointPtr> results) {}
+                                         std::vector<PointPtr> results) {
+  // TODO
+}
 
 template <typename W, typename D, typename O, typename R>
 StreamClustering<W, D, O, R>::NodePtr

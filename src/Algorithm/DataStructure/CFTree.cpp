@@ -93,7 +93,6 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(PointPtr point) {
           // whether the new radius is lower than threshold T
           // timerMeter.dataInsertAccMeasure();
           curNode->Update(point, true);
-          // TODO: Outlier
 
           // timerMeter.dataInsertEndMeasure();
 
