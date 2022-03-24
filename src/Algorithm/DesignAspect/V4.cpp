@@ -132,7 +132,7 @@ SESAME::V4::V4(param_t &cmd_params) {
   this->V4Param.maxInternalNodes = cmd_params.maxInternalNodes;
   this->V4Param.maxLeafNodes = cmd_params.maxLeafNodes; // 1
   this->V4Param.thresholdDistance = cmd_params.thresholdDistance; // b
-  this->V4Param.slidingCount = cmd_params.slidingCount;
+  this->V4Param.slidingCount = cmd_params.sliding;
   this->V4Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
   this->V4Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
 }

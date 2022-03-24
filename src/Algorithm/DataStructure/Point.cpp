@@ -5,7 +5,8 @@
 // Created by Shuhao Zhang on 19/07/2021.
 //
 
-#include <Algorithm/DataStructure/Point.hpp>
+#include "Algorithm/DataStructure/Point.hpp"
+
 #include <cmath>
 
 namespace SESAME {
@@ -73,7 +74,7 @@ int Point::getTimeStamp() const { return this->timestamp; }
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
 int Point::getDimension() const { return this->dimension; }
-int Point::getFeatureLength() { return (int) this->feature->size(); }
+int Point::getFeatureLength() { return (int)this->feature->size(); }
 
 double Point::getDisTo(PointPtr p) {
   double distance = 0;
@@ -103,12 +104,16 @@ double Point::radius(PointPtr centroid) {
   }
   return sqrt(sum);
 }
-void SESAME::Point::setIsOutlier(bool flag) {
-  this->isOutlier = flag;
-}
-bool SESAME::Point::getIsOutlier() {
-  return this->isOutlier;
-}
+void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
+bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
+
+PointPtr Point::Reverse() {
+  auto res = copy();
+  res->sgn = -res->sgn;
+  for (int i = 0; i < dimension; ++i) {
+    res->feature->at(i) = -res->feature->at(i);
+  }
+  return res;
 }
 
-
+} // namespace SESAME

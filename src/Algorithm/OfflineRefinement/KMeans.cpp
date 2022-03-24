@@ -232,7 +232,7 @@ void SESAME::KMeans::produceResult(std::vector<std::vector<SESAME::PointPtr>> &g
 }
 
 /**
- * @Description: if KMeansPP is true, run KMeans++, if false, run KMeans
+ * @Description: if kmeanspp is true, run KMeans++, if false, run KMeans
  */
 
 void SESAME::KMeans::runKMeans(int numberOfCenters,
@@ -241,11 +241,11 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
                                std::vector<PointPtr> &input,
                                std::vector<std::vector<PointPtr>> &oldGroups,
                                std::vector<std::vector<PointPtr>> &newGroups,
-                               bool KMeansPP) {
+                               bool kmeanspp) {
 
   bool flagToStop = false;
 
-  if (KMeansPP) {
+  if (kmeanspp) {
     // run the first step in KMeans++
     SESAME_INFO("KMeans++ start!!!");
     randomSelectCenters(1, numberOfInput, input, centers);
@@ -278,7 +278,7 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
     refreshGroup(oldGroups, newGroups);
 
   } while (!flagToStop);
-  if (KMeansPP) {
+  if (kmeanspp) {
     SESAME_INFO("KMeans++ sourceEnd!!!");
   } else {
     SESAME_INFO("KMeans sourceEnd!!!");
@@ -301,7 +301,7 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
    std::vector<PointPtr> offlineCenters;
    std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-   if (param.KMeansPP) {
+   if (param.kmeanspp) {
      // run the first step in KMeans++
      SESAME_INFO("KMeans++ start!!!");
      randomSelectCenters(1, numberOfInput, onlineCenters, offlineCenters);
@@ -334,7 +334,7 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
      refreshGroup(oldGroups, newGroups);
 
    } while (!flagToStop);
-   if (param.KMeansPP) {
+   if (param.kmeanspp) {
      SESAME_INFO("KMeans++ sourceEnd!!!");
    } else {
      SESAME_INFO("KMeans sourceEnd!!!");

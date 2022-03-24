@@ -378,8 +378,6 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
       <<"\n";
     case SESAME::Generic:
       std::cout << "Algorithm: Generic "
-                << "maxLeafNode: " << cmd_params.maxLeafNodes
-                << "   maxInnerNodes: " << cmd_params.maxInternalNodes
                 <<"\n";
   default:break;
   }

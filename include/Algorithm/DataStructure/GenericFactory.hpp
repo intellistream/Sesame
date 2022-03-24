@@ -8,6 +8,8 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_GENERICFACTORY_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_GENERICFACTORY_HPP_
 
+#include "Algorithm/DataStructure/Point.hpp"
+
 #include <memory>
 
 namespace SESAME {
@@ -19,6 +21,14 @@ template <class T, class... Ts> std::shared_ptr<T> New(Ts &&... ts) {
 }
 
 } // namespace GenericFactory
+
+template <typename T> concept NodeConcept = requires(T t) {
+  t->Centroid();
+  t->cf.num;
+  t->index;
+  t->Update(GenericFactory::New<Point>());
+  t->Scale(1.0);
+};
 
 } // namespace SESAME
 #endif

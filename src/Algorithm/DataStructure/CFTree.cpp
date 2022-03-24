@@ -74,9 +74,9 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
       thresholdDistance(param.thresholdDistance),
       root_(GenericFactory::New<Node>(param.dimension)) {}
 
-void ClusteringFeaturesTree::Insert(PointPtr point) {
+ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(PointPtr point) {
   auto curNode = root_;
-  if (curNode->cf.numPoints == 0) {
+  if (curNode->cf.num == 0) {
     // timerMeter.dataInsertAccMeasure();
     curNode->Update(point, true);
     // timerMeter.dataInsertEndMeasure();
@@ -93,7 +93,6 @@ void ClusteringFeaturesTree::Insert(PointPtr point) {
           // whether the new radius is lower than threshold T
           // timerMeter.dataInsertAccMeasure();
           curNode->Update(point, true);
-          // TODO: Outlier
 
           // timerMeter.dataInsertEndMeasure();
 
@@ -120,9 +119,10 @@ void ClusteringFeaturesTree::Insert(PointPtr point) {
       }
     }
   }
+  return curNode;
 }
 
-void ClusteringFeaturesTree::Insert(NodePtr node) {
+ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
   auto curNode = root_;
   auto center = node->Centroid();
   while (1) {
@@ -152,9 +152,9 @@ void ClusteringFeaturesTree::Insert(NodePtr node) {
         // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node
         // capacity reaches the threshold T");
         // timerMeter.clusterUpdateAccMeasure();
-        backwardEvolution(curNode, node);
+        return backwardEvolution(curNode, node);
         // timerMeter.clusterUpdateEndMeasure();
-        break;
+        // break;
       }
 
     } else {
@@ -163,10 +163,12 @@ void ClusteringFeaturesTree::Insert(NodePtr node) {
       // timerMeter.dataInsertEndMeasure();
     }
   }
+  return curNode;
 }
 
 template <typename T>
-void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
+ClusteringFeaturesTree::NodePtr
+ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
   if (node->parent == nullptr) { // means current node is root node
     // l <= L, create a new leaf node and insert the point into it(root
     // change)
@@ -182,6 +184,7 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
     newNode->Update(input, true);
     clusters_.push_back(newRoot);
     root_ = newRoot;
+    return newNode;
   } else {
     auto parent = node->parent;
     auto newNode = GenericFactory::New<Node>(dim, parent);
@@ -297,10 +300,11 @@ void ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         }
       }
     }
+    return newNode;
   }
 }
 
-const std::vector<ClusteringFeaturesTree::NodePtr> &
+std::vector<ClusteringFeaturesTree::NodePtr> &
 ClusteringFeaturesTree::clusters() {
   return clusters_;
 }
@@ -313,22 +317,25 @@ ClusteringFeaturesList::ClusteringFeaturesList(
 
 ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
-void ClusteringFeaturesList::Insert(PointPtr point) {
+ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(PointPtr point) {
   if (clusters_.empty()) {
     auto node = GenericFactory::New<Node>(dim);
     clusters_.push_back(node);
     node->Update(point);
-    // TODO: outlier
+    return node;
   } else {
     auto node = CalcClosestNode(clusters_, point).first;
     node->Update(point);
-    // TODO: outlier
+    return node;
   }
 }
 
-void ClusteringFeaturesList::Insert(NodePtr node) { clusters_.push_back(node); }
+ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(NodePtr node) {
+  clusters_.push_back(node);
+  return node;
+}
 
-const std::vector<ClusteringFeaturesList::NodePtr> &
+std::vector<ClusteringFeaturesList::NodePtr> &
 ClusteringFeaturesList::clusters() {
   return clusters_;
 }

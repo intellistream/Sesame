@@ -150,7 +150,7 @@ SESAME::V1::V1(param_t &cmd_params) {
   this->V1Param.clusterNumber = cmd_params.clusterNumber;
   this->V1Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
   this->V1Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
-  this->V1Param.KMeansPP = true;
+  this->V1Param.kmeanspp = true;
 }
 SESAME::V1::~V1() {
 

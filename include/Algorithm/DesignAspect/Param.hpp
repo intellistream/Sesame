@@ -8,38 +8,43 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_PARAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_PARAM_HPP_
 
+#include "Utils/BenchmarkUtils.hpp"
+
 namespace SESAME {
 
-class StreamClusteringParam {
-public:
-  // General Params
-  int pointNumber;
-  int dimension;
+using StreamClusteringParam = param_t;
 
-  // CF-Tree Params
-  int maxInternalNodes;     // B
-  int maxLeafNodes;         // L
-  double thresholdDistance; // T
+// class StreamClusteringParam {
+// public:
+//   // General Params
+//   int pointNumber;
+//   int dimension;
 
-  // KMeans / KMeans++ Params
-  int clusterNumber;
-  bool KMeansPP;
+//   // CF-Tree Params
+//   int maxInternalNodes;     // B
+//   int maxLeafNodes;         // L
+//   double thresholdDistance; // T
 
-  // DBSCAN Params
-  unsigned int minPoints; // minimum point of core point in DBSCAN
-  double epsilon; // maximum distance if point belongs to the density area of core point
+//   // KMeans / KMeans++ Params
+//   int clusterNumber;
+//   bool KMeansPP;
 
-  // Landmark Window
-  int landmark;
-  // Sliding Window
-  int slidingCount;
-  // Damped Window
-  double alpha, lambda;
+//   // DBSCAN Params
+//   unsigned int minPoints; // minimum point of core point in DBSCAN
+//   double epsilon; // maximum distance if point belongs to the density area of
+//                   // core point
 
-  double outlierDistanceThreshold;
-  int outlierClusterCapacity;
-  double neighborDistance, densityThreshold;
-};
+//   // Landmark Window
+//   int landmark;
+//   // Sliding Window
+//   int sliding;
+//   // Damped Window
+//   double alpha, lambda;
+
+//   double outlierDistanceThreshold;
+//   int outlierClusterCapacity;
+//   double neighborDistance, densityThreshold;
+// };
 
 } // namespace SESAME
 
