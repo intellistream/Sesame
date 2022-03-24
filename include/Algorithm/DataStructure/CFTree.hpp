@@ -117,8 +117,8 @@ template <NodeConcept T> double CalcClusterDist(T a, T b) {
 }
 
 struct ClusteringFeatures {
-  // 原CF结构体，numPoints是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
-  int numPoints = 0;
+  // 原CF结构体，num是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
+  int num = 0;
   std::vector<double> ls, ss;
   ClusteringFeatures(int d = 0)
       : ls(std::vector<double>(d, 0.0)), ss(std::vector<double>(d, 0.0)) {}
@@ -138,12 +138,12 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
-  void Insert(PointPtr point);
-  void Insert(NodePtr node);
+  NodePtr Insert(PointPtr point);
+  NodePtr Insert(NodePtr node);
   std::vector<NodePtr> &clusters();
 
 private:
-  template <typename T> void backwardEvolution(NodePtr node, T point);
+  template <typename T> NodePtr backwardEvolution(NodePtr node, T point);
   NodePtr root_;
   std::vector<NodePtr> clusters_;
 
@@ -172,7 +172,7 @@ public:
         parent->index = -1;
     }
     void Update(PointPtr point) {
-      cf.numPoints++;
+      cf.num += point->sgn;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
         cf.ls[i] += val;
@@ -180,7 +180,7 @@ public:
       }
     }
     void Update(NodePtr node) {
-      cf.numPoints += node->cf.numPoints;
+      cf.num += node->cf.num;
       for (int i = 0; i < dim; ++i) {
         cf.ls[i] += node->cf.ls[i];
         cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
@@ -203,7 +203,7 @@ public:
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)
-        c->setFeatureItem(cf.ls[i] / cf.numPoints, i);
+        c->setFeatureItem(cf.ls[i] / cf.num, i);
       return c;
     }
   };
@@ -222,8 +222,8 @@ public:
   using NodePtr = std::shared_ptr<Node>;
   ClusteringFeaturesList(const StreamClusteringParam &param);
   ~ClusteringFeaturesList();
-  void Insert(PointPtr point);
-  void Insert(NodePtr node);
+  NodePtr Insert(PointPtr point);
+  NodePtr Insert(NodePtr node);
   std::vector<NodePtr> &clusters();
 
 private:
@@ -239,7 +239,7 @@ public:
     Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
     ~Node() = default;
     void Update(PointPtr point) {
-      cf.numPoints++;
+      cf.num += point->sgn;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
         cf.ls[i] += val;
@@ -247,12 +247,13 @@ public:
       }
     }
     void Update(NodePtr node) {
-      cf.numPoints += node->cf.numPoints;
+      cf.num += node->cf.num;
       for (int i = 0; i < dim; ++i) {
         cf.ls[i] += node->cf.ls[i];
         cf.ss[i] += node->cf.ss[i] * node->cf.ss[i];
       }
     }
+    template <typename T> void Update(T point, bool all) { Update(point); }
     void Scale(double scale) {
       for (int i = 0; i < dim; ++i) {
         cf.ls[i] *= scale;
@@ -264,7 +265,7 @@ public:
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)
-        c->setFeatureItem(cf.ls[i] / cf.numPoints, i);
+        c->setFeatureItem(cf.ls[i] / cf.num, i);
       return c;
     }
   };

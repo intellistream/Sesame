@@ -32,7 +32,7 @@ public:
     return dist > outlierDistanceThreshold_;
   }
   template <NodeConcept T> bool Check(T node) {
-    return node->cf.numPoints < outlierClusterCapacity_;
+    return node->cf.num < outlierClusterCapacity_;
   }
 };
 
@@ -52,13 +52,13 @@ public:
       auto dist = point->radius(node->centroid());
       if (dist < neighborDistance_) {
         neighborNodes.push_back(node);
-        neighborDensity += node->cf.numPoints;
+        neighborDensity += node->cf.num;
       }
     }
     for (auto neighbor : neighborNodes) {
       for (auto node : nodes) {
         if (CalcClusterDist(node, neighbor) < neighborDistance_) {
-          neighborNeighborDensity += node->cf.numPoints;
+          neighborNeighborDensity += node->cf.num;
         }
       }
     }
@@ -70,7 +70,7 @@ public:
     }
   }
   template <NodeConcept T> bool Check(T node) {
-    return node->cf.numPoints < outlierClusterCapacity_;
+    return node->cf.num < outlierClusterCapacity_;
   }
 };
 

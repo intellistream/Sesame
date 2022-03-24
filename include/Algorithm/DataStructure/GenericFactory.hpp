@@ -24,7 +24,7 @@ template <class T, class... Ts> std::shared_ptr<T> New(Ts &&... ts) {
 
 template <typename T> concept NodeConcept = requires(T t) {
   t->Centroid();
-  t->cf.numPoints;
+  t->cf.num;
   t->index;
   t->Update(GenericFactory::New<Point>());
   t->Scale(1.0);

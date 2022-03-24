@@ -16,13 +16,14 @@ class Point;
 typedef std::shared_ptr<Point> PointPtr;
 
 class Point {
-private:
+public:
   int index;     // 1,2,3,4,5....
   double weight; // considering the outdated effect
   double cost;
   double minDist;
   int timestamp;
   bool isOutlier;
+  int sgn = 1;
 
 private:
   // the distance to the nearest data point
@@ -46,16 +47,17 @@ public:
   int getDimension() const;
   void setDimension(int d);
   int getFeatureLength();
-  double getDisTo(SESAME::PointPtr p);
+  double getDisTo(PointPtr p);
   double getMinDist() const;
   void setMinDist(double min_dist);
-  SESAME::PointPtr copy();
+  PointPtr copy();
   void setTimeStamp(int t);
   int getTimeStamp() const;
   bool getIsOutlier();
   void setIsOutlier(bool flag);
   double radius(PointPtr centroid);
   double distance(PointPtr centroid);
+  PointPtr Reverse();
 };
 } // namespace SESAME
 #endif // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_POINT_HPP_
