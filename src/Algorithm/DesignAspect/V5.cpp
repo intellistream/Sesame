@@ -423,6 +423,7 @@ void SESAME::V5::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
           // since the parent node's nls has not been updated by the point, so we directly copy the nls in parent node to the parParent one
           CFPtr parCF = parent->getCF();
           parParent->setCF(parCF);
+          parParent->setChild(parent);
         } else{
           // if the parent node is not the root, we can get the parParent one directly
           parParent = parent->getParent();
