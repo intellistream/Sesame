@@ -23,7 +23,7 @@
 
 using namespace SESAME;
 
-TEST(GenericTest, V1Test) {
+TEST(GenericTest, V1) {
   // Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.

@@ -74,6 +74,18 @@ public:
   void clearParents();
   void setIsOutlier(bool flag);
   bool getIsOutlier();
+  std::string Prefix(int d) {
+    std::string prefix = "";
+    while (d--) {
+      prefix += "- ";
+    }
+    return prefix;
+  }
+  std::string Serialize(int d = 0) {
+    std::string str =
+        Prefix(d) + std::to_string(index) + ":" + std::to_string(curCF->getN()) + "\n";
+    return str;
+  }
 };
 
 template <NodeConcept T>
@@ -97,7 +109,7 @@ std::pair<T, double> CalcClosestNode(const std::vector<T> &nodes,
   T node = nullptr;
   for (auto child : nodes) {
     auto centroid = child->Centroid();
-    auto distance = centroid->distance(point);
+    auto distance = centroid->Radius(point);
     if (distance < minDist) {
       minDist = distance;
       node = child;
@@ -140,7 +152,8 @@ public:
   ~ClusteringFeaturesTree();
   NodePtr Insert(PointPtr point);
   NodePtr Insert(NodePtr node);
-  std::vector<NodePtr> &clusters();
+  const std::vector<NodePtr> &clusters();
+  std::string Serialize();
 
 private:
   template <typename T> NodePtr backwardEvolution(NodePtr node, T point);
@@ -149,13 +162,13 @@ private:
 
 public:
   struct Node : std::enable_shared_from_this<Node> {
-    NodePtr parent;
+    NodePtr parent = nullptr;
     std::vector<NodePtr> children;
     int index = 0;
     const int dim;
     ClusteringFeatures cf;
 
-    Node(int d = 0, NodePtr p = nullptr) : dim(d), cf(d), parent(p){};
+    Node(int d = 0) : dim(d), cf(d){};
     Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
     ~Node() = default;
     void RemoveChild(NodePtr child) {
@@ -199,22 +212,30 @@ public:
       }
     }
     PointPtr Centroid() {
-      auto c = GenericFactory::New<Point>();
+      auto c = GenericFactory::New<Point>(dim);
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)
         c->setFeatureItem(cf.ls[i] / cf.num, i);
       return c;
     }
+    std::string Prefix(int d) {
+      std::string prefix = "";
+      while (d--) {
+        prefix += "- ";
+      }
+      return prefix;
+    }
+    std::string Serialize(int d = 0) {
+      std::string str = Prefix(d) + std::to_string(index) + ":" +
+                        std::to_string(cf.num) + "\n";
+      return str;
+    }
   };
 };
 
 class ClusteringFeaturesList {
 private:
-  const int maxInternalNodes; // max CF number of each internal node
-  const int maxLeafNodes;     // max CF number of each leaf node
-  const double
-      thresholdDistance; // threshold radius of each sub cluster in leaf nodes
   const int dim;
 
 public:
@@ -224,7 +245,7 @@ public:
   ~ClusteringFeaturesList();
   NodePtr Insert(PointPtr point);
   NodePtr Insert(NodePtr node);
-  std::vector<NodePtr> &clusters();
+  const std::vector<NodePtr> &clusters();
 
 private:
   std::vector<NodePtr> clusters_;
@@ -261,7 +282,7 @@ public:
       }
     }
     PointPtr Centroid() {
-      auto c = GenericFactory::New<Point>();
+      auto c = GenericFactory::New<Point>(dim);
       c->setIndex(-1);
       c->setClusteringCenter(-1);
       for (int i = 0; i < cf.ls.size(); ++i)

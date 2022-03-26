@@ -85,7 +85,7 @@ void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centr
 // use Manhattan Distance
 void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>();
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(BirchParam.dimension);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
@@ -96,8 +96,8 @@ void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::No
 // use Manhattan Distance
 double SESAME::Birch::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
-  SESAME::PointPtr centroidA = make_shared<SESAME::Point>();
-  SESAME::PointPtr centroidB = make_shared<SESAME::Point>();
+  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(BirchParam.dimension);
+  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(BirchParam.dimension);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
@@ -216,7 +216,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
-        PointPtr centroid = make_shared<Point>();
+        PointPtr centroid = make_shared<Point>(BirchParam.dimension);
         calculateCentroid(curCF, centroid);
         timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection

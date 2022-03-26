@@ -125,7 +125,7 @@ void SESAME::V8::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
 // use Euclidean Distance
 void SESAME::V8::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::CFPtr &currentCF, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>();
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V8Param.dimension);
   calculateCentroid(currentCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
     dist += pow(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i), 2);
