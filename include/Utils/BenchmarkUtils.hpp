@@ -76,8 +76,8 @@ struct param_t {
   bool executeOffline; // determine whether to run the offline refinement
   int landmark; // this is the index of landmark point[start from 0](determine
                 // to process the algorithm from which algorithm)
-  int sliding; // since we test the count-based sliding window, this is the
-                    // count number
+  int sliding;  // since we test the count-based sliding window, this is the
+                // count number
   bool detectOutliers;             // whether detect outliers
   double outlierDistanceThreshold; // the max distance of the incoming point to
                                    // its nearest clusters
@@ -96,9 +96,10 @@ public:
   static void defaultParam(param_t &cmd_params);
   static void loadData(param_t &cmd_params,
                        SESAME::DataSourcePtr dataSourcePtr);
-  static void runBenchmark(param_t &cmd_params, SESAME::DataSourcePtr sourcePtr,
-                           SESAME::DataSinkPtr sinkPtr,
-                           SESAME::AlgorithmPtr algoPtr);
+  static BenchmarkResultPtr runBenchmark(param_t &cmd_params,
+                                         SESAME::DataSourcePtr sourcePtr,
+                                         SESAME::DataSinkPtr sinkPtr,
+                                         SESAME::AlgorithmPtr algoPtr);
 };
 
 #endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

@@ -11,33 +11,14 @@
 
 namespace SESAME {
 
-Point::Point() {
-  this->index = -1;
-  this->weight = 1;
-  this->dimension = 54;
-  this->cost = 0;
-  this->clusteringCenter = -1;
-  this->feature = new std::vector<double>(54);
-  this->timestamp = 0;
-}
-
-Point::Point(int index, double weight, int dimension, double cost) {
-  this->index = index;
-  this->weight = weight;
-  this->dimension = dimension;
-  this->cost = cost;
-  this->clusteringCenter = -1;
-  this->feature = new std::vector<double>(dimension);
-}
-
-Point::Point(int index, double weight, int dimension, double cost,
+Point::Point(int dimension, int index, double weight, double cost,
              int timestamp) {
   this->index = index;
   this->weight = weight;
   this->dimension = dimension;
   this->cost = cost;
   this->clusteringCenter = -1;
-  this->feature = new std::vector<double>(dimension);
+  this->feature = new std::vector<double>(dimension, 0.0);
   this->timestamp = timestamp;
 }
 
@@ -91,12 +72,12 @@ double Point::distance(PointPtr centroid) {
   double sum = 0;
   for (int i = 0; i < getDimension(); i++) {
     auto val = centroid->getFeatureItem(i) - getFeatureItem(i);
-    sum += abs(val);
+    sum += fabs(val);
   }
   return sum;
 }
 
-double Point::radius(PointPtr centroid) {
+double Point::Radius(PointPtr centroid) {
   double sum = 0;
   for (int i = 0; i < getDimension(); i++) {
     auto val = centroid->getFeatureItem(i) - getFeatureItem(i);

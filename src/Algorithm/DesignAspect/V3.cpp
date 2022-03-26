@@ -69,7 +69,7 @@ void SESAME::V3::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
     // need to transfer outlier cluster into real cluster
     this->outlierNodes.erase(this->outlierNodes.begin() + outCluster->getIndex());
     auto curNode = this->root;
-    PointPtr center = make_shared<Point>();
+    PointPtr center = make_shared<Point>(V3Param.dimension);
     auto cf = outCluster->getCF();
     calculateCentroid(cf, center);
     while(1) {
@@ -79,7 +79,7 @@ void SESAME::V3::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
         if(curCF->getN() == 0) {
           initializeCF(curCF, center->getDimension());
         }
-        PointPtr centroid = make_shared<Point>();
+        PointPtr centroid = make_shared<Point>(V3Param.dimension);
         calculateCentroid(curCF, centroid);
         if(calculateRadius(center,  centroid) <= this->cfTree->getT()) { // concept drift detection
           addNodeNLSToNode(outCluster, curNode, true);
@@ -166,7 +166,7 @@ void SESAME::V3::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
 // use Manhattan Distance
 void SESAME::V3::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>();
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V3Param.dimension);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
@@ -178,8 +178,8 @@ void SESAME::V3::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
 // use Manhattan Distance
 double SESAME::V3::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
-  SESAME::PointPtr centroidA = make_shared<SESAME::Point>();
-  SESAME::PointPtr centroidB = make_shared<SESAME::Point>();
+  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(V3Param.dimension);
+  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(V3Param.dimension);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
@@ -312,7 +312,7 @@ void SESAME::V3::forwardInsert(SESAME::PointPtr point){
           if(curCF->getN() == 0) {
             initializeCF(curCF, point->getDimension());
           }
-          PointPtr centroid = make_shared<Point>();
+          PointPtr centroid = make_shared<Point>(V3Param.dimension);
           calculateCentroid(curCF, centroid);
           if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
             // whether the new radius is lower than threshold T

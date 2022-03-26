@@ -26,7 +26,7 @@ template <typename T> concept NodeConcept = requires(T t) {
   t->Centroid();
   t->cf.num;
   t->index;
-  t->Update(GenericFactory::New<Point>());
+  t->Update(GenericFactory::New<Point>(0));
   t->Scale(1.0);
 };
 

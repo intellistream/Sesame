@@ -54,6 +54,7 @@ class V1 : public Algorithm {
   bool checkoutOutlier(SESAME::PointPtr &point);
   void insertPointIntoOutliers(SESAME::PointPtr &point);
   void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
+  std::string Serialize();
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V1_HPP_

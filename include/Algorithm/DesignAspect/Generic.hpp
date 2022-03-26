@@ -128,7 +128,7 @@ void StreamClustering<W, D, O, R>::runOfflineClustering(DataSinkPtr ptr) {
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
-    auto centroid = GenericFactory::New<Point>(i, 1, param.dimension, 0);
+    auto centroid = GenericFactory::New<Point>(param.dimension, i, 1, 0);
     for (int j = 0; j < param.dimension; j++) {
       centroid->setFeatureItem(clusters[i]->cf.ls[j] / clusters[i]->cf.num, j);
     }

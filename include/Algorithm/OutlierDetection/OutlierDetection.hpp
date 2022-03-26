@@ -18,8 +18,8 @@ class OutlierDetection {};
 
 class DistanceDetection : public OutlierDetection {
 private:
-  double outlierDistanceThreshold_;
-  int outlierClusterCapacity_;
+  const double outlierDistanceThreshold_;
+  const int outlierClusterCapacity_;
 
 public:
   DistanceDetection(const StreamClusteringParam &param)
@@ -37,8 +37,8 @@ public:
 };
 
 class DensityDetection : public OutlierDetection {
-  double neighborDistance_, densityThreshold_;
-  int outlierClusterCapacity_;
+  const double neighborDistance_, densityThreshold_;
+  const int outlierClusterCapacity_;
 
 public:
   DensityDetection(const StreamClusteringParam &param)
@@ -49,7 +49,7 @@ public:
     std::vector<T> neighborNodes;
     int neighborDensity = 0, neighborNeighborDensity = 0;
     for (auto node : nodes) {
-      auto dist = point->radius(node->centroid());
+      auto dist = point->Radius(node->centroid());
       if (dist < neighborDistance_) {
         neighborNodes.push_back(node);
         neighborDensity += node->cf.num;

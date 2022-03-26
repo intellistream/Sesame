@@ -15,31 +15,33 @@
 #include <functional>
 #include <string>
 
+using uint64 = unsigned long long;
+
 /* Period parameters */
 const int N = 624;
 const int M = 397;
-#define MATRIX_A 0x9908b0dfUL   /* constant vector a */
-#define UPPER_MASK 0x80000000UL /* most significant w-r bits */
-#define LOWER_MASK 0x7fffffffUL /* least significant r bits */
-#define TRUE 1
-#define FALSE 0
-#define DEFAULT_WEIGHT 1
-#define DEFAULT_COST 0
-#define DEFAULT_QUEUE_CAPACITY 1000
-#define KMEANS_TIMES 5
-#define CMM_KNN 10
-#define CMM_A 0.998
-#define CMM_LAMDA 1
-#define CMM_THRESHOLD 542
-#define UNCLASSIFIED (-2)
-#define CORE_POINT 1
-#define NOISE (-1)
-#define SUCCESS 0
-#define FAILURE (-3)
+const uint64 MATRIX_A = 0x9908b0dfUL;   /* constant vector a */
+const uint64 UPPER_MASK = 0x80000000UL; /* most significant w-r bits */
+const uint64 LOWER_MASK = 0x7fffffffUL; /* least significant r bits */
+const int TRUE = 1;
+const int FALSE = 0;
+const int DEFAULT_WEIGHT = 1;
+const int DEFAULT_COST = 0;
+const int DEFAULT_QUEUE_CAPACITY = 1000;
+const int KMEANS_TIMES = 5;
+const int CMM_KNN = 10;
+const double CMM_A = 0.998;
+const int CMM_LAMDA = 1;
+const int CMM_THRESHOLD = 542;
+const int UNCLASSIFIED = (-2);
+const int CORE_POINT = 1;
+const int NOISE = (-1);
+const int SUCCESS = 0;
+const int FAILURE = (-3);
 /*
 Determines when Lloyd terminates (should be between 0 and 1)
 */
-#define THRESHOLD 1.000
+const double THRESHOLD = 1.000;
 
 namespace SESAME {
 typedef std::shared_ptr<std::barrier<>> BarrierPtr;
