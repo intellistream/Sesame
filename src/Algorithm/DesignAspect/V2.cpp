@@ -128,6 +128,7 @@ SESAME::V2::V2(param_t &cmd_params) {
   this->V2Param.maxLeafNodes = cmd_params.maxLeafNodes;
   this->V2Param.thresholdDistance = cmd_params.thresholdDistance;
   this->V2Param.minPoints = cmd_params.minPoints;
+  this->V2Param.landmark = cmd_params.landmark;
   this->V2Param.epsilon = cmd_params.epsilon;
   this->V2Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
   this->V2Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
