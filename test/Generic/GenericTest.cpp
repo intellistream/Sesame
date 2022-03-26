@@ -8,6 +8,7 @@
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/DataStructure/CFTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
+#include "Algorithm/OfflineRefinement/DBSCAN.hpp"
 #include "Algorithm/OfflineRefinement/KMeans.hpp"
 #include "Algorithm/OfflineRefinement/OfflineRefinement.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
@@ -63,5 +64,61 @@ TEST(GenericTest, V1) {
       Landmark, ClusteringFeaturesTree, DistanceDetection, KMeans>>(cmd_params);
 
   // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+  auto res =
+      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_GE(res->cmm, 0.9190);
+  ASSERT_LE(res->cmm, 0.9191);
+  ASSERT_GE(res->purity, 0.403);
+  ASSERT_LE(res->purity, 0.404);
+}
+
+TEST(GenericTest, V2) {
+  // Setup Logs.
+  setupLogging("benchmark.log", LOG_DEBUG);
+  // Parse parameters.
+  param_t cmd_params;
+  cmd_params.pointNumber = 3000;
+  cmd_params.thresholdDistance = 1000;
+  cmd_params.maxInternalNodes = 20;
+  cmd_params.maxLeafNodes = 40;
+  cmd_params.dimension = 54;
+  cmd_params.GTClusterNumber = 7;
+  cmd_params.timeDecay = false;
+  cmd_params.minPoints = 10;
+  cmd_params.landmark = 1000;
+  cmd_params.epsilon = 200; // 0.1
+  cmd_params.executeOffline = true;
+  cmd_params.outlierDistanceThreshold = 5000;
+  cmd_params.outlierClusterCapacity = 10;
+
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+                         "/datasets/CoverType.txt";
+  cmd_params.outputPath = "results.txt";
+  cmd_params.algoType = SESAME::V2Stream;
+
+  std::vector<SESAME::PointPtr> input;
+  std::vector<SESAME::PointPtr> results;
+
+  // Create Spout.
+  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  // Directly load data from file. TODO: configure it to load from external
+  // sensors, e.g., HTTP.
+  BenchmarkUtils::loadData(cmd_params, sourcePtr);
+
+  // Create Sink.
+  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+
+  // Create Algorithm.
+  AlgorithmPtr algoPtr = GenericFactory::New<StreamClustering<
+      Landmark, ClusteringFeaturesTree, DistanceDetection, DBSCAN>>(cmd_params);
+
+  // Run algorithm producing results.
+  auto res =
+      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_GE(res->cmm, 0.8894);
+  ASSERT_GE(res->purity, 0.2987);
+  ASSERT_LE(res->cmm, 0.8895);
+  ASSERT_LE(res->purity, 0.2988);
 }

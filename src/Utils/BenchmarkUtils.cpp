@@ -373,10 +373,10 @@ void BenchmarkUtils::loadData(param_t &cmd_params,
   dataSourcePtr->load(cmd_params.pointNumber, cmd_params.dimension, data);
   SESAME_INFO("Finished loading input data");
 }
-void BenchmarkUtils::runBenchmark(param_t &cmd_params,
-                                  SESAME::DataSourcePtr sourcePtr,
-                                  SESAME::DataSinkPtr sinkPtr,
-                                  SESAME::AlgorithmPtr algoPtr) {
+BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
+                                                SESAME::DataSourcePtr sourcePtr,
+                                                SESAME::DataSinkPtr sinkPtr,
+                                                SESAME::AlgorithmPtr algoPtr) {
   std::cout << "data number: " << cmd_params.pointNumber << std::endl;
 
   switch (cmd_params.algoType) {
@@ -491,9 +491,11 @@ void BenchmarkUtils::runBenchmark(param_t &cmd_params,
                  sinkPtr->getResults());
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
-  SESAME::Evaluation::runEvaluation(
+  auto res = SESAME::Evaluation::runEvaluation(
       cmd_params.dimension, cmd_params.GTClusterNumber, cmd_params.timeDecay,
       sourcePtr->getInputs(), sinkPtr->getResults());
 
   engine.stop();
+  
+  return res;
 }
