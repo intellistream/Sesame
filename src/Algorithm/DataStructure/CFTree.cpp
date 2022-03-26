@@ -32,7 +32,7 @@ int CFNode::getIndex() const { return this->index; }
 std::vector<NodePtr> CFNode::getChildren() { return this->children; }
 
 void CFNode::setNode(CFPtr &Node) { this->curCF = Node; }
-void CFNode::setParent(NodePtr &Parent) { this->parent = Parent->copy(); }
+void CFNode::setParent(NodePtr &Parent) { this->parent = Parent; }
 void CFNode::setIndex(int Index) { this->index = Index; }
 void CFNode::setChild(NodePtr &child) { this->children.push_back(child); }
 void CFNode::setChildren(std::vector<NodePtr> children) {
