@@ -96,7 +96,7 @@ get_header_sesame(sesame_HEADER_FILES)
 add_library(sesame SHARED ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(sesame PUBLIC "include")
 target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(sesame PUBLIC ${LIBRARIES})
+target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread)
 
 #Add benchmarks with command
 add_subdirectory(benchmark)

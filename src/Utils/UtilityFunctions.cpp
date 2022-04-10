@@ -1,10 +1,14 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
-#include <Utils/UtilityFunctions.hpp>
+#include "Utils/UtilityFunctions.hpp"
+
 #include <cfloat>
 #include <cmath>
+#include <random>
+
 static unsigned long mt[N]; /* the array for the state vector  */
-static int mti; /* mti==N+1 means mt[N] is not initialized */
+static int mti;             /* mti==N+1 means mt[N] is not initialized */
 
 long SESAME::UtilityFunctions::genrand_int31() {
   return long(genrand_int32() >> 1);
@@ -17,7 +21,7 @@ unsigned long SESAME::UtilityFunctions::genrand_int32() {
   if (mti >= N) { /* generate N words at one time */
     int kk;
 
-    if (mti == N + 1)   /* if init_genrand() has not been called, */
+    if (mti == N + 1)       /* if init_genrand() has not been called, */
       init_genrand(5489UL); /* a default initial seed is used */
 
     for (kk = 0; kk < N - M; kk++) {
@@ -56,8 +60,7 @@ void SESAME::UtilityFunctions::init_genrand(unsigned long s) {
   /* initializes mt[N] with a seed */
   mt[0] = s & 0xffffffffUL;
   for (mti = 1; mti < N; mti++) {
-    mt[mti] =
-        (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
+    mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
     /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
     /* In the previous versions, MSBs of the seed affect   */
     /* only MSBs of the array mt[].                        */
@@ -72,26 +75,28 @@ void SESAME::UtilityFunctions::init_genrand(unsigned long s) {
  * @return
  */
 double SESAME::UtilityFunctions::genrand_real3() {
-  return (((double) genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
+  return (((double)genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
-std::shared_ptr<std::barrier<>> SESAME::UtilityFunctions::createBarrier(int count) {
+std::shared_ptr<std::barrier<>>
+SESAME::UtilityFunctions::createBarrier(int count) {
   return std::make_shared<std::barrier<>>(count);
 }
-void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input,
-                                              const std::vector<PointPtr> &centers,
-                                              std::vector<PointPtr> &output,
-                                              int dimension) {
+void SESAME::UtilityFunctions::groupByCenters(
+    const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
+    std::vector<PointPtr> &output, int dimension) {
   int selectCenterIndex = -1;
-  for(int i = 0; i < input.size(); i++) {
+  for (int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
-    for(int j = 0; j < centers.size(); j++) {
+    for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
-      for(int k = 0; k < dimension; k++) {
-        dis += pow((output.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
+      for (int k = 0; k < dimension; k++) {
+        dis += pow((output.at(i)->getFeatureItem(k) -
+                    centers.at(j)->getFeatureItem(k)),
+                   2);
       }
-      if(min > dis) {
+      if (min > dis) {
         selectCenterIndex = j;
         min = dis;
       }
@@ -99,19 +104,20 @@ void SESAME::UtilityFunctions::groupByCenters(const std::vector<PointPtr> &input
     output[i]->setClusteringCenter(selectCenterIndex);
   }
 }
-void SESAME::UtilityFunctions::groupByCentersWithOffline(const std::vector<PointPtr> &input,
-                                                         const std::vector<PointPtr> &centers,
-                                                         std::vector<PointPtr> &output,
-                                                         int dimension) {
-  for(int i = 0; i < input.size(); i++) {
+void SESAME::UtilityFunctions::groupByCentersWithOffline(
+    const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
+    std::vector<PointPtr> &output, int dimension) {
+  for (int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
-    for(int j = 0; j < centers.size(); j++) {
+    for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
-      for(int k = 0; k < dimension; k++) {
-        dis += pow((input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)), 2);
+      for (int k = 0; k < dimension; k++) {
+        dis += pow(
+            (input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)),
+            2);
       }
-      if(min > dis) {
+      if (min > dis) {
         output[i]->setClusteringCenter(centers[j]->getClusteringCenter());
         min = dis;
       }

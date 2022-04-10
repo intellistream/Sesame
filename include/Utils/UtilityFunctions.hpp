@@ -14,8 +14,10 @@
 #include <experimental/filesystem>
 #include <functional>
 #include <string>
+#include <random>
 
 using uint64 = unsigned long long;
+using int64 = long long;
 
 /* Period parameters */
 const int N = 624;
@@ -27,7 +29,7 @@ const int TRUE = 1;
 const int FALSE = 0;
 const int DEFAULT_WEIGHT = 1;
 const int DEFAULT_COST = 0;
-const int DEFAULT_QUEUE_CAPACITY = 1000;
+const int DEFAULT_QUEUE_CAPACITY = 3000;
 const int KMEANS_TIMES = 5;
 const int CMM_KNN = 10;
 const double CMM_A = 0.998;
@@ -63,5 +65,20 @@ public:
                                         std::vector<PointPtr> &output,
                                         int dimension);
 };
+
+static std::mt19937 r(std::random_device{}());
+static int random_uniform(int min, int max) {
+  std::uniform_int_distribution<int> dist(min, max);
+  return dist(r);
+}
+static double random_uniform(double min, double max) {
+  std::uniform_real_distribution<double> dist(min, max);
+  return dist(r);
+}
+static bool bernoulli(double p){
+  std::bernoulli_distribution dist(p);
+  return dist(r);
+}
+
 } // namespace SESAME
 #endif // SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

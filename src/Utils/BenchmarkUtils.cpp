@@ -464,7 +464,8 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   engine.run();
 
   while (!sinkPtr->isFinished())
-    ; // wait for sink to stop.
+    usleep(100);
+  // wait for sink to stop.
 
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
@@ -496,6 +497,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
       sourcePtr->getInputs(), sinkPtr->getResults());
 
   engine.stop();
-  
+
   return res;
 }

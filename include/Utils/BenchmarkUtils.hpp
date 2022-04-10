@@ -87,6 +87,11 @@ struct param_t {
                            // neighborhoods
   int outlierClusterCapacity; // transfer outlier cluster and true cluster
   bool kmeanspp = true; // whether use kmeans++ to initialize the centroids
+
+  double delta_grid =
+      0.2; // The delta parameter used int the grid for guessing the optimum.
+  int num_samples = 100; // The number of samples used in the grid for guessing
+                         // the optimum.
 };
 
 class BenchmarkUtils {

@@ -129,6 +129,7 @@ SESAME::V2::V2(param_t &cmd_params) {
   this->V2Param.thresholdDistance = cmd_params.thresholdDistance;
   this->V2Param.minPoints = cmd_params.minPoints;
   this->V2Param.epsilon = cmd_params.epsilon;
+  this->V2Param.landmark = cmd_params.landmark;
   this->V2Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
   this->V2Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity; // 2
 }
@@ -413,6 +414,7 @@ void SESAME::V2::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
           CFPtr parCF = parent->getCF();
           parParent->setCF(parCF);
           parParent->setChild(parent);
+          parParent->setIndex(leafMask++);
         } else{
           // if the parent node is not the root, we can get the parParent one directly
           parParent = parent->getParent();
@@ -422,7 +424,7 @@ void SESAME::V2::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // insert the new parent into the allNode list
         // we also need to insert the new parent node into the clusterNode list if its children is a leaf node.
         if(parent->getChildren().at(0)->getIsLeaf()) {
-          newParentA->setIndex(++this->leafMask);
+          newParentA->setIndex(this->leafMask++);
           this->clusterNodes.push_back(newParentA);
         }
         // we only create a new parent rather and keep the old parent node as the split two sub-nodes

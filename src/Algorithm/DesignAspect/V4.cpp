@@ -56,6 +56,7 @@ void SESAME::V4::insertPointIntoOutliers(SESAME::PointPtr &point) {
     if(pointToOutlierDist < this->V4Param.thresholdDistance) {
       updateNLS(insertCluster, point, false);
       this->outlierNodes.push_back(insertCluster); // different
+      this->SlidingWindowNodes.push_back(insertCluster);
     } else {
       insertCluster = make_shared<CFNode>();
       updateNLS(insertCluster, point, false);
@@ -396,9 +397,9 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
 
     // update the parent node
     newRoot->setChild(newNode);
-    this->SlidingWindowNodes.push_back(newNode);
     if(cluster->getIndex() == -1) {
       updateNLS(newNode, point, true);
+      this->SlidingWindowNodes.push_back(newNode);
     } else {
       addNodeNLSToNode(cluster, newNode, true);
     }
@@ -409,9 +410,9 @@ void SESAME::V4::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
     newNode->setIsLeaf(true);
     newNode->setParent(parent);
     parent->setChild(newNode);
-    this->SlidingWindowNodes.push_back(newNode);
     if(cluster->getIndex() == -1) {
       updateNLS(newNode, point, false);
+      this->SlidingWindowNodes.push_back(newNode);
     } else {
       addNodeNLSToNode(cluster, newNode, false);
     }
