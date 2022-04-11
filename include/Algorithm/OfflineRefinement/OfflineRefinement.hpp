@@ -24,6 +24,12 @@ public:
 class NoRefinement : public OfflineRefinement {
 public:
   NoRefinement(const StreamClusteringParam &param) {}
+  void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input,
+           DataSinkPtr sinkPtr) {
+    for (auto p : input) {
+      sinkPtr->put(p->copy());
+    }
+  }
 };
 
 } // namespace SESAME
