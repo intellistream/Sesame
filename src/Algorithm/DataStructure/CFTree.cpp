@@ -204,12 +204,13 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
           // if the parent node is the root, we need to create a new root as
           // a parParent
           parParent = GenericFactory::New<Node>(dim);
-          parParent->children = root_->children;
+          // parParent->children = root_->children;
           root_ = parParent;
           // since the parent node's nls has not been updated by the point,
           // so we directly copy the nls in parent node to the parParent one
           parParent->cf = parent->cf;
           parParent->index = leafMask++;
+          parParent->AddChild(parent);
           // TODO
         } else {
           // if the parent node is not the root, we can get the parParent
@@ -230,14 +231,14 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         // as the split two sub-nodes so we need to refresh the old parent
         // node as a blank one and treat it as a new parent B
 
-        parent->parent = parParent; // link the parparent node and the new
-                                    // created new parent A
+        // parent->parent = parParent; // link the parparent node and the new
+        //                             // created new parent A
         parParent->AddChild(newParentA);
         // clean cf of the old parent node and initialize the cf of new
         // parent A (ls and ss all have d number of 0)
         // split the child nodes of the old parent nodes
-        auto broNodes = parent->children;
-        parent->children.clear();
+        std::vector<NodePtr> broNodes;
+        parent->children.swap(broNodes);
         auto adjMatrix =
             CalcAdjMatrix(broNodes); //  calculate the distance between
                                      //  each two brother nodes
