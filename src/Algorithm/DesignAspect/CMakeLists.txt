@@ -7,4 +7,5 @@ add_source_sesame(
         V6.cpp
         V7.cpp
         V8.cpp
+        SlidingWindowClustering.cpp
 )

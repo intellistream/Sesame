@@ -1,15 +1,20 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 20/07/2021.
 //
 
-#include <Sources/DataSource.hpp>
-#include <vector>
-#include <Algorithm/DataStructure/DataStructureFactory.hpp>
-#include <Utils/Logger.hpp>
-#include <Utils/UtilityFunctions.hpp>
+#include "Sources/DataSource.hpp"
+#include "Algorithm/DataStructure/DataStructureFactory.hpp"
+#include "Utils/Logger.hpp"
+#include "Utils/UtilityFunctions.hpp"
+
+#include <cassert>
 #include <chrono>
+#include <thread>
+#include <vector>
+
 using namespace std::chrono;
 
 /**
@@ -20,18 +25,22 @@ using namespace std::chrono;
  * @param input
  * @return
  */
-void SESAME::DataSource::load(int point_number, int dimension, vector<string> input) {
+void SESAME::DataSource::load(int point_number, int dimension,
+                              vector<string> input) {
 
   // The step used to generate random timestamps
   const int timeStep = 100000;
   for (int i = 0; i < point_number; i++) {
     int timeStamp = timeStep * i + rand() % timeStep;
-    PointPtr point = DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, dimension, DEFAULT_COST, timeStamp);
+    PointPtr point = DataStructureFactory::createPoint(
+        i, DEFAULT_WEIGHT, dimension, DEFAULT_COST, timeStamp);
     char *charData = new char[INT32_MAX];
     strcpy(charData, input[i].c_str());
-    // use c_str() to convert string to char * but it's just a temp pointer we have to use strcpy to store it
+    // use c_str() to convert string to char * but it's just a temp pointer we
+    // have to use strcpy to store it
     const char *sep = " ";
-    char *feature = strtok(charData, sep);//TODO: why this?? Read token from charData
+    char *feature =
+        strtok(charData, sep);      // TODO: why this?? Read token from charData
     feature = strtok(nullptr, sep); // Skip the first token (index number)
     int index = 0;
     while (feature != nullptr) {
@@ -53,32 +62,37 @@ SESAME::DataSource::DataSource() {
   sourceEnd = false;
 }
 
-//TODO: we can control the source speed here: done
+// TODO: we can control the source speed here: done
 void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
   overallMeter.START_MEASURE();
   // Initialize timer at time 0
   auto startTime = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
+  std::cerr << "input.size=" << input.size() << std::endl;
+  // int cnt = 0;
   for (PointPtr p : this->input) {
-    int timestamp = (*p).getTimeStamp();
+    // int timestamp = p->getTimeStamp();
     // Wait until (currentTime - startTime) >= timestamp to push point
-    while (duration_cast<nanoseconds>(high_resolution_clock::now()-startTime).count() < timestamp) {
-      continue;
-    }
-    inputQueue->push(p);
+    // std::this_thread::sleep_for(
+    //     duration_cast<duration<int,
+    //     nanoseconds>>(high_resolution_clock::now() -
+    //                                     startTime) -
+    //     duration_cast<duration<int, nanoseconds>>(duration<int,
+    //     nanoseconds>(timestamp)));
+    inputQueue->push(p->copy());
   }
-  sourceEnd = true;//Let engine knows that there won't be any more data coming.
-  barrierPtr->arrive_and_wait();
+  SESAME_INFO("sourceEnd set to true");
+  sourceEnd = true; // Let engine knows that there won't be any more data
+                    // coming.
+  // barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();
   SESAME_INFO("DataSource sourceEnd emit data");
   printTime();
 }
 
 bool SESAME::DataSource::start(int id) {
-  auto fun = [this]() {
-    runningRoutine();
-  };
+  auto fun = [this]() { runningRoutine(); };
   threadPtr->construct(fun, id);
   SESAME_INFO("DataSource spawn thread=" << threadPtr->getID());
   return true;
@@ -89,16 +103,16 @@ bool SESAME::DataSource::stop() {
     threadPtr->join();
     threadPtr.reset();
   } else {
-    SESAME_INFO("DataSource " << ": Thread is not joinable");
+    SESAME_INFO("DataSource "
+                << ": Thread is not joinable");
     return false;
   }
   return true;
 }
-bool SESAME::DataSource::empty() {
-  return inputQueue->empty();
-}
+bool SESAME::DataSource::empty() { return inputQueue->empty(); }
 
 SESAME::PointPtr SESAME::DataSource::get() {
+  assert(inputQueue->size());
   auto rt = *inputQueue->front();
   inputQueue->pop();
   return rt;
@@ -107,16 +121,10 @@ SESAME::PointPtr SESAME::DataSource::get() {
 void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {
   this->barrierPtr = barrierPtr;
 }
-SESAME::DataSource::~DataSource() {
-  stop();
-}
-vector<SESAME::PointPtr> SESAME::DataSource::getInputs() {
-  return input;
-}
+SESAME::DataSource::~DataSource() { stop(); }
+vector<SESAME::PointPtr> SESAME::DataSource::getInputs() { return input; }
 void SESAME::DataSource::printTime() {
-  SESAME_INFO("DataSource takes " << overallMeter.MeterUSEC() << " useconds to finish.");
+  SESAME_INFO("DataSource takes " << overallMeter.MeterUSEC()
+                                  << " useconds to finish.");
 }
-bool SESAME::DataSource::sourceEnded() {
-  return sourceEnd;
-}
-
+bool SESAME::DataSource::sourceEnded() { return sourceEnd; }

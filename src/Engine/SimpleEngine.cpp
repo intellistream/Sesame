@@ -80,13 +80,17 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
     }
   }
 
+  SESAME_INFO("ready to process remaining data");
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
+    // SESAME_INFO("processing remaining data");
     algoPtr->runOnlineClustering(item);
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();
+
+  SESAME_INFO("ready to offline clustering");
 
   // run offline clustering
   overallMeter.refinementStartMeasure();
@@ -100,7 +104,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   sinkPtr->Ended();//Let sink knows that there won't be any more data coming.
   SESAME_INFO("Engine sourceEnd emit data");
-  barrierPtr->arrive_and_wait();//wait for source and sink.
+  // barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
   printTime();
   overallMeter.printCumulative();

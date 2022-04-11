@@ -7,16 +7,17 @@
 #ifndef SESAME_SRC_SOURCES_DATASOURCE_HPP_
 #define SESAME_SRC_SOURCES_DATASOURCE_HPP_
 
-#include <Algorithm/DataStructure/Point.hpp>
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Utils/UtilityFunctions.hpp"
+#include "Utils/SPSCQueue.hpp"
+#include "Engine/SingleThread.hpp"
+#include "Timer/TimeMeter.hpp"
+
 #include <string>
 #include <cstring>
 #include <vector>
-#include <Utils/UtilityFunctions.hpp>
-#include <Utils/SPSCQueue.hpp>
-#include <Engine/SingleThread.hpp>
-#include <Timer/TimeMeter.hpp>
-
-using namespace std;
+#include <atomic>
+#include <queue>
 
 namespace SESAME {
 class DataSource;
@@ -29,9 +30,9 @@ class DataSource {
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
   TimeMeter overallMeter;
-  bool sourceEnd;
+  std::atomic_bool sourceEnd;
  public:
-  void load(int point_number, int dimension, vector<string> input);
+  void load(int point_number, int dimension, std::vector<string> input);
   bool empty();
   PointPtr get();
   std::vector<PointPtr> getInputs();
@@ -43,6 +44,9 @@ class DataSource {
   void setBarrier(BarrierPtr barrierPtr);
   void printTime();
   bool sourceEnded();
+  int size() {
+    return inputQueue->size();
+  }
 };
 }
 #endif //SESAME_SRC_SOURCES_DATASOURCE_HPP_

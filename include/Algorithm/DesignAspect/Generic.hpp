@@ -149,12 +149,13 @@ StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point) {
     auto closest = CalcClosestNode(outliers_, point);
     if (closest.second < param.thresholdDistance) {
       closest.first->Update(point);
+      return closest.first;
     } else {
       auto node = GenericFactory::New<Node>(point);
       node->index = outliers_.size();
       outliers_.push_back(node);
+      return node;
     }
-    return closest.first;
   }
 }
 

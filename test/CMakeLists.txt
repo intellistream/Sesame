@@ -15,6 +15,7 @@ add_executable(google_test
         DesignAspect/V6Test.cpp
         DesignAspect/V7Test.cpp
         DesignAspect/V8Test.cpp
+        DesignAspect/SlidingWindowClusteringTest.cpp
         Generic/GenericTest.cpp
 )
 

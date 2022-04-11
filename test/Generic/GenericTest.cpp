@@ -30,9 +30,9 @@ TEST(GenericTest, V1) {
   // Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
+  cmd_params.thresholdDistance = 100;
+  cmd_params.maxInternalNodes = 10;
+  cmd_params.maxLeafNodes = 20;
   cmd_params.clusterNumber = 7;
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
@@ -67,10 +67,7 @@ TEST(GenericTest, V1) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  ASSERT_GE(res->cmm, 0.9190);
-  ASSERT_LE(res->cmm, 0.9191);
-  ASSERT_GE(res->purity, 0.403);
-  ASSERT_LE(res->purity, 0.404);
+  ASSERT_NEAR(res->purity, 0.403, 0.001);
 }
 
 TEST(GenericTest, V2) {
@@ -80,8 +77,8 @@ TEST(GenericTest, V2) {
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
   cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
+  cmd_params.maxInternalNodes = 10;
+  cmd_params.maxLeafNodes = 20;
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;
@@ -95,7 +92,7 @@ TEST(GenericTest, V2) {
   cmd_params.inputPath = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
   cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V2Stream;
+  cmd_params.algoType = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -117,8 +114,5 @@ TEST(GenericTest, V2) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  ASSERT_GE(res->cmm, 0.8894);
-  ASSERT_GE(res->purity, 0.2987);
-  ASSERT_LE(res->cmm, 0.8895);
-  ASSERT_LE(res->purity, 0.2988);
+  ASSERT_NEAR(res->purity, 0.403, 0.001);
 }

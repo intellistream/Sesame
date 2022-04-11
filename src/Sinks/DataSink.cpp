@@ -28,7 +28,7 @@ void SESAME::DataSink::runningRoutine() {
     outputQueue->pop();
   }
   finished=true;
-  barrierPtr->arrive_and_wait();
+  // barrierPtr->arrive_and_wait();
   SESAME_INFO("DataSink sourceEnd grab data, in total:" << output.size());
 }
 bool SESAME::DataSink::start(int id) {
@@ -67,5 +67,5 @@ void SESAME::DataSink::Ended() {
   this->sourceEnd = true;
 }
 bool SESAME::DataSink::isFinished() {
-  return this->finished;
+  return this->finished.load();
 }

@@ -13,15 +13,15 @@
 #include <Sinks/DataSinkFactory.hpp>
 #include <Algorithm/AlgorithmFactory.hpp>
 
-TEST(DesignTest, V2Test) {
+TEST(DesignTest, V2) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
   param_t cmd_params;
   cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
+  cmd_params.thresholdDistance = 100;
+  cmd_params.maxInternalNodes = 10;
+  cmd_params.maxLeafNodes = 20;
   cmd_params.dimension = 54;
   cmd_params.GTClusterNumber = 7;
   cmd_params.timeDecay = false;

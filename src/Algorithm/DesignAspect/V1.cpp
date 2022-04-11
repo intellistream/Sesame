@@ -420,6 +420,7 @@ void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode,
     newRoot->getCF()->setSS(curSS);
     newRoot->getCF()->setN(curN);
     newRoot->setIndex(this->leafMask++);
+    this->clusterNodes.push_back(newRoot);
     // here we need to remove the old root and add the new one into the
     // leafnodes set update the parent node
     newRoot->setChild(newNode);
@@ -428,7 +429,6 @@ void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode,
     } else {
       addNodeNLSToNode(cluster, newNode, true);
     }
-    this->clusterNodes.push_back(newRoot);
     this->root = newRoot;
   } else {
     NodePtr parent = curNode->getParent();
@@ -460,7 +460,6 @@ void SESAME::V1::backwardEvolution(SESAME::NodePtr &curNode,
           // if the parent node is the root, we need to create a new root as a
           // parParent
           parParent = make_shared<CFNode>();
-          parParent->setChildren(root->getChildren());
           parParent->setIsLeaf(false);
           this->root = parParent;
           // since the parent node's nls has not been updated by the point, so
