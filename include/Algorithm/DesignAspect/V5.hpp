@@ -60,7 +60,7 @@ class V5 : public Algorithm {
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);
 
-  void updateTimeWeight();
+  void updateTimeWeight(vector<SESAME::NodePtr> &nodes);
   bool checkoutOutlier(SESAME::PointPtr &point);
   void insertPointIntoOutliers(SESAME::PointPtr &point);
   void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);

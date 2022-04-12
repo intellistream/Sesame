@@ -155,6 +155,7 @@ public:
   NodePtr Insert(PointPtr point);
   NodePtr Insert(NodePtr node);
   void Remove(NodePtr node);
+  void ForEach(std::function<void(NodePtr)> func);
   std::string Serialize();
   const std::vector<NodePtr> &clusters();
   NodePtr root() { return root_; }
@@ -258,6 +259,10 @@ public:
   ~ClusteringFeaturesList();
   NodePtr Insert(PointPtr point);
   NodePtr Insert(NodePtr node);
+  void ForEach(std::function<void(NodePtr)> func) {
+    std::ranges::for_each(clusters_, func);
+  }
+  void Init() {}
   const std::vector<NodePtr> &clusters();
 
 private:

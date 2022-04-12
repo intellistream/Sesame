@@ -119,9 +119,8 @@ void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
     }
   }
   if constexpr (has_update) {
-    for (auto node : d->clusters()) {
-      w->Update(node);
-    }
+    d->ForEach([&](NodePtr node) { w->Update(node); });
+    std::ranges::for_each(outliers_, [&](NodePtr node) { w->Update(node); });
   }
   if constexpr (has_delete) {
     PointPtr point = w->Delete();
