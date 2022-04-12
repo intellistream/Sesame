@@ -32,22 +32,21 @@ class DStream : public Algorithm
      public:
       DStreamParams dStreamParams;
       DampedWindowPtr dampedWindow;
-      clock_t startTime;
-      clock_t pointArrivingTime;
-      clock_t lastAdjustTime;
+      int startTime;
+      int pointArrivingTime;
       int gap;// Time gap between calls to the offline component
       double dm;// Density threshold for dense grids; controlled by cm
       double dl; //  Density threshold for sparse grids; controlled by cl
       int NGrids;//The number of density grids ,with an initial value 0
       TimeMeter timerMeter;
 
-      //TODO Split the grid list from DStream
+
       HashMap gridList;
-      std::unordered_map<DensityGrid, clock_t,GridKeyHash,EqualGrid> deletedGrids;
+      std::unordered_map<DensityGrid, int,GridKeyHash,EqualGrid> deletedGrids;
       std::vector<GridCluster> clusterList; // A list of all Grid Clusters
       std::vector<GridCluster> newClusterList; //A list of grid clusters used when re-clustering an existing cluster.
-      std::vector<int> minVals; //The minimum value seen for a numerical dimension; used to calculate N
-      std::vector<int> maxVals; //The maximum value seen for a numerical dimension; used to calculate N
+      std::vector<double> minVals; //The minimum value seen for a numerical dimension; used to calculate N
+      std::vector<double> maxVals; //The maximum value seen for a numerical dimension; used to calculate N
 
       DStream(param_t &cmd_params);
       ~DStream();
@@ -58,12 +57,12 @@ class DStream : public Algorithm
       bool clusterInitial = false;
       bool isInitial  = false;
       bool recalculateN =false; // flag indicating whether N needs to be recalculated after this instance
-      std::vector<int> tempCoord;
-      std::vector<int> Coord;
+      std::vector<double> tempCoord;
+      std::vector<double> Coord;
       void ifReCalculateN(PointPtr point);
       void reCalculateN();
 
-      void GridListUpdate(std::vector<int> coordinate);
+      void GridListUpdate(std::vector<double> coordinate);
 
 
       void initialClustering();
@@ -85,7 +84,7 @@ class DStream : public Algorithm
       void cleanClusters();
       HashMap cleanNewClusters(HashMap newGridList);
       HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
-      double densityThresholdFunction(clock_t tg, double cl, double decayFactor, int NGrids);
+      double densityThresholdFunction(int tg, double cl, double decayFactor, int NGrids);
       bool checkIfSporadic(CharacteristicVector characteristicVec);
       void updateGridListDensity();
       static void mergeGridList(HashMap gridList, const HashMap &otherList);
