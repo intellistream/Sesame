@@ -49,7 +49,7 @@ public:
     std::vector<T> neighborNodes;
     int neighborDensity = 0, neighborNeighborDensity = 0;
     for (auto node : nodes) {
-      auto dist = point->Radius(node->centroid());
+      auto dist = point->Radius(node->Centroid());
       if (dist < neighborDistance_) {
         neighborNodes.push_back(node);
         neighborDensity += node->cf.num;
@@ -64,10 +64,9 @@ public:
     }
     if (neighborNeighborDensity == 0)
       return false;
-    else {
-      return (double)neighborDensity / neighborNeighborDensity <=
+    else
+      return (double)neighborDensity / neighborNeighborDensity <
              densityThreshold_;
-    }
   }
   template <NodeConcept T> bool Check(T node) {
     return node->cf.num < outlierClusterCapacity_;

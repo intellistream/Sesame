@@ -12,14 +12,14 @@ void SESAME::V7::Initilize() {
   this->cfTree->setT(V7Param.thresholdDistance);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
+  this->root->setIndex(this->leafMask++);
 }
 
 // true means point is not an outlier, false means outlier
 bool SESAME::V7::checkoutOutlier(SESAME::PointPtr &point) {
   auto distance = 0.0;
   vector<NodePtr> neighborNodes;
-  double neighborDensity = 0.0;
-  double neighborNeighborDensity = 0.0;
+  int neighborDensity = 0, neighborNeighborDensity = 0;
   for(auto cluster : this->clusterNodes) {
     pointToClusterDist(point, cluster, distance);
     if(distance < this->V7Param.neighborDistance) {
@@ -36,9 +36,7 @@ bool SESAME::V7::checkoutOutlier(SESAME::PointPtr &point) {
   }
   if(neighborNeighborDensity == 0) return true;
   else{
-    double densityScore = neighborDensity / neighborNeighborDensity;
-    if(densityScore <= this->V7Param.densityThreshold) return false;
-    else return true;
+    return (double) neighborDensity / neighborNeighborDensity > this->V7Param.densityThreshold;
   }
 }
 
@@ -319,7 +317,6 @@ void SESAME::V7::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
     updateNLS(curNode, point, true);
-
     clusterNodes.push_back(curNode);
   } else{
     if(checkoutOutlier(point)) {
@@ -420,6 +417,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
           CFPtr parCF = parent->getCF();
           parParent->setCF(parCF);
           parParent->setChild(parent);
+          parParent->setIndex(leafMask++);
         } else{
           // if the parent node is not the root, we can get the parParent one directly
           parParent = parent->getParent();
@@ -429,7 +427,7 @@ void SESAME::V7::backwardEvolution(SESAME::NodePtr &curNode, SESAME::PointPtr &p
         // insert the new parent into the allNode list
         // we also need to insert the new parent node into the clusterNode list if its children is a leaf node.
         if(parent->getChildren().at(0)->getIsLeaf()) {
-          newParentA->setIndex(++this->leafMask);
+          newParentA->setIndex(this->leafMask++);
           this->clusterNodes.push_back(newParentA);
         }
         // we only create a new parent rather and keep the old parent node as the split two sub-nodes

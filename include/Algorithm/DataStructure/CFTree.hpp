@@ -255,6 +255,7 @@ private:
 public:
   struct Node;
   using NodePtr = std::shared_ptr<Node>;
+  using ListPtr = std::shared_ptr<ClusteringFeaturesList>;
   ClusteringFeaturesList(const StreamClusteringParam &param);
   ~ClusteringFeaturesList();
   NodePtr Insert(PointPtr point);
@@ -276,6 +277,7 @@ public:
 
     Node(int d = 0) : dim(d), cf(d){};
     Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
+    Node(ListPtr l, PointPtr p) : Node(p) {}
     ~Node() = default;
     void Update(PointPtr point) {
       cf.num += point->sgn;
