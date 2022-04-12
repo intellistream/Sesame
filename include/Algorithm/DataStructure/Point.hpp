@@ -30,7 +30,7 @@ private:
   // the distance to the nearest data point
   int clusteringCenter;         // using index to identify
   int dimension;                // feature Length
-  std::vector<double> *feature; // TODO: need to think how to remove * here.
+  std::vector<double> feature; // TODO: need to think how to remove * here.
 public:
   Point(int dimension, int index = -1, double weight = 1.0, double cost = 0.0,
         int timestamp = 0);
@@ -62,7 +62,7 @@ public:
     std::string str =
         "#" + std::to_string(index) + " " + std::to_string(dimension);
     for (int i = 0; i < dimension; i++) {
-      str += "," + std::to_string(feature->at(i));
+      str += "," + std::to_string(feature.at(i));
     }
     return str;
   }

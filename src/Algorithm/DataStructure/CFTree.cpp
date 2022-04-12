@@ -82,8 +82,8 @@ ClusteringFeaturesTree::ClusteringFeaturesTree(
     const StreamClusteringParam &param)
     : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
       maxLeafNodes(param.maxLeafNodes),
-      thresholdDistance(param.thresholdDistance),
-      root_(GenericFactory::New<Node>(param.dimension)) {
+      thresholdDistance(param.thresholdDistance) {
+  root_ = GenericFactory::New<Node>(nullptr, param.dimension);
   root_->index = leafMask++;
 }
 
@@ -135,9 +135,6 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
         // whether the new radius is lower than threshold T
         // timerMeter.dataInsertAccMeasure();
         curNode->Update(node, true);
-        // TODO: Outlier
-
-        // timerMeter.dataInsertEndMeasure();
 
         // means this point could get included in this cluster
         // SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point
@@ -164,16 +161,29 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
   return curNode;
 }
 
+void ClusteringFeaturesTree::Init() {
+  root_->tree = shared_from_this();
+}
+
+void ClusteringFeaturesTree::Remove(NodePtr node) {
+  auto parent = node->parent;
+  if (parent != nullptr)
+    parent->RemoveChild(node);
+  const auto [first, last] = std::ranges::remove_if(
+      clusters_, [node](auto &cluster) { return cluster == node; });
+  clusters_.erase(first, last);
+}
+
 template <typename T>
 ClusteringFeaturesTree::NodePtr
 ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
   if (node->parent == nullptr) { // means current node is root node
     // l <= L, create a new leaf node and insert the point into it(root
     // change)
-    auto newRoot = GenericFactory::New<Node>(dim);
+    auto newRoot = GenericFactory::New<Node>(shared_from_this(), dim);
     newRoot->AddChild(node);
 
-    auto newNode = GenericFactory::New<Node>(dim);
+    auto newNode = GenericFactory::New<Node>(shared_from_this(), dim);
     newRoot->AddChild(newNode);
     newRoot->cf = node->cf;
     newRoot->index = leafMask++;
@@ -185,7 +195,7 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
     return newNode;
   } else {
     auto parent = node->parent;
-    auto newNode = GenericFactory::New<Node>(dim);
+    auto newNode = GenericFactory::New<Node>(shared_from_this(), dim);
     parent->AddChild(newNode);
     newNode->Update(input, false);
     if (parent->children.size() < maxLeafNodes) {
@@ -203,7 +213,7 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         if (parent->parent == nullptr) {
           // if the parent node is the root, we need to create a new root as
           // a parParent
-          parParent = GenericFactory::New<Node>(dim);
+          parParent = GenericFactory::New<Node>(shared_from_this(), dim);
           // parParent->children = root_->children;
           root_ = parParent;
           // since the parent node's nls has not been updated by the point,
@@ -211,7 +221,6 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
           parParent->cf = parent->cf;
           parParent->index = leafMask++;
           parParent->AddChild(parent);
-          // TODO
         } else {
           // if the parent node is not the root, we can get the parParent
           // one directly
@@ -219,7 +228,7 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
         }
         // we need to create a new parent node since the old one has to
         // split
-        auto newParentA = GenericFactory::New<Node>(dim);
+        auto newParentA = GenericFactory::New<Node>(shared_from_this(), dim);
         // insert the new parent into the allNode list
         // we also need to insert the new parent node into the clusterNode
         // list if its children is a leaf node.

@@ -194,7 +194,7 @@ void SESAME::V4::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
   vector<double> ls = cf->getLS();
-  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(cf->getN(), i);
+  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i)/cf->getN(), i);
 }
 
 // use Manhattan Distance

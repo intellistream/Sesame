@@ -5,15 +5,17 @@
 //
 
 
-#include <filesystem>
-#include <gtest/gtest.h>
-#include <Utils/BenchmarkUtils.hpp>
-#include <Utils/Logger.hpp>
-#include <Sources/DataSourceFactory.hpp>
-#include <Sinks/DataSinkFactory.hpp>
-#include <Algorithm/AlgorithmFactory.hpp>
+#include "Algorithm/AlgorithmFactory.hpp"
+#include "Sinks/DataSinkFactory.hpp"
+#include "Sources/DataSourceFactory.hpp"
+#include "Utils/BenchmarkUtils.hpp"
+#include "Utils/Logger.hpp"
 
-TEST(DesignTest, V3Test) {
+#include "gtest/gtest.h"
+
+#include <filesystem>
+
+TEST(DesignTest, V3) {
   //Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.

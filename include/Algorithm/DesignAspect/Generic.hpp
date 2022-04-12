@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace SESAME {
@@ -64,12 +65,9 @@ private:
   std::shared_ptr<O> o;
   std::shared_ptr<R> r;
 
-  static constexpr bool has_delete = requires(const W &w) { w.Delete(); };
-  static constexpr bool has_update = requires(const W &w, NodePtr node) {
-    w.Update(node);
-  };
   std::vector<NodePtr> outliers_;
-  std::unordered_map<PointPtr, NodePtr> node_map_;
+  std::unordered_map<PointPtr, NodePtr> point_map_;
+  std::unordered_map<NodePtr, std::unordered_set<PointPtr>> node_map_;
   NodePtr InsertOutliers(PointPtr point);
 };
 
@@ -86,24 +84,38 @@ void StreamClustering<W, D, O, R>::Initilize() {
   d = GenericFactory::New<D>(param);
   o = GenericFactory::New<O>(param);
   r = GenericFactory::New<R>(param);
+  d->Init();
 }
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
+  constexpr bool has_delete = requires(W & w) { w.Delete(); };
+  constexpr bool has_update = requires(W & w, NodePtr node) { w.Update(node); };
+  // std::cerr << "#" << input->index << ":" << d->root()->cf.num << std::endl;
   if (w->Add(input)) {
     NodePtr node;
     if (o->Check(input, d->clusters())) { // outlier
       node = InsertOutliers(input);
       if (!o->Check(node)) {
-        std::ranges::remove_if(outliers_,
-                               [&](const NodePtr &n) { return n == node; });
-        d->Insert(node);
+        const auto [first, last] = std::ranges::remove_if(
+            outliers_, [&](const NodePtr &n) { return n == node; });
+        outliers_.erase(first, last);
+        auto newNode = d->Insert(node);
+        if constexpr (has_delete) {
+          for (auto &p : node_map_[node]) {
+            node_map_[newNode].insert(p);
+            point_map_[p] = newNode;
+          }
+          node_map_.erase(node);
+        }
+        node = newNode;
       }
     } else {
       node = d->Insert(input);
     }
     if constexpr (has_delete) {
-      node_map_[input] = node;
+      node_map_[node].insert(input);
+      point_map_[input] = node;
     }
   }
   if constexpr (has_update) {
@@ -114,11 +126,14 @@ void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
   if constexpr (has_delete) {
     PointPtr point = w->Delete();
     if (point != nullptr) {
-      if (node_map_.contains(point)) {
-        auto node = node_map_[point];
-        node->Update(point->Reverse(), true);
-        node_map_.erase(point);
-      }
+      assert(point_map_.contains(point));
+      auto node = point_map_[point];
+      node->Update(point->Reverse(), true);
+      point_map_.erase(point);
+      node_map_[node].erase(point);
+      const auto [first, last] = std::ranges::remove_if(
+          outliers_, [&](const NodePtr &n) { return n->cf.num == 0; });
+      outliers_.erase(first, last);
     }
   }
 }
@@ -141,7 +156,7 @@ template <typename W, typename D, typename O, typename R>
 StreamClustering<W, D, O, R>::NodePtr
 StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point) {
   if (outliers_.empty()) {
-    auto node = GenericFactory::New<Node>(point);
+    auto node = GenericFactory::New<Node>(d, point);
     node->index = 0;
     outliers_.push_back(node);
     return node;
@@ -151,7 +166,7 @@ StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point) {
       closest.first->Update(point);
       return closest.first;
     } else {
-      auto node = GenericFactory::New<Node>(point);
+      auto node = GenericFactory::New<Node>(d, point);
       node->index = outliers_.size();
       outliers_.push_back(node);
       return node;
