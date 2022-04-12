@@ -116,3 +116,95 @@ TEST(GenericTest, V2) {
 
   ASSERT_NEAR(res->purity, 0.66, 0.05);
 }
+
+TEST(GenericTest, V3) {
+  // Setup Logs.
+  setupLogging("benchmark.log", LOG_DEBUG);
+  // Parse parameters.
+  param_t cmd_params;
+  cmd_params.pointNumber = 3000;
+  cmd_params.thresholdDistance = 1000;
+  cmd_params.maxInternalNodes = 20;
+  cmd_params.maxLeafNodes = 40;
+  cmd_params.dimension = 54;
+  cmd_params.GTClusterNumber = 7;
+  cmd_params.timeDecay = false;
+  cmd_params.landmark = 1000;
+  cmd_params.outlierDistanceThreshold = 5000;
+  cmd_params.outlierClusterCapacity = 10;
+
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+                         "/datasets/CoverType.txt";
+  cmd_params.outputPath = "results.txt";
+  cmd_params.algoType = SESAME::Generic;
+
+  std::vector<SESAME::PointPtr> input;
+  std::vector<SESAME::PointPtr> results;
+
+  // Create Spout.
+  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  // Directly load data from file. TODO: configure it to load from external
+  // sensors, e.g., HTTP.
+  BenchmarkUtils::loadData(cmd_params, sourcePtr);
+
+  // Create Sink.
+  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+
+  // Create Algorithm.
+  AlgorithmPtr algoPtr =
+      GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                           DistanceDetection, NoRefinement>>(
+          cmd_params);
+
+  // Run algorithm producing results.
+  auto res =
+      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_NEAR(res->purity, 0.403, 0.01);
+}
+
+TEST(GenericTest, V4) {
+  // Setup Logs.
+  setupLogging("benchmark.log", LOG_DEBUG);
+  // Parse parameters.
+  param_t cmd_params;
+  cmd_params.pointNumber = 3000;
+  cmd_params.thresholdDistance = 100;
+  cmd_params.maxInternalNodes = 20;
+  cmd_params.maxLeafNodes = 40;
+  cmd_params.dimension = 54;
+  cmd_params.GTClusterNumber = 7;
+  cmd_params.timeDecay = false;
+  cmd_params.sliding = 1000;
+  cmd_params.outlierDistanceThreshold = 3000;
+  cmd_params.outlierClusterCapacity = 3;
+
+  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+                         "/datasets/CoverType.txt";
+  cmd_params.outputPath = "results.txt";
+  cmd_params.algoType = SESAME::Generic;
+
+  std::vector<SESAME::PointPtr> input;
+  std::vector<SESAME::PointPtr> results;
+
+  // Create Spout.
+  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  // Directly load data from file. TODO: configure it to load from external
+  // sensors, e.g., HTTP.
+  BenchmarkUtils::loadData(cmd_params, sourcePtr);
+
+  // Create Sink.
+  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+
+  // Create Algorithm.
+  AlgorithmPtr algoPtr =
+      GenericFactory::New<StreamClustering<Sliding, ClusteringFeaturesTree,
+                                           DistanceDetection, NoRefinement>>(
+          cmd_params);
+
+  // Run algorithm producing results.
+  auto res =
+      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_NEAR(res->purity, 0.645, 0.01);
+}
