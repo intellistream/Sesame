@@ -24,7 +24,7 @@ class DensityGrid{
 	 * A density grid g that is composed of S1,j1 ×S2,j2 ···×Sd,jd , ji =1, ...,pi,
 	 * has coordinates (j1,j2, ··· ,jd).
 	 */
-  std::vector<int> coordinates;
+  std::vector<double> coordinates;
   /**
 	 * The value of 'd' for the d-dimensional space S considered by D-Stream.
 	 */
@@ -41,7 +41,7 @@ class DensityGrid{
 	 * @param c the coordinates of the density grid
 	 */
    DensityGrid();
-   DensityGrid(std::vector<int> coordin);
+   DensityGrid(std::vector<double> coordin);
 
    /**
     * A constructor method for a density grid
