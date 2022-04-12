@@ -20,6 +20,7 @@
 #include "Algorithm/DesignAspect/V6.hpp"
 #include "Algorithm/DesignAspect/V7.hpp"
 #include "Algorithm/DesignAspect/V8.hpp"
+#include "Algorithm/DesignAspect/V9.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/StreamKM.hpp"
@@ -88,8 +89,8 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     return (AlgorithmPtr)V8Stream;
   }
   if (cmd_params.algoType == V9Stream) {
-    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
-    return (AlgorithmPtr)dStream;
+    shared_ptr<V9> V9Stream = std::make_shared<V9>(cmd_params);
+    return (AlgorithmPtr) V9Stream;
   }
   if (cmd_params.algoType == Generic) {
     using W = Landmark;
