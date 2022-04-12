@@ -82,8 +82,8 @@ public:
     return prefix;
   }
   std::string Serialize(int d = 0) {
-    std::string str =
-        Prefix(d) + std::to_string(index) + ":" + std::to_string(curCF->getN()) + "\n";
+    std::string str = Prefix(d) + std::to_string(index) + ":" +
+                      std::to_string(curCF->getN()) + "\n";
     return str;
   }
 };
@@ -103,8 +103,7 @@ std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes) {
 }
 
 template <NodeConcept T>
-std::pair<T, double> CalcClosestNode(const std::vector<T> &nodes,
-                                     PointPtr point) {
+auto CalcClosestNode(const std::vector<T> &nodes, PointPtr point) {
   double minDist = std::numeric_limits<double>::max();
   T node = nullptr;
   for (auto child : nodes) {
@@ -136,7 +135,8 @@ struct ClusteringFeatures {
       : ls(std::vector<double>(d, 0.0)), ss(std::vector<double>(d, 0.0)) {}
 };
 
-class ClusteringFeaturesTree {
+class ClusteringFeaturesTree
+    : public enable_shared_from_this<ClusteringFeaturesTree> {
 private:
   const int maxInternalNodes; // max CF number of each internal node
   const int maxLeafNodes;     // max CF number of each leaf node
@@ -148,12 +148,16 @@ private:
 public:
   struct Node;
   using NodePtr = std::shared_ptr<Node>;
+  using TreePtr = std::shared_ptr<ClusteringFeaturesTree>;
   ClusteringFeaturesTree(const StreamClusteringParam &param);
   ~ClusteringFeaturesTree();
+  void Init();
   NodePtr Insert(PointPtr point);
   NodePtr Insert(NodePtr node);
-  const std::vector<NodePtr> &clusters();
+  void Remove(NodePtr node);
   std::string Serialize();
+  const std::vector<NodePtr> &clusters();
+  NodePtr root() { return root_; }
 
 private:
   template <typename T> NodePtr backwardEvolution(NodePtr node, T point);
@@ -167,13 +171,17 @@ public:
     int index = 0;
     const int dim;
     ClusteringFeatures cf;
+    TreePtr tree;
 
-    Node(int d = 0) : dim(d), cf(d){};
-    Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
+    Node(TreePtr tree, int d = 0) : tree(tree), dim(d), cf(d){};
+    Node(TreePtr tree, PointPtr p) : Node(tree, p->getDimension()) {
+      Update(p);
+    }
     ~Node() = default;
     void RemoveChild(NodePtr child) {
-      std::ranges::remove_if(children,
-                             [&](auto &c) { return c->index == child->index; });
+      const auto [first, last] =
+          std::ranges::remove_if(children, [&](auto &c) { return c == child; });
+      children.erase(first, last);
     }
     bool IsLeaf() const { return children.empty(); }
     void AddChild(NodePtr child) {
@@ -188,8 +196,12 @@ public:
       cf.num += point->sgn;
       for (int i = 0; i < dim; ++i) {
         auto val = point->getFeatureItem(i);
-        cf.ls[i] += val;
-        cf.ss[i] += val * val;
+        cf.ls[i] += val * point->sgn;
+        cf.ss[i] += (val * val) * point->sgn;
+      }
+      if (cf.num == 0) {
+        if (tree != nullptr)
+          tree->Remove(shared_from_this());
       }
     }
     void Update(NodePtr node) {
@@ -212,10 +224,11 @@ public:
       }
     }
     PointPtr Centroid() {
+      assert(cf.num);
       auto c = GenericFactory::New<Point>(dim);
       c->setIndex(-1);
       c->setClusteringCenter(-1);
-      for (int i = 0; i < cf.ls.size(); ++i)
+      for (int i = 0; i < dim; ++i)
         c->setFeatureItem(cf.ls[i] / cf.num, i);
       return c;
     }

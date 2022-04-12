@@ -7,18 +7,19 @@
 
 #include "Algorithm/DataStructure/Point.hpp"
 
+#include <cassert>
 #include <cmath>
 
 namespace SESAME {
 
 Point::Point(int dimension, int index, double weight, double cost,
-             int timestamp) {
+             int timestamp)
+    : feature(dimension, 0.0) {
   this->index = index;
   this->weight = weight;
   this->dimension = dimension;
   this->cost = cost;
   this->clusteringCenter = -1;
-  this->feature = new std::vector<double>(dimension, 0.0);
   this->timestamp = timestamp;
 }
 
@@ -31,11 +32,11 @@ double Point::getWeight() const { return this->weight; }
 void Point::setWeight(double weight) { this->weight = weight; }
 
 double Point::getFeatureItem(int index) const {
-  return this->feature->at(index);
+  return this->feature.at(index);
 }
 
 void Point::setFeatureItem(double feature, int index) {
-  this->feature->at(index) = feature;
+  this->feature.at(index) = feature;
 }
 
 int Point::getClusteringCenter() const { return this->clusteringCenter; }
@@ -55,7 +56,7 @@ int Point::getTimeStamp() const { return this->timestamp; }
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
 int Point::getDimension() const { return this->dimension; }
-int Point::getFeatureLength() { return (int)this->feature->size(); }
+int Point::getFeatureLength() { return (int)this->feature.size(); }
 
 double Point::getDisTo(PointPtr p) {
   double distance = 0;
@@ -78,11 +79,14 @@ double Point::distance(PointPtr centroid) {
 }
 
 double Point::Radius(PointPtr centroid) {
-  double sum = 0;
+  double sum = 0.0;
   for (int i = 0; i < getDimension(); i++) {
+    assert(std::isnan(centroid->getFeatureItem(i)) == false);
+    assert(std::isnan(getFeatureItem(i)) == false);
     auto val = centroid->getFeatureItem(i) - getFeatureItem(i);
     sum += val * val;
   }
+  assert(sum >= 0.0);
   return sqrt(sum);
 }
 void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
@@ -91,9 +95,6 @@ bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
 PointPtr Point::Reverse() {
   auto res = copy();
   res->sgn = -res->sgn;
-  for (int i = 0; i < dimension; ++i) {
-    res->feature->at(i) = -res->feature->at(i);
-  }
   return res;
 }
 
