@@ -7,10 +7,10 @@
 SESAME::DensityGrid::DensityGrid(){
 
 }
-SESAME::DensityGrid::DensityGrid(std::vector<int> coordin)
+SESAME::DensityGrid::DensityGrid(std::vector<double> coordin)
 {
   this->dimensions = coordin.size();
-  this->coordinates= std::vector<int> (this->dimensions,0) ;
+  this->coordinates= std::vector<double> (this->dimensions,0) ;
   for (int i = 0 ; i < this->dimensions ; i++)
     this->coordinates[i] = coordin[i];
   this->isVisited = false;
@@ -18,9 +18,9 @@ SESAME::DensityGrid::DensityGrid(std::vector<int> coordin)
 
 SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 {
-  std::vector<int> coord = grid.coordinates;
+  std::vector<double> coord = grid.coordinates;
   this->dimensions = grid.dimensions;
-  this->coordinates= std::vector<int> (this->dimensions,0) ;
+  this->coordinates= std::vector<double> (this->dimensions,0) ;
   for (int i = 0 ; i < this->dimensions ; i++)
     this->coordinates[i] = coord[i];
   this->isVisited = false;
@@ -38,7 +38,7 @@ std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours()
 {
 //  SESAME_INFO("Obtain neighbours");
   std::vector<DensityGrid> neighbours;
-  std::vector<int> hCoord = this->coordinates ;
+  std::vector<double> hCoord = this->coordinates ;
   for (int i = 0 ; i < this->dimensions ; i++)
   {
     hCoord[i] = hCoord[i]-1;
