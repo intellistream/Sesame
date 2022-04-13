@@ -55,7 +55,7 @@ void SESAME::V4::insertPointIntoOutliers(SESAME::PointPtr &point) {
     pointToClusterDist(point, insertCluster, pointToOutlierDist);
     if(pointToOutlierDist < this->V4Param.thresholdDistance) {
       updateNLS(insertCluster, point, false);
-      this->outlierNodes.push_back(insertCluster); // different
+//      this->outlierNodes.push_back(insertCluster); // different
       this->SlidingWindowNodes.push_back(insertCluster);
     } else {
       insertCluster = make_shared<CFNode>();
