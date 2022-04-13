@@ -174,6 +174,19 @@ void ClusteringFeaturesTree::Remove(NodePtr node) {
   clusters_.erase(first, last);
 }
 
+void ClusteringFeaturesTree::ForEach(std::function<void(NodePtr)> func) {
+  std::queue<NodePtr> queue;
+  queue.push(root_);
+  while (!queue.empty()) {
+    auto node = queue.front();
+    queue.pop();
+    func(node);
+    for (auto &child : node->children) {
+      queue.push(child);
+    }
+  }
+}
+
 template <typename T>
 ClusteringFeaturesTree::NodePtr
 ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {

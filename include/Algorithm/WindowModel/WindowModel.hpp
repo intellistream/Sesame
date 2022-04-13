@@ -54,7 +54,7 @@ public:
 
 class Damped : WindowModel {
 private:
-  double alpha_, lambda_;
+  const double alpha_, lambda_;
 
 public:
   Damped(const StreamClusteringParam &param)
