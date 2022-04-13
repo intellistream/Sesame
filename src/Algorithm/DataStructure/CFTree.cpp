@@ -161,9 +161,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
   return curNode;
 }
 
-void ClusteringFeaturesTree::Init() {
-  root_->tree = shared_from_this();
-}
+void ClusteringFeaturesTree::Init() { root_->tree = shared_from_this(); }
 
 void ClusteringFeaturesTree::Remove(NodePtr node) {
   auto parent = node->parent;
@@ -353,7 +351,7 @@ std::string ClusteringFeaturesTree::Serialize() {
 
 ClusteringFeaturesList::ClusteringFeaturesList(
     const StreamClusteringParam &param)
-    : dim(param.dimension) {}
+    : dim(param.dimension), thresholdDistance(param.thresholdDistance) {}
 
 ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
@@ -364,7 +362,11 @@ ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(PointPtr point) {
     node->Update(point);
     return node;
   } else {
-    auto node = CalcClosestNode(clusters_, point).first;
+    auto [node, dist] = CalcClosestNode(clusters_, point);
+    if (dist >= thresholdDistance) {
+      node = GenericFactory::New<Node>(dim);
+      clusters_.push_back(node);
+    }
     node->Update(point);
     return node;
   }

@@ -251,6 +251,7 @@ public:
 class ClusteringFeaturesList {
 private:
   const int dim;
+  const double thresholdDistance;
 
 public:
   struct Node;
