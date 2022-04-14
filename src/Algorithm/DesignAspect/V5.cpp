@@ -40,6 +40,7 @@ void SESAME::V5::insertPointIntoOutliers(SESAME::PointPtr &point) {
   NodePtr insertCluster;
   if (this->outlierNodes.empty()) {
     insertCluster = make_shared<CFNode>();
+    this->allNodes.push_back(insertCluster);
     updateNLS(insertCluster, point, false);
     insertCluster->setIndex(0);
     this->outlierNodes.push_back(insertCluster);
@@ -61,6 +62,7 @@ void SESAME::V5::insertPointIntoOutliers(SESAME::PointPtr &point) {
       updateNLS(insertCluster, point, false);
     } else {
       insertCluster = make_shared<CFNode>();
+      this->allNodes.push_back(insertCluster);
       updateNLS(insertCluster, point, false);
       insertCluster->setIndex(this->outlierNodes.size());
       this->outlierNodes.push_back(insertCluster);
