@@ -10,7 +10,6 @@ add_executable(google_test
         DesignAspect/V1Test.cpp
         DesignAspect/V2Test.cpp
         DesignAspect/V3Test.cpp
-        DesignAspect/V4Test.cpp
         DesignAspect/V5Test.cpp
         DesignAspect/V6Test.cpp
         DesignAspect/V7Test.cpp

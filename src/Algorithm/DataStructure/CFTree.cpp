@@ -69,7 +69,18 @@ void CFNode::clearParents() { this->parent->setIndex(-1); }
 void CFNode::removeChild(NodePtr &child) {
   for (int i = 0; i < this->children.size(); i++) {
     if (this->children[i]->getIndex() == child->getIndex()) {
-      this->children.erase(this->children.begin() + i);
+      auto childCF = this->children[i]->getCF();
+      auto removeCF = child->getCF();
+      bool flag = true;
+      for(int j = 0; j < childCF->getLS().size(); j++) {
+        if(childCF->getLS()[j] != removeCF->getLS()[j] or childCF->getSS()[j] != removeCF->getSS()[j]) {
+          flag = false;
+          break;
+        }
+      }
+      if(flag) {
+        this->children.erase(this->children.begin() + i);
+      }
     }
   }
 }

@@ -104,6 +104,9 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
 void SESAME::V4::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
   if(this->slidingWindowPoints.size() == this->V4Param.slidingCount){
+    if(input->getIndex() == 1011){
+      std::cout<<1;
+    }
     this->slidingWindowPoints.push_back(input->copy());
     forwardInsert(input->copy());
     deletePointFromTree(this->SlidingWindowNodes[0], this->slidingWindowPoints[0]);
@@ -171,29 +174,36 @@ void SESAME::V4::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool 
 
 void SESAME::V4::deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point){
   SESAME::NodePtr nodeSearch = node;
+  SESAME::NodePtr parent;
+  bool flag = true;
   while(true) {
     SESAME::CFPtr cf = nodeSearch->getCF();
     vector<double> tmpLS = cf->getLS();
     vector<double> tmpSS = cf->getSS();
-    cf->setN(cf->getN() - 1);
-    if(cf->getN() == 0){
-      node->getParent()->removeChild(node);
-      NodePtr nullNode = std::make_shared<CFNode>();
-      node->setParent(nullNode);
-      auto children = node->getChildren();
-      vector<NodePtr> blankList;
-      node->setChildren(blankList);
-      for(auto child : children) child->setParent(nullNode);
+    parent = nodeSearch->getParent();
+    if(parent == nullptr and flag){
+      std::cout <<1;
     } else {
-      for(int i = 0; i < point->getDimension(); i++){
-        tmpLS[i] -= point->getFeatureItem(i);
-        tmpSS[i] -= pow(point->getFeatureItem(i), 2);
-      }
-      cf->setLS(tmpLS);
-      cf->setSS(tmpSS);
+      flag = false;
     }
-    if(nodeSearch->getParent() != nullptr) {
-      nodeSearch = nodeSearch->getParent();
+    cf->setN(cf->getN() - 1);
+    for(int i = 0; i < point->getDimension(); i++){
+      tmpLS[i] -= point->getFeatureItem(i);
+      tmpSS[i] -= pow(point->getFeatureItem(i), 2);
+    }
+    cf->setLS(tmpLS);
+    cf->setSS(tmpSS);
+    if(cf->getN() == 0){
+      parent->removeChild(nodeSearch);
+      NodePtr nullNode = std::make_shared<CFNode>();
+      nodeSearch->setParent(nullNode);
+      auto children = nodeSearch->getChildren();
+      vector<NodePtr> blankList;
+      nodeSearch->setChildren(blankList);
+      for(auto child : children) child->setParent(nullNode);
+    }
+    if(parent != nullptr) {
+      nodeSearch = parent;
     } else break;
   }
 }
