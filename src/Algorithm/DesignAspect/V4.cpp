@@ -72,6 +72,7 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
   if(outCluster->getCF()->getN() >= this->V4Param.outlierClusterCapacity){
     // need to transfer outlier cluster into real cluster
     this->outlierNodes.erase(this->outlierNodes.begin() + outCluster->getIndex());
+    this->SlidingWindowNodes.pop_back();
     auto curNode = this->root;
     PointPtr center = make_shared<Point>(V4Param.dimension);
     auto cf = outCluster->getCF();
@@ -87,6 +88,7 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
         calculateCentroid(curCF, centroid);
         if(calculateRadius(center,  centroid) <= this->cfTree->getT()) { // concept drift detection
           addNodeNLSToNode(outCluster, curNode, true);
+          this->SlidingWindowNodes.push_back(curNode);
           break;
         } else {
           backwardEvolution(curNode, center, outCluster);
@@ -174,12 +176,22 @@ void SESAME::V4::deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &po
     vector<double> tmpLS = cf->getLS();
     vector<double> tmpSS = cf->getSS();
     cf->setN(cf->getN() - 1);
-    for(int i = 0; i < point->getDimension(); i++){
-      tmpLS[i] -= point->getFeatureItem(i);
-      tmpSS[i] -= pow(point->getFeatureItem(i), 2);
+    if(cf->getN() == 0){
+      node->getParent()->removeChild(node);
+      NodePtr nullNode = std::make_shared<CFNode>();
+      node->setParent(nullNode);
+      auto children = node->getChildren();
+      vector<NodePtr> blankList;
+      node->setChildren(blankList);
+      for(auto child : children) child->setParent(nullNode);
+    } else {
+      for(int i = 0; i < point->getDimension(); i++){
+        tmpLS[i] -= point->getFeatureItem(i);
+        tmpSS[i] -= pow(point->getFeatureItem(i), 2);
+      }
+      cf->setLS(tmpLS);
+      cf->setSS(tmpSS);
     }
-    cf->setLS(tmpLS);
-    cf->setSS(tmpSS);
     if(nodeSearch->getParent() != nullptr) {
       nodeSearch = nodeSearch->getParent();
     } else break;
