@@ -18,7 +18,7 @@ for o in $(seq 0 4)
                           alpha=(0.2 0.5)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 5000 -d 54 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark -p 5000 -d 54 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
                             done
                         done
                     done
@@ -41,7 +41,7 @@ for o in $(seq 0 4)
                           alpha=(0.3)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 5000 -d 41 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark -p 5000 -d 41 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
                             done
                     done
                 done
@@ -64,7 +64,7 @@ for o in $(seq 0 4)
                           alpha=(0.25 0.5)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 5000 -d 5 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark -p 5000 -d 5 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
                             done
                     done
                 done
@@ -86,7 +86,7 @@ for o in $(seq 0 4)
                           alpha=(0.2 0.5)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 3000 -d 2 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark -p 3000 -d 2 -a 3 -O $o -R $R -L $L -C $C -w $w -P $P
                         done
                     done
                 done
@@ -109,7 +109,7 @@ for o in $(seq 0 4)
                           alpha=(0.3 0.5)
                           for P in ${alpha[*]}
                             do
-                          ./benchmark.exe -p 622 -d 2 -a 4 -O $o -R $R -L $L -C $C -w $w -P $P
+                          ./benchmark -p 622 -d 2 -a 4 -O $o -R $R -L $L -C $C -w $w -P $P
                             done
                     done
                 done

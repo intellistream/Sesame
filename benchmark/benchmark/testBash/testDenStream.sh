@@ -23,10 +23,10 @@ for o in $(seq 0 4)
                          # for q in ${beta[*]}
                           #  do
                           if [ $o == 0 ]; then
-                                ./benchmark.exe -p 3000 -d 54 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                ./benchmark -p 3000 -d 54 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                           fi
                           if [ $o == 1 ]; then
-                                ./benchmark.exe -p 3000 -d 41 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                ./benchmark -p 3000 -d 41 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                           fi
                           #done
                         done
@@ -54,7 +54,7 @@ for o in $(seq 0 4)
                             beta=(0.125 0.25)
                             for q in ${beta[*]}
                               do
-                                  ./benchmark.exe -p 5000 -d 5 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
+                                  ./benchmark -p 5000 -d 5 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
                             done
                           done
                       done
@@ -81,7 +81,7 @@ for o in $(seq 0 4)
                            # beta=(0.125 0.25)
                            # for q in ${beta[*]}
                             #  do
-                                  ./benchmark.exe -p 3000 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                  ./benchmark -p 3000 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                             #done
                           done
                       done
@@ -108,7 +108,7 @@ for o in $(seq 0 4)
                            # beta=(0.125 0.25)
                            # for q in ${beta[*]}
                             #  do
-                                  ./benchmark.exe -p 622 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.125
+                                  ./benchmark -p 622 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.125
                             #done
                           done
                       done

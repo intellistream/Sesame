@@ -16,7 +16,7 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2 5)
                         do
-                          ./benchmark.exe -p 5000 -d 54 -a 4 -O $o -c 7 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark -p 5000 -d 54 -a 4 -O $o -c 7 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done
@@ -36,7 +36,7 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2 5)
                         do
-                          ./benchmark.exe -p 5000 -d 41 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark -p 5000 -d 41 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done
@@ -55,7 +55,7 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2 4)
                         do
-                          ./benchmark.exe -p 5000 -d 5 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark -p 5000 -d 5 -a 4 -O $o -c 24 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done
@@ -75,7 +75,7 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2 3)
                         do
-                          ./benchmark.exe -p 3000 -d 2 -a 4 -O $o -c 9 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark -p 3000 -d 2 -a 4 -O $o -c 9 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done
@@ -94,7 +94,7 @@ for o in $(seq 0 4)
                     do
                       for T in $(seq 1 2)
                         do
-                          ./benchmark.exe -p 622 -d 2 -a 4 -O $o -c 5 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
+                          ./benchmark -p 622 -d 2 -a 4 -O $o -c 5 -W 0 -t 3 -b $b -N $N -r $r -l $l -T $T
                         done
                     done
                 done

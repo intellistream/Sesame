@@ -21,7 +21,7 @@ for o in $(seq 0 4)
                           gridWidth=(13 14 15)
                           for g in ${gridWidth[*]}
                             do
-                          ./benchmark.exe -p 5000 -d 54 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
+                          ./benchmark -p 5000 -d 54 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
                         done
                     done
@@ -46,7 +46,7 @@ for o in $(seq 0 4)
                             gridWidth=(6)
                             for g in ${gridWidth[*]}
                              do
-                          ./benchmark.exe -p 5000 -d 41 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
+                          ./benchmark -p 5000 -d 41 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
                     done
                 done
@@ -70,7 +70,7 @@ for o in $(seq 0 4)
                             gridWidth=(0.5 0.6)
                             for g in ${gridWidth[*]}
                              do
-                          ./benchmark.exe -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
+                          ./benchmark -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
                     done
                 done
@@ -94,7 +94,7 @@ for o in $(seq 0 4)
                             gridWidth=(0.5)
                             for g in ${gridWidth[*]}
                              do
-                          ./benchmark.exe -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
+                          ./benchmark -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                         done
                     done
                 done
@@ -118,7 +118,7 @@ for o in $(seq 0 4)
                             gridWidth=(0.3 0.25)
                             for g in ${gridWidth[*]}
                              do
-                          ./benchmark.exe -p 622 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
+                          ./benchmark -p 622 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
                     done
                 done
