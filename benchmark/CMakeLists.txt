@@ -17,7 +17,7 @@ if (BUILD_BENCHMARKS)
     include_directories("${source_dir}/include/")
     include_directories("include/")
     add_executable(benchmark "src/Benchmark.cpp")
-    target_link_libraries(benchmark sesame)
+    target_link_libraries(benchmark sesame gflags::gflags)
 
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/datasets
             DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
