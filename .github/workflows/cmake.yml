@@ -20,8 +20,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install liblog4cxx
-      run: sudo apt-get install -y liblog4cxx-dev
     - name: Install g++-11
       run: |
         sudo add-apt-repository 'deb http://mirrors.kernel.org/ubuntu hirsute main universe'

@@ -3,13 +3,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
-# Judge the os system
-if (UNIX AND NOT APPLE)
-    add_definitions(-DUSELOG4CXX)
-    MESSAGE(STATUS "Enalbe Log4CXX")
-endif (UNIX AND NOT APPLE)
-
-
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 include(cmake/macros.cmake)
@@ -43,20 +36,6 @@ endif (SESAME_LOGGING_LEVEL)
 message(STATUS "CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE}")
-
-
-# Log4cc
-find_package(Log4cxx REQUIRED)
-include_directories(${Log4cxx_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES} ${Log4cxx_LIBRARY})
-
-if (LOG4CXX_FOUND)
-    message(STATUS "LOG4CXX found")
-else (LOG4CXX_FOUND)
-    message(STATUS "LOG4CXX not found")
-    message(STATUS "On Ubuntu, install the package by the following command!")
-    message(STATUS "sudo apt-get install -y liblog4cxx-dev")
-endif (LOG4CXX_FOUND)
 
 option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
