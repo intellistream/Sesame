@@ -67,19 +67,15 @@ void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
   overallMeter.START_MEASURE();
   // Initialize timer at time 0
-  auto startTime = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
-  std::cerr << "input.size=" << input.size() << std::endl;
-  // int cnt = 0;
   for (PointPtr p : this->input) {
-    // int timestamp = p->getTimeStamp();
+    int timestamp = p->getTimeStamp();
+    auto now = high_resolution_clock::now();
+    if(timestamp > duration_cast<nanoseconds>(now - start).count()) {
+      std::this_thread::sleep_for(nanoseconds(timestamp - duration_cast<nanoseconds>(now - start).count()));
+    }
     // Wait until (currentTime - startTime) >= timestamp to push point
-    // std::this_thread::sleep_for(
-    //     duration_cast<duration<int,
-    //     nanoseconds>>(high_resolution_clock::now() -
-    //                                     startTime) -
-    //     duration_cast<duration<int, nanoseconds>>(duration<int,
-    //     nanoseconds>(timestamp)));
     inputQueue->push(p->copy());
   }
   SESAME_INFO("sourceEnd set to true");

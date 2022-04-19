@@ -16,6 +16,8 @@
 
 using namespace std;
 
+// DEFINE_int()
+
 int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   // Setup Logs.

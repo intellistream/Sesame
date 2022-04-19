@@ -78,7 +78,6 @@ target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread)
 
 add_subdirectory(third_party/gflags)
-include_directories(third_party/gflags/src)
 
 #Add benchmarks with command
 add_subdirectory(benchmark)
