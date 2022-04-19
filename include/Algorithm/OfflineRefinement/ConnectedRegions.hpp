@@ -17,11 +17,11 @@ namespace SESAME {
 class ConnectedRegions : public OfflineRefinement {
 public:
   double alpha;     // intersection factor, alpha
-  double weightMin; // minimum weight
+  double min_weight; // minimum weight
   std::vector<std::vector<MicroClusterPtr>> finalClusters;
   unordered_map<int, std::vector<int>> connecvtivityGraphId;
   ConnectedRegions();
-  ConnectedRegions(double alpha, double weightMin);
+  ConnectedRegions(double alpha, double min_weight);
   void connection(std::vector<MicroClusterPtr> &microClusters,
                   SESAME::WeightedAdjacencyList weightedAdjacencyList);
   std::vector<PointPtr> ResultsToDataSink();

@@ -68,14 +68,14 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   overallMeter.setInterval(100);
   //initialization
 
-  algoPtr->Initilize();
+  algoPtr->Init();
 
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
       auto item = sourcePtr->get();
       overallMeter.onlineAccMeasure();
-      algoPtr->runOnlineClustering(item);
+      algoPtr->RunOnline(item);
       overallMeter.onlineAccEMeasure();
     }
   }
@@ -85,7 +85,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
     // SESAME_INFO("processing remaining data");
-    algoPtr->runOnlineClustering(item);
+    algoPtr->RunOnline(item);
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();
@@ -94,7 +94,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   // run offline clustering
   overallMeter.refinementStartMeasure();
-  algoPtr->runOfflineClustering(sinkPtr);
+  algoPtr->RunOffline(sinkPtr);
   SESAME_INFO("Engine sourceEnd process data");
   overallMeter.refinementEndMeasure();
 

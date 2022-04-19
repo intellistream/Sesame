@@ -58,11 +58,11 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
 
 double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
                                const std::vector<SESAME::PointPtr> &result,
-                               int dimension, bool decay) {
+                               int dim, bool decay) {
   double purity;
   double size = 0;
   std::vector<PointPtr> input;
-  UtilityFunctions::groupByCenters(result, center, input, dimension);
+  UtilityFunctions::groupByCenters(result, center, input, dim);
   for(int i = 0; i < input.size(); i++){
     double w = 1;
     if(decay){ // 分段函数来设置weight

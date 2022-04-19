@@ -1,6 +1,6 @@
 echo "---------start Testing DBStream on the 5 selected Dataset---------"
 
-echo  ">> Parameter Test: radius, lambda, cleanUpInterval, weightMin, alpha <<"
+echo  ">> Parameter Test: radius, lambda, clean_interval, min_weight, alpha <<"
 
 for o in $(seq 0 4)
   do
@@ -56,8 +56,8 @@ for o in $(seq 0 4)
               lambda=(0.25 0.5)
               for L in ${lambda[*]}
                 do
-                  cleanUpInterval=(1 2 5)
-                  for C in  ${cleanUpInterval[*]}
+                  clean_interval=(1 2 5)
+                  for C in  ${clean_interval[*]}
                     do
                       for w in $(seq 2 4)
                         do
@@ -101,8 +101,8 @@ for o in $(seq 0 4)
               lambda=(0.1 0.0125 0.25)
               for L in ${lambda[*]}
                 do
-                  cleanUpInterval=(3 5 6)
-                  for C in ${cleanUpInterval[*]}
+                  clean_interval=(3 5 6)
+                  for C in ${clean_interval[*]}
                     do
                       for w in $(seq 1 2)
                         do

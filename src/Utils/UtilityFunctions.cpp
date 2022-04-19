@@ -84,14 +84,14 @@ SESAME::UtilityFunctions::createBarrier(int count) {
 }
 void SESAME::UtilityFunctions::groupByCenters(
     const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
-    std::vector<PointPtr> &output, int dimension) {
+    std::vector<PointPtr> &output, int dim) {
   int selectCenterIndex = -1;
   for (int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
     for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
-      for (int k = 0; k < dimension; k++) {
+      for (int k = 0; k < dim; k++) {
         dis += pow((output.at(i)->getFeatureItem(k) -
                     centers.at(j)->getFeatureItem(k)),
                    2);
@@ -106,13 +106,13 @@ void SESAME::UtilityFunctions::groupByCenters(
 }
 void SESAME::UtilityFunctions::groupByCentersWithOffline(
     const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
-    std::vector<PointPtr> &output, int dimension) {
+    std::vector<PointPtr> &output, int dim) {
   for (int i = 0; i < input.size(); i++) {
     output.push_back(input.at(i)->copy());
     auto min = DBL_MAX;
     for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
-      for (int k = 0; k < dimension; k++) {
+      for (int k = 0; k < dim; k++) {
         dis += pow(
             (input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)),
             2);

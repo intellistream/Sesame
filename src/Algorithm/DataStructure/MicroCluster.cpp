@@ -7,9 +7,9 @@
 #include <Utils/Logger.hpp>
 #include <iterator>
 //Create MC, only initialization, used for DenStream, CluStream
-SESAME::MicroCluster::MicroCluster(int dimension, int id)
+SESAME::MicroCluster::MicroCluster(int dim, int id)
 {
-  this->dimension=dimension;
+  this->dim=dim;
   weight=0;
   this->id.push_back(id);
   LST=0;
@@ -22,8 +22,8 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id)
 }
 
 //Create MC, only initialization, only used for DBStream as it has user-defined fixed radius
-SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,double radius){
-  this->dimension=dimension;
+SESAME::MicroCluster::MicroCluster(int dim, int id,PointPtr dataPoint,double radius){
+  this->dim=dim;
   weight=1;
   this->id.push_back(id);
   LST=0;
@@ -33,7 +33,7 @@ SESAME::MicroCluster::MicroCluster(int dimension, int id,PointPtr dataPoint,doub
   this->lastUpdateTime=this->createTime;
   this->radius=radius;
 
-  for (int i = 0; i < this->dimension; i++)
+  for (int i = 0; i < this->dim; i++)
   {
     double data = dataPoint->getFeatureItem(i);
     LS.push_back(data);
@@ -53,11 +53,11 @@ SESAME::MicroCluster::~MicroCluster()
 }
 
 //Used in DenStream, DBStream
-void SESAME::MicroCluster::init(PointPtr datapoint,int timestamp)
+void SESAME::MicroCluster::Init(PointPtr datapoint,int timestamp)
 {
   weight++;
 
-  for (int i = 0; i < dimension; i++) {
+  for (int i = 0; i < dim; i++) {
     double data = datapoint->getFeatureItem(i);
     LS.push_back(data);
     SS.push_back(data * data);
@@ -103,7 +103,7 @@ double SESAME::MicroCluster::getDistance(PointPtr datapoint){
 //Often Used only in DBStream TODO this just a note, need to delete or detailed explain later
 double SESAME::MicroCluster::getDistance(MicroClusterPtr other){
   double temp = 0, dist = 0;
-  for (int i = 0; i < this->dimension; i++) {
+  for (int i = 0; i < this->dim; i++) {
     temp = this->centroid[i] - other->centroid[i];
     dist += temp * temp;
   }
@@ -114,7 +114,7 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
   bool result;
   dataPoint LSPre; LSPre.assign(this->LS.begin(),this->LS.end());
   dataPoint SSPre; SSPre.assign(this->SS.begin(),this->SS.end());
-  for (int i = 0; i < this->dimension; i++) {
+  for (int i = 0; i < this->dim; i++) {
     double data=datapoint->getFeatureItem(i);
     LSPre[i] *= decayFactor;
     LSPre[i] += data;
@@ -128,7 +128,7 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
     SS = SSPre;
     weight *= decayFactor;
     weight++;
-    for (int i = 0; i < this->dimension; i++) {
+    for (int i = 0; i < this->dim; i++) {
       centroid.at(i) = LS.at(i) / weight;
     }
     this->lastUpdateTime= datapoint->getIndex();
@@ -144,7 +144,7 @@ bool SESAME::MicroCluster::insert(PointPtr datapoint,double decayFactor,double e
 //merge two micro-clusters
 void SESAME::MicroCluster::merge(MicroClusterPtr other){
   weight+=other->weight;
-  for(int i=0; i<dimension; i++)// dimension can change to CF1x.size()
+  for(int i=0; i<dim; i++)// dim can change to CF1x.size()
   {
     LS[i]+=other->LS[i];
     SS[i]+=other->SS[i];
@@ -159,7 +159,7 @@ void SESAME::MicroCluster::merge(MicroClusterPtr other){
 void SESAME::MicroCluster::subtractClusterVector(MicroClusterPtr other)
 {
   this->weight-=other->weight;
-  for(int i=0; i<dimension; i++) {
+  for(int i=0; i<dim; i++) {
     this->LS[i]-=other->LS[i];
     this->SS[i]-=other->SS[i];
   }
@@ -194,11 +194,11 @@ void SESAME::MicroCluster::resetID(int index){
 }
 
 //obtain relevance stamp of a cluster to judge whether it needs to be deleted
-double SESAME::MicroCluster::getRelevanceStamp(int lastArrivingNum) const
+double SESAME::MicroCluster::getRelevanceStamp(int num_last_arr) const
 {
-  if(weight<(2*lastArrivingNum))
+  if(weight<(2*num_last_arr))
     return getMutime();
-  return getMutime() + getSigmaTime() * getQuantile( ((double)lastArrivingNum)/(2*weight) );
+  return getMutime() + getSigmaTime() * getQuantile( ((double)num_last_arr)/(2*weight) );
 }
 
 //mean_timestamp
@@ -220,19 +220,19 @@ double SESAME::MicroCluster::getQuantile(double z)
   return sqrt( 2 ) * inverseError( 2*z - 1 );
 }
 
-double SESAME::MicroCluster::getRadius(double radiusFactor){
+double SESAME::MicroCluster::getRadius(double radius){
   if(weight==1)
     return 0;
-  if(radiusFactor<=0)
-    radiusFactor=1.8;
+  if(radius<=0)
+    radius=1.8;
 
-  return getDeviation()*radiusFactor;
+  return getDeviation()*radius;
 }
 
 //Calculate the radius of the current micro cluster in DenStream
 double SESAME::MicroCluster::getRadius(double decayFactor,bool judge){
   double radius = 0;
-  for (int i = 0; i < this->dimension; i++) {
+  for (int i = 0; i < this->dim; i++) {
     radius += (SS.at(i) - (pow(LS.at(i), 2) / (weight*decayFactor+1)));
   }
   judge=true;
@@ -244,11 +244,11 @@ double SESAME::MicroCluster::getRadius(double decayFactor,bool judge){
 double SESAME::MicroCluster::getDeviation(){
   SESAME::dataPoint variance=getVarianceVector();
   double sumOfDeviation=0;
-  for(int i=0; i<dimension; i++){
+  for(int i=0; i<dim; i++){
     sumOfDeviation += sqrt(variance[i]);
   }
 
-  return  sumOfDeviation/dimension;
+  return  sumOfDeviation/dim;
 }
 
 //calculate centroid of a  cluster
@@ -264,10 +264,10 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
   return dataObject;
 }
 
-double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double radiusFactor) {
+double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double radius) {
   if(weight==1) {
     double distance=0;
-    for(int i=0; i<dimension; i++){
+    for(int i=0; i<dim; i++){
       double d=LS[i]-datapoint->getFeatureItem(i);
       distance+=d*d;
     }
@@ -277,7 +277,7 @@ double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double r
     return 0;
   } else{
     double dist= calCentroidDistance(datapoint);
-    if(dist<=getRadius(radiusFactor))
+    if(dist<=getRadius(radius))
       return 0;
     else
       return 1;
@@ -289,7 +289,7 @@ double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double r
 SESAME::dataPoint SESAME::MicroCluster::getVarianceVector(){
   dataPoint datapoint;
 
-  for(int i=0; i<dimension; i++){
+  for(int i=0; i<dim; i++){
     double linearSum= LS[i];
     double squaredSum= SS[i];
     double aveLinearSum= linearSum/weight;
@@ -309,7 +309,7 @@ double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint){
 
   double temp=0;
   double diff=0;
-  for(int i=0; i<dimension; i++){
+  for(int i=0; i<dim; i++){
     diff=centroid[i]-datapoint->getFeatureItem(i);
     temp+=(diff*diff);
   }

@@ -5,14 +5,14 @@
 #include "Algorithm/DesignAspect/Param.hpp"
 
 SESAME::DBSCAN::DBSCAN(unsigned int minPts, float eps) {
-  this->minPoints = minPts;
+  this->min_points = minPts;
   this->epsilon = eps;
   // this->pointSize = size;
   this->clusterID = 0;
 }
 
 SESAME::DBSCAN::DBSCAN() {
-  this->minPoints = 0;
+  this->min_points = 0;
   this->epsilon = 0;
   // this->pointSize = size;
   this->clusterID = 0;
@@ -33,7 +33,7 @@ void SESAME::DBSCAN::run(std::vector<PointPtr> &input) {
 void SESAME::DBSCAN::Run(StreamClusteringParam &param,
                          std::vector<PointPtr> &input,
                          SESAME::DataSinkPtr sinkPtr) {
-  this->minPoints = param.minPoints;
+  this->min_points = param.min_points;
   this->epsilon = param.epsilon;
   // this->pointSize = size;
   this->clusterID = 0;
@@ -50,7 +50,7 @@ void SESAME::DBSCAN::Run(StreamClusteringParam &param,
 int SESAME::DBSCAN::expandCluster(std::vector<PointPtr> &input, PointPtr &point,
                                   int clusterID) const {
   std::vector<int> clusterSeeds = calculateCluster(input, point);
-  if (clusterSeeds.size() < minPoints) {
+  if (clusterSeeds.size() < min_points) {
     point->setClusteringCenter(NOISE);
     return FAILURE;
   } else {
@@ -71,7 +71,7 @@ int SESAME::DBSCAN::expandCluster(std::vector<PointPtr> &input, PointPtr &point,
     {
       std::vector<int> clusterNeighbors =
           calculateCluster(input, input.at(clusterSeeds[i]));
-      if (clusterNeighbors.size() >= minPoints) {
+      if (clusterNeighbors.size() >= min_points) {
         for (std::vector<int>::size_type iterNeighbors = 0;
              iterNeighbors < clusterNeighbors.size(); iterNeighbors++) {
           index = clusterNeighbors.at(iterNeighbors);

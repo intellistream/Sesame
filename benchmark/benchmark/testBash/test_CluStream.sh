@@ -1,6 +1,6 @@
 echo "---------start Testing CluStream on the 5 selected Dataset---------"
 
-echo  ">> Parameter Test: initBuffer, onlineClusterNumber, radiusFactor, lastArrivingNum, timeWindow <<"
+echo  ">> Parameter Test: buf_size, num_online_clusters, radius, num_last_arr, time_window <<"
 
 for o in $(seq 0 4)
   do

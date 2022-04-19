@@ -44,7 +44,7 @@ void SESAME::DPTree::insert(SESAME::DPNodePtr &cc, int opt) {
   if (size == num) {
     SESAME_DEBUG("lack of DPTree nodes");
   }}
-void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> &clus,
+void SESAME::DPTree::Init(std::vector<SESAME::DPNodePtr> &clus,
                           int size,
                           double minRho,
                           double minDelta,

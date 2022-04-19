@@ -18,19 +18,19 @@ TEST(SystemTest, StreamKMTest) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
+  cmd_params.num_points = 3000;
   cmd_params.seed = 10;
-  cmd_params.clusterNumber = 7;
-  cmd_params.dimension = 54;
-  cmd_params.coresetSize = 600;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_clusters = 7;
+  cmd_params.dim = 54;
+  cmd_params.coreset_size = 600;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
-  SESAME_INFO("Default Input Data Directory: " + cmd_params.inputPath);
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::StreamKMeansType;
-  cmd_params.executeOffline = true;
+  cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
+  SESAME_INFO("Default Input Data Directory: " + cmd_params.input_file);
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::StreamKMeansType;
+  cmd_params.run_offline = true;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

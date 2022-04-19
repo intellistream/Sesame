@@ -13,16 +13,16 @@
 namespace SESAME {
 
 BenchmarkResultPtr Evaluation::runEvaluation(
-    int dimension, int GTClusterNumber, bool decay,
+    int dim, int true_num_clusters, bool decay,
     const std::vector<PointPtr> &inputs, const std::vector<PointPtr> &center) {
   /*Euclidean::euclideanCost(numberOfPoints,
                                     numberOfCenters,
-                                    dimension,
+                                    dim,
                                     inputs,
                                     center);*/
-  double purity = Purity::purityCost(center, inputs, dimension, decay);
+  double purity = Purity::purityCost(center, inputs, dim, decay);
 
-  double CMM = CMM::CMMCost(dimension, inputs, center);
+  double CMM = CMM::CMMCost(dim, inputs, center);
   std::cout << "Accuracy:\n"
             << "AveCMM: " << round(CMM * 10000) / 10000
             << "\npurity: " << round(purity * 10000) / 10000 << std::endl;

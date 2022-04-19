@@ -6,24 +6,24 @@
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <cfloat>
 
-void SESAME::V9::Initilize() {
+void SESAME::V9::Init() {
 
 }
 
 SESAME::V9::V9(param_t &cmd_params){
-  this->V9Param.pointNumber = cmd_params.pointNumber;
-  this->V9Param.dimension = cmd_params.dimension;
+  this->V9Param.num_points = cmd_params.num_points;
+  this->V9Param.dim = cmd_params.dim;
   this->V9Param.landmark = cmd_params.landmark;
   this->V9Param.cm=cmd_params.cm;
   this->V9Param.cl=cmd_params.cl;
   this->V9Param.beta=cmd_params.beta;
-  this->V9Param.outlierDistanceThreshold =cmd_params.outlierDistanceThreshold;
+  this->V9Param.outlier_distance_threshold =cmd_params.outlier_distance_threshold;
   this->gap = 1;
   this->dm = 1.0;
   this->NGrids = 1;
-  this->V9Param.outlierClusterCapacity  = 1.0;
-  this->minVals = std::vector<double> (V9Param.dimension, 0);
-  this->maxVals = std::vector<double> (V9Param.dimension, 0);
+  this->V9Param.outlier_cap  = 1.0;
+  this->minVals = std::vector<double> (V9Param.dim, 0);
+  this->maxVals = std::vector<double> (V9Param.dim, 0);
 
 }
 
@@ -32,7 +32,7 @@ SESAME::V9:: ~V9()
 
 
 
-void SESAME::V9::runOnlineClustering(PointPtr input) {
+void SESAME::V9::RunOnline(PointPtr input) {
   this->pointArrivingTime=input->getIndex();
    if(input->getIndex() >= this->V9Param.landmark)
     {
@@ -54,24 +54,24 @@ void SESAME::V9::runOnlineClustering(PointPtr input) {
 
 
 
-void SESAME::V9::runOfflineClustering(DataSinkPtr sinkPtr)
+void SESAME::V9::RunOffline(DataSinkPtr sinkPtr)
 {
   SESAME_INFO(" cluster list size "<<clusterList.size());
   std::vector<SESAME::PointPtr> points;
   for( auto iter=0; iter!=this->clusterList.size();iter++)
   {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, V9Param.dimension, 0);
+    PointPtr point = DataStructureFactory::createPoint(iter, 0, V9Param.dim, 0);
     auto count=0;
     for(auto &iterGrid: this->clusterList.at(iter).grids)
     {
-      for(int iterDim=0; iterDim<V9Param.dimension;iterDim++)
+      for(int iterDim=0; iterDim<V9Param.dim;iterDim++)
       {
         if(count==0)
           point->setFeatureItem(0,iterDim);
         point->setFeatureItem(point->getFeatureItem(iterDim)+iterGrid.first.coordinates[iterDim],iterDim);
         if(count== this->clusterList.at(iter).grids.size()-1)
         {
-          point->setFeatureItem(point->getFeatureItem(iterDim)/ V9Param.dimension,iterDim);
+          point->setFeatureItem(point->getFeatureItem(iterDim)/ V9Param.dim,iterDim);
         }
       }
       double weight= gridList.find(iterGrid.first)->second.gridDensity;
@@ -88,8 +88,8 @@ void SESAME::V9::runOfflineClustering(DataSinkPtr sinkPtr)
 bool SESAME::V9::ifReCalculateN(PointPtr point)
 {
   bool reCal=false;
-  std::vector<double> tempCoord = std::vector<double> (V9Param.dimension, 0);
-  for (int i = 0 ; i < V9Param.dimension; i++)
+  std::vector<double> tempCoord = std::vector<double> (V9Param.dim, 0);
+  for (int i = 0 ; i < V9Param.dim; i++)
   {
     tempCoord[i] = point->getFeatureItem(i);
     if (tempCoord[i] > maxVals[i])
@@ -108,9 +108,9 @@ bool SESAME::V9::ifReCalculateN(PointPtr point)
 }
 void SESAME::V9::reCalculateN(){
   int curGridNumber = 1;
-  for (int i = 0 ; i < V9Param.dimension ; i++)
+  for (int i = 0 ; i < V9Param.dim ; i++)
   {
-    int gridNum= (int)((maxVals[i]-minVals[i])/V9Param.outlierDistanceThreshold);
+    int gridNum= (int)((maxVals[i]-minVals[i])/V9Param.outlier_distance_threshold);
     if(gridNum<=0)
       gridNum=1;
     curGridNumber = curGridNumber * gridNum;
@@ -121,7 +121,7 @@ void SESAME::V9::reCalculateN(){
     return;
   else
   {
-    this->V9Param.outlierClusterCapacity = dlBack;
+    this->V9Param.outlier_cap = dlBack;
     this->dm = dmBack;
     this->NGrids = curGridNumber;
     double optionA = V9Param.cl/V9Param.cm;
@@ -136,9 +136,9 @@ void SESAME::V9::reCalculateN(){
 /* Update the grid list of DStream when data inserting into the grid
  * */
 void SESAME::V9::GridListUpdate(PointPtr input){
-  std::vector<double> coordinate = std::vector<double> (V9Param.dimension, 0);
-  for (int i = 0 ; i < V9Param.dimension; i++)
-    coordinate[i]= input->getFeatureItem(i)/V9Param.outlierDistanceThreshold;
+  std::vector<double> coordinate = std::vector<double> (V9Param.dim, 0);
+  for (int i = 0 ; i < V9Param.dim; i++)
+    coordinate[i]= input->getFeatureItem(i)/V9Param.outlier_distance_threshold;
   CharacteristicVector characteristicVec;
   DensityGrid grid(coordinate);
   // 3. If (g not in grid_list) insert dg to grid_list
@@ -147,11 +147,11 @@ void SESAME::V9::GridListUpdate(PointPtr input){
     if(this->deletedGrids.find(grid)!=deletedGrids.end())
     {
       characteristicVec = CharacteristicVector (pointArrivingTime, this->deletedGrids.find(grid)->second,
-                                                1.0, -1, false, V9Param.outlierClusterCapacity, dm);
+                                                1.0, -1, false, V9Param.outlier_cap, dm);
       this->deletedGrids.erase(grid);
     }
     else
-      characteristicVec =   CharacteristicVector(pointArrivingTime, 0, 1.0, -1, false, V9Param.outlierClusterCapacity, dm);
+      characteristicVec =   CharacteristicVector(pointArrivingTime, 0, 1.0, -1, false, V9Param.outlier_cap, dm);
     this->gridList.insert(std::make_pair(grid, characteristicVec));
   }
     // 4. Update the characteristic vector of dg
@@ -264,7 +264,7 @@ bool SESAME::V9::adjustLabels()
                   return true;
                 }
                   // If gridNeighbourhood is transitional and 'outside' of the cluster, assign it to cluster
-                else if (characteristicVec2.isTransitional(dm, V9Param.outlierClusterCapacity))
+                else if (characteristicVec2.isTransitional(dm, V9Param.outlier_cap))
                 {
                   characteristicVec2.label=class1;
                   gridCluster.addGrid(gridNeighbourhood);
@@ -302,7 +302,7 @@ void SESAME::V9::updateGridListDensity()
     CharacteristicVector cvOfGrid =  iter.second;
     // grid.isVisited = false;
     iter.second.isVisited=false;
-    cvOfGrid.UpdateAllDensity(pointArrivingTime, V9Param.outlierClusterCapacity, dm);
+    cvOfGrid.UpdateAllDensity(pointArrivingTime, V9Param.outlier_cap, dm);
     iter.second = cvOfGrid;
     gridListBack.insert(std::make_pair(grid, cvOfGrid));
   }
@@ -506,7 +506,7 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(SESAME::HashMap newGridList)
                 return gridListAdjusted;
               }
                 // If neighbourGrid is transitional and outside of cluster, assign it to cluster
-              else if (characteristicVec2.isTransitional(dm, V9Param.outlierClusterCapacity))
+              else if (characteristicVec2.isTransitional(dm, V9Param.outlier_cap))
               {
                 characteristicVec2.label = class1;
                 cluster1.addGrid(neighbourGrid);
@@ -769,7 +769,7 @@ SESAME::HashMap SESAME::V9::mergeNewClusters(SESAME::HashMap newGridList, int sm
 bool SESAME::V9::checkoutOutlier(CharacteristicVector characteristicVec)
 {
   if(characteristicVec.getCurrGridDensity() <
-      densityThresholdFunction(characteristicVec.densityUpdateTime, V9Param.cl, this->NGrids))
+      outlier_density_thresholdFunction(characteristicVec.densityUpdateTime, V9Param.cl, this->NGrids))
   {
     if(characteristicVec.removeTime == 0 ||
         pointArrivingTime- ((1 + V9Param.beta)*characteristicVec.removeTime) >=0)
@@ -787,7 +787,7 @@ bool SESAME::V9::checkoutOutlier(CharacteristicVector characteristicVec)
 	 * @param cl - user defined parameter which controls the threshold for sparse grids
 	 * @param NGrids - the number of density grids,
 	 */
-double SESAME::V9::densityThresholdFunction(int tg, double cl, int NGrids)
+double SESAME::V9::outlier_density_thresholdFunction(int tg, double cl, int NGrids)
 {
   return cl * 1.0/NGrids;
 }

@@ -12,12 +12,12 @@
 
 namespace SESAME {
 
-Point::Point(int dimension, int index, double weight, double cost,
+Point::Point(int dim, int index, double weight, double cost,
              int timestamp)
-    : feature(dimension, 0.0) {
+    : feature(dim, 0.0) {
   this->index = index;
   this->weight = weight;
-  this->dimension = dimension;
+  this->dim = dim;
   this->cost = cost;
   this->clusteringCenter = -1;
   this->timestamp = timestamp;
@@ -55,12 +55,12 @@ int Point::getTimeStamp() const { return this->timestamp; }
  * @param source
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
-int Point::getDimension() const { return this->dimension; }
+int Point::getDimension() const { return this->dim; }
 int Point::getFeatureLength() { return (int)this->feature.size(); }
 
 double Point::getDisTo(PointPtr p) {
   double distance = 0;
-  for (int i = 0; i < this->dimension; i++) {
+  for (int i = 0; i < this->dim; i++) {
     distance =
         distance + pow(p->getFeatureItem(i) - this->getFeatureItem(i), 2);
   }

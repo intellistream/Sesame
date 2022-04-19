@@ -19,14 +19,14 @@ SESAME::PointPtr SESAME::DataStructureFactory::createPoint() {
 
 SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index,
                                                            double weight,
-                                                           int dimension,
+                                                           int dim,
                                                            double cost) {
-  return std::make_shared<Point>(dimension, index, weight, cost);
+  return std::make_shared<Point>(dim, index, weight, cost);
 }
 
 SESAME::PointPtr SESAME::DataStructureFactory::createPoint(
-    int index, double weight, int dimension, double cost, int timestamp) {
-  return std::make_shared<Point>(dimension, index, weight, cost, timestamp);
+    int index, double weight, int dim, double cost, int timestamp) {
+  return std::make_shared<Point>(dim, index, weight, cost, timestamp);
 }
 
 void SESAME::DataStructureFactory::clearPoint(SESAME::PointPtr point) {
@@ -41,12 +41,12 @@ void SESAME::DataStructureFactory::clearCoresetTree(
 }
 
 SESAME::MicroClusterPtr
-SESAME::DataStructureFactory::createMicroCluster(int dimension, int id) {
-  return std::make_shared<SESAME::MicroCluster>(dimension, id);
+SESAME::DataStructureFactory::createMicroCluster(int dim, int id) {
+  return std::make_shared<SESAME::MicroCluster>(dim, id);
 }
 SESAME::MicroClusterPtr SESAME::DataStructureFactory::createMicroCluster(
-    int dimension, int id, PointPtr dataPoint, double radius) {
-  return std::make_shared<SESAME::MicroCluster>(dimension, id, dataPoint,
+    int dim, int id, PointPtr dataPoint, double radius) {
+  return std::make_shared<SESAME::MicroCluster>(dim, id, dataPoint,
                                                 radius);
 }
 void SESAME::DataStructureFactory::clearMicroCluster(

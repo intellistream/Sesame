@@ -21,11 +21,11 @@ using namespace std::chrono;
  * Create input data points.
  * TODO: Remove the hard-coded part.
  * @param point_number
- * @param dimension
+ * @param dim
  * @param input
  * @return
  */
-void SESAME::DataSource::load(int point_number, int dimension,
+void SESAME::DataSource::load(int point_number, int dim,
                               vector<string> input) {
 
   // The step used to generate random timestamps
@@ -33,7 +33,7 @@ void SESAME::DataSource::load(int point_number, int dimension,
   for (int i = 0; i < point_number; i++) {
     int timeStamp = timeStep * i + rand() % timeStep;
     PointPtr point = DataStructureFactory::createPoint(
-        i, DEFAULT_WEIGHT, dimension, DEFAULT_COST, timeStamp);
+        i, DEFAULT_WEIGHT, dim, DEFAULT_COST, timeStamp);
     char *charData = new char[INT32_MAX];
     strcpy(charData, input[i].c_str());
     // use c_str() to convert string to char * but it's just a temp pointer we
@@ -44,7 +44,7 @@ void SESAME::DataSource::load(int point_number, int dimension,
     feature = strtok(nullptr, sep); // Skip the first token (index number)
     int index = 0;
     while (feature != nullptr) {
-      if (index == dimension) {
+      if (index == dim) {
         point->setClusteringCenter(atoi(feature));
       } else {
         point->setFeatureItem(strtod(feature, nullptr), index);

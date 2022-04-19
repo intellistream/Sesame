@@ -1,6 +1,6 @@
 echo "---------start Testing DStream on the 5 selected Dataset---------"
 
-echo  ">> Parameter Test: lambda, beta, cm, cl, gridWidth <<"
+echo  ">> Parameter Test: lambda, beta, cm, cl, grid_width <<"
 
 for o in $(seq 0 4)
   do
@@ -18,8 +18,8 @@ for o in $(seq 0 4)
                       cl=(0.8 0.001)
                       for X in ${cl[*]}
                         do
-                          gridWidth=(13 14 15)
-                          for g in ${gridWidth[*]}
+                          grid_width=(13 14 15)
+                          for g in ${grid_width[*]}
                             do
                           ./benchmark -p 5000 -d 54 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
@@ -43,8 +43,8 @@ for o in $(seq 0 4)
                         cl=(0.8 0.999)
                           for X in ${cl[*]}
                             do
-                            gridWidth=(6)
-                            for g in ${gridWidth[*]}
+                            grid_width=(6)
+                            for g in ${grid_width[*]}
                              do
                           ./benchmark -p 5000 -d 41 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
@@ -67,8 +67,8 @@ for o in $(seq 0 4)
                         cl=(0.001 0.002)
                           for X in ${cl[*]}
                             do
-                            gridWidth=(0.5 0.6)
-                            for g in ${gridWidth[*]}
+                            grid_width=(0.5 0.6)
+                            for g in ${grid_width[*]}
                              do
                           ./benchmark -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done
@@ -91,8 +91,8 @@ for o in $(seq 0 4)
                         cl=(0.001 0.01)
                           for X in ${cl[*]}
                             do
-                            gridWidth=(0.5)
-                            for g in ${gridWidth[*]}
+                            grid_width=(0.5)
+                            for g in ${grid_width[*]}
                              do
                           ./benchmark -p 3000 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                         done
@@ -115,8 +115,8 @@ for o in $(seq 0 4)
                         cl=(0.001)
                           for X in ${cl[*]}
                             do
-                            gridWidth=(0.3 0.25)
-                            for g in ${gridWidth[*]}
+                            grid_width=(0.3 0.25)
+                            for g in ${grid_width[*]}
                              do
                           ./benchmark -p 622 -d 2 -a 6 -O $o -L $L -q $q -x $x -X $X -g $g
                             done

@@ -29,11 +29,11 @@ class V2 : public Algorithm {
 
   ~V2();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
  private:
 
   void forwardInsert(PointPtr point);
@@ -45,7 +45,7 @@ class V2 : public Algorithm {
   void pointToClusterDist(PointPtr &insertPoint, NodePtr &node, double &dist);
   void calculateCentroid(CFPtr &cf, PointPtr &centroid);
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
-  void initializeCF(CFPtr &cf, int dimension);
+  void initializeCF(CFPtr &cf, int dim);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);

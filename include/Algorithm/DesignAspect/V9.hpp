@@ -19,8 +19,8 @@ class V9Parameter : public AlgorithmParameters {
   double cm;
   double cl;
   int landmark;
-  double outlierDistanceThreshold;
-  double outlierClusterCapacity;
+  double outlier_distance_threshold;
+  double outlier_cap;
 };
 typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
 class V9 : public Algorithm {
@@ -43,9 +43,9 @@ class V9 : public Algorithm {
 
   V9(param_t &cmd_params);
   ~V9();
-  void Initilize() override;
-  void runOnlineClustering(PointPtr input) override;
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void Init() override;
+  void RunOnline(PointPtr input) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
  private:
   bool ifReCalculateN(PointPtr point);
@@ -63,7 +63,7 @@ class V9 : public Algorithm {
   void cleanClusters();
   HashMap cleanNewClusters(HashMap newGridList);
   HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
-  double densityThresholdFunction(int tg, double cl, int NGrids);
+  double outlier_density_thresholdFunction(int tg, double cl, int NGrids);
   void updateGridListDensity();
   static void mergeGridList(HashMap gridList, const HashMap &otherList);
 

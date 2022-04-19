@@ -6,32 +6,32 @@
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 SESAME::DenStream::DenStream(param_t &cmd_params) {
-  this->denStreamParams.pointNumber = cmd_params.pointNumber;
-  this->denStreamParams.dimension = cmd_params.dimension;
-  this->denStreamParams.minPoints = cmd_params.minPoints;
+  this->denStreamParams.num_points = cmd_params.num_points;
+  this->denStreamParams.dim = cmd_params.dim;
+  this->denStreamParams.min_points = cmd_params.min_points;
   this->denStreamParams.epsilon = cmd_params.epsilon;
   this->denStreamParams.base = cmd_params.base;
   this->denStreamParams.lambda = cmd_params.lambda;
   this->denStreamParams.mu = cmd_params.mu;
   this->denStreamParams.beta = cmd_params.beta;
-  this->denStreamParams.initBufferSize = cmd_params.initBuffer;
+  this->denStreamParams.buf_sizeSize = cmd_params.buf_size;
 
 }
 SESAME::DenStream::~DenStream() {
 
 }
-void SESAME::DenStream::init(vector<PointPtr> &initData) {
+void SESAME::DenStream::Init(vector<PointPtr> &initData) {
   this->pMicroClusterIndex = -1;
   this->oMicroClusterIndex = -1;
-  for (int i = 0; i < denStreamParams.initBufferSize; i++) {
+  for (int i = 0; i < denStreamParams.buf_sizeSize; i++) {
     if (initData.at(i)->getClusteringCenter() == noVisited)
     {
       std::vector<int> pointIndex;
       pMicroClusterIndex++;
       MicroClusterPtr newMicroCluster =
-          SESAME::DataStructureFactory::createMicroCluster (denStreamParams.dimension,
+          SESAME::DataStructureFactory::createMicroCluster (denStreamParams.dim,
                                                            pMicroClusterIndex);
-      newMicroCluster->init(initData.at(i), 0);
+      newMicroCluster->Init(initData.at(i), 0);
       pointsNearCorePoint(initData, pointIndex, newMicroCluster);
       if (newMicroCluster->weight <= this->minWeight)//TODO need to change minweight
       {
@@ -48,7 +48,7 @@ void SESAME::DenStream::init(vector<PointPtr> &initData) {
 void SESAME::DenStream::pointsNearCorePoint(vector<PointPtr> &initData,
                                             std::vector<int> pointIndex,
                                             MicroClusterPtr microCluster) {
-  int size = denStreamParams.initBufferSize;
+  int size = denStreamParams.buf_sizeSize;
   for (int i = 0; i < size; i++) {
     if (initData.at(i)->getClusteringCenter() == noVisited) {
       double dist = microCluster->calCentroidDistance(initData.at(i));
@@ -60,10 +60,10 @@ void SESAME::DenStream::pointsNearCorePoint(vector<PointPtr> &initData,
     }
   }
 }
-void SESAME::DenStream::Initilize() {
+void SESAME::DenStream::Init() {
   this->dampedWindow = WindowFactory::createDampedWindow(denStreamParams.base, denStreamParams.lambda);
   this->dbscan =
-      std::make_shared<DBSCAN>(denStreamParams.minPoints, denStreamParams.epsilon);
+      std::make_shared<DBSCAN>(denStreamParams.min_points, denStreamParams.epsilon);
   this->startTime = clock();
   this->lastUpdateTime = 0;
   this->pointArrivingTime = 0;
@@ -72,17 +72,17 @@ void SESAME::DenStream::Initilize() {
   if( this->Tp>1000|| this->Tp<=0)
     this->Tp=1;
 }
-void SESAME::DenStream::runOnlineClustering(PointPtr in) {
+void SESAME::DenStream::RunOnline(PointPtr in) {
   PointPtr input = in->copy();
 
   if (!this->isInitial) {
-    Initilize();
+    Init();
     input->setClusteringCenter(noVisited);
     this->initialBuffer.push_back(input);
-    if (this->initialBuffer.size() == this->denStreamParams.initBufferSize) {
+    if (this->initialBuffer.size() == this->denStreamParams.buf_sizeSize) {
       //Initialize part
       timerMeter.initialMeasure();
-      init(this->initialBuffer);
+      Init(this->initialBuffer);
       this->isInitial = true;
       timerMeter.initialEndMeasure();
     }
@@ -143,9 +143,9 @@ void SESAME::DenStream::merge(PointPtr dataPoint) {
   if (!index) {
     oMicroClusterIndex++;
     MicroClusterPtr
-        newOMicroCluster = DataStructureFactory::createMicroCluster(denStreamParams.dimension,
+        newOMicroCluster = DataStructureFactory::createMicroCluster(denStreamParams.dim,
                                                                     oMicroClusterIndex);
-    newOMicroCluster->init(dataPoint, 0);
+    newOMicroCluster->Init(dataPoint, 0);
     oMicroClusters.push_back(newOMicroCluster);
   }
   timerMeter.outlierDetectionEndMeasure();
@@ -199,7 +199,7 @@ SESAME::MicroClusterPtr SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, s
   return targetMC;
 }
 
-void SESAME::DenStream::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::DenStream::RunOffline(DataSinkPtr sinkPtr) {
  // SESAME_INFO("Finish online");
   vector<PointPtr> transformedPoints;
   std::vector<std::vector<PointPtr>> oldGroups;

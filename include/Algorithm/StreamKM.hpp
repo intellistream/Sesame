@@ -19,7 +19,7 @@ class StreamKMParameter : public AlgorithmParameters {
  public:
   int windowSize;
   int seed;
-  int clusterNumber;
+  int num_clusters;
 };
 
 class StreamKM : public Algorithm {
@@ -37,11 +37,11 @@ class StreamKM : public Algorithm {
 
   ~StreamKM();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
  private:
   void dumpResults(vector <PointPtr> &centers, vector <vector<SESAME::PointPtr>> groups, DataSinkPtr ptr) const;

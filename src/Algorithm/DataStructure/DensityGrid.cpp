@@ -9,9 +9,9 @@ SESAME::DensityGrid::DensityGrid(){
 }
 SESAME::DensityGrid::DensityGrid(std::vector<double> coordin)
 {
-  this->dimensions = coordin.size();
-  this->coordinates= std::vector<double> (this->dimensions,0) ;
-  for (int i = 0 ; i < this->dimensions ; i++)
+  this->dims = coordin.size();
+  this->coordinates= std::vector<double> (this->dims,0) ;
+  for (int i = 0 ; i < this->dims ; i++)
     this->coordinates[i] = coordin[i];
   this->isVisited = false;
 }
@@ -19,9 +19,9 @@ SESAME::DensityGrid::DensityGrid(std::vector<double> coordin)
 SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 {
   std::vector<double> coord = grid.coordinates;
-  this->dimensions = grid.dimensions;
-  this->coordinates= std::vector<double> (this->dimensions,0) ;
-  for (int i = 0 ; i < this->dimensions ; i++)
+  this->dims = grid.dims;
+  this->coordinates= std::vector<double> (this->dims,0) ;
+  for (int i = 0 ; i < this->dims ; i++)
     this->coordinates[i] = coord[i];
   this->isVisited = false;
 }
@@ -29,7 +29,7 @@ SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
 /**
   * Generates a vector of neighbours for this density grid by varying each coordinate
   * by one in either direction. Does not test whether the generated neighbours are valid as
-  * DensityGrid is not aware of the number of partitions in each dimension.
+  * DensityGrid is not aware of the number of partitions in each dim.
   *
   * @return a vector of neighbours for this density grid
   */
@@ -39,7 +39,7 @@ std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours()
 //  SESAME_INFO("Obtain neighbours");
   std::vector<DensityGrid> neighbours;
   std::vector<double> hCoord = this->coordinates ;
-  for (int i = 0 ; i < this->dimensions ; i++)
+  for (int i = 0 ; i < this->dims ; i++)
   {
     hCoord[i] = hCoord[i]-1;
     DensityGrid grid(hCoord);
@@ -64,7 +64,7 @@ std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours()
 
 
 double SESAME::DensityGrid::getInclusionProbability(Point point) {
-  for (int i = 0 ; i < this->dimensions ; i++)
+  for (int i = 0 ; i < this->dims ; i++)
   {
     if ((int) point.getFeatureItem(i) != this->coordinates[i])
       return 0.0;
@@ -77,9 +77,9 @@ bool SESAME::DensityGrid::operator==( DensityGrid& gridOther)const {
   if (this == &gridOther) {
     equal=true;
   }
-  if(this->dimensions !=  gridOther.dimensions)
+  if(this->dims !=  gridOther.dims)
     equal = false;
-  for(int i = 0 ; i < this->dimensions ; i++)
+  for(int i = 0 ; i < this->dims ; i++)
   {
     if(this->coordinates[i] != gridOther.coordinates[i])
       equal= false;

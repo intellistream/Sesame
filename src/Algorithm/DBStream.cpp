@@ -9,19 +9,19 @@
  * @Param:
  * radius: radius of micro clusters
  * lambda: lambda in decay function
- * cleanUpInterval: time gap of clean up
- * weightMin: the minimum weight of micro cluster to identify noise MCs
+ * clean_interval: time gap of clean up
+ * min_weight: the minimum weight of micro cluster to identify noise MCs
  * alpha: intersection factor
  * base: decay function base -- Normally 2
  * @Return: void
  */
 SESAME::DBStream::DBStream(param_t &cmd_params){
-  this->dbStreamParams.pointNumber = cmd_params.pointNumber;
-  this->dbStreamParams.dimension = cmd_params.dimension;
+  this->dbStreamParams.num_points = cmd_params.num_points;
+  this->dbStreamParams.dim = cmd_params.dim;
   this->dbStreamParams.radius=cmd_params.radius;
   this->dbStreamParams.lambda=cmd_params.lambda;
-  this->dbStreamParams.cleanUpInterval=100;
-  this->dbStreamParams.weightMin= 0.1;
+  this->dbStreamParams.clean_interval=100;
+  this->dbStreamParams.min_weight= 0.1;
   this->dbStreamParams.alpha=0.15;
   this->dbStreamParams.base=cmd_params.base;
 }
@@ -33,7 +33,7 @@ SESAME::DBStream:: ~DBStream()
  * @Param: void
  * @Return: void
  */
-void SESAME::DBStream::Initilize() {
+void SESAME::DBStream::Init() {
   this->dampedWindow = WindowFactory::createDampedWindow(dbStreamParams.base,  dbStreamParams.lambda);
  // clock_gettime(CLOCK_REALTIME, & this->startTime);
  // clock_gettime(CLOCK_REALTIME, & this->lastArrivingTime0);
@@ -42,23 +42,23 @@ void SESAME::DBStream::Initilize() {
   this->pointArrivingTime=0;
   this->lastCleanTime=0;
   this->lastArrivingTime=0;
-  this->weakEntry= pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.cleanUpInterval);
+  this->weakEntry= pow(dbStreamParams.base,(-1)*dbStreamParams.lambda*dbStreamParams.clean_interval);
   this->aWeakEntry=weakEntry*dbStreamParams.alpha;
 
  // std::cout<<"weakEntry"<<weakEntry<<std::endl;
   //std::cout<<"aWeakEntry"<<aWeakEntry<<std::endl;
   this->microClusterIndex=-1;
-  connectedRegions = ConnectedRegions(dbStreamParams.alpha, dbStreamParams.weightMin);
+  connectedRegions = ConnectedRegions(dbStreamParams.alpha, dbStreamParams.min_weight);
  }
  /**
   * @Description: online clustering stage, input data point incrementally and update the MC list and weight adjacency lists,
   * @Param: void
   * @Return: void
   */
- void SESAME::DBStream::runOnlineClustering(PointPtr input) {
+ void SESAME::DBStream::RunOnline(PointPtr input) {
   if (!this->isInitial) {
     //SESAME_INFO("Start initialize...");
-    Initilize();
+    Init();
     this->isInitial = true;
     update(input);
   } else
@@ -69,7 +69,7 @@ void SESAME::DBStream::Initilize() {
   }
 }
 
-void SESAME::DBStream::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
 
    SESAME_INFO("micro clusters "<<microClusters.size());
    SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());
@@ -115,7 +115,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   if (microClusterNN.empty()) {
     timerMeter.clusterUpdateAccMeasure();
     microClusterIndex++;
-    MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dimension,
+    MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dim,
                                                                                        microClusterIndex,dataPoint->copy(),dbStreamParams.radius);
     microClusters.push_back(newMicroCluster);
     microClusterNN.push_back(newMicroCluster);
@@ -158,11 +158,11 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   timerMeter.outlierDetectionAccMeasure();
 
 
- //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.cleanUpInterval && dataPoint->getIndex()!=0)
- if ((pointArrivingTime)% dbStreamParams.cleanUpInterval==0)
+ //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.clean_interval && dataPoint->getIndex()!=0)
+ if ((pointArrivingTime)% dbStreamParams.clean_interval==0)
  //long interval = (pointArrivingTime0.tv_sec * 1000000L + pointArrivingTime0.tv_nsec / 1000L)
  //- ((startTime).tv_sec * 1000000L + (startTime).tv_nsec / 1000L);
- // if(interval/1000L%dbStreamParams.cleanUpInterval==0 )
+ // if(interval/1000L%dbStreamParams.clean_interval==0 )
  {
     cleanUp(pointArrivingTime);//pointArrivingTime
 
@@ -248,14 +248,14 @@ void  SESAME::DBStream::cleanUp(int nowTime){
    * reCluster(dbStreamParams.alpha);
   for(auto iter=0; iter!=finalClusters.size();iter++)
   {   //initialize pseudo point of macro clusters
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dimension, 0);
+    PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dim, 0);
     //This is just for testing, need to delete
-    std::vector<double> centroid(finalClusters.at(iter).front()->dimension,0);
+    std::vector<double> centroid(finalClusters.at(iter).front()->dim,0);
     for(auto j=0; j!=finalClusters.at(iter).size();j++)
     {
       double currentWeight=point->getWeight()+finalClusters.at(iter).at(j)->weight;
       point->setWeight(currentWeight);
-      for(auto a =0;a<finalClusters.at(iter).at(j)->dimension;a++)
+      for(auto a =0;a<finalClusters.at(iter).at(j)->dim;a++)
       {
         if(j==0)
           point->setFeatureItem(0,a);
@@ -263,8 +263,8 @@ void  SESAME::DBStream::cleanUp(int nowTime){
         centroid[a]=point->getFeatureItem(a);//testing
         if(j==finalClusters.at(iter).size()-1)
         {
-          point->setFeatureItem(point->getFeatureItem(a)/finalClusters.at(iter).at(j)->dimension,a);
-          centroid[a] =centroid[a]/finalClusters.at(iter).at(j)->dimension;//testing
+          point->setFeatureItem(point->getFeatureItem(a)/finalClusters.at(iter).at(j)->dim,a);
+          centroid[a] =centroid[a]/finalClusters.at(iter).at(j)->dim;//testing
         }
       }
     }
@@ -277,7 +277,7 @@ void  SESAME::DBStream::cleanUp(int nowTime){
 void SESAME::DBStream::reCluster(double threshold){
   WeightedAdjacencyList::iterator iterW;
   for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++){
-    if (iterW->first.microCluster1->weight >= dbStreamParams.weightMin &&iterW->first.microCluster2->weight >= dbStreamParams.weightMin){
+    if (iterW->first.microCluster1->weight >= dbStreamParams.min_weight &&iterW->first.microCluster2->weight >= dbStreamParams.min_weight){
       double val = 2*iterW->second->weight / (iterW->first.microCluster1->weight+iterW->first.microCluster2->weight);
       if (val > threshold) {
         insertIntoGraph( iterW->first.microCluster1->id.front(),iterW->first.microCluster2->id.front());

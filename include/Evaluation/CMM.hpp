@@ -81,7 +81,7 @@ class CMMDriver {
 
   CMMDriver(int dim, double a, double lambda);
   void load(const std::vector<PointPtr> &input, const std::vector<PointPtr> &center,
-            int dimension, double weight);
+            int dim, double weight);
   void voteMap();
   double computeWeight(double deltaTime);
   // int getDelta(CMMClusterPtr ci, CMMClusterPtr cljo);
@@ -93,7 +93,7 @@ class CMMDriver {
 class CMM {
  private:
  public:
-  static double CMMCost(int dimension,
+  static double CMMCost(int dim,
                       const std::vector<PointPtr> &inputs,
                       const std::vector<PointPtr> &center);
 };

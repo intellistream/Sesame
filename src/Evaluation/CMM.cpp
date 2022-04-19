@@ -100,14 +100,14 @@ SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda) {
   //this->k = k;
 }
 void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
-                             const std::vector<PointPtr> &center, int dimension, double time) {
+                             const std::vector<PointPtr> &center, int dim, double time) {
   // time ? weight ?
   std::vector<PointPtr> out;
-  SESAME::UtilityFunctions::groupByCenters(input, center,out, dimension);
+  SESAME::UtilityFunctions::groupByCenters(input, center,out, dim);
   // convert to the predicted clustering center index
   for(int i = 0; i < out.size(); i++) {
     std::vector<double> features;
-    for(int j = 0; j < dimension; j++) {
+    for(int j = 0; j < dim; j++) {
       features.push_back(out.at(i)->getFeatureItem(j));
     }
     int cl = input.at(i)->getClusteringCenter();
@@ -231,7 +231,7 @@ double SESAME::CMMDriver::computeWeight(double deltaTime) {
 }
 /*here we assume that the data comes every 10 seconds
  * */
-double SESAME::CMM::CMMCost(int dimension,
+double SESAME::CMM::CMMCost(int dim,
                           const std::vector<PointPtr> &inputs,
                           const std::vector<PointPtr> &center) {
   std::vector<double> CMMValues;
@@ -240,16 +240,16 @@ double SESAME::CMM::CMMCost(int dimension,
 //  double pre_time = 0;
 //  for (int i = 0; i < inputs.size(); i++) {
 //    // segment the stream data into horizons(windows) according to threshold
-//    CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
+//    CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
 //    double weight = cmm.computeWeight(i / 2 - pre_time);
     for (int i = 25; i < inputs.size(); i+=25) {
       // segment the stream data into horizons(windows) according to threshold
-      CMMDriver cmm(dimension, CMM_A, CMM_LAMDA);
+      CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
       std::vector<PointPtr> seg;
       for(; start < i; start ++) {
         seg.push_back(inputs.at(start));
       }
-      cmm.load(seg, center, dimension, i*10);
+      cmm.load(seg, center, dim, i*10);
       cmm.voteMap();
       double cmmValue = cmm.compCMM();
 //    double weight = cmm.computeWeight(i / 2 - pre_time);
@@ -260,7 +260,7 @@ double SESAME::CMM::CMMCost(int dimension,
 //        seg.push_back(inputs.at(start));
 //      }
 //      // here we set weight to 1
-//      cmm.load(seg, center, dimension, weight); // according to arrival rate, can adjust if necessary
+//      cmm.load(seg, center, dim, weight); // according to arrival rate, can adjust if necessary
 //      /*Transform the pre and GT data into specific CMM structures
 //       * Clist: predicted clusters
 //       * CList: GT clusters

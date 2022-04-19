@@ -17,20 +17,20 @@ using StreamClusteringParam = param_t;
 // class StreamClusteringParam {
 // public:
 //   // General Params
-//   int pointNumber;
-//   int dimension;
+//   int num_points;
+//   int dim;
 
 //   // CF-Tree Params
-//   int maxInternalNodes;     // B
-//   int maxLeafNodes;         // L
-//   double thresholdDistance; // T
+//   int max_in_nodes;     // B
+//   int max_leaf_nodes;         // L
+//   double distance_threshold; // T
 
 //   // KMeans / KMeans++ Params
-//   int clusterNumber;
+//   int num_clusters;
 //   bool KMeansPP;
 
 //   // DBSCAN Params
-//   unsigned int minPoints; // minimum point of core point in DBSCAN
+//   unsigned int min_points; // minimum point of core point in DBSCAN
 //   double epsilon; // maximum distance if point belongs to the density area of
 //                   // core point
 
@@ -41,9 +41,9 @@ using StreamClusteringParam = param_t;
 //   // Damped Window
 //   double alpha, lambda;
 
-//   double outlierDistanceThreshold;
-//   int outlierClusterCapacity;
-//   double neighborDistance, densityThreshold;
+//   double outlier_distance_threshold;
+//   int outlier_cap;
+//   double neighbor_distance, outlier_density_threshold;
 // };
 
 } // namespace SESAME

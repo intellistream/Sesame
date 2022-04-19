@@ -14,13 +14,13 @@ namespace SESAME {
 
 class V7Parameter : public AlgorithmParameters {
  public:
-  int maxInternalNodes; // B
-  int maxLeafNodes; // L
-  double thresholdDistance; // T
+  int max_in_nodes; // B
+  int max_leaf_nodes; // L
+  double distance_threshold; // T
   int landmark;
-  double neighborDistance;
-  double densityThreshold;
-  int outlierClusterCapacity;
+  double neighbor_distance;
+  double outlier_density_threshold;
+  int outlier_cap;
 };
 
 class V7 : public Algorithm {
@@ -38,11 +38,11 @@ class V7 : public Algorithm {
 
   ~V7();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
  private:
 
   void forwardInsert(PointPtr point);
@@ -54,7 +54,7 @@ class V7 : public Algorithm {
   void pointToClusterDist(PointPtr &insertPoint, NodePtr &node, double &dist);
   void calculateCentroid(CFPtr &cf, PointPtr &centroid);
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
-  void initializeCF(CFPtr &cf, int dimension);
+  void initializeCF(CFPtr &cf, int dim);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);

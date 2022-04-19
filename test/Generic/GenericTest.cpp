@@ -29,23 +29,23 @@ TEST(GenericTest, V1) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 100;
-  cmd_params.maxInternalNodes = 10;
-  cmd_params.maxLeafNodes = 20;
-  cmd_params.clusterNumber = 7;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 100;
+  cmd_params.max_in_nodes = 10;
+  cmd_params.max_leaf_nodes = 20;
+  cmd_params.num_clusters = 7;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
-  cmd_params.outlierDistanceThreshold = 5000;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = Generic;
-  cmd_params.executeOffline = true;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = Generic;
+  cmd_params.run_offline = true;
 
   std::vector<PointPtr> input;
   std::vector<PointPtr> results;
@@ -75,24 +75,24 @@ TEST(GenericTest, V2) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 100;
-  cmd_params.maxInternalNodes = 10;
-  cmd_params.maxLeafNodes = 20;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
-  cmd_params.minPoints = 10;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 100;
+  cmd_params.max_in_nodes = 10;
+  cmd_params.max_leaf_nodes = 20;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
+  cmd_params.min_points = 10;
   cmd_params.landmark = 1000;
   cmd_params.epsilon = 200; // 0.1
-  cmd_params.executeOffline = true;
-  cmd_params.outlierDistanceThreshold = 5000;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.run_offline = true;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::Generic;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -122,21 +122,21 @@ TEST(GenericTest, V3) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 1000;
+  cmd_params.max_in_nodes = 20;
+  cmd_params.max_leaf_nodes = 40;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
-  cmd_params.outlierDistanceThreshold = 5000;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::Generic;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -168,21 +168,21 @@ TEST(GenericTest, V4) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 100;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 100;
+  cmd_params.max_in_nodes = 20;
+  cmd_params.max_leaf_nodes = 40;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.sliding = 1000;
-  cmd_params.outlierDistanceThreshold = 3000;
-  cmd_params.outlierClusterCapacity = 3;
+  cmd_params.outlier_distance_threshold = 3000;
+  cmd_params.outlier_cap = 3;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::Generic;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -214,22 +214,22 @@ TEST(GenericTest, V5) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 1000;
+  cmd_params.max_in_nodes = 20;
+  cmd_params.max_leaf_nodes = 40;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.lambda = 1.25;
   cmd_params.alpha = 2;
-  cmd_params.outlierDistanceThreshold = 5000;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::Generic;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -261,19 +261,19 @@ TEST(GenericTest, V6) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 3000;
-  cmd_params.maxInternalNodes = 40;
-  cmd_params.maxLeafNodes = 20;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 3000;
+  cmd_params.max_in_nodes = 40;
+  cmd_params.max_leaf_nodes = 20;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V6Stream;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::V6Stream;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -303,22 +303,22 @@ TEST(GenericTest, V7) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 1000;
-  cmd_params.maxInternalNodes = 20;
-  cmd_params.maxLeafNodes = 40;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 1000;
+  cmd_params.max_in_nodes = 20;
+  cmd_params.max_leaf_nodes = 40;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
-  cmd_params.neighborDistance = 5000;
-  cmd_params.densityThreshold = 0.5;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.neighbor_distance = 5000;
+  cmd_params.outlier_density_threshold = 0.5;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V7Stream;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::V7Stream;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -350,22 +350,22 @@ TEST(GenericTest, V8) {
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 3000;
-  cmd_params.maxInternalNodes = 40;
-  cmd_params.maxLeafNodes = 20;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 3000;
+  cmd_params.max_in_nodes = 40;
+  cmd_params.max_leaf_nodes = 20;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
-  cmd_params.executeOffline = false;
-  cmd_params.outlierDistanceThreshold = 5000;
-  cmd_params.outlierClusterCapacity = 10;
+  cmd_params.run_offline = false;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() +
+  cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::V8Stream;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::V8Stream;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

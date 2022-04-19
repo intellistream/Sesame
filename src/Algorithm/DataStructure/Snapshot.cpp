@@ -51,12 +51,12 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapS
   return nearestSnapshot;
 }
 SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurrent,
-                                                        const SnapshotPtr&  snapshotLandmark, unsigned int clusterNumber)
+                                                        const SnapshotPtr&  snapshotLandmark, unsigned int num_clusters)
 {
 //  SESAME_INFO("Start substract "<<snapshotCurrent->elapsedTime<<" LANDMARK ET "<<snapshotLandmark->elapsedTime);
-  for(unsigned int i=0; i<clusterNumber; i++) {   //If the micro cluster raised from merging
+  for(unsigned int i=0; i<num_clusters; i++) {   //If the micro cluster raised from merging
     if(snapshotCurrent->microClusters[i]->id.size()>1) {
-      for(unsigned int j=0; j<clusterNumber; j++) {
+      for(unsigned int j=0; j<num_clusters; j++) {
         if(snapshotLandmark->microClusters[j]->id.size()>1) {
           if(snapshotCurrent->microClusters[i]->judgeMerge(snapshotLandmark->microClusters[j]))
             snapshotCurrent->microClusters[i]->subtractClusterVector(snapshotLandmark->microClusters[j]);
@@ -71,7 +71,7 @@ SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurr
     }
       // The micro cluster raised from creating new ones or the original ones
     else {
-      for(unsigned int j=0; j<clusterNumber; j++) {
+      for(unsigned int j=0; j<num_clusters; j++) {
         if(snapshotLandmark->microClusters[j]->id.size()==1) {
           int clusterIdLandmark=snapshotLandmark->microClusters[j]->id[0];
           if(snapshotCurrent->microClusters[i]->id[0]==clusterIdLandmark)

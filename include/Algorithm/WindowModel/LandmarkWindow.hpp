@@ -50,8 +50,8 @@ public:
   SESAME::CoresetTreePtr tree;
   /**
    * initialize windows in the window manager.
-   * @param dimension
-   * @param coresetSize
+   * @param dim
+   * @param coreset_size
    */
   void initWindow(int num);
 
@@ -87,7 +87,7 @@ public:
    **/
   SESAME::QueueOrderSnapshot orderSnapShots;
   struct PyramidalWindow {
-    unsigned int timeInterval; // time interval of pyramidal window
+    unsigned int time_interval; // time interval of pyramidal window
     unsigned int currentOrder; // the biggest order T of snapshots
   };
   PyramidalWindow pyramidalWindow;
@@ -96,10 +96,10 @@ public:
    * @Description: init the pyramidal window, pass the value of startTime and
    * reset shared_ptr Arrayqueue of snapshots
    * @Param: startTime: the start time point of algorithm
-   * timeInterval: the time interval of online pyramidal window frame
+   * time_interval: the time interval of online pyramidal window frame
    * @Return: void
    */
-  void initPyramidalWindow(unsigned int timeInterval);
+  void initPyramidalWindow(unsigned int time_interval);
   /**
    * @Description: this function is pyramidal window for Clustream,
    * which takes and stores the snapshots of micro clusters

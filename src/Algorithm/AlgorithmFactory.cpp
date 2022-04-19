@@ -28,71 +28,71 @@
 namespace SESAME {
 
 AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
-  if (cmd_params.algoType == StreamKMeansType) {
+  if (cmd_params.algo == StreamKMeansType) {
     shared_ptr<StreamKM> streamkm = std::make_shared<StreamKM>(cmd_params);
     return (AlgorithmPtr)streamkm;
   }
-  if (cmd_params.algoType == CluStreamType) {
+  if (cmd_params.algo == CluStreamType) {
     shared_ptr<CluStream> cluStream = std::make_shared<CluStream>(cmd_params);
     return (AlgorithmPtr)cluStream;
   }
-  if (cmd_params.algoType == BirchType) {
+  if (cmd_params.algo == BirchType) {
     shared_ptr<Birch> birch = std::make_shared<Birch>(cmd_params);
     return (AlgorithmPtr)birch;
   }
-  if (cmd_params.algoType == DenStreamType) {
+  if (cmd_params.algo == DenStreamType) {
     shared_ptr<DenStream> denStream = std::make_shared<DenStream>(cmd_params);
     return (AlgorithmPtr)denStream;
   }
-  if (cmd_params.algoType == EDMStreamType) {
+  if (cmd_params.algo == EDMStreamType) {
     shared_ptr<EDMStream> eDMStream = std::make_shared<EDMStream>(cmd_params);
     return (AlgorithmPtr)eDMStream;
   }
-  if (cmd_params.algoType == DBStreamType) {
+  if (cmd_params.algo == DBStreamType) {
     shared_ptr<DBStream> dbStream = std::make_shared<DBStream>(cmd_params);
     return (AlgorithmPtr)dbStream;
   }
-  if (cmd_params.algoType == DStreamType) {
+  if (cmd_params.algo == DStreamType) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
     return (AlgorithmPtr)dStream;
   }
-  if (cmd_params.algoType == V1Stream) {
+  if (cmd_params.algo == V1Stream) {
     shared_ptr<V1> v1stream = std::make_shared<V1>(cmd_params);
     return (AlgorithmPtr)v1stream;
   }
-  if (cmd_params.algoType == V2Stream) {
+  if (cmd_params.algo == V2Stream) {
     shared_ptr<V2> V2Stream = std::make_shared<V2>(cmd_params);
     return (AlgorithmPtr)V2Stream;
   }
-  if (cmd_params.algoType == V3Stream) {
+  if (cmd_params.algo == V3Stream) {
     shared_ptr<V3> V3Stream = std::make_shared<V3>(cmd_params);
     return (AlgorithmPtr)V3Stream;
   }
-  if (cmd_params.algoType == V4Stream) {
+  if (cmd_params.algo == V4Stream) {
     shared_ptr<V4> V4Stream = std::make_shared<V4>(cmd_params);
     return (AlgorithmPtr)V4Stream;
   }
-  if (cmd_params.algoType == V5Stream) {
+  if (cmd_params.algo == V5Stream) {
     shared_ptr<V5> V5Stream = std::make_shared<V5>(cmd_params);
     return (AlgorithmPtr)V5Stream;
   }
-  if (cmd_params.algoType == V6Stream) {
+  if (cmd_params.algo == V6Stream) {
     shared_ptr<V6> V6Stream = std::make_shared<V6>(cmd_params);
     return (AlgorithmPtr)V6Stream;
   }
-  if (cmd_params.algoType == V7Stream) {
+  if (cmd_params.algo == V7Stream) {
     shared_ptr<V7> V7Stream = std::make_shared<V7>(cmd_params);
     return (AlgorithmPtr)V7Stream;
   }
-  if (cmd_params.algoType == V8Stream) {
+  if (cmd_params.algo == V8Stream) {
     shared_ptr<V8> V8Stream = std::make_shared<V8>(cmd_params);
     return (AlgorithmPtr)V8Stream;
   }
-  if (cmd_params.algoType == V9Stream) {
+  if (cmd_params.algo == V9Stream) {
     shared_ptr<V9> V9Stream = std::make_shared<V9>(cmd_params);
     return (AlgorithmPtr) V9Stream;
   }
-  if (cmd_params.algoType == Generic) {
+  if (cmd_params.algo == Generic) {
     using W = Landmark;
     using D = ClusteringFeaturesTree;
     using O = DistanceDetection;

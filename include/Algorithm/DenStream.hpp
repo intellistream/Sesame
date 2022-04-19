@@ -19,8 +19,8 @@ namespace SESAME {
 class DenStreamParams : public AlgorithmParameters {
  public:
 
-  int initBufferSize;//number of data point for Initialization
-  unsigned int minPoints;//minimum point of core point in DBSCAN
+  int buf_sizeSize;//number of data point for Initialization
+  unsigned int min_points;//minimum point of core point in DBSCAN
   double epsilon;//maximum distance if point belongs to the density area of core point
   double base;//base of decay function
   double lambda;
@@ -48,15 +48,15 @@ class DenStreamParams : public AlgorithmParameters {
 
         DenStream(param_t &cmd_params);
         ~DenStream();
-        void Initilize() override;
-        void runOnlineClustering(PointPtr input) override;
-        void runOfflineClustering(DataSinkPtr sinkPtr) override;
+        void Init() override;
+        void RunOnline(PointPtr input) override;
+        void RunOffline(DataSinkPtr sinkPtr) override;
         double getMinWeight(){return minWeight;};
        private:
         bool isInitial  = false;
         vector <PointPtr> initialBuffer;
         double minWeight;
-        void init(vector <PointPtr> &initData);
+        void Init(vector <PointPtr> &initData);
         void merge(PointPtr dataPoint);
         void pointsNearCorePoint(vector <PointPtr> &initData,std::vector<int> pointIndex,MicroClusterPtr microCluster);
         MicroClusterPtr nearestNeighbor(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters );

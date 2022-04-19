@@ -23,14 +23,14 @@ namespace SESAME {
 
 class CluStreamParameter : public AlgorithmParameters {
  public:
-  int lastArrivingNum;
-  int timeWindow;
-  unsigned int timeInterval;
-  int clusterNumber; //total number of micro clusters online
+  int num_last_arr;
+  int time_window;
+  unsigned int time_interval;
+  int num_clusters; //total number of micro clusters online
   int offlineClusterNumber; //total number of micro clusters online
-  double radiusFactor;//radius factor
-  int initBuffer;
-  int offlineTimeWindow;
+  double radius;//radius factor
+  int buf_size;
+  int offline_time_window;
 };
 
 const double doubleMax = std::numeric_limits<double>::max();
@@ -50,9 +50,9 @@ class CluStream : public Algorithm {
   TimeMeter timerMeter;
   //bool insert;
 
-  void Initilize() override;
-  void runOnlineClustering(PointPtr input) override;
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void Init() override;
+  void RunOnline(PointPtr input) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
  private:
   void initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData);

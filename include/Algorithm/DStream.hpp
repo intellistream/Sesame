@@ -23,7 +23,7 @@ class DStreamParams : public AlgorithmParameters {
   double beta;
   double cm; // User defined parameter: Controls the threshold for dense grids
   double cl; // User defined parameter: Controls the threshold for sparse grids
-  double gridWidth; //width of grid
+  double grid_width; //width of grid
 };
 
 typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
@@ -45,14 +45,14 @@ class DStream : public Algorithm
       std::unordered_map<DensityGrid, int,GridKeyHash,EqualGrid> deletedGrids;
       std::vector<GridCluster> clusterList; // A list of all Grid Clusters
       std::vector<GridCluster> newClusterList; //A list of grid clusters used when re-clustering an existing cluster.
-      std::vector<double> minVals; //The minimum value seen for a numerical dimension; used to calculate N
-      std::vector<double> maxVals; //The maximum value seen for a numerical dimension; used to calculate N
+      std::vector<double> minVals; //The minimum value seen for a numerical dim; used to calculate N
+      std::vector<double> maxVals; //The maximum value seen for a numerical dim; used to calculate N
 
       DStream(param_t &cmd_params);
       ~DStream();
-      void Initilize() override;
-      void runOnlineClustering(PointPtr input) override;
-      void runOfflineClustering(DataSinkPtr sinkPtr) override;
+      void Init() override;
+      void RunOnline(PointPtr input) override;
+      void RunOffline(DataSinkPtr sinkPtr) override;
      private:
       bool clusterInitial = false;
       bool isInitial  = false;
@@ -84,7 +84,7 @@ class DStream : public Algorithm
       void cleanClusters();
       HashMap cleanNewClusters(HashMap newGridList);
       HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
-      double densityThresholdFunction(int tg, double cl, double decayFactor, int NGrids);
+      double outlier_density_thresholdFunction(int tg, double cl, double decayFactor, int NGrids);
       bool checkIfSporadic(CharacteristicVector characteristicVec);
       void updateGridListDensity();
       static void mergeGridList(HashMap gridList, const HashMap &otherList);

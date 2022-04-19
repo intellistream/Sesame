@@ -1,6 +1,6 @@
 echo "---------start Testing DenStream on the 5 selected Dataset---------"
 
-echo  ">> Parameter Test: initBuffer, minPoints, epsilon, lambda, mu, beta <<"
+echo  ">> Parameter Test: buf_size, min_points, epsilon, lambda, mu, beta <<"
 
 for o in $(seq 0 4)
   do
@@ -39,8 +39,8 @@ for o in $(seq 0 4)
       if [ $o == 2 ] ; then
         for b in $(seq 300 200 500)
           do
-            minPoints=(3 5 8)
-            for n in ${minPoints[*]}
+            min_points=(3 5 8)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.1 0.2 6)
                 for e in ${epsilon[*]}
@@ -66,8 +66,8 @@ for o in $(seq 0 4)
   :'  if [ $o == 3 ] ; then
         for b in $(seq 150 150 500)
           do
-            minPoints=(5 8 15)
-            for n in ${minPoints[*]}
+            min_points=(5 8 15)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.8)
                 for e in ${epsilon[*]}
@@ -93,8 +93,8 @@ for o in $(seq 0 4)
       if [ $o == 4 ] ; then
         for b in $(seq 100 100 200)
           do
-            minPoints=(5 8 10)
-            for n in ${minPoints[*]}
+            min_points=(5 8 10)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.125)
                 for e in ${epsilon[*]}

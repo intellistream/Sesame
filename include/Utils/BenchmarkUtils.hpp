@@ -24,68 +24,58 @@
 #include <vector>
 
 struct param_t {
-  int pointNumber;
-  bool timeDecay;
-  int clusterNumber;
-  int dimension;
-  int coresetSize;
-  int seed;
-  int lastArrivingNum;
-  int timeWindow;
-  unsigned int timeInterval;
-  int onlineClusterNumber;
-  double radiusFactor;
-  int initBuffer;
-  int offlineTimeWindow;
-  int maxInternalNodes;
-  int maxLeafNodes;
-  int GTClusterNumber;
-  double thresholdDistance;
+  int num_points, dim, num_clusters;
+  bool time_decay;
+  int coreset_size, seed, true_num_clusters;
+
+  std::string input_file, output_file;
+  SESAME::AlgoType algo;
+  int dataset_option;
+
+  int num_last_arr, time_window;
+  unsigned int time_interval;
+  int num_online_clusters;
+
+  int buf_size, offline_time_window;
+
+  // CF Tree
+  int max_in_nodes, max_leaf_nodes;
+  double distance_threshold;
 
   // used in DBSCAN
-  unsigned int minPoints;
+  unsigned int min_points;
   double epsilon;
 
   // used in DenStream(unique)
-  double base;
-  double lambda;
-  double mu;
+  double base, lambda, mu;
   double beta; // Also used in DStream, but different meaning
+
   // EDMStream
-  double a;
-  int cacheNum;
   double delta;
-  int opt;
+  int num_cache, opt;
 
   // used in DBStream
-  double radius;
-  int cleanUpInterval;
-  double weightMin;
-  double alpha;
+  double radius, min_weight, alpha;
+  int clean_interval;
 
   // used in DStream
-  double cm;
-  double cl;
-  double gridWidth;
-  std::string inputPath;
-  std::string outputPath;
-  SESAME::algoType algoType;
-  int datasetOption;
+  double cm, cl;
+  double grid_width;
 
   // used in design aspect
-  bool executeOffline; // determine whether to run the offline refinement
+  bool run_offline; // determine whether to run the offline refinement
   int landmark; // this is the index of landmark point[start from 0](determine
                 // to process the algorithm from which algorithm)
   int sliding;  // since we test the count-based sliding window, this is the
                 // count number
-  bool detectOutliers;             // whether detect outliers
-  double outlierDistanceThreshold; // the max distance of the incoming point to
-                                   // its nearest clusters
-  double densityThreshold; // the density value of the point to be treated as an
-                           // outlier
-  double neighborDistance; // the distance value of the point to judge
-                           // neighborhoods
-  int outlierClusterCapacity; // transfer outlier cluster and true cluster
+  bool detect_outlier;               // whether detect outliers
+  double outlier_distance_threshold; // the max distance of the incoming point
+                                     // to its nearest clusters
+  double outlier_density_threshold;  // the density value of the point to be
+                                     // treated as an outlier
+  double neighbor_distance;          // the distance value of the point to judge
+                                     // neighborhoods
+  int outlier_cap;      // transfer outlier cluster and true cluster
   bool kmeanspp = true; // whether use kmeans++ to initialize the centroids
 
   double delta_grid =

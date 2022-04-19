@@ -14,13 +14,13 @@ namespace SESAME {
 
 class V5Parameter : public AlgorithmParameters {
  public:
-  int maxInternalNodes; // B
-  int maxLeafNodes; // L
-  double thresholdDistance; // T
+  int max_in_nodes; // B
+  int max_leaf_nodes; // L
+  double distance_threshold; // T
   double alpha;
   double lambda;
-  double outlierDistanceThreshold;
-  double outlierClusterCapacity;
+  double outlier_distance_threshold;
+  double outlier_cap;
 };
 
 class V5 : public Algorithm {
@@ -39,11 +39,11 @@ class V5 : public Algorithm {
 
   ~V5();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
  private:
 
   void forwardInsert(PointPtr point);
@@ -55,7 +55,7 @@ class V5 : public Algorithm {
   void pointToClusterDist(PointPtr &insertPoint, NodePtr &node, double &dist);
   void calculateCentroid(CFPtr &cf, PointPtr &centroid);
   void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
-  void initializeCF(CFPtr &cf, int dimension);
+  void initializeCF(CFPtr &cf, int dim);
   void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
   void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
   void clearChildParents(vector<SESAME::NodePtr> &children);

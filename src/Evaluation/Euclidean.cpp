@@ -5,10 +5,10 @@
 #include <cmath>
 #include <Utils/Logger.hpp>
 
-double getDistance(SESAME::PointPtr inputs, SESAME::PointPtr centres, int dimension) {
+double getDistance(SESAME::PointPtr inputs, SESAME::PointPtr centres, int dim) {
   int i;
   double f = 0.0;
-  for (i = 0; i < dimension; i++) {
+  for (i = 0; i < dim; i++) {
     f += pow((inputs->getFeatureItem(i) - centres->getFeatureItem(i)), 2);
   }
   return f;

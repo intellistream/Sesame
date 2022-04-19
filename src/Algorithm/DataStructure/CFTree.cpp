@@ -22,20 +22,20 @@ static void log(const string_view &message,
 namespace SESAME {
 
 CFTree::CFTree(const StreamClusteringParam &param)
-    : maxInternalNodes(param.maxInternalNodes),
-      maxLeafNodes(param.maxLeafNodes),
-      thresholdDistance(param.thresholdDistance) {}
+    : max_in_nodes(param.max_in_nodes),
+      max_leaf_nodes(param.max_leaf_nodes),
+      distance_threshold(param.distance_threshold) {}
 
 CFTree::CFTree(int b = 0, int l = 0, double t = 0.0)
-    : maxInternalNodes(b), maxLeafNodes(l), thresholdDistance(t) {}
+    : max_in_nodes(b), max_leaf_nodes(l), distance_threshold(t) {}
 
 CFTree::~CFTree() {}
-int CFTree::getB() const { return this->maxInternalNodes; }
-int CFTree::getL() const { return this->maxLeafNodes; }
-double CFTree::getT() const { return this->thresholdDistance; }
-void CFTree::setB(int b) { this->maxInternalNodes = b; }
-void CFTree::setT(double t) { this->thresholdDistance = t; }
-void CFTree::setL(int l) { this->maxLeafNodes = l; }
+int CFTree::getB() const { return this->max_in_nodes; }
+int CFTree::getL() const { return this->max_leaf_nodes; }
+double CFTree::getT() const { return this->distance_threshold; }
+void CFTree::setB(int b) { this->max_in_nodes = b; }
+void CFTree::setT(double t) { this->distance_threshold = t; }
+void CFTree::setL(int l) { this->max_leaf_nodes = l; }
 
 CFPtr CFNode::getCF() { return this->curCF; }
 NodePtr CFNode::getParent() { return this->parent; }
@@ -91,10 +91,10 @@ ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
 
 ClusteringFeaturesTree::ClusteringFeaturesTree(
     const StreamClusteringParam &param)
-    : dim(param.dimension), maxInternalNodes(param.maxInternalNodes),
-      maxLeafNodes(param.maxLeafNodes),
-      thresholdDistance(param.thresholdDistance) {
-  root_ = GenericFactory::New<Node>(nullptr, param.dimension);
+    : dim(param.dim), max_in_nodes(param.max_in_nodes),
+      max_leaf_nodes(param.max_leaf_nodes),
+      distance_threshold(param.distance_threshold) {
+  root_ = GenericFactory::New<Node>(nullptr, param.dim);
   root_->index = leafMask++;
 }
 
@@ -108,7 +108,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(PointPtr point) {
       if (curNode->IsLeaf()) {
         auto centroid = curNode->Centroid();
         if (point->Radius(centroid) <=
-            thresholdDistance) { // concept drift detection
+            distance_threshold) { // concept drift detection
           // whether the new radius is lower than threshold T
           curNode->Update(point, true);
           // means this point could get included in this cluster
@@ -142,7 +142,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
       auto centroid = curNode->Centroid();
       // timerMeter.dataInsertEndMeasure();
       if (center->Radius(centroid) <=
-          thresholdDistance) { // concept drift detection
+          distance_threshold) { // concept drift detection
         // whether the new radius is lower than threshold T
         // timerMeter.dataInsertAccMeasure();
         curNode->Update(node, true);
@@ -220,7 +220,7 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
     auto newNode = GenericFactory::New<Node>(shared_from_this(), dim);
     parent->AddChild(newNode);
     newNode->Update(input, false);
-    if (parent->children.size() < maxLeafNodes) {
+    if (parent->children.size() < max_leaf_nodes) {
       // whether the number of CFs(clusters_) in the current leaf node is
       // lower thant threshold L l <= L, create a new leaf node and insert
       // the point into it update the parent node and all nodes on the path
@@ -318,7 +318,7 @@ ClusteringFeaturesTree::backwardEvolution(NodePtr node, T input) {
           parParent->Update(input, true);
         }
 
-        if (parParent->children.size() <= maxInternalNodes) {
+        if (parParent->children.size() <= max_in_nodes) {
           // b < B, remove the old node and insert the new nodeA and nodeB
           // into the parent node.
           break;
@@ -362,7 +362,7 @@ std::string ClusteringFeaturesTree::Serialize() {
 
 ClusteringFeaturesList::ClusteringFeaturesList(
     const StreamClusteringParam &param)
-    : dim(param.dimension), thresholdDistance(param.thresholdDistance) {}
+    : dim(param.dim), distance_threshold(param.distance_threshold) {}
 
 ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
@@ -374,7 +374,7 @@ ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(PointPtr point) {
     return node;
   } else {
     auto [node, dist] = CalcClosestNode(clusters_, point);
-    if (dist >= thresholdDistance) {
+    if (dist >= distance_threshold) {
       node = GenericFactory::New<Node>(dim);
       clusters_.push_back(node);
     }

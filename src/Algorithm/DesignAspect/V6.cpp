@@ -4,17 +4,17 @@
 #include <Algorithm/DesignAspect/V6.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-void SESAME::V6::Initilize() {
+void SESAME::V6::Init() {
   this->cfTree = DataStructureFactory::createCFTree();
-  this->cfTree->setB(V6Param.maxInternalNodes);
-  this->cfTree->setL(V6Param.maxLeafNodes);
-  this->cfTree->setT(V6Param.thresholdDistance);
+  this->cfTree->setB(V6Param.max_in_nodes);
+  this->cfTree->setL(V6Param.max_leaf_nodes);
+  this->cfTree->setT(V6Param.distance_threshold);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
 }
 
 
-void SESAME::V6::runOnlineClustering(const SESAME::PointPtr input) {
+void SESAME::V6::RunOnline(const SESAME::PointPtr input) {
   // insert the root
   if(input->getIndex() >= this->V6Param.landmark){
     forwardInsert(input->copy());
@@ -22,10 +22,10 @@ void SESAME::V6::runOnlineClustering(const SESAME::PointPtr input) {
 }
 
 
-void SESAME::V6::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::V6::RunOffline(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->clusterNodes.size(); i++) {
-    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V6Param.dimension, 0);
-    for(int j = 0; j < V6Param.dimension; j++) {
+    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V6Param.dim, 0);
+    for(int j = 0; j < V6Param.dim; j++) {
       centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);
     }
     sinkPtr->put(centroid->copy());
@@ -34,11 +34,11 @@ void SESAME::V6::runOfflineClustering(DataSinkPtr sinkPtr) {
 }
 
 SESAME::V6::V6(param_t &cmd_params) {
-  this->V6Param.pointNumber = cmd_params.pointNumber;
-  this->V6Param.dimension = cmd_params.dimension;
-  this->V6Param.maxInternalNodes = cmd_params.maxInternalNodes;
-  this->V6Param.maxLeafNodes = cmd_params.maxLeafNodes;
-  this->V6Param.thresholdDistance = cmd_params.thresholdDistance;
+  this->V6Param.num_points = cmd_params.num_points;
+  this->V6Param.dim = cmd_params.dim;
+  this->V6Param.max_in_nodes = cmd_params.max_in_nodes;
+  this->V6Param.max_leaf_nodes = cmd_params.max_leaf_nodes;
+  this->V6Param.distance_threshold = cmd_params.distance_threshold;
   this->V6Param.landmark = cmd_params.landmark;
 }
 SESAME::V6::~V6() {
@@ -83,7 +83,7 @@ void SESAME::V6::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
 // use Manhattan Distance
 void SESAME::V6::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V6Param.dimension);
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V6Param.dim);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
@@ -94,8 +94,8 @@ void SESAME::V6::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodeP
 // use Manhattan Distance
 double SESAME::V6::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
-  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(V6Param.dimension);
-  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(V6Param.dimension);
+  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(V6Param.dim);
+  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(V6Param.dim);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
@@ -181,9 +181,9 @@ void SESAME::V6::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &paren
   parCF->setSS(newSs);
 }
 
-void SESAME::V6::initializeCF(SESAME::CFPtr &cf, int dimension) {
+void SESAME::V6::initializeCF(SESAME::CFPtr &cf, int dim) {
   vector<double> ls, ss;
-  for(int i = 0; i < dimension; i++) {
+  for(int i = 0; i < dim; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
@@ -211,7 +211,7 @@ void SESAME::V6::forwardInsert(SESAME::PointPtr point){
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
-        PointPtr centroid = make_shared<Point>(V6Param.dimension);
+        PointPtr centroid = make_shared<Point>(V6Param.dim);
         calculateCentroid(curCF, centroid);
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T

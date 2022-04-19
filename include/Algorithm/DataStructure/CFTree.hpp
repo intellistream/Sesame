@@ -29,10 +29,10 @@ typedef std::shared_ptr<CFTree> CFTreePtr;
 
 class CFTree {
 private:
-  int maxInternalNodes; // max CF number of each internal node
-  int maxLeafNodes;     // max CF number of each leaf node
+  int max_in_nodes; // max CF number of each internal node
+  int max_leaf_nodes;     // max CF number of each leaf node
   double
-      thresholdDistance; // threshold radius of each sub cluster in leaf nodes
+      distance_threshold; // threshold radius of each sub cluster in leaf nodes
 public:
   CFTree(const StreamClusteringParam &param);
   CFTree(int b, int l, double t);
@@ -138,10 +138,10 @@ struct ClusteringFeatures {
 class ClusteringFeaturesTree
     : public enable_shared_from_this<ClusteringFeaturesTree> {
 private:
-  const int maxInternalNodes; // max CF number of each internal node
-  const int maxLeafNodes;     // max CF number of each leaf node
+  const int max_in_nodes; // max CF number of each internal node
+  const int max_leaf_nodes;     // max CF number of each leaf node
   const double
-      thresholdDistance; // threshold radius of each sub cluster in leaf nodes
+      distance_threshold; // threshold radius of each sub cluster in leaf nodes
   const int dim;
   int leafMask = 0;
 
@@ -251,7 +251,7 @@ public:
 class ClusteringFeaturesList {
 private:
   const int dim;
-  const double thresholdDistance;
+  const double distance_threshold;
 
 public:
   struct Node;

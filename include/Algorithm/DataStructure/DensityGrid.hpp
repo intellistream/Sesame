@@ -19,16 +19,16 @@ typedef std::shared_ptr<DensityGrid> DensityGridPtr;
 class DensityGrid{
  public:
   /**
-	 * For each dimension, its space Si, i =1, ··· ,d is divided into pi partitions as
+	 * For each dim, its space Si, i =1, ··· ,d is divided into pi partitions as
 	 * Si = Si,1 U Si,2 U ··· U Si,pi
 	 * A density grid g that is composed of S1,j1 ×S2,j2 ···×Sd,jd , ji =1, ...,pi,
 	 * has coordinates (j1,j2, ··· ,jd).
 	 */
   std::vector<double> coordinates;
   /**
-	 * The value of 'd' for the d-dimensional space S considered by D-Stream.
+	 * The value of 'd' for the d-dimal space S considered by D-Stream.
 	 */
-  int dimensions;
+  int dims;
 
   /**
    * Flag denoting whether this density grid has been inspected during the adjustClustering()
@@ -52,7 +52,7 @@ class DensityGrid{
    /**
 	 * Generates a vector of neighbours for this density grid by varying each coordinate
 	 * by one in either direction. Does not test whether the generated neighbours are valid as
-	 * DensityGrid is not aware of the number of partitions in each dimension.
+	 * DensityGrid is not aware of the number of partitions in each dim.
 	 *
 	 * @return a vector of neighbours for this density grid
 	 */
@@ -77,7 +77,7 @@ struct GridKeyHash{
   {
     //int[] primes = {31, 37, 41, 43, 47, 53, 59};
     int hc = 1;
-    for (int i = 0 ; i < densityGrid.dimensions ; i++)
+    for (int i = 0 ; i < densityGrid.dims ; i++)
     {
       hc = (hc * 31) + densityGrid.coordinates[i];
     }
@@ -90,9 +90,9 @@ struct EqualGrid
     {
   bool operator() (const DensityGrid &densityGrid1, const DensityGrid &densityGrid2) const
   {
-    if(densityGrid1.dimensions != densityGrid2.dimensions)
+    if(densityGrid1.dims != densityGrid2.dims)
       return false;
-    for(int i = 0 ; i < densityGrid1.dimensions ; i++)
+    for(int i = 0 ; i < densityGrid1.dims ; i++)
     {
       if(densityGrid1.coordinates[i] != densityGrid2.coordinates[i])
         return false;

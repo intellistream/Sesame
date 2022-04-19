@@ -59,11 +59,11 @@ public:
   static std::shared_ptr<std::barrier<>> createBarrier(int count);
   static void groupByCenters(const std::vector<PointPtr> &input,
                              const std::vector<PointPtr> &centers,
-                             std::vector<PointPtr> &output, int dimension);
+                             std::vector<PointPtr> &output, int dim);
   static void groupByCentersWithOffline(const std::vector<PointPtr> &input,
                                         const std::vector<PointPtr> &centers,
                                         std::vector<PointPtr> &output,
-                                        int dimension);
+                                        int dim);
 };
 
 static std::mt19937 r(std::random_device{}());

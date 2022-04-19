@@ -1,6 +1,6 @@
 echo "---------start Testing CluStream on KDD99 Dataset---------"
 
-echo  ">> Parameter Test: lastArrivingNum, timeWindow, clusterNumber, radiusFactor <<"
+echo  ">> Parameter Test: num_last_arr, time_window, num_clusters, radius <<"
 for a in $(seq 5 25 40)
 do
         for T in $(seq 10 3 200)

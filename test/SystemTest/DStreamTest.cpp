@@ -18,19 +18,19 @@ TEST(SystemTest, DStreamTest) {
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
   // [3, 3, 4, 6, 6, 7, 9, 9]
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.dimension = 54;
+  cmd_params.num_points = 3000;
+  cmd_params.dim = 54;
   cmd_params.lambda= 0.998;
   cmd_params.beta=0.001;
   cmd_params.cm = 15;
   cmd_params.cl = 0.001;
-  cmd_params.gridWidth= 13;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.grid_width= 13;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::DStreamType;
+  cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::DStreamType;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

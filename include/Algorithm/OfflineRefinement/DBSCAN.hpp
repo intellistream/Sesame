@@ -42,11 +42,11 @@ private:
   static double calculateEluDistance(PointPtr &point, PointPtr &other);
   // Obtain private members
   unsigned int getTotalPointSize() const { return pointSize; }
-  unsigned int getMinimumClusterSize() const { return minPoints; }
+  unsigned int getMinimumClusterSize() const { return min_points; }
   double getEpsilonSize() const { return epsilon; }
   int getClusterID() const { return clusterID; }
   unsigned int pointSize;
-  unsigned int minPoints;
+  unsigned int min_points;
   int clusterID;
   double epsilon;
 };

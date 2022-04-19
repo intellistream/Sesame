@@ -5,7 +5,7 @@
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <cfloat>
 
-void SESAME::V8::Initilize() {}
+void SESAME::V8::Init() {}
 
 // true means point is not an outlier, false means outlier
 bool SESAME::V8::checkoutOutlier(SESAME::PointPtr &point) {
@@ -17,7 +17,7 @@ bool SESAME::V8::checkoutOutlier(SESAME::PointPtr &point) {
       minDIstance = distance;
     }
   }
-  if(minDIstance > this->V8Param.outlierDistanceThreshold) return false;
+  if(minDIstance > this->V8Param.outlier_distance_threshold) return false;
   else return true;
 }
 
@@ -44,7 +44,7 @@ void SESAME::V8::insertPointIntoOutliers(SESAME::PointPtr &point) {
     double pointToOutlierDist = 0;
     insertCluster = this->outlierNodes[index];
     pointToClusterDist(point, insertCluster, pointToOutlierDist);
-    if(pointToOutlierDist < this->V8Param.thresholdDistance) {
+    if(pointToOutlierDist < this->V8Param.distance_threshold) {
       updateNLS(insertCluster, point);
     } else {
       insertCluster = make_shared<CF>();
@@ -57,14 +57,14 @@ void SESAME::V8::insertPointIntoOutliers(SESAME::PointPtr &point) {
 }
 
 void SESAME::V8::checkOutlierTransferCluster(SESAME::CFPtr &outCluster) {
-  if(outCluster->getN() >= this->V8Param.outlierClusterCapacity) {
+  if(outCluster->getN() >= this->V8Param.outlier_cap) {
     // need to transfer outlier cluster into real cluster
     this->outlierNodes.erase(this->outlierNodes.begin() + outCluster->getIndex());
     this->Clusters.push_back(outCluster);
   }
 }
 
-void SESAME::V8::runOnlineClustering(const SESAME::PointPtr input) {
+void SESAME::V8::RunOnline(const SESAME::PointPtr input) {
   // insert the root
   if(input->getIndex() >= this->V8Param.landmark){
     forwardInsert(input->copy());
@@ -72,10 +72,10 @@ void SESAME::V8::runOnlineClustering(const SESAME::PointPtr input) {
 }
 
 
-void SESAME::V8::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::V8::RunOffline(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->Clusters.size(); i++) {
-    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V8Param.dimension, 0);
-    for(int j = 0; j < V8Param.dimension; j++) {
+    PointPtr centroid = DataStructureFactory::createPoint(i, 1, V8Param.dim, 0);
+    for(int j = 0; j < V8Param.dim; j++) {
       centroid->setFeatureItem(this->Clusters[i]->getLS().at(j) / this->Clusters[i]->getN(), j);
     }
     sinkPtr->put(centroid->copy());
@@ -84,12 +84,12 @@ void SESAME::V8::runOfflineClustering(DataSinkPtr sinkPtr) {
 }
 
 SESAME::V8::V8(param_t &cmd_params) {
-  this->V8Param.pointNumber = cmd_params.pointNumber;
-  this->V8Param.dimension = cmd_params.dimension;
-  this->V8Param.thresholdDistance = cmd_params.thresholdDistance; // b
+  this->V8Param.num_points = cmd_params.num_points;
+  this->V8Param.dim = cmd_params.dim;
+  this->V8Param.distance_threshold = cmd_params.distance_threshold; // b
   this->V8Param.landmark = cmd_params.landmark;
-  this->V8Param.outlierDistanceThreshold = cmd_params.outlierDistanceThreshold; // a
-  this->V8Param.outlierClusterCapacity = cmd_params.outlierClusterCapacity;
+  this->V8Param.outlier_distance_threshold = cmd_params.outlier_distance_threshold; // a
+  this->V8Param.outlier_cap = cmd_params.outlier_cap;
 }
 SESAME::V8::~V8() {}
 
@@ -125,7 +125,7 @@ void SESAME::V8::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid
 // use Euclidean Distance
 void SESAME::V8::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::CFPtr &currentCF, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V8Param.dimension);
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V8Param.dim);
   calculateCentroid(currentCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
     dist += pow(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i), 2);
@@ -146,9 +146,9 @@ void SESAME::V8::selectCluster(SESAME::PointPtr &insertPoint, SESAME::CFPtr &cur
       currentCF = this->Clusters.at(i);
     }
   }
-  if(dist >= this->V8Param.thresholdDistance) {
+  if(dist >= this->V8Param.distance_threshold) {
     currentCF = make_shared<CF>();
-    initializeCF(currentCF, this->V8Param.dimension);
+    initializeCF(currentCF, this->V8Param.dim);
     this->Clusters.push_back(currentCF);
   }
 }
@@ -166,9 +166,9 @@ double SESAME::V8::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &ce
   return radius;
 }
 
-void SESAME::V8::initializeCF(SESAME::CFPtr &cf, int dimension) {
+void SESAME::V8::initializeCF(SESAME::CFPtr &cf, int dim) {
   vector<double> ls, ss;
-  for(int i = 0; i < dimension; i++) {
+  for(int i = 0; i < dim; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
@@ -180,7 +180,7 @@ void SESAME::V8::initializeCF(SESAME::CFPtr &cf, int dimension) {
 void SESAME::V8::forwardInsert(SESAME::PointPtr point){
   if(this->Clusters.size() == 0) {
     auto blankCF = make_shared<CF>();
-    initializeCF(blankCF, this->V8Param.dimension);
+    initializeCF(blankCF, this->V8Param.dim);
     this->Clusters.push_back(blankCF);
     updateNLS(blankCF, point);
   } else{

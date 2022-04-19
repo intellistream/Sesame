@@ -19,7 +19,7 @@ class Purity {
  public:
   static double purityCost(const std::vector<PointPtr> &input,
                          const std::vector<PointPtr> &result,
-                         int dimension, bool decay);
+                         int dim, bool decay);
 };
 
 }

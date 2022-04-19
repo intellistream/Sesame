@@ -79,7 +79,7 @@ void SESAME::Cache::getDPTree(double minRho,
                               SESAME::DPTreePtr &dpTree,
                               SESAME::OutPtr &outs,
                               std::unordered_set<ClusterPtr> &clusters) {
-  dpTree->init(clus, size, minRho, minDelta, outs, clusters);
+  dpTree->Init(clus, size, minRho, minDelta, outs, clusters);
 }
 int SESAME::Cache::GetNum()  {
   return num;

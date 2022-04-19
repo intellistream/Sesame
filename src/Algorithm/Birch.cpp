@@ -4,26 +4,26 @@
 #include <Algorithm/Birch.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-void SESAME::Birch::Initilize() {
+void SESAME::Birch::Init() {
   this->cfTree = DataStructureFactory::createCFTree();
-  this->cfTree->setB(BirchParam.maxInternalNodes);
-  this->cfTree->setL(BirchParam.maxLeafNodes);
-  this->cfTree->setT(BirchParam.thresholdDistance);
+  this->cfTree->setB(BirchParam.max_in_nodes);
+  this->cfTree->setL(BirchParam.max_leaf_nodes);
+  this->cfTree->setT(BirchParam.distance_threshold);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
 }
 
 
-void SESAME::Birch::runOnlineClustering(const SESAME::PointPtr input) {
+void SESAME::Birch::RunOnline(const SESAME::PointPtr input) {
     // insert the root
   forwardInsert(input->copy());
 }
 
 
-void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->leafNodes.size(); i++) {
-    PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dimension, 0);
-    for(int j = 0; j < BirchParam.dimension; j++) {
+    PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dim, 0);
+    for(int j = 0; j < BirchParam.dim; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
     }
     sinkPtr->put(centroid->copy());
@@ -38,11 +38,11 @@ void SESAME::Birch::runOfflineClustering(DataSinkPtr sinkPtr) {
 }
 
 SESAME::Birch::Birch(param_t &cmd_params) {
-  this->BirchParam.pointNumber = cmd_params.pointNumber;
-  this->BirchParam.dimension = cmd_params.dimension;
-  this->BirchParam.maxInternalNodes = cmd_params.maxInternalNodes;
-  this->BirchParam.maxLeafNodes = cmd_params.maxLeafNodes;
-  this->BirchParam.thresholdDistance = cmd_params.thresholdDistance;
+  this->BirchParam.num_points = cmd_params.num_points;
+  this->BirchParam.dim = cmd_params.dim;
+  this->BirchParam.max_in_nodes = cmd_params.max_in_nodes;
+  this->BirchParam.max_leaf_nodes = cmd_params.max_leaf_nodes;
+  this->BirchParam.distance_threshold = cmd_params.distance_threshold;
 }
 SESAME::Birch::~Birch() {
 }
@@ -85,7 +85,7 @@ void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centr
 // use Manhattan Distance
 void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::NodePtr &node, double & dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>(BirchParam.dimension);
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(BirchParam.dim);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for(int i = 0; i < insertPoint->getDimension(); i++) {
@@ -96,8 +96,8 @@ void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::No
 // use Manhattan Distance
 double SESAME::Birch::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
   double dist = 0;
-  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(BirchParam.dimension);
-  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(BirchParam.dimension);
+  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(BirchParam.dim);
+  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(BirchParam.dim);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
@@ -183,10 +183,10 @@ void SESAME::Birch::addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &pa
   parCF->setSS(newSs);
 }
 
-void SESAME::Birch::initializeCF(SESAME::CFPtr &cf, int dimension) {
+void SESAME::Birch::initializeCF(SESAME::CFPtr &cf, int dim) {
   vector<double> ls = cf->getLS();
   vector<double> ss = cf->getSS();
-  for(int i = 0; i < dimension; i++) {
+  for(int i = 0; i < dim; i++) {
     ls.push_back(0);
     ss.push_back(0);
   }
@@ -216,7 +216,7 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
-        PointPtr centroid = make_shared<Point>(BirchParam.dimension);
+        PointPtr centroid = make_shared<Point>(BirchParam.dim);
         calculateCentroid(curCF, centroid);
         timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection

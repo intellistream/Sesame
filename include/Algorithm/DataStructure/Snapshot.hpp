@@ -38,7 +38,7 @@ class Snapshot{
                                   int landmarkTime , int currentElapsedTime , unsigned int currentOrder);
 
   static SnapshotPtr substractSnapshot(SnapshotPtr snapshotCurrent,
-                                       const SnapshotPtr& snapshotLandmark, unsigned int clusterNumber);
+                                       const SnapshotPtr& snapshotLandmark, unsigned int num_clusters);
 
   SnapshotPtr copy();
 

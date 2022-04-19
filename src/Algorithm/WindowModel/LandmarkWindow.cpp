@@ -13,7 +13,7 @@
 /**
  * TODO: seems not meaningful? @Wangxin
  * @Description: create a blank window, initial the point in the window.
- * @param: dimension
+ * @param: dim
  * @param: windowSize
  */
 void SESAME::LandmarkWindow::initWindow(int num) {
@@ -179,13 +179,13 @@ std::vector<SESAME::PointPtr> SESAME::LandmarkWindow::getCoresetFromManager(std:
 /**
  * @Description: init the pyramidal window, pass the value of startTime and
  * reset shared_ptr Arrayqueue of snapshots
- * timeInterval: the time interval of online pyramidal window frame
+ * time_interval: the time interval of online pyramidal window frame
  * @Return: void
  */
-void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
+void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int time_interval)
 {
   QueueSnapshotPtr  queueSnapshot;
-  queueSnapshot.reserve(timeInterval+1);
+  queueSnapshot.reserve(time_interval+1);
   for(int i=0; i<50; i++) {
     orderSnapShots.push_back(queueSnapshot);
   }
@@ -203,12 +203,12 @@ void SESAME::LandmarkWindow::initPyramidalWindow(unsigned int timeInterval)
 void SESAME::LandmarkWindow::pyramidalWindowProcess(int elapsedTime,const SESAME::MicroClusters& microClusters){
   int i=-1;
   if(elapsedTime>0) {
-    this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.timeInterval));
+    this->pyramidalWindow.currentOrder= (int)(log(elapsedTime)/log(this->pyramidalWindow.time_interval));
     //NOTE: snapshot when elapsed time =0 always add to the front of latest T order
     while(++i>=0)//++i>=0
     {
-      if(this->pyramidalWindow.currentOrder>=i && elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i))==0) {
-        if(elapsedTime%(int)(pow(this->pyramidalWindow.timeInterval,i+1))!=0) {
+      if(this->pyramidalWindow.currentOrder>=i && elapsedTime%(int)(pow(this->pyramidalWindow.time_interval,i))==0) {
+        if(elapsedTime%(int)(pow(this->pyramidalWindow.time_interval,i+1))!=0) {
           storeSnapshot(i,microClusters,elapsedTime);
         }
       } else
@@ -233,7 +233,7 @@ void SESAME::LandmarkWindow::storeSnapshot(unsigned  int currentOrder,const Micr
   SnapshotPtr snapshot;
   snapshot=DataStructureFactory::createSnapshot(const_cast<std::vector<MicroClusterPtr> &>(microClusters),elapsedTime);
   //SESAME_INFO("The current order size is "<<size<<" current order is "<<currentOrder<<" elapsed Time "<<elapsedTime);
-  if(size==this->pyramidalWindow.timeInterval+1) {
+  if(size==this->pyramidalWindow.time_interval+1) {
     orderSnapShots[currentOrder].erase(orderSnapShots[currentOrder].begin());
   }
   orderSnapShots[currentOrder].push_back(snapshot);

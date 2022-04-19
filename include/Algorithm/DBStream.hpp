@@ -15,8 +15,8 @@ class DBStreamParams : public AlgorithmParameters {
  public:
   double radius;
   double lambda;
-  int cleanUpInterval;//Time gap
-  double weightMin;//minimum weight
+  int clean_interval;//Time gap
+  double min_weight;//minimum weight
   double alpha;//α, intersection factor
   double base;//base of decay function
 };
@@ -51,9 +51,9 @@ class DBStream : public Algorithm
 
       DBStream(param_t &cmd_params);
       ~DBStream();
-      void Initilize() override;
-      void runOnlineClustering(PointPtr input) override;
-      void runOfflineClustering(DataSinkPtr sinkPtr) override;
+      void Init() override;
+      void RunOnline(PointPtr input) override;
+      void RunOffline(DataSinkPtr sinkPtr) override;
      private:
       bool isInitial  = false;
 

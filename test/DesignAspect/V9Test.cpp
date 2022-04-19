@@ -20,22 +20,22 @@ TEST(DesignTest, V9Test) {
 setupLogging("benchmark.log", LOG_DEBUG);
 //Parse parameters.
 param_t cmd_params;
-cmd_params.pointNumber = 3000;
-cmd_params.dimension = 54;
-cmd_params.GTClusterNumber = 7;
+cmd_params.num_points = 3000;
+cmd_params.dim = 54;
+cmd_params.true_num_clusters = 7;
 cmd_params.beta=0.001;
 cmd_params.cm = 15;
 cmd_params.cl = 2;
-cmd_params.outlierDistanceThreshold= 30;
-cmd_params.outlierClusterCapacity = 5;
-cmd_params.timeDecay = false;
+cmd_params.outlier_distance_threshold= 30;
+cmd_params.outlier_cap = 5;
+cmd_params.time_decay = false;
 cmd_params.landmark = 1000;
-cmd_params.executeOffline = false;
+cmd_params.run_offline = false;
 
 
-cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-cmd_params.outputPath = "results.txt";
-cmd_params.algoType = SESAME::V9Stream;
+cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+cmd_params.output_file = "results.txt";
+cmd_params.algo = SESAME::V9Stream;
 
 std::vector<SESAME::PointPtr> input;
 std::vector<SESAME::PointPtr> results;

@@ -1,4 +1,4 @@
-#include "Algorithm/DesignAspect/SlidingWindowClustering.hpp"
+#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 
 #include <cassert>
@@ -10,7 +10,7 @@ SlidingWindowClustering::SlidingWindowClustering(const param_t &param)
 
 SlidingWindowClustering::~SlidingWindowClustering() {}
 
-void SlidingWindowClustering::Initilize() {}
+void SlidingWindowClustering::Init() {}
 
 void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
                        int32_t k, std::vector<int32_t> *centers, double *cost) {
@@ -115,16 +115,16 @@ guess_optimum_range_bounds(const vector<PointPtr> &samples, int window_size,
   return guess_bounds(costs);
 }
 
-void SlidingWindowClustering::runOnlineClustering(PointPtr input) {
+void SlidingWindowClustering::RunOnline(PointPtr input) {
   ++count;
   if (!has_sampled) {
     if (samples.size() < param.num_samples * param.sliding)
       samples.push_back(input);
     if (samples.size() >= param.num_samples * param.sliding) {
       const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
-          samples, param.sliding, param.num_samples, param.clusterNumber);
+          samples, param.sliding, param.num_samples, param.num_clusters);
       framework = GenericFactory::New<FrameworkAlg<KMeansSummary>>(
-          param.sliding, param.clusterNumber, param.delta_grid, lower_bound,
+          param.sliding, param.num_clusters, param.delta_grid, lower_bound,
           upper_bound);
       for (auto p : samples) {
         framework->process_point(p);
@@ -136,7 +136,7 @@ void SlidingWindowClustering::runOnlineClustering(PointPtr input) {
   }
 }
 
-void SlidingWindowClustering::runOfflineClustering(DataSinkPtr sinkPtr) {
+void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {
   std::vector<PointPtr> onlineCenters;
   double cost_estimate = 0;
   framework->solution(&onlineCenters, &cost_estimate);

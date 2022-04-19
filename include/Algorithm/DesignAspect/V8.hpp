@@ -14,10 +14,10 @@ namespace SESAME {
 
 class V8Parameter : public AlgorithmParameters {
  public:
-  double thresholdDistance; // T
+  double distance_threshold; // T
   int landmark;
-  double outlierDistanceThreshold;
-  double outlierClusterCapacity;
+  double outlier_distance_threshold;
+  double outlier_cap;
 };
 
 class V8 : public Algorithm {
@@ -32,11 +32,11 @@ class V8 : public Algorithm {
 
   ~V8();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
  private:
 
   void forwardInsert(PointPtr point);
@@ -45,7 +45,7 @@ class V8 : public Algorithm {
   void pointToClusterDist(PointPtr &insertPoint, CFPtr &node, double &dist);
   void calculateCentroid(CFPtr &cf, PointPtr &centroid);
   void updateNLS(CFPtr &currentCF, PointPtr &point);
-  void initializeCF(CFPtr &cf, int dimension);
+  void initializeCF(CFPtr &cf, int dim);
 
   bool checkoutOutlier(SESAME::PointPtr &point);
   void insertPointIntoOutliers(SESAME::PointPtr &point);

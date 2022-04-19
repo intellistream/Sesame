@@ -6,9 +6,9 @@
 SESAME::ConnectedRegions::ConnectedRegions(){
 
 }
-SESAME::ConnectedRegions::ConnectedRegions(double alpha, double weightMin){
+SESAME::ConnectedRegions::ConnectedRegions(double alpha, double min_weight){
   this->alpha = alpha;
-  this->weightMin = weightMin;
+  this->min_weight = min_weight;
 }
 void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& microClusters,
 
@@ -17,10 +17,10 @@ void  SESAME::ConnectedRegions::connection(  std::vector<MicroClusterPtr>& micro
   WeightedAdjacencyList::iterator iterW;
   for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++){
   //  std::cout<<" cluster 1 weight "<<iterW->first.microCluster1->weight
-  //  <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is "<<weightMin<<std::endl;
-    if (iterW->first.microCluster1->weight >= weightMin &&iterW->first.microCluster2->weight >= weightMin){
+  //  <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is "<<min_weight<<std::endl;
+    if (iterW->first.microCluster1->weight >= min_weight &&iterW->first.microCluster2->weight >= min_weight){
       double val = 2*iterW->second->weight / (iterW->first.microCluster1->weight+iterW->first.microCluster2->weight);
-      if (val > weightMin) {
+      if (val > min_weight) {
         insertIntoGraph( microClusters,
                          iterW->first.microCluster1->id.front(),
                          iterW->first.microCluster2->id.front());
@@ -120,15 +120,15 @@ std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink(){
   std::vector<SESAME::PointPtr> points;
   for(auto iter=0; iter!=finalClusters.size();iter++)
   {   //initialize pseudo point of macro clusters
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dimension, 0);
+    PointPtr point = DataStructureFactory::createPoint(iter, 0, finalClusters.at(iter).front()->dim, 0);
     //This is just for testing, need to delete
-    std::vector<double> centroid(finalClusters.at(iter).front()->dimension,0);
+    std::vector<double> centroid(finalClusters.at(iter).front()->dim,0);
     //TODO maybe wrong ;so dizzy
     for(auto j=0; j<finalClusters.at(iter).size();j++)
     {
       double currentWeight=point->getWeight()+finalClusters.at(iter).at(j)->weight;
       point->setWeight(currentWeight);
-      for(auto a =0;a<finalClusters.at(iter).at(j)->dimension;a++)
+      for(auto a =0;a<finalClusters.at(iter).at(j)->dim;a++)
       {
         if(j==0)
           point->setFeatureItem(0,a);
@@ -136,8 +136,8 @@ std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink(){
         centroid[a]=point->getFeatureItem(a);//testing
         if(j==finalClusters.at(iter).size()-1)
         {
-          point->setFeatureItem(point->getFeatureItem(a)/finalClusters.at(iter).at(j)->dimension,a);
-          centroid[a] =centroid[a]/finalClusters.at(iter).at(j)->dimension;//testing
+          point->setFeatureItem(point->getFeatureItem(a)/finalClusters.at(iter).at(j)->dim,a);
+          centroid[a] =centroid[a]/finalClusters.at(iter).at(j)->dim;//testing
         }
       }
     }

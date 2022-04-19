@@ -7,19 +7,19 @@
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
 SESAME::DStream::DStream(param_t &cmd_params){
-  this->dStreamParams.pointNumber = cmd_params.pointNumber;
-  this->dStreamParams.dimension = cmd_params.dimension;
+  this->dStreamParams.num_points = cmd_params.num_points;
+  this->dStreamParams.dim = cmd_params.dim;
   this->dStreamParams.lambda=cmd_params.lambda;
   this->dStreamParams.cm=cmd_params.cm;
   this->dStreamParams.cl=cmd_params.cl;
   this->dStreamParams.beta=cmd_params.beta;
-  this->dStreamParams.gridWidth =cmd_params.gridWidth;
+  this->dStreamParams.grid_width =cmd_params.grid_width;
 }
 
 SESAME::DStream:: ~DStream()
 = default;
 
-void SESAME::DStream::Initilize() {
+void SESAME::DStream::Init() {
   this->dampedWindow = WindowFactory::createDampedWindow(dStreamParams.lambda, 1 );
   this->startTime = 0;
   this->pointArrivingTime= 0;
@@ -39,19 +39,19 @@ void SESAME::DStream::Initilize() {
    this->dl  = -1.0;
    this->NGrids = 1;
  // // SESAME_INFO(" A is " <<optionA<<", B is "<<optionB<<" and gap = "<<gap);
-  this->minVals = std::vector<double> (dStreamParams.dimension, 0);
-  this->maxVals = std::vector<double> (dStreamParams.dimension, 0);
-  this->tempCoord = std::vector<double> (dStreamParams.dimension, 0);
-  this->Coord = std::vector<double> (dStreamParams.dimension, 0);
+  this->minVals = std::vector<double> (dStreamParams.dim, 0);
+  this->maxVals = std::vector<double> (dStreamParams.dim, 0);
+  this->tempCoord = std::vector<double> (dStreamParams.dim, 0);
+  this->Coord = std::vector<double> (dStreamParams.dim, 0);
 }
 
-void SESAME::DStream::runOnlineClustering(PointPtr input) {
+void SESAME::DStream::RunOnline(PointPtr input) {
   if (!this->isInitial){
     // SESAME_INFO("Start initialize...");
 
-    Initilize();
+    Init();
     this->isInitial = true;
-    for(int i = 0 ; i < dStreamParams.dimension ; i++)
+    for(int i = 0 ; i < dStreamParams.dim ; i++)
     {
       maxVals[i] = (int)input->getFeatureItem(i);
       minVals[i] = (int)input->getFeatureItem(i);
@@ -92,24 +92,24 @@ void SESAME::DStream::runOnlineClustering(PointPtr input) {
   }
 
 
-void SESAME::DStream::runOfflineClustering(DataSinkPtr sinkPtr)
+void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
   // SESAME_INFO(" cluster list size "<<clusterList.size());
   std::vector<SESAME::PointPtr> points;
   for( auto iter=0; iter!=this->clusterList.size();iter++)
   {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, dStreamParams.dimension, 0);
+    PointPtr point = DataStructureFactory::createPoint(iter, 0, dStreamParams.dim, 0);
     auto count=0;
     for(auto &iterGrid: this->clusterList.at(iter).grids)
     {
-      for(int iterDim=0; iterDim<dStreamParams.dimension;iterDim++)
+      for(int iterDim=0; iterDim<dStreamParams.dim;iterDim++)
       {
         if(count==0)
           point->setFeatureItem(0,iterDim);
         point->setFeatureItem(point->getFeatureItem(iterDim)+iterGrid.first.coordinates[iterDim],iterDim);
         if(count== this->clusterList.at(iter).grids.size()-1)
         {
-          point->setFeatureItem(point->getFeatureItem(iterDim)/ dStreamParams.dimension,iterDim);
+          point->setFeatureItem(point->getFeatureItem(iterDim)/ dStreamParams.dim,iterDim);
         }
       }
        double weight= gridList.find(iterGrid.first)->second.gridDensity;
@@ -125,7 +125,7 @@ void SESAME::DStream::runOfflineClustering(DataSinkPtr sinkPtr)
 
 void SESAME::DStream::ifReCalculateN(PointPtr point)
 {
-  for (int i = 0 ; i < dStreamParams.dimension; i++)
+  for (int i = 0 ; i < dStreamParams.dim; i++)
   {
      tempCoord[i] = point->getFeatureItem(i);
      if (tempCoord[i] > maxVals[i])
@@ -138,15 +138,15 @@ void SESAME::DStream::ifReCalculateN(PointPtr point)
        minVals[i] = tempCoord[i];
         recalculateN = true;
       }
-     Coord[i]= point->getFeatureItem(i)/dStreamParams.gridWidth;
+     Coord[i]= point->getFeatureItem(i)/dStreamParams.grid_width;
 
   }
 }
 void SESAME::DStream::reCalculateN(){
   int curGridNumber = 1;
-  for (int i = 0 ; i < dStreamParams.dimension ; i++)
+  for (int i = 0 ; i < dStreamParams.dim ; i++)
   {
-    int gridNum= (maxVals[i]-minVals[i])/dStreamParams.gridWidth;
+    int gridNum= (maxVals[i]-minVals[i])/dStreamParams.grid_width;
     if(gridNum<=0)
       gridNum=1;
     curGridNumber = curGridNumber * gridNum;
@@ -830,7 +830,7 @@ bool SESAME::DStream::checkIfSporadic(CharacteristicVector characteristicVec)
 {
   // Check S1
   if(characteristicVec.getCurrGridDensity(pointArrivingTime,dStreamParams.lambda) <
-  densityThresholdFunction(characteristicVec.densityUpdateTime, dStreamParams.cl, dStreamParams.lambda, this->NGrids))
+  outlier_density_thresholdFunction(characteristicVec.densityUpdateTime, dStreamParams.cl, dStreamParams.lambda, this->NGrids))
   {
     // Check S2 TODO CHANGE REMOVE TIME FROM 0 TO -1
     if(characteristicVec.removeTime == 0 ||
@@ -850,7 +850,7 @@ bool SESAME::DStream::checkIfSporadic(CharacteristicVector characteristicVec)
 	 * @param lambda - see lambda definition
 	 * @param NGrids - the number of density grids,
 	 */
-double SESAME::DStream::densityThresholdFunction(int tg, double cl, double lambda, int NGrids)
+double SESAME::DStream::outlier_density_thresholdFunction(int tg, double cl, double lambda, int NGrids)
 {
   return (cl * (1.0 - pow(lambda, ((double)(pointArrivingTime-tg)+1.0))))/(NGrids * (1.0 - lambda));
 }

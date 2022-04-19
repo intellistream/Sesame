@@ -50,10 +50,10 @@ requires StreamClusteringConcept<W, D, O, R> class StreamClustering
 public:
   StreamClustering(const param_t &param);
   ~StreamClustering();
-  void Initilize();
-  void runOnlineClustering(PointPtr input);
-  void runOfflineClustering(DataSinkPtr ptr);
-  void store(std::string outputPath, int dimension,
+  void Init();
+  void RunOnline(PointPtr input);
+  void RunOffline(DataSinkPtr ptr);
+  void store(std::string output_file, int dim,
              std::vector<PointPtr> results);
 
 private:
@@ -79,7 +79,7 @@ StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params)
     : param(cmd_params) {}
 
 template <typename W, typename D, typename O, typename R>
-void StreamClustering<W, D, O, R>::Initilize() {
+void StreamClustering<W, D, O, R>::Init() {
   w = GenericFactory::New<W>(param);
   d = GenericFactory::New<D>(param);
   o = GenericFactory::New<O>(param);
@@ -88,7 +88,7 @@ void StreamClustering<W, D, O, R>::Initilize() {
 }
 
 template <typename W, typename D, typename O, typename R>
-void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
+void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
   constexpr bool has_delete = requires(W & w) { w.Delete(); };
   constexpr bool has_update = requires(W & w, NodePtr node) { w.Update(node); };
   // std::cerr << "#" << input->index << ":" << d->root()->cf.num << std::endl;
@@ -138,12 +138,12 @@ void StreamClustering<W, D, O, R>::runOnlineClustering(PointPtr input) {
 }
 
 template <typename W, typename D, typename O, typename R>
-void StreamClustering<W, D, O, R>::runOfflineClustering(DataSinkPtr ptr) {
+void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
-    auto centroid = GenericFactory::New<Point>(param.dimension, i, 1, 0);
-    for (int j = 0; j < param.dimension; j++) {
+    auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+    for (int j = 0; j < param.dim; j++) {
       centroid->setFeatureItem(clusters[i]->cf.ls[j] / clusters[i]->cf.num, j);
     }
     onlineCenters.push_back(centroid);
@@ -161,7 +161,7 @@ StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point) {
     return node;
   } else {
     auto closest = CalcClosestNode(outliers_, point);
-    if (closest.second < param.thresholdDistance) {
+    if (closest.second < param.distance_threshold) {
       closest.first->Update(point);
       return closest.first;
     } else {

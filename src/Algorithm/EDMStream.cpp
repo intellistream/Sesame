@@ -5,23 +5,23 @@
 #include <Algorithm/EDMStream.hpp>
 
 SESAME::EDMStream::EDMStream(param_t &cmd_params) {
-  this->EDMParam.pointNumber = cmd_params.pointNumber;
-  this->EDMParam.dimension = cmd_params.dimension;
-  this->EDMParam.a = cmd_params.a;
+  this->EDMParam.num_points = cmd_params.num_points;
+  this->EDMParam.dim = cmd_params.dim;
+  this->EDMParam.alpha = cmd_params.alpha;
   this->EDMParam.lamda = cmd_params.lambda;
   this->EDMParam.beta = cmd_params.beta;
-  this->EDMParam.cacheNum = cmd_params.cacheNum;
+  this->EDMParam.num_cache = cmd_params.num_cache;
   this->EDMParam.radius = cmd_params.radius;
   this->EDMParam.minDelta = cmd_params.delta;
   this->EDMParam.opt = cmd_params.opt;
 }
 SESAME::EDMStream::~EDMStream(){};
-void SESAME::EDMStream::Initilize() {
+void SESAME::EDMStream::Init() {
   this->alpha = 0;
-  this->cache = SESAME::DataStructureFactory::creatCache(this->EDMParam.cacheNum, this->EDMParam.a,
+  this->cache = SESAME::DataStructureFactory::creatCache(this->EDMParam.num_cache, this->EDMParam.alpha,
                                                          this->EDMParam.lamda, this->EDMParam.radius);
   this->outres = SESAME::DataStructureFactory::createOutlierReservoir(this->EDMParam.radius,
-                                                                      this->EDMParam.a, this->EDMParam.lamda);
+                                                                      this->EDMParam.alpha, this->EDMParam.lamda);
   this->dpTree = SESAME::DataStructureFactory::createDPTree(this->actCluMaxNum,
                                                             this->EDMParam.radius);
   this->dpTree->SetMinDelta(this->EDMParam.minDelta);
@@ -35,11 +35,11 @@ void SESAME::EDMStream::setMinDelta(double minDelta) {
 void SESAME::EDMStream::InitDP(double time) {
   cache->compDeltaRho(time);
   SESAME_DEBUG("beta = " << this->EDMParam.beta);
-  this->minRho = this->EDMParam.beta / (1 - pow(this->EDMParam.a, this->EDMParam.lamda));
+  this->minRho = this->EDMParam.beta / (1 - pow(this->EDMParam.alpha, this->EDMParam.lamda));
   SESAME_DEBUG("minRho = " << this->minRho);
 
-  this->deltaT = (log(1 - pow(this->EDMParam.a, this->EDMParam.lamda)) / log(this->EDMParam.a) -
-      log(this->EDMParam.beta) / log(this->EDMParam.a))/ this->EDMParam.lamda;
+  this->deltaT = (log(1 - pow(this->EDMParam.alpha, this->EDMParam.lamda)) / log(this->EDMParam.alpha) -
+      log(this->EDMParam.beta) / log(this->EDMParam.alpha))/ this->EDMParam.lamda;
   //		double deltaT = 100;
   SESAME_DEBUG("deltaT = " << this->deltaT);
   outres->setTimeGap(this->deltaT);
@@ -50,7 +50,7 @@ void SESAME::EDMStream::InitDP(double time) {
 
 SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, double time) {
   timerMeter.dataInsertAccMeasure();
-  double coef = pow(this->EDMParam.a, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
+  double coef = pow(this->EDMParam.alpha, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
   auto nn = dpTree->findNN(p, coef, opt, time);
   timerMeter.dataInsertEndMeasure();
@@ -119,7 +119,7 @@ void CountNode(const SESAME::DPNodePtr &node, int &num) {
     }
   }
 }
-void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
+void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
   double curTime = input->getTimeStamp() / 100000;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
@@ -133,7 +133,7 @@ void SESAME::EDMStream::runOnlineClustering(SESAME::PointPtr input) {
     timerMeter.clusterUpdateEndMeasure();
   }
 }
-void SESAME::EDMStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
+void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   timerMeter.printTime(true,false,true,false);
   SESAME_DEBUG("Cluster number: "<< this->clusters.size());
   int i = 0;

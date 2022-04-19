@@ -26,12 +26,12 @@ class MicroCluster {
 
   std::vector<int> id;
   dataPoint centroid;
-  dataPoint LS; // the sum of the data values for each dimension
-  dataPoint SS; // the sum of the squares of  the data values for each dimension
+  dataPoint LS; // the sum of the data values for each dim
+  dataPoint SS; // the sum of the squares of  the data values for each dim
   int LST; // the sum of the time stamps Ti~... Tin
   int SST; // the sum of the squares of the time stamps  Til... Tin
   double weight; //number of data point in the clusters
-  int dimension;
+  int dim;
   double radius; //Used in DBStream
   //the parameters below is unique for DenStream
   int createTime;
@@ -42,11 +42,11 @@ class MicroCluster {
   // 2.this may need to modify in the future (All algorithms used this, e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
 
 
-  MicroCluster(int dimension, int id);
-  MicroCluster(int dimension, int id,PointPtr dataPoint,double radius);//DBStream
+  MicroCluster(int dim, int id);
+  MicroCluster(int dim, int id,PointPtr dataPoint,double radius);//DBStream
 
   ~MicroCluster();
-  void init(PointPtr datapoint, int timestamp);
+  void Init(PointPtr datapoint, int timestamp);
   void insert(PointPtr datapoint, int timestamp);//Used in CluStream
   bool insert(PointPtr datapoint,double decayFactor,double epsilon);// DenStream
   void insert(PointPtr datapoint);//DBStream //, double decayFactor
@@ -57,14 +57,14 @@ class MicroCluster {
   void resetID(int index);   //Used in DenStream
   double getRadius(double decayFactor,bool judge);  //Used in DenStream
 
-  double getRelevanceStamp(int lastArrivingNum) const;
+  double getRelevanceStamp(int num_last_arr) const;
   double getMutime() const;
   double getSigmaTime() const;
   static double getQuantile(double z);
-  double getRadius(double radiusFactor);
+  double getRadius(double radius);
   double getDeviation();
   dataPoint getCentroid();
-  double getInclusionProbability(PointPtr datapoint,double radiusFactor);
+  double getInclusionProbability(PointPtr datapoint,double radius);
   dataPoint getVarianceVector();
   double calCentroidDistance(PointPtr datapoint);
   bool judgeMerge(MicroClusterPtr other);

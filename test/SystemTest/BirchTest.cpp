@@ -20,17 +20,17 @@ TEST(SystemTest, BirchTest) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.pointNumber = 3000;
-  cmd_params.thresholdDistance = 10;
-  cmd_params.maxInternalNodes = 40;
-  cmd_params.maxLeafNodes = 20;
-  cmd_params.dimension = 54;
-  cmd_params.GTClusterNumber = 7;
-  cmd_params.timeDecay = false;
+  cmd_params.num_points = 3000;
+  cmd_params.distance_threshold = 10;
+  cmd_params.max_in_nodes = 40;
+  cmd_params.max_leaf_nodes = 20;
+  cmd_params.dim = 54;
+  cmd_params.true_num_clusters = 7;
+  cmd_params.time_decay = false;
 
-  cmd_params.inputPath = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-  cmd_params.outputPath = "results.txt";
-  cmd_params.algoType = SESAME::BirchType;
+  cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::BirchType;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
