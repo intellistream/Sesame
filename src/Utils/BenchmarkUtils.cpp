@@ -384,7 +384,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
     std::cout << "Algorithm: CluStream "
               << "num_last_arr: " << cmd_params.num_last_arr
               << "   time_window: " << cmd_params.time_window
-              << "   offlineClusterNumber: " << cmd_params.num_clusters
+              << "   num_offline_clusters: " << cmd_params.num_clusters
               << "   ClusterNumber: " << cmd_params.num_online_clusters
               << "   radius: " << cmd_params.radius
               << "   buf_size: " << cmd_params.buf_size << "\n";

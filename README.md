@@ -99,14 +99,13 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 | Parameter            | CoverType      | KDD-99         | Sensor       |
 | -------------------- | -------------- | -------------- | ------------ |
-| num_last_arr      | [2,1,8]        | [2,1,16]       | [2,1,15]     |
-| time_window           | [200,50,350]   | [200,50,350]   | 1000         |
-| time_interval         | random         | random         | random       |
-| num_offline_clusters | 7              | 23             | 54           |
-| num_clusters        | [80,10,150]    | [60,10,150]    | [100,10,200] |
-| radius         | [2,1,26]       | [2,1,8]        | 15           |
-| buf_size           | [500,500,1500] | [500,500,1500] | 500          |
-| offline_time_window    | random         | random         | random       |
+| num_last_arr         | [2,1,8]        | [2,1,16]       | [2,1,15]     |
+| time_window          | [200,50,350]   | [200,50,350]   | 1000         |
+| time_interval        | random         | random         | random       |
+| num_online_clusters  | [80,10,150]    | [60,10,150]    | [100,10,200] |
+| radius               | [2,1,26]       | [2,1,8]        | 15           |
+| buf_size             | [500,500,1500] | [500,500,1500] | 500          |
+| offline_time_window  | random         | random         | random       |
 
 ##### (8) SL-KMeans
 
@@ -114,6 +113,12 @@ This project aims at building a scalable stream mining library on modern hardwar
 | -------------------- | -------------- | -------------- | ------------ |
 | delta_grid           | {0.2, 0.5, 0.7}        | {0.2, 0.5, 0.7}       | {0.2, 0.5, 0.7}     |
 | num_samples          | {100, 500, 1000}   | {100, 500, 1000}   | {100, 500, 1000}         |
+
+### Flags
+
+```javascript
+flags = ["input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "time_interval", "num_online_clusters", "offline_time_window", "delta_grid", "num_samples"];
+```
 
 ## How to Cite Sesame
 

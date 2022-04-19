@@ -27,7 +27,7 @@ class CluStreamParameter : public AlgorithmParameters {
   int time_window;
   unsigned int time_interval;
   int num_clusters; //total number of micro clusters online
-  int offlineClusterNumber; //total number of micro clusters online
+  int num_offline_clusters; //total number of micro clusters online
   double radius;//radius factor
   int buf_size;
   int offline_time_window;

@@ -20,7 +20,7 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.num_last_arr = cmd_params.num_last_arr;
   this->CluStreamParam.time_window = cmd_params.time_window;
   this->CluStreamParam.time_interval = cmd_params.time_interval;
-  this->CluStreamParam.offlineClusterNumber = cmd_params.num_clusters;
+  this->CluStreamParam.num_offline_clusters = cmd_params.num_clusters;
   this->CluStreamParam.radius = cmd_params.radius;
   this->CluStreamParam.buf_size = cmd_params.buf_size;
   this->CluStreamParam.offline_time_window = cmd_params.offline_time_window;
@@ -312,12 +312,12 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   vector <PointPtr> TransformedSnapshot;
   microClusterToPoint(subtractMiroCluster->microClusters, TransformedSnapshot);
 
- // SESAME_INFO("offline Cluster Number " << this->CluStreamParam.offlineClusterNumber << "Total number of p: " << TransformedSnapshot.size());
+ // SESAME_INFO("offline Cluster Number " << this->CluStreamParam.num_offline_clusters << "Total number of p: " << TransformedSnapshot.size());
 
   std::vector<PointPtr> centers;
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-  this->kmeans->runKMeans(this->CluStreamParam.offlineClusterNumber, this->CluStreamParam.num_clusters,centers,
+  this->kmeans->runKMeans(this->CluStreamParam.num_offline_clusters, this->CluStreamParam.num_clusters,centers,
                           TransformedSnapshot, oldGroups, newGroups, true);
   //Count overall time
 
