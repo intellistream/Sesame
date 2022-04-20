@@ -11,6 +11,7 @@
 #include "Algorithm/DBStream.hpp"
 #include "Algorithm/DStream.hpp"
 #include "Algorithm/DenStream.hpp"
+#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/DesignAspect/V1.hpp"
 #include "Algorithm/DesignAspect/V2.hpp"
@@ -55,6 +56,11 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   if (cmd_params.algo == DStreamType) {
     shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
     return (AlgorithmPtr)dStream;
+  }
+  if (cmd_params.algo == SLKMeansType) {
+    shared_ptr<SlidingWindowClustering> slidingWindowClustering =
+        std::make_shared<SlidingWindowClustering>(cmd_params);
+    return (AlgorithmPtr)slidingWindowClustering;
   }
   if (cmd_params.algo == V1Stream) {
     shared_ptr<V1> v1stream = std::make_shared<V1>(cmd_params);

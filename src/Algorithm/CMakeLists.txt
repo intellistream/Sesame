@@ -6,6 +6,7 @@ add_source_sesame(
         EDMStream.cpp
         DBStream.cpp
         DStream.cpp
+        SlidingWindowClustering.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
 )

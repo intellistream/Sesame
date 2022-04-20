@@ -29,6 +29,7 @@ enum AlgoType {
   DBStreamType,
   EDMStreamType,
   DStreamType,
+  SLKMeansType,
   V1Stream,
   V2Stream,
   V3Stream,
@@ -43,9 +44,9 @@ enum AlgoType {
 
 static char *algo_names[] = {
     "Birch",     "StreamKMeans", "CluStream", "DenStream", "DBStream",
-    "EDMStream", "DStream",      "V1Stream",  "V2Stream",  "V3Stream",
-    "V4Stream",  "V5Stream",     "V6Stream",  "V7Stream",  "V8Stream",
-    "V9Stream",  "Generic"};
+    "EDMStream", "DStream",      "SL-KMeans", "V1Stream",  "V2Stream",
+    "V3Stream",  "V4Stream",     "V5Stream",  "V6Stream",  "V7Stream",
+    "V8Stream",  "V9Stream",     "Generic"};
 
 class Algorithm;
 typedef std::shared_ptr<Algorithm> AlgorithmPtr;
@@ -111,7 +112,8 @@ struct param_t {
                          // the optimum.
   void Print() {
     std::cout << "algo: " << algo_names[algo] << std::endl;
-    std::cout << "input_file: " << std::filesystem::path(input_file).filename() << std::endl;
+    std::cout << "input_file: " << std::filesystem::path(input_file).filename()
+              << std::endl;
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
     std::cout << "num_clusters: " << num_clusters << std::endl;
