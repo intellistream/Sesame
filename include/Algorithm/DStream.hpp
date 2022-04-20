@@ -38,7 +38,6 @@ class DStream : public Algorithm
       double dm;// Density threshold for dense grids; controlled by cm
       double dl; //  Density threshold for sparse grids; controlled by cl
       int NGrids;//The number of density grids ,with an initial value 0
-      TimeMeter timerMeter;
 
 
       HashMap gridList;

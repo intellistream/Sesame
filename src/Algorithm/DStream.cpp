@@ -6,7 +6,8 @@
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-SESAME::DStream::DStream(param_t &cmd_params){
+SESAME::DStream::DStream(param_t &cmd_params) {
+  this->param = cmd_params;
   this->dStreamParams.num_points = cmd_params.num_points;
   this->dStreamParams.dim = cmd_params.dim;
   this->dStreamParams.lambda=cmd_params.lambda;
@@ -43,9 +44,11 @@ void SESAME::DStream::Init() {
   this->maxVals = std::vector<double> (dStreamParams.dim, 0);
   this->tempCoord = std::vector<double> (dStreamParams.dim, 0);
   this->Coord = std::vector<double> (dStreamParams.dim, 0);
+  sum_timer.tick();
 }
 
 void SESAME::DStream::RunOnline(PointPtr input) {
+  ds_timer.tick();
   if (!this->isInitial){
     // SESAME_INFO("Start initialize...");
 
@@ -61,15 +64,11 @@ void SESAME::DStream::RunOnline(PointPtr input) {
   else
   {
     this->pointArrivingTime=input->getIndex();
-    timerMeter.dataInsertAccMeasure();
     ifReCalculateN(input);
-    timerMeter.dataInsertEndMeasure();
     if (recalculateN)
     {
-      timerMeter.dataInsertAccMeasure();
       reCalculateN();
       GridListUpdate(Coord);//tempCoord
-      timerMeter.dataInsertEndMeasure();
       // 5. If tc == gap, then initial clustering
       // and
       // 6. If tc mod gap == 0, then:
@@ -81,19 +80,18 @@ void SESAME::DStream::RunOnline(PointPtr input) {
       }
       if(clusterInitial&&(clock()-startTime)/CLOCKS_PER_SEC%(gap*10)==0)
       {
-
-        timerMeter.clusterUpdateAccMeasure();
         removeSporadic();
-        timerMeter.clusterUpdateEndMeasure();
         adjustClustering();
       }
       }
     }
+    ds_timer.tock();
   }
 
 
 void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
+  ref_timer.tick();
   // SESAME_INFO(" cluster list size "<<clusterList.size());
   std::vector<SESAME::PointPtr> points;
   for( auto iter=0; iter!=this->clusterList.size();iter++)
@@ -118,9 +116,11 @@ void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
     }
     points.push_back(point);
   }
-  timerMeter.printTime(false, false,false,true);
+  // timerMeter.printTime(false, false,false,true);
   for(auto & point : points)
-    sinkPtr->put(point->copy());
+    sinkPtr->put(point);
+  ref_timer.tock();
+  sum_timer.tock();
 }
 
 void SESAME::DStream::ifReCalculateN(PointPtr point)
@@ -216,18 +216,12 @@ void SESAME::DStream::GridListUpdate(std::vector<double> coordinate){
  * Implements the procedure given in Figure 3 of Chen and Tu 2007
  */
  void SESAME::DStream::initialClustering() {
-  // // SESAME_INFO("INITIAL CLUSTERING CALLED");
-
   // 1. Update the density of all grids in grid_list
   //Timer: online grid
-  timerMeter.clusterUpdateAccMeasure();
   updateGridListDensity();
-  timerMeter.clusterUpdateEndMeasure();
   // 2. Assign each dense grid to a distinct cluster
   // and
   // 3. Label all other grids as NO_CLASS
-
-  timerMeter.finalClusterAccMeasure();
   auto gridIter = this->gridList.begin();
   HashMap newGridList;
   while(gridIter!=gridList.end())
@@ -264,7 +258,6 @@ void SESAME::DStream::GridListUpdate(std::vector<double> coordinate){
   }while(changesMade);	// while changes are being made
   // // SESAME_INFO("INITIAL CLUSTERING FINISHED");
   clusterInitial = true;
-  timerMeter.finalClusterEndMeasure();
 }
 /**
 	 * Makes first change available to it by following the steps:
@@ -373,10 +366,7 @@ bool SESAME::DStream::adjustLabels()
 void SESAME::DStream::adjustClustering() {
  // SESAME_INFO("ADJUST CLUSTERING CALLED ");
   // 1. Update the density of all grids in grid_list
-  timerMeter.clusterUpdateAccMeasure();
   updateGridListDensity();
-  timerMeter.clusterUpdateEndMeasure();
-  timerMeter.finalClusterAccMeasure();
   // 2. For each grid dg whose attribute is changed since last call
   //    a. If dg is sparse
   //    b. If dg is dense
@@ -386,7 +376,6 @@ void SESAME::DStream::adjustClustering() {
   do{
     changesMade=inspectChangedGrids();
   }while(changesMade);
- timerMeter.finalClusterEndMeasure();
 }
 
 
