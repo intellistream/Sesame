@@ -1,5 +1,5 @@
-flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "time_interval", "num_online_clusters", "offline_time_window", "delta_grid", "num_samples"];
+flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "num_online_clusters", "delta_grid", "num_samples"];
 
 // flags.map(x => { console.log(`cmd_params.${x} = FLAGS_${x};`) });
 
-flags.map(x => { console.log(`std::cerr << "${x}: " << ${x} << std::endl;`) });
+// flags.map(x => { console.log(`std::cerr << "${x}: " << ${x} << std::endl;`) });

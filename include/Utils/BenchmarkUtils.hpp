@@ -33,10 +33,10 @@ struct param_t {
   int dataset_option;
 
   int num_last_arr, time_window;
-  unsigned int time_interval;
+  unsigned int time_interval = 50;
   int num_online_clusters;
 
-  int buf_size, offline_time_window;
+  int buf_size, offline_time_window = 100;
 
   // CF Tree
   int max_in_nodes, max_leaf_nodes;
@@ -110,9 +110,7 @@ struct param_t {
     std::cerr << "mu: " << mu << std::endl;
     std::cerr << "num_last_arr: " << num_last_arr << std::endl;
     std::cerr << "time_window: " << time_window << std::endl;
-    std::cerr << "time_interval: " << time_interval << std::endl;
     std::cerr << "num_online_clusters: " << num_online_clusters << std::endl;
-    std::cerr << "offline_time_window: " << offline_time_window << std::endl;
     std::cerr << "delta_grid: " << delta_grid << std::endl;
     std::cerr << "num_samples: " << num_samples << std::endl;
   }

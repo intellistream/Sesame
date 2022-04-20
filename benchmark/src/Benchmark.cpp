@@ -51,9 +51,7 @@ DEFINE_double(mu, 2.0, "Mu");
 // Clustream
 DEFINE_int32(num_last_arr, 2, "Number of last arrive");
 DEFINE_int32(time_window, 200, "Time window");
-DEFINE_int32(time_interval, 100, "Time interval"); // random
 DEFINE_int32(num_online_clusters, 80, "Number of online clusters");
-DEFINE_int32(offline_time_window, 200, "Offline time window"); // random
 // SL-KMeans
 DEFINE_double(
     delta_grid, 0.2,
@@ -96,9 +94,7 @@ int main(int argc, char **argv) {
   cmd_params.mu = FLAGS_mu;
   cmd_params.num_last_arr = FLAGS_num_last_arr;
   cmd_params.time_window = FLAGS_time_window;
-  cmd_params.time_interval = FLAGS_time_interval;
   cmd_params.num_online_clusters = FLAGS_num_online_clusters;
-  cmd_params.offline_time_window = FLAGS_offline_time_window;
   cmd_params.delta_grid = FLAGS_delta_grid;
   cmd_params.num_samples = FLAGS_num_samples;
 
