@@ -377,11 +377,11 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                                 SESAME::DataSourcePtr sourcePtr,
                                                 SESAME::DataSinkPtr sinkPtr,
                                                 SESAME::AlgorithmPtr algoPtr) {
-  std::cout << "data number: " << cmd_params.num_points << std::endl;
+  std::cerr << "data number: " << cmd_params.num_points << std::endl;
 
   switch (cmd_params.algo) {
   case SESAME::CluStreamType:
-    std::cout << "Algorithm: CluStream "
+    std::cerr << "Algorithm: CluStream "
               << "num_last_arr: " << cmd_params.num_last_arr
               << "   time_window: " << cmd_params.time_window
               << "   num_offline_clusters: " << cmd_params.num_clusters
@@ -390,7 +390,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "   buf_size: " << cmd_params.buf_size << "\n";
     break;
   case SESAME::DenStreamType:
-    std::cout << "Algorithm: DenStream "
+    std::cerr << "Algorithm: DenStream "
               << "buf_size: " << cmd_params.buf_size
               << "   min_points: " << cmd_params.min_points
               << "   epsilon: " << cmd_params.epsilon
@@ -399,7 +399,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "\n";
     break;
   case SESAME::DBStreamType:
-    std::cout << "Algorithm: DBStream "
+    std::cerr << "Algorithm: DBStream "
               << "lambda: " << cmd_params.lambda
               << "   radius: " << cmd_params.radius
               << "   clean_interval: " << cmd_params.clean_interval
@@ -407,52 +407,52 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "   alpha: " << cmd_params.alpha << "\n";
     break;
   case SESAME::DStreamType:
-    std::cout << "Algorithm: DStream "
+    std::cerr << "Algorithm: DStream "
               << "lambda: " << cmd_params.lambda
               << "   beta: " << cmd_params.beta << "   cm: " << cmd_params.cm
               << "   cl: " << cmd_params.cl << "\n";
     break;
   case SESAME::StreamKMeansType:
-    std::cout << "Algorithm: StreamKMeans "
+    std::cerr << "Algorithm: StreamKMeans "
               << "Seed: " << cmd_params.seed
               << "   ClusterNumber: " << cmd_params.num_clusters
               << "   CoresetSize: " << cmd_params.coreset_size << "\n";
     break;
   case SESAME::BirchType:
-    std::cout << "Algorithm: Birch "
+    std::cerr << "Algorithm: Birch "
               << "maxLeafNode: " << cmd_params.max_leaf_nodes
               << "   maxInnerNodes: " << cmd_params.max_in_nodes
               << "   distance_threshold: " << cmd_params.distance_threshold
               << "\n";
     break;
   case SESAME::V1Stream:
-    std::cout << "Algorithm: BirchV1 "
+    std::cerr << "Algorithm: BirchV1 "
               << "maxLeafNode: " << cmd_params.max_leaf_nodes
               << "   maxInnerNodes: " << cmd_params.max_in_nodes
               << "   distance_threshold: " << cmd_params.distance_threshold
               << "   ClusterNumber: " << cmd_params.num_clusters << "\n";
     break;
   case SESAME::V2Stream:
-    std::cout << "Algorithm: BirchV2 "
+    std::cerr << "Algorithm: BirchV2 "
               << "maxLeafNode: " << cmd_params.max_leaf_nodes
               << "   maxInnerNodes: " << cmd_params.max_in_nodes
               << "   distance_threshold: " << cmd_params.distance_threshold
               << "\n";
     break;
   case SESAME::V3Stream:
-    std::cout << "Algorithm: BirchV3 "
+    std::cerr << "Algorithm: BirchV3 "
               << "maxLeafNode: " << cmd_params.max_leaf_nodes
               << "   maxInnerNodes: " << cmd_params.max_in_nodes
               << "   distance_threshold: " << cmd_params.distance_threshold
               << "\n";
     break;
   case SESAME::EDMStreamType:
-    std::cout << "Algorithm: EDMStream "
+    std::cerr << "Algorithm: EDMStream "
               << "CacheNum: " << cmd_params.num_cache
               << "   Radius: " << cmd_params.radius
               << "   MinDelta: " << cmd_params.delta << "\n";
   case SESAME::Generic:
-    std::cout << "Algorithm: Generic "
+    std::cerr << "Algorithm: Generic "
               << "\n";
   default:
     break;
@@ -471,7 +471,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> outputs;
   if (results.empty()) {
-    std::cout << "ERROR! No output!" << std::endl;
+    std::cerr << "ERROR! No output!" << std::endl;
   }
   // TODO: be sure the output clusterID start from 0!
   if (cmd_params.run_offline) {

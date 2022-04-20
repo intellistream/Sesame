@@ -106,8 +106,9 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   SESAME_INFO("Engine sourceEnd emit data");
   // barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
-  printTime();
-  overallMeter.printCumulative();
+  // printTime();
+  algoPtr->PrintPerf();
+  // overallMeter.printCumulative();
 }
 
 bool SESAME::SimpleEngine::stop() {

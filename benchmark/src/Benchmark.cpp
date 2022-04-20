@@ -116,11 +116,11 @@ int main(int argc, char **argv) {
   // Create Algorithm.
   SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
-  cmd_params.print();
+  cmd_params.Print();
 
   // Run algorithm producing results.
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  res->print();
+  res->Print();
 }

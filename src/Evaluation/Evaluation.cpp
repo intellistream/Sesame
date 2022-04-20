@@ -23,7 +23,7 @@ BenchmarkResultPtr Evaluation::runEvaluation(
   double purity = Purity::purityCost(center, inputs, dim, decay);
 
   double CMM = CMM::CMMCost(dim, inputs, center);
-  std::cout << "Accuracy:\n"
+  std::cerr << "Accuracy:\n"
             << "AveCMM: " << round(CMM * 10000) / 10000
             << "\npurity: " << round(purity * 10000) / 10000 << std::endl;
   return GenericFactory::New<BenchmarkResult>(CMM, purity);

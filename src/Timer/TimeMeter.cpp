@@ -322,12 +322,12 @@ void SESAME::TimeMeter::printTime( bool initial,bool snapshot,bool outlierBuffer
     std::cout<< "final cluster: "<<finalClusterTime << ", count "<<timer.periodicalCluCnt<< std::endl;
 }
 void SESAME::TimeMeter::printCumulative(){
-  std::cout << "Cumulative Overall Time every "<<interval<<" tuples (Count in ns)\n";
+  std::cerr << "Cumulative Overall Time every "<<interval<<" tuples (Count in ns)\n";
   for(int i=0;i<recordOverall.size();i++) {
-    std::cout <<recordOverall.at(i)<<"\n";
+    std::cerr <<recordOverall.at(i)<<"\n";
     if(i==recordOverall.size()-1)
     {
-      std::cout <<recordOverall.at(i)+MeterUSEC(timer.refinementStart,timer.refinementTimer)<<"\n"<<std::endl;
+      std::cerr <<recordOverall.at(i)+MeterUSEC(timer.refinementStart,timer.refinementTimer)<<"\n"<<std::endl;
     }
   }
 

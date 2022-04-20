@@ -11,33 +11,32 @@ void SESAME::Birch::Init() {
   this->cfTree->setT(BirchParam.distance_threshold);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
+  sum_timer.tick();
 }
 
 
 void SESAME::Birch::RunOnline(const SESAME::PointPtr input) {
-    // insert the root
-  forwardInsert(input->copy());
+  ds_timer.tick();
+  forwardInsert(input);
+  ds_timer.tock();
 }
 
 
 void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
+  ref_timer.tick();
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dim, 0);
     for(int j = 0; j < BirchParam.dim; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) / this->leafNodes[i]->getCF()->getN(), j);
     }
-    sinkPtr->put(centroid->copy());
+    sinkPtr->put(centroid);
   }
-  timerMeter.printTime(false,false,false,false);
-  //SESAME_DEBUG( "The size of the centroid is :" << sinkPtr->getResults().size());
-
-//  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-//  this->kmeans->runKMeans((int)middleCentroids.size() / 2, (int)middleCentroids.size(),
-//                          middleCentroids,oldGroups,newGroups, true);
-//  this->kmeans->produceResult(oldGroups, sinkPtr);
+  ref_timer.tock();
+  sum_timer.tock();
 }
 
 SESAME::Birch::Birch(param_t &cmd_params) {
+  this->param = cmd_params;
   this->BirchParam.num_points = cmd_params.num_points;
   this->BirchParam.dim = cmd_params.dim;
   this->BirchParam.max_in_nodes = cmd_params.max_in_nodes;
@@ -125,14 +124,12 @@ void SESAME::Birch::selectChild(vector<SESAME::NodePtr> &children, SESAME::Point
 
 // calculate the radius of a cluster
 double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr &centroid) {
-  timerMeter.dataInsertAccMeasure();
   double denominator = 0;
   double radius = 0;
   for(int i = 0; i < point->getDimension(); i++) {
     denominator += pow(centroid->getFeatureItem(i) - point->getFeatureItem(i), 2);
   }
   radius = sqrt(denominator);
-  timerMeter.dataInsertEndMeasure();
   return radius;
 }
 
@@ -203,27 +200,20 @@ void SESAME::Birch::clearChildParents(vector<SESAME::NodePtr> &children) {
 void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
   NodePtr curNode = this->root;
   if(curNode->getCF()->getN() == 0) {
-    timerMeter.dataInsertAccMeasure();
     updateNLS(curNode, point, true);
-    timerMeter.dataInsertEndMeasure();
   } else{
     while(1) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
-        timerMeter.clusterUpdateAccMeasure();
         CFPtr curCF = curNode->getCF();
-        timerMeter.dataInsertAccMeasure();
         if(curCF->getN() == 0) {
           initializeCF(curCF, point->getDimension());
         }
         PointPtr centroid = make_shared<Point>(BirchParam.dim);
         calculateCentroid(curCF, centroid);
-        timerMeter.dataInsertEndMeasure();
         if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
           // whether the new radius is lower than threshold T
-          timerMeter.dataInsertAccMeasure();
           updateNLS(curNode, point, true);
-          timerMeter.dataInsertEndMeasure();
 
           // means this point could get included in this cluster
           //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
@@ -232,16 +222,12 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point){
         } else {
           // concept drift adaption
           // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
-          timerMeter.clusterUpdateAccMeasure();
           backwardEvolution(curNode, point);
-          timerMeter.clusterUpdateEndMeasure();
           break;
         }
 
       } else{
-        timerMeter.dataInsertAccMeasure();
         selectChild(childrenNode, point, curNode);
-        timerMeter.dataInsertEndMeasure();
       }
     }
   }

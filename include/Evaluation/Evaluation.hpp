@@ -12,18 +12,18 @@
 
 #include <vector>
 
+namespace SESAME {
+
 struct BenchmarkResult {
   double cmm, purity;
   BenchmarkResult(double cmm = 0, double purity = 0)
       : cmm(cmm), purity(purity) {}
-  void print() {
-    std::cerr << "CMM: " << cmm << std::endl;
-    std::cerr << "Purity: " << purity << std::endl;
+  void Print() {
+    std::cout << "cmm: " << cmm << std::endl;
+    std::cout << "purity: " << purity << std::endl;
   }
 };
 using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;
-
-namespace SESAME {
 
 // enum evaluateType { euclideanCostType, cmmType, purityType };
 
