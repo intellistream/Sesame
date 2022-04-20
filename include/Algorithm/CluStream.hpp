@@ -7,18 +7,20 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 
+#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/MicroCluster.hpp"
+#include "Algorithm/OfflineRefinement/KMeans.hpp"
+#include "Algorithm/WindowModel/LandmarkWindow.hpp"
+#include "Algorithm/DataStructure/Snapshot.hpp"
+#include "Utils/BenchmarkUtils.hpp"
+#include "Timer/Timer.hpp"
+
 #include <cmath>
 #include <cassert>
 #include <limits>
 #include <ctime>
 #include <cstdio>
-#include <Algorithm/Algorithm.hpp>
-#include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/OfflineRefinement/KMeans.hpp>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Algorithm/DataStructure/Snapshot.hpp>
-#include <Utils/BenchmarkUtils.hpp>
-#include <Timer/TimeMeter.hpp>
+
 namespace SESAME {
 
 class CluStreamParameter : public AlgorithmParameters {
@@ -47,8 +49,6 @@ class CluStream : public Algorithm {
   int lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
-  TimeMeter timerMeter;
-  //bool insert;
 
   void Init() override;
   void RunOnline(PointPtr input) override;

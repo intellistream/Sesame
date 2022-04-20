@@ -303,7 +303,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.num_online_clusters = 10;
   cmd_params.radius = 2;
   cmd_params.buf_size = 500;
-  cmd_params.offline_time_window = 2;
+  cmd_params.offline_time_window = 0;
   cmd_params.max_leaf_nodes = 3;
   cmd_params.max_in_nodes = 3;
   cmd_params.distance_threshold = 3550;
