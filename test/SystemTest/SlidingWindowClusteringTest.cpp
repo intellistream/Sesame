@@ -27,7 +27,7 @@ TEST(SystemTest, SlidingWindowClustering) {
   cmd_params.num_points = 3000;
   cmd_params.num_clusters = 7;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.sliding = 100;
   cmd_params.delta_grid = 0.2;

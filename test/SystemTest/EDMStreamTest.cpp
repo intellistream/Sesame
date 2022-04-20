@@ -29,7 +29,7 @@ TEST(SystemTest, EDMStreamTest) {
   cmd_params.opt = 2;
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
   // [3, 3, 4, 6, 6, 7, 9, 9]
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = true;
 
 

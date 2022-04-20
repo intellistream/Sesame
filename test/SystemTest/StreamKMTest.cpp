@@ -23,7 +23,7 @@ TEST(SystemTest, StreamKMTest) {
   cmd_params.num_clusters = 7;
   cmd_params.dim = 54;
   cmd_params.coreset_size = 600;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";

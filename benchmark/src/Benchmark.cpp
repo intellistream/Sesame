@@ -15,15 +15,17 @@
 #include <gflags/gflags.h>
 
 using namespace std;
+using namespace SESAME;
 
-DEFINE_string(input_file, "dataset/CoverType.txt", "Input file path");
+DEFINE_int32(algo, 0, "Algorithm to use");
+DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");
 DEFINE_int32(num_points, 3000, "Number of points");
-DEFINE_int32(dim, 5, "Dimension of points");
+DEFINE_int32(dim, 54, "Dimension of points");
 DEFINE_int32(num_clusters, 7, "Number of clusters");
 // BIRCH
-DEFINE_int32(max_in_nodes, 100, "Maximum number of internal nodes");
-DEFINE_int32(max_leaf_nodes, 100, "Maximum number of leaf nodes");
-DEFINE_double(distance_threshold, 100.0, "Distance threshold");
+DEFINE_int32(max_in_nodes, 20, "Maximum number of internal nodes");
+DEFINE_int32(max_leaf_nodes, 40, "Maximum number of leaf nodes");
+DEFINE_double(distance_threshold, 10.0, "Distance threshold");
 // StreamKM++
 DEFINE_int32(seed, 1, "Seed for random number generator");
 DEFINE_int32(coreset_size, 100, "Coreset size");
@@ -67,6 +69,7 @@ int main(int argc, char **argv) {
   param_t cmd_params;
   BenchmarkUtils::defaultParam(cmd_params);
   // gen from gen_flags.js
+  cmd_params.algo = (AlgoType)FLAGS_algo;
   cmd_params.input_file = FLAGS_input_file;
   cmd_params.num_points = FLAGS_num_points;
   cmd_params.dim = FLAGS_dim;
@@ -100,7 +103,6 @@ int main(int argc, char **argv) {
   cmd_params.num_samples = FLAGS_num_samples;
 
   cmd_params.output_file = "results.txt";
-  cmd_params.algo = SESAME::Generic;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
@@ -118,6 +120,11 @@ int main(int argc, char **argv) {
   // Create Algorithm.
   SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
+  cmd_params.print();
+
   // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+  auto res =
+      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  res->print();
 }

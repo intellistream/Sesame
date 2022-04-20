@@ -25,7 +25,7 @@ TEST(SystemTest, DStreamTest) {
   cmd_params.cm = 15;
   cmd_params.cl = 0.001;
   cmd_params.grid_width= 13;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";

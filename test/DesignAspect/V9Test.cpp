@@ -22,7 +22,7 @@ setupLogging("benchmark.log", LOG_DEBUG);
 param_t cmd_params;
 cmd_params.num_points = 3000;
 cmd_params.dim = 54;
-cmd_params.true_num_clusters = 7;
+cmd_params.num_clusters = 7;
 cmd_params.beta=0.001;
 cmd_params.cm = 15;
 cmd_params.cl = 2;

@@ -493,7 +493,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
   auto res = SESAME::Evaluation::runEvaluation(
-      cmd_params.dim, cmd_params.true_num_clusters, cmd_params.time_decay,
+      cmd_params.dim, cmd_params.num_clusters, cmd_params.time_decay,
       sourcePtr->getInputs(), sinkPtr->getResults());
 
   engine.stop();

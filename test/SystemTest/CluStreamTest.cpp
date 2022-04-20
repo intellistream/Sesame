@@ -28,7 +28,7 @@ TEST(SystemTest, CluStreamTest) {
   cmd_params.radius =20;
   cmd_params.buf_size = 500;
   cmd_params.offline_time_window = 0;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
 

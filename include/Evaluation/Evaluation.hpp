@@ -16,6 +16,10 @@ struct BenchmarkResult {
   double cmm, purity;
   BenchmarkResult(double cmm = 0, double purity = 0)
       : cmm(cmm), purity(purity) {}
+  void print() {
+    std::cerr << "CMM: " << cmm << std::endl;
+    std::cerr << "Purity: " << purity << std::endl;
+  }
 };
 using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;
 
@@ -25,10 +29,10 @@ namespace SESAME {
 
 class Evaluation {
 public:
-  static BenchmarkResultPtr runEvaluation(int dim, int true_num_clusters,
-                                   bool decay,
-                                   const std::vector<PointPtr> &inputs,
-                                   const std::vector<PointPtr> &results);
+  static BenchmarkResultPtr runEvaluation(int dim, int num_clusters,
+                                          bool decay,
+                                          const std::vector<PointPtr> &inputs,
+                                          const std::vector<PointPtr> &results);
 };
 
 } // namespace SESAME

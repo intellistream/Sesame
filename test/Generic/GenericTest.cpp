@@ -35,7 +35,7 @@ TEST(GenericTest, V1) {
   cmd_params.max_leaf_nodes = 20;
   cmd_params.num_clusters = 7;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
   cmd_params.outlier_distance_threshold = 5000;
@@ -80,7 +80,7 @@ TEST(GenericTest, V2) {
   cmd_params.max_in_nodes = 10;
   cmd_params.max_leaf_nodes = 20;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.min_points = 10;
   cmd_params.landmark = 1000;
@@ -127,7 +127,7 @@ TEST(GenericTest, V3) {
   cmd_params.max_in_nodes = 20;
   cmd_params.max_leaf_nodes = 40;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
   cmd_params.outlier_distance_threshold = 5000;
@@ -173,7 +173,7 @@ TEST(GenericTest, V4) {
   cmd_params.max_in_nodes = 20;
   cmd_params.max_leaf_nodes = 40;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.sliding = 1000;
   cmd_params.outlier_distance_threshold = 3000;
@@ -219,7 +219,7 @@ TEST(GenericTest, V5) {
   cmd_params.max_in_nodes = 20;
   cmd_params.max_leaf_nodes = 40;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.lambda = 1.25;
   cmd_params.alpha = 2;
@@ -266,7 +266,7 @@ TEST(GenericTest, V6) {
   cmd_params.max_in_nodes = 40;
   cmd_params.max_leaf_nodes = 20;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
 
@@ -308,7 +308,7 @@ TEST(GenericTest, V7) {
   cmd_params.max_in_nodes = 20;
   cmd_params.max_leaf_nodes = 40;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
   cmd_params.neighbor_distance = 5000;
@@ -355,7 +355,7 @@ TEST(GenericTest, V8) {
   cmd_params.max_in_nodes = 40;
   cmd_params.max_leaf_nodes = 20;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
   cmd_params.run_offline = false;

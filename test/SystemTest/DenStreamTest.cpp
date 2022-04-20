@@ -35,7 +35,7 @@ TEST(SystemTest, DenStreamTest) {
 
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::DenStreamType;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.run_offline = true;
 

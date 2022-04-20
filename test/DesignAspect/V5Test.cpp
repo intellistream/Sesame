@@ -25,7 +25,7 @@ TEST(DesignTest, V5) {
   cmd_params.max_in_nodes = 20;
   cmd_params.max_leaf_nodes = 40;
   cmd_params.dim = 54;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
   cmd_params.lambda = 1.25;
   cmd_params.alpha = 2;

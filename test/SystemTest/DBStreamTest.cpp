@@ -31,7 +31,7 @@ TEST(SystemTest, DBStreamTest) {
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::DBStreamType;
-  cmd_params.true_num_clusters = 7;
+  cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
 
   std::vector<SESAME::PointPtr> input;

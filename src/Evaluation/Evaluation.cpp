@@ -13,7 +13,7 @@
 namespace SESAME {
 
 BenchmarkResultPtr Evaluation::runEvaluation(
-    int dim, int true_num_clusters, bool decay,
+    int dim, int num_clusters, bool decay,
     const std::vector<PointPtr> &inputs, const std::vector<PointPtr> &center) {
   /*Euclidean::euclideanCost(numberOfPoints,
                                     numberOfCenters,
