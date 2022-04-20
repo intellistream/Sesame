@@ -5,6 +5,7 @@
 #include <Algorithm/EDMStream.hpp>
 
 SESAME::EDMStream::EDMStream(param_t &cmd_params) {
+  this->param = cmd_params;
   this->EDMParam.num_points = cmd_params.num_points;
   this->EDMParam.dim = cmd_params.dim;
   this->EDMParam.alpha = cmd_params.alpha;
@@ -15,7 +16,9 @@ SESAME::EDMStream::EDMStream(param_t &cmd_params) {
   this->EDMParam.minDelta = cmd_params.delta;
   this->EDMParam.opt = cmd_params.opt;
 }
+
 SESAME::EDMStream::~EDMStream(){};
+
 void SESAME::EDMStream::Init() {
   this->alpha = 0;
   this->cache = SESAME::DataStructureFactory::creatCache(this->EDMParam.num_cache, this->EDMParam.alpha,
@@ -25,6 +28,7 @@ void SESAME::EDMStream::Init() {
   this->dpTree = SESAME::DataStructureFactory::createDPTree(this->actCluMaxNum,
                                                             this->EDMParam.radius);
   this->dpTree->SetMinDelta(this->EDMParam.minDelta);
+  sum_timer.tick();
 }
 
 void SESAME::EDMStream::setMinDelta(double minDelta) {
@@ -49,12 +53,12 @@ void SESAME::EDMStream::InitDP(double time) {
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, double time) {
-  timerMeter.dataInsertAccMeasure();
+  ds_timer.tick();
   double coef = pow(this->EDMParam.alpha, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
   auto nn = dpTree->findNN(p, coef, opt, time);
-  timerMeter.dataInsertEndMeasure();
-  timerMeter.outlierDetectionAccMeasure();
+  ds_timer.tock();
+  out_timer.tick();
   if (nn == nullptr || nn->GetDis() > dpTree->GetCluR()) {
     nn = outres->insert(p, time);
     if (nn->GetRho() > this->minRho) {
@@ -63,7 +67,7 @@ SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, 
     }
   }
   dpTree->deleteInact(outres, this->minRho, time);
-  timerMeter.outlierDetectionEndMeasure();
+  out_timer.tock();
   return nn;
 }
 double SESAME::EDMStream::computeAlpha() {
@@ -86,7 +90,6 @@ void SESAME::EDMStream::delCluster() {
 SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double time) {
   SESAME::PointPtr curP = p;
   if (!this->EDMParam.isInit) {
-    timerMeter.initialMeasure();
     auto cc = cache->add(curP, time);
     if (cache->isFull()) {
       // draw decision graph
@@ -94,19 +97,17 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
       this->alpha = computeAlpha(); //TODO: what does it mean?
       SESAME_DEBUG("alpha = " << this->alpha);
       this->EDMParam.isInit = true;
-    timerMeter.initialEndMeasure();
     }
     return cc;
   } else {
-    timerMeter.dataInsertAccMeasure();
+    ds_timer.tick();
     auto nn = streamProcess(curP, opt, time);
-
-    timerMeter.clusterUpdateAccMeasure();
     this->dpTree->adjustCluster(clusters);
-    timerMeter.clusterUpdateEndMeasure();
-    timerMeter.outlierDetectionAccMeasure();
+    ds_timer.tock();
+
+    out_timer.tick();
     delCluster();
-    timerMeter.clusterUpdateEndMeasure();
+    out_timer.tock();
     return nn;
   }
 }
@@ -123,19 +124,18 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
   double curTime = input->getTimeStamp() / 100000;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
-    timerMeter.clusterUpdateAccMeasure();
+    ds_timer.tick();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
-    timerMeter.clusterUpdateEndMeasure();
+    ds_timer.tock();
 
-    timerMeter.outlierDetectionAccMeasure();
+    out_timer.tick();
     this->delCluster();
-    timerMeter.clusterUpdateEndMeasure();
+    out_timer.tock();
   }
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
-  timerMeter.printTime(true,false,true,false);
-  SESAME_DEBUG("Cluster number: "<< this->clusters.size());
+  ref_timer.tick();
   int i = 0;
   int num = 0;
   int sum = 0;
@@ -156,5 +156,7 @@ void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
       num = 0;
       CountNode(out->get()->copy(), num);
    }
+   ref_timer.tock();
+   sum_timer.tock();
 }
 

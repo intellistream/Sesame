@@ -56,7 +56,7 @@ struct param_t {
   int coreset_size, seed;
 
   std::string input_file, output_file;
-  SESAME::AlgoType algo;
+  AlgoType algo;
   int dataset_option;
 
   int num_last_arr, time_window;
@@ -111,7 +111,7 @@ struct param_t {
                          // the optimum.
   void Print() {
     std::cout << "algo: " << algo_names[algo] << std::endl;
-    std::cout << "input_file: " << input_file << std::endl;
+    std::cout << "input_file: " << std::filesystem::path(input_file).filename() << std::endl;
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
     std::cout << "num_clusters: " << num_clusters << std::endl;
@@ -153,16 +153,15 @@ public:
   virtual void RunOnline(SESAME::PointPtr input) = 0;
   virtual void RunOffline(SESAME::DataSinkPtr ptr) = 0;
   void store(std::string output_file, int dim, std::vector<PointPtr> results);
-  Timer win_timer, ds_timer, out_timer, ref_timer;
+  Timer ds_timer, out_timer, ref_timer;
   Timer sum_timer;
   param_t param;
   void PrintPerf() {
-    cout << "win_ns: " << win_timer.sum << endl;
-    cout << "ds_ns: " << ds_timer.sum << endl;
-    cout << "out_ns: " << out_timer.sum << endl;
-    cout << "ref_ns: " << ref_timer.sum << endl;
-    auto sum = win_timer.sum + ds_timer.sum + out_timer.sum + ref_timer.sum;
-    cout << "sum_ns: " << sum << endl;
+    cout << "ds_us: " << ds_timer.sum / 1000 << endl;
+    cout << "out_us: " << out_timer.sum / 1000 << endl;
+    cout << "ref_us: " << ref_timer.sum / 1000 << endl;
+    auto sum = ds_timer.sum + out_timer.sum + ref_timer.sum;
+    cout << "sum_us: " << sum / 1000 << endl;
     cout << "lat_us: " << (double)sum / 1e3 / param.num_points << endl;
     cout << "qps: " << (double)param.num_points * 1e9 / sum_timer.sum << endl;
   }
