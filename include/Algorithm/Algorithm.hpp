@@ -111,8 +111,8 @@ struct param_t {
   int num_samples = 100; // The number of samples used in the grid for guessing
                          // the optimum.
   void Print() {
-    std::cout << "algo: " << algo_names[algo] << std::endl;
-    std::cout << "input_file: " << std::filesystem::path(input_file).filename()
+    std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
+    std::cout << "workload: " << std::filesystem::path(input_file).stem()
               << std::endl;
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
