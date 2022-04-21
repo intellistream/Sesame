@@ -23,7 +23,8 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.offlineClusterNumber = cmd_params.clusterNumber;
   this->CluStreamParam.radiusFactor = cmd_params.radiusFactor;
   this->CluStreamParam.initBuffer = cmd_params.initBuffer;
-  this->CluStreamParam.offlineTimeWindow = cmd_params.offlineTimeWindow;
+  if(this->CluStreamParam.offlineTimeWindow> this->CluStreamParam.pointNumber)
+   this->CluStreamParam.offlineTimeWindow = cmd_params.offlineTimeWindow;
   this->pointsFitted = 0;
   this->pointsForgot = 0;
   this->pointsMerged = 0;
@@ -49,8 +50,8 @@ void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPt
   for (int i = 0; i < CluStreamParam.initBuffer; i++) {
     int clusterId = initialData[i]->getClusteringCenter();
     // SESAME_INFO("the belonging micro cluster id is !"<<clusterId);
-    // int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
-    int timestamp =  initialData[i]->getIndex();
+
+    int timestamp =  initialData[i]->getIndex()-startTime;
     if (microClusters[clusterId]->weight == 0)
       microClusters[clusterId]->init(initialData[i], timestamp);
     else
@@ -125,8 +126,8 @@ double SESAME::CluStream::calRadius(MicroClusterPtr closestCluster) {
 void SESAME::CluStream::insertIntoCluster(PointPtr data, MicroClusterPtr operateCluster) {
   // SESAME_INFO("This data fits");
   pointsFitted++;
-//  int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
-  int timestamp= data->getIndex();
+
+  int timestamp= data->getIndex()-startTime;
   operateCluster->insert(data, timestamp);
 }
 
@@ -134,7 +135,7 @@ void SESAME::CluStream::insertIntoCluster(PointPtr data, MicroClusterPtr operate
 bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
   // 3.1 Try to forget old micro clusters
 
-  //int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+
    int elapsedTime = data->getIndex();
   int threshold = 0; // Kernels before this can be forgotten
   if (elapsedTime - this->CluStreamParam.timeWindow >= 0)
@@ -176,7 +177,7 @@ void SESAME::CluStream::MergeCreateCluster(PointPtr data) {
   }
   int newId = this->CluStreamParam.clusterNumber + pointsForgot + pointsMerged;
   microClusters[closestA]->merge(microClusters[closestB]);
- // int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
+
   int elapsedTime = data->getIndex();
   DataStructureFactory::clearMicroCluster(microClusters[closestB]);
   microClusters[closestB] = DataStructureFactory::createMicroCluster(CluStreamParam.dimension, newId);
@@ -208,7 +209,7 @@ double SESAME::CluStream::distance(dataPoint a, dataPoint b, int dim) {
 void SESAME::CluStream::Initilize() {
   this->window = WindowFactory::createLandmarkWindow();
   this->window->pyramidalWindow.timeInterval = this->CluStreamParam.timeInterval;
-  this->startTime = clock();
+
   this->lastUpdateTime = 0;
   window->initPyramidalWindow(this->window->pyramidalWindow.timeInterval);
 
@@ -233,6 +234,7 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
   if (!this->initilized) {
     Initilize();
     this->initialInputs.push_back(input->copy());
+    this->startTime =initialInputs.at(0)->getIndex();
     if (this->initialInputs.size() == this->CluStreamParam.initBuffer) {
       //TODO: fix this hard code @Zhenyu
       timerMeter.initialMeasure();
@@ -259,9 +261,9 @@ void SESAME::CluStream::runOnlineClustering(SESAME::PointPtr input) {
 }
 
 void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
-  clock_t now = clock();
+
   vector <vector<PointPtr>> groups;
-  int elapsedTime = (int) ((now - startTime) / CLOCKS_PER_SEC);
+  int elapsedTime = this->CluStreamParam.pointNumber;
   int landmarkTime = elapsedTime - this->CluStreamParam.offlineTimeWindow;
   if (this->CluStreamParam.offlineTimeWindow > elapsedTime)
     landmarkTime = 0;
@@ -270,7 +272,7 @@ void SESAME::CluStream::runOfflineClustering(SESAME::DataSinkPtr sinkPtr) {
   SESAME::SnapshotPtr subtractMiroCluster;
   //If offlineTimeWindow = 0, Only Observe the end results of micro clusters
   subtractMiroCluster =
-      DataStructureFactory::createSnapshot(microClusters, (int) ((now - startTime) / CLOCKS_PER_SEC));
+      DataStructureFactory::createSnapshot(microClusters, elapsedTime);
   //SESAME_INFO("Now Micro Cluster is...");
   /*
   for (int i = 0; i < CluStreamParam.clusterNumber; i++) {

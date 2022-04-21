@@ -43,7 +43,7 @@ class CluStream : public Algorithm {
   int pointsFitted;
   int pointsForgot;
   int pointsMerged;
-  clock_t startTime;
+  int startTime;
   int lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
