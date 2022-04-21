@@ -24,7 +24,8 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.num_offline_clusters = cmd_params.num_clusters;
   this->CluStreamParam.radius = cmd_params.radius;
   this->CluStreamParam.buf_size = cmd_params.buf_size;
-  this->CluStreamParam.offline_time_window = cmd_params.offline_time_window;
+  if(this->CluStreamParam.offline_time_window> this->CluStreamParam.num_points)
+    this->CluStreamParam.offline_time_window = cmd_params.offline_time_window;
   this->pointsFitted = 0;
   this->pointsForgot = 0;
   this->pointsMerged = 0;
@@ -50,8 +51,8 @@ void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPt
   for (int i = 0; i < CluStreamParam.buf_size; i++) {
     int clusterId = initialData[i]->getClusteringCenter();
     // SESAME_INFO("the belonging micro cluster id is !"<<clusterId);
-    // int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
-    int timestamp =  initialData[i]->getIndex();
+
+    int timestamp =  initialData[i]->getIndex()-startTime;
     if (microClusters[clusterId]->weight == 0)
       microClusters[clusterId]->Init(initialData[i], timestamp);
     else
@@ -120,8 +121,8 @@ double SESAME::CluStream::calRadius(MicroClusterPtr closestCluster) {
 void SESAME::CluStream::insertIntoCluster(PointPtr data, MicroClusterPtr operateCluster) {
   // SESAME_INFO("This data fits");
   pointsFitted++;
-//  int timestamp = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
-  int timestamp= data->getIndex();
+
+  int timestamp= data->getIndex()-startTime;
   operateCluster->insert(data, timestamp);
 }
 
@@ -203,7 +204,6 @@ double SESAME::CluStream::distance(dataPoint a, dataPoint b, int dim) {
 void SESAME::CluStream::Init() {
   this->window = WindowFactory::createLandmarkWindow();
   this->window->pyramidalWindow.time_interval = this->CluStreamParam.time_interval;
-  this->startTime = clock();
   this->lastUpdateTime = 0;
   window->initPyramidalWindow(this->window->pyramidalWindow.time_interval);
   sum_timer.Tick();
@@ -215,11 +215,11 @@ void SESAME::CluStream::Init() {
  * 1. data object fits into closest micro cluster;
  * 2. data does not fit in any cluster,  delete oldest one & create a new cluster;
  * 3.  merge two closest clusters & create a new cluster.
- * @Param:dim: dim of data object
- * num_points: total number of data objects collected in workload
- * time_interval: time interval of pyramidal window
- * num_last_arr: the last arriving  m points in each micro clusters
- * radius: radius factor of micro cluster
+ * @Param:dimension: dimension of data object
+ * pointNumber: total number of data objects collected in workload
+ * timeInterval: time interval of pyramidal window
+ * lastArrivingNum: the last arriving  m points in each micro clusters
+ * radiusFactor: radius factor of micro cluster
  * size: size of initial data objects
  * input: vector of data streams
  * @Return: store the output result(with computed clustering center) into ???//
@@ -229,6 +229,7 @@ void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
   if (!this->initilized) {
     Init();
     this->initialInputs.push_back(input->copy());
+    this->startTime =initialInputs.at(0)->getIndex();
     if (this->initialInputs.size() == this->CluStreamParam.buf_size) {
       vector <PointPtr> initData;//initialData
       initOffline(this->initialInputs,initData);
@@ -252,9 +253,8 @@ void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
 
 void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   ref_timer.Tick();
-  clock_t now = clock();
   vector <vector<PointPtr>> groups;
-  int elapsedTime = (int) ((now - startTime) / CLOCKS_PER_SEC);
+  int elapsedTime = this->CluStreamParam.num_points;
   int landmarkTime = elapsedTime - this->CluStreamParam.offline_time_window;
   if (this->CluStreamParam.offline_time_window > elapsedTime)
     landmarkTime = 0;
@@ -263,7 +263,7 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   SESAME::SnapshotPtr subtractMiroCluster;
   //If offline_time_window = 0, Only Observe the end results of micro clusters
   subtractMiroCluster =
-      DataStructureFactory::createSnapshot(microClusters, (int) ((now - startTime) / CLOCKS_PER_SEC));
+      DataStructureFactory::createSnapshot(microClusters, elapsedTime);
 
   //The offline is to observe a process of data stream clustering
   if (CluStreamParam.offline_time_window != 0) {//
