@@ -206,7 +206,7 @@ void SESAME::CluStream::Init() {
   this->window->pyramidalWindow.time_interval = this->CluStreamParam.time_interval;
   this->lastUpdateTime = 0;
   window->initPyramidalWindow(this->window->pyramidalWindow.time_interval);
-
+  sum_timer.Tick();
 }
 
 /**
