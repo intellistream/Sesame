@@ -206,7 +206,7 @@ void SESAME::CluStream::Init() {
   this->startTime = clock();
   this->lastUpdateTime = 0;
   window->initPyramidalWindow(this->window->pyramidalWindow.time_interval);
-  sum_timer.tick();
+  sum_timer.Tick();
 }
 
 /**
@@ -225,7 +225,7 @@ void SESAME::CluStream::Init() {
  * @Return: store the output result(with computed clustering center) into ???//
  */
 void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
-  ds_timer.tick();
+  ds_timer.Tick();
   if (!this->initilized) {
     Init();
     this->initialInputs.push_back(input->copy());
@@ -247,11 +247,11 @@ void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
     }
     incrementalCluster(input->copy());
   }
-  ds_timer.tock();
+  ds_timer.Tock();
 }
 
 void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
-  ref_timer.tick();
+  ref_timer.Tick();
   clock_t now = clock();
   vector <vector<PointPtr>> groups;
   int elapsedTime = (int) ((now - startTime) / CLOCKS_PER_SEC);
@@ -307,8 +307,8 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   // store the result input output
   this->kmeans->produceResult(oldGroups,sinkPtr);
   // timerMeter.printTime(true, true,true,false);
-  ref_timer.tock();
-  sum_timer.tock();
+  ref_timer.Tock();
+  sum_timer.Tock();
 }
 
 

@@ -50,7 +50,7 @@ void SESAME::DBStream::Init() {
   //std::cout<<"aWeakEntry"<<aWeakEntry<<std::endl;
   this->microClusterIndex=-1;
   connectedRegions = ConnectedRegions(dbStreamParams.alpha, dbStreamParams.min_weight);
-  sum_timer.tick();
+  sum_timer.Tick();
  }
  /**
   * @Description: online clustering stage, input data point incrementally and update the MC list and weight adjacency lists,
@@ -72,7 +72,7 @@ void SESAME::DBStream::Init() {
 }
 
 void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
-   ref_timer.tick();
+   ref_timer.Tick();
    SESAME_INFO("micro clusters "<<microClusters.size());
    SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());
   //  std::cout<<"micro clusters "<<microClusters.size()<<std::endl;
@@ -85,8 +85,8 @@ void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
      sinkPtr->put(point->copy());
 
   // timerMeter.printTime(false,false,true,false);
-   ref_timer.tock();
-   sum_timer.tock();
+   ref_timer.Tock();
+   sum_timer.Tock();
  }
 /**
  * @Description: Insert data point into existing MCs,
@@ -100,7 +100,7 @@ void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
  * @Return: void
  */
 void SESAME::DBStream::update(PointPtr dataPoint){
-  ds_timer.tick();
+  ds_timer.Tick();
 
   this->pointArrivingTime=dataPoint->getIndex();
   clock_gettime(CLOCK_REALTIME, &this->pointArrivingTime0);
@@ -149,8 +149,8 @@ void SESAME::DBStream::update(PointPtr dataPoint){
     if (checkMove(microClusterNN))
       for (const MicroClusterPtr& microCluster : microClusterNN) microCluster->move();
   }
-  ds_timer.tock();
-  out_timer.tick();
+  ds_timer.Tock();
+  out_timer.Tick();
 
  //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.clean_interval && dataPoint->getIndex()!=0)
  if ((pointArrivingTime)% dbStreamParams.clean_interval==0)
@@ -162,7 +162,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
 
    this->lastCleanTime=this->pointArrivingTime;
  }
-  out_timer.tock();
+  out_timer.Tock();
 }
 
 

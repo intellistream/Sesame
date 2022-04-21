@@ -11,19 +11,19 @@ void SESAME::Birch::Init() {
   this->cfTree->setT(BirchParam.distance_threshold);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
-  sum_timer.tick();
+  sum_timer.Tick();
 }
 
 
 void SESAME::Birch::RunOnline(const SESAME::PointPtr input) {
-  ds_timer.tick();
+  ds_timer.Tick();
   forwardInsert(input);
-  ds_timer.tock();
+  ds_timer.Tock();
 }
 
 
 void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
-  ref_timer.tick();
+  ref_timer.Tick();
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dim, 0);
     for(int j = 0; j < BirchParam.dim; j++) {
@@ -31,8 +31,8 @@ void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
     }
     sinkPtr->put(centroid);
   }
-  ref_timer.tock();
-  sum_timer.tock();
+  ref_timer.Tock();
+  sum_timer.Tock();
 }
 
 SESAME::Birch::Birch(param_t &cmd_params) {

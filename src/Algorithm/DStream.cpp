@@ -44,11 +44,11 @@ void SESAME::DStream::Init() {
   this->maxVals = std::vector<double> (dStreamParams.dim, 0);
   this->tempCoord = std::vector<double> (dStreamParams.dim, 0);
   this->Coord = std::vector<double> (dStreamParams.dim, 0);
-  sum_timer.tick();
+  sum_timer.Tick();
 }
 
 void SESAME::DStream::RunOnline(PointPtr input) {
-  ds_timer.tick();
+  ds_timer.Tick();
   if (!this->isInitial){
     // SESAME_INFO("Start initialize...");
 
@@ -85,13 +85,13 @@ void SESAME::DStream::RunOnline(PointPtr input) {
       }
       }
     }
-    ds_timer.tock();
+    ds_timer.Tock();
   }
 
 
 void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
-  ref_timer.tick();
+  ref_timer.Tick();
   // SESAME_INFO(" cluster list size "<<clusterList.size());
   std::vector<SESAME::PointPtr> points;
   for( auto iter=0; iter!=this->clusterList.size();iter++)
@@ -119,8 +119,8 @@ void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
   // timerMeter.printTime(false, false,false,true);
   for(auto & point : points)
     sinkPtr->put(point);
-  ref_timer.tock();
-  sum_timer.tock();
+  ref_timer.Tock();
+  sum_timer.Tock();
 }
 
 void SESAME::DStream::ifReCalculateN(PointPtr point)

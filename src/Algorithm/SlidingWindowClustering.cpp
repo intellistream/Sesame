@@ -11,7 +11,7 @@ SlidingWindowClustering::SlidingWindowClustering(const param_t &param)
 SlidingWindowClustering::~SlidingWindowClustering() {}
 
 void SlidingWindowClustering::Init() {
-  sum_timer.tick();
+  sum_timer.Tick();
 }
 
 void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
@@ -128,30 +128,30 @@ void SlidingWindowClustering::RunOnline(PointPtr input) {
       framework = GenericFactory::New<FrameworkAlg<KMeansSummary>>(
           param.sliding, param.num_clusters, param.delta_grid, lower_bound,
           upper_bound);
-      ds_timer.tick();
+      ds_timer.Tick();
       for (auto p : samples) {
         framework->process_point(p);
       }
-      ds_timer.tock();
+      ds_timer.Tock();
       has_sampled = true;
     }
   } else {
-    ds_timer.tick();
+    ds_timer.Tick();
     framework->process_point(input);
-    ds_timer.tock();
+    ds_timer.Tock();
   }
 }
 
 void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {
-  ref_timer.tick();
+  ref_timer.Tick();
   std::vector<PointPtr> onlineCenters;
   double cost_estimate = 0;
   framework->solution(&onlineCenters, &cost_estimate);
   for (auto p : onlineCenters) {
     sinkPtr->put(p->copy());
   }
-  ref_timer.tock();
-  sum_timer.tock();
+  ref_timer.Tock();
+  sum_timer.Tock();
 }
 
 } // namespace SESAME

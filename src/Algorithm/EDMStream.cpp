@@ -28,7 +28,7 @@ void SESAME::EDMStream::Init() {
   this->dpTree = SESAME::DataStructureFactory::createDPTree(this->actCluMaxNum,
                                                             this->EDMParam.radius);
   this->dpTree->SetMinDelta(this->EDMParam.minDelta);
-  sum_timer.tick();
+  sum_timer.Tick();
 }
 
 void SESAME::EDMStream::setMinDelta(double minDelta) {
@@ -53,12 +53,12 @@ void SESAME::EDMStream::InitDP(double time) {
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, double time) {
-  ds_timer.tick();
+  ds_timer.Tick();
   double coef = pow(this->EDMParam.alpha, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
   auto nn = dpTree->findNN(p, coef, opt, time);
-  ds_timer.tock();
-  out_timer.tick();
+  ds_timer.Tock();
+  out_timer.Tick();
   if (nn == nullptr || nn->GetDis() > dpTree->GetCluR()) {
     nn = outres->insert(p, time);
     if (nn->GetRho() > this->minRho) {
@@ -67,7 +67,7 @@ SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, 
     }
   }
   dpTree->deleteInact(outres, this->minRho, time);
-  out_timer.tock();
+  out_timer.Tock();
   return nn;
 }
 double SESAME::EDMStream::computeAlpha() {
@@ -100,14 +100,14 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
     }
     return cc;
   } else {
-    ds_timer.tick();
+    ds_timer.Tick();
     auto nn = streamProcess(curP, opt, time);
     this->dpTree->adjustCluster(clusters);
-    ds_timer.tock();
+    ds_timer.Tock();
 
-    out_timer.tick();
+    out_timer.Tick();
     delCluster();
-    out_timer.tock();
+    out_timer.Tock();
     return nn;
   }
 }
@@ -124,18 +124,18 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
   double curTime = input->getTimeStamp() / 100000;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
-    ds_timer.tick();
+    ds_timer.Tick();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
-    ds_timer.tock();
+    ds_timer.Tock();
 
-    out_timer.tick();
+    out_timer.Tick();
     this->delCluster();
-    out_timer.tock();
+    out_timer.Tock();
   }
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
-  ref_timer.tick();
+  ref_timer.Tick();
   int i = 0;
   int num = 0;
   int sum = 0;
@@ -156,7 +156,7 @@ void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
       num = 0;
       CountNode(out->get()->copy(), num);
    }
-   ref_timer.tock();
-   sum_timer.tock();
+   ref_timer.Tock();
+   sum_timer.Tock();
 }
 
