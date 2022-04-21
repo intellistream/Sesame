@@ -6,7 +6,7 @@
 
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/StreamKM.hpp>
-void SESAME::Algorithm::store(std::string output_file,
+void SESAME::Algorithm::Store(std::string output_file,
                               int dim,
                               std::vector<SESAME::PointPtr> result) {
   int numberOfCenters = (int)result.size();

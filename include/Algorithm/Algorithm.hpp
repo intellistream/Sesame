@@ -154,7 +154,7 @@ public:
   virtual void Init() = 0;
   virtual void RunOnline(SESAME::PointPtr input) = 0;
   virtual void RunOffline(SESAME::DataSinkPtr ptr) = 0;
-  void store(std::string output_file, int dim, std::vector<PointPtr> results);
+  void Store(std::string output_file, int dim, std::vector<PointPtr> results);
   Timer ds_timer, out_timer, ref_timer, sum_timer;
   param_t param;
   void PrintPerf() {

@@ -488,7 +488,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   // Store results.
-  algoPtr->store(cmd_params.output_file, cmd_params.dim,
+  algoPtr->Store(cmd_params.output_file, cmd_params.dim,
                  sinkPtr->getResults());
   SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
 
