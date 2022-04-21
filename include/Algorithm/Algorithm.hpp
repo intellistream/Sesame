@@ -155,8 +155,7 @@ public:
   virtual void RunOnline(SESAME::PointPtr input) = 0;
   virtual void RunOffline(SESAME::DataSinkPtr ptr) = 0;
   void store(std::string output_file, int dim, std::vector<PointPtr> results);
-  Timer ds_timer, out_timer, ref_timer;
-  Timer sum_timer;
+  Timer ds_timer, out_timer, ref_timer, sum_timer;
   param_t param;
   void PrintPerf() {
     cout << "ds_us: " << ds_timer.sum / 1000 << endl;
@@ -164,8 +163,9 @@ public:
     cout << "ref_us: " << ref_timer.sum / 1000 << endl;
     auto sum = ds_timer.sum + out_timer.sum + ref_timer.sum;
     cout << "sum_us: " << sum / 1000 << endl;
-    cout << "lat_us: " << (double)sum / 1e3 / param.num_points << endl;
-    cout << "qps: " << (double)param.num_points * 1e9 / sum_timer.sum << endl;
+    cout << "lat_us: " << sum / 1e3 / param.num_points << endl;
+    cout << "et_s: " << sum_timer.sum / 1e9 << endl;
+    cout << "qps: " << param.num_points * 1e9 / sum_timer.sum << endl;
   }
 };
 

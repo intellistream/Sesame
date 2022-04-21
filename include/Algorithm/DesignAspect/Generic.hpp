@@ -53,13 +53,11 @@ public:
   void Init();
   void RunOnline(PointPtr input);
   void RunOffline(DataSinkPtr ptr);
-  void store(std::string output_file, int dim,
-             std::vector<PointPtr> results);
+  void store(std::string output_file, int dim, std::vector<PointPtr> results);
 
 private:
   using Node = typename D::Node;
   using NodePtr = typename D::NodePtr;
-  StreamClusteringParam param;
   std::shared_ptr<W> w;
   std::shared_ptr<D> d;
   std::shared_ptr<O> o;
@@ -75,8 +73,9 @@ template <typename W, typename D, typename O, typename R>
 StreamClustering<W, D, O, R>::~StreamClustering() {}
 
 template <typename W, typename D, typename O, typename R>
-StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params)
-    : param(cmd_params) {}
+StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params) {
+  param = cmd_params;
+}
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::Init() {
@@ -85,6 +84,7 @@ void StreamClustering<W, D, O, R>::Init() {
   o = GenericFactory::New<O>(param);
   r = GenericFactory::New<R>(param);
   d->Init();
+  sum_timer.tick();
 }
 
 template <typename W, typename D, typename O, typename R>
@@ -94,13 +94,21 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
   // std::cerr << "#" << input->index << ":" << d->root()->cf.num << std::endl;
   if (w->Add(input)) {
     NodePtr node;
-    if (o->Check(input, d->clusters())) { // outlier
+    out_timer.tick();
+    auto out = o->Check(input, d->clusters());
+    out_timer.tock();
+    if (out) { // outlier
       node = InsertOutliers(input);
-      if (!o->Check(node)) {
+      out_timer.tick();
+      out = o->Check(node);
+      out_timer.tock();
+      if (!out) {
         const auto [first, last] = std::ranges::remove_if(
             outliers_, [&](const NodePtr &n) { return n == node; });
         outliers_.erase(first, last);
+        ds_timer.tick();
         auto newNode = d->Insert(node);
+        ds_timer.tock();
         if constexpr (has_delete) {
           for (auto &p : node_map_[node]) {
             node_map_[newNode].insert(p);
@@ -111,7 +119,9 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
         node = newNode;
       }
     } else {
+      ds_timer.tick();
       node = d->Insert(input);
+      ds_timer.tock();
     }
     if constexpr (has_delete) {
       node_map_[node].insert(input);
@@ -127,18 +137,24 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
     if (point != nullptr) {
       assert(point_map_.contains(point));
       auto node = point_map_[point];
+      ds_timer.tick();
       node->Update(point->Reverse(), true);
+      ds_timer.tock();
       point_map_.erase(point);
       node_map_[node].erase(point);
-      const auto [first, last] = std::ranges::remove_if(
-          outliers_, [&](const NodePtr &n) { return n->cf.num == 0; });
-      outliers_.erase(first, last);
+      if (node->cf.num == 0) {
+        // TODO
+        const auto [first, last] = std::ranges::remove_if(
+            outliers_, [&](const NodePtr &n) { return n->cf.num == 0; });
+        outliers_.erase(first, last);
+      }
     }
   }
 }
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
+  ref_timer.tick();
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();
   for (int i = 0; i < clusters.size(); i++) {
@@ -149,6 +165,8 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
     onlineCenters.push_back(centroid);
   }
   r->Run(param, onlineCenters, ptr);
+  ref_timer.tock();
+  sum_timer.tock();
 }
 
 template <typename W, typename D, typename O, typename R>
