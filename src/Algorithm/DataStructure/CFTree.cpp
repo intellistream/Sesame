@@ -69,7 +69,18 @@ void CFNode::clearParents() { this->parent->setIndex(-1); }
 void CFNode::removeChild(NodePtr &child) {
   for (int i = 0; i < this->children.size(); i++) {
     if (this->children[i]->getIndex() == child->getIndex()) {
-      this->children.erase(this->children.begin() + i);
+      auto childCF = this->children[i]->getCF();
+      auto removeCF = child->getCF();
+      bool flag = true;
+      for(int j = 0; j < childCF->getLS().size(); j++) {
+        if(childCF->getLS()[j] != removeCF->getLS()[j] or childCF->getSS()[j] != removeCF->getSS()[j]) {
+          flag = false;
+          break;
+        }
+      }
+      if(flag) {
+        this->children.erase(this->children.begin() + i);
+      }
     }
   }
 }
@@ -161,9 +172,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
   return curNode;
 }
 
-void ClusteringFeaturesTree::Init() {
-  root_->tree = shared_from_this();
-}
+void ClusteringFeaturesTree::Init() { root_->tree = shared_from_this(); }
 
 void ClusteringFeaturesTree::Remove(NodePtr node) {
   auto parent = node->parent;
@@ -172,6 +181,19 @@ void ClusteringFeaturesTree::Remove(NodePtr node) {
   const auto [first, last] = std::ranges::remove_if(
       clusters_, [node](auto &cluster) { return cluster == node; });
   clusters_.erase(first, last);
+}
+
+void ClusteringFeaturesTree::ForEach(std::function<void(NodePtr)> func) {
+  std::queue<NodePtr> queue;
+  queue.push(root_);
+  while (!queue.empty()) {
+    auto node = queue.front();
+    queue.pop();
+    func(node);
+    for (auto &child : node->children) {
+      queue.push(child);
+    }
+  }
 }
 
 template <typename T>
@@ -340,7 +362,7 @@ std::string ClusteringFeaturesTree::Serialize() {
 
 ClusteringFeaturesList::ClusteringFeaturesList(
     const StreamClusteringParam &param)
-    : dim(param.dimension) {}
+    : dim(param.dimension), thresholdDistance(param.thresholdDistance) {}
 
 ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
@@ -351,7 +373,11 @@ ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(PointPtr point) {
     node->Update(point);
     return node;
   } else {
-    auto node = CalcClosestNode(clusters_, point).first;
+    auto [node, dist] = CalcClosestNode(clusters_, point);
+    if (dist >= thresholdDistance) {
+      node = GenericFactory::New<Node>(dim);
+      clusters_.push_back(node);
+    }
     node->Update(point);
     return node;
   }

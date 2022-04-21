@@ -140,7 +140,7 @@ void SESAME::V8::selectCluster(SESAME::PointPtr &insertPoint, SESAME::CFPtr &cur
   pointToClusterDist(insertPoint, this->Clusters.at(0), dist);
   currentCF = this->Clusters.at(0);
   for(int i = 1; i < this->Clusters.size(); i++) {
-    pointToClusterDist(insertPoint, currentCF, temp);
+    pointToClusterDist(insertPoint, Clusters[i], temp);
     if(temp < dist) {
       dist = temp;
       currentCF = this->Clusters.at(i);

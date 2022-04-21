@@ -55,7 +55,7 @@ void SESAME::V4::insertPointIntoOutliers(SESAME::PointPtr &point) {
     pointToClusterDist(point, insertCluster, pointToOutlierDist);
     if(pointToOutlierDist < this->V4Param.thresholdDistance) {
       updateNLS(insertCluster, point, false);
-      this->outlierNodes.push_back(insertCluster); // different
+//      this->outlierNodes.push_back(insertCluster); // different
       this->SlidingWindowNodes.push_back(insertCluster);
     } else {
       insertCluster = make_shared<CFNode>();
@@ -72,6 +72,7 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
   if(outCluster->getCF()->getN() >= this->V4Param.outlierClusterCapacity){
     // need to transfer outlier cluster into real cluster
     this->outlierNodes.erase(this->outlierNodes.begin() + outCluster->getIndex());
+    this->SlidingWindowNodes.pop_back();
     auto curNode = this->root;
     PointPtr center = make_shared<Point>(V4Param.dimension);
     auto cf = outCluster->getCF();
@@ -87,6 +88,7 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
         calculateCentroid(curCF, centroid);
         if(calculateRadius(center,  centroid) <= this->cfTree->getT()) { // concept drift detection
           addNodeNLSToNode(outCluster, curNode, true);
+          this->SlidingWindowNodes.push_back(curNode);
           break;
         } else {
           backwardEvolution(curNode, center, outCluster);
@@ -102,6 +104,9 @@ void SESAME::V4::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
 void SESAME::V4::runOnlineClustering(const SESAME::PointPtr input) {
   // insert the root
   if(this->slidingWindowPoints.size() == this->V4Param.slidingCount){
+    if(input->getIndex() == 1011){
+      std::cout<<1;
+    }
     this->slidingWindowPoints.push_back(input->copy());
     forwardInsert(input->copy());
     deletePointFromTree(this->SlidingWindowNodes[0], this->slidingWindowPoints[0]);
@@ -169,10 +174,18 @@ void SESAME::V4::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bool 
 
 void SESAME::V4::deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &point){
   SESAME::NodePtr nodeSearch = node;
+  SESAME::NodePtr parent;
+  bool flag = true;
   while(true) {
     SESAME::CFPtr cf = nodeSearch->getCF();
     vector<double> tmpLS = cf->getLS();
     vector<double> tmpSS = cf->getSS();
+    parent = nodeSearch->getParent();
+    if(parent == nullptr and flag){
+      std::cout <<1;
+    } else {
+      flag = false;
+    }
     cf->setN(cf->getN() - 1);
     for(int i = 0; i < point->getDimension(); i++){
       tmpLS[i] -= point->getFeatureItem(i);
@@ -180,8 +193,17 @@ void SESAME::V4::deletePointFromTree(SESAME::NodePtr &node, SESAME::PointPtr &po
     }
     cf->setLS(tmpLS);
     cf->setSS(tmpSS);
-    if(nodeSearch->getParent() != nullptr) {
-      nodeSearch = nodeSearch->getParent();
+    if(cf->getN() == 0){
+      parent->removeChild(nodeSearch);
+      NodePtr nullNode = std::make_shared<CFNode>();
+      nodeSearch->setParent(nullNode);
+      auto children = nodeSearch->getChildren();
+      vector<NodePtr> blankList;
+      nodeSearch->setChildren(blankList);
+      for(auto child : children) child->setParent(nullNode);
+    }
+    if(parent != nullptr) {
+      nodeSearch = parent;
     } else break;
   }
 }
