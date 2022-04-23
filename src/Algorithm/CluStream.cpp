@@ -23,6 +23,7 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.time_interval = cmd_params.time_interval;
   this->CluStreamParam.num_offline_clusters = cmd_params.num_clusters;
   this->CluStreamParam.radius = cmd_params.radius;
+  this->CluStreamParam.seed = cmd_params.seed;
   this->CluStreamParam.buf_size = cmd_params.buf_size;
   if(this->CluStreamParam.offline_time_window> this->CluStreamParam.num_points)
     this->CluStreamParam.offline_time_window = cmd_params.offline_time_window;
@@ -45,6 +46,7 @@ void SESAME::CluStream::initOffline(vector <PointPtr> &initData, vector <PointPt
                           initData,
                           oldGroups,
                           newGroups,
+                          CluStreamParam.seed,
                           true);
   // store the result input output
   this->kmeans->storeResult(oldGroups, initialData);
@@ -301,7 +303,7 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
   this->kmeans->runKMeans(this->CluStreamParam.num_offline_clusters, this->CluStreamParam.num_clusters,centers,
-                          TransformedSnapshot, oldGroups, newGroups, true);
+                          TransformedSnapshot, oldGroups, newGroups, this->CluStreamParam.seed, true);
   //Count overall time
 
   // store the result input output

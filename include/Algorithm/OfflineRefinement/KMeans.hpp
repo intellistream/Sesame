@@ -35,7 +35,7 @@ public:
   void runKMeans(int numberOfCenters, int numberOfInput,
                  std::vector<PointPtr> &centers, std::vector<PointPtr> &input,
                  std::vector<std::vector<PointPtr>> &oldGroups,
-                 std::vector<std::vector<PointPtr>> &newGroups, bool KMeansPP);
+                 std::vector<std::vector<PointPtr>> &newGroups, int seed, bool KMeansPP);
   void storeResult(std::vector<std::vector<PointPtr>> &groups,
                    std::vector<PointPtr> &output);
 

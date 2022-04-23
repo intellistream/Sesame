@@ -33,6 +33,7 @@ class CluStreamParameter : public AlgorithmParameters {
   double radius;//radius factor
   int buf_size;
   int offline_time_window;
+  int seed;
 };
 
 const double doubleMax = std::numeric_limits<double>::max();

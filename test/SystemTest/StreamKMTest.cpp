@@ -25,7 +25,7 @@ TEST(SystemTest, StreamKMTest) {
   cmd_params.coreset_size = 600;
   cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
-
+  cmd_params.seed = 10;
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
   SESAME_INFO("Default Input Data Directory: " + cmd_params.input_file);
   cmd_params.output_file = "results.txt";
