@@ -101,23 +101,21 @@ SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda) {
   this->lambda = lambda;
   //this->k = k;
 }
-void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
-                             const std::vector<PointPtr> &center, int dim, double time) {
+void SESAME::CMMDriver::load(const std::vector<PointPtr> &inputs,
+                             const std::vector<PointPtr> &predicts, int dim, double time) {
   // time ? weight ?
-  std::vector<PointPtr> out;
-  SESAME::UtilityFunctions::groupByCenters(input, center,out, dim);
   // convert to the predicted clustering center index
-  for(int i = 0; i < out.size(); i++) {
+  for(int i = 0; i < inputs.size(); i++) {
     std::vector<double> features;
     for(int j = 0; j < dim; j++) {
-      features.push_back(out.at(i)->getFeatureItem(j));
+      features.push_back(inputs.at(i)->getFeatureItem(j));
     }
-    int cl = input.at(i)->getClusteringCenter();
-    if(cl == -1){
-      std::cout << 1;
-    }
-    SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(out.at(i)->getIndex(),
-                                                       (long)out.at(i)->getIndex(), time, features, a, lambda, cl);
+    int cl = inputs.at(i)->getClusteringCenter();
+//    if(cl == -1){
+//      std::cout << 1;
+//    }
+    SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(predicts.at(i)->getIndex(),
+                                                       (long)predicts.at(i)->getIndex(), time, features, a, lambda, cl);
     if(CL.count(cl)){
       CL[cl]->add(p);
     } else {
@@ -128,7 +126,7 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &input,
       CL.insert(std::pair<int , CMMClusterPtr>(cl, c));
       CLlist.push_back(c);
     }
-    int ci = out.at(i)->getClusteringCenter();
+    int ci = predicts.at(i)->getClusteringCenter();
     if(C.count(ci)){
       C[ci]->add(p);
     } else {
@@ -229,43 +227,22 @@ double SESAME::CMMDriver::computeWeight(double deltaTime) {
  * */
 double SESAME::CMM::CMMCost(int dim,
                           const std::vector<PointPtr> &inputs,
-                          const std::vector<PointPtr> &center) {
+                          const std::vector<PointPtr> &predicts) {
   std::vector<double> CMMValues;
   CMMValues.push_back(0);
   int start = 0;
-//  double pre_time = 0;
-//  for (int i = 0; i < inputs.size(); i++) {
-//    // segment the stream data into horizons(windows) according to threshold
-//    CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
-//    double weight = cmm.computeWeight(i / 2 - pre_time);
-    for (int i = 25; i < inputs.size(); i+=25) {
-      // segment the stream data into horizons(windows) according to threshold
-      CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
-      std::vector<PointPtr> seg;
-      for(; start < i; start ++) {
-        seg.push_back(inputs.at(start));
-      }
-      cmm.load(seg, center, dim, i*10);
-      cmm.voteMap();
-      double cmmValue = cmm.compCMM();
-//    double weight = cmm.computeWeight(i / 2 - pre_time);
-//    if(weight >= CMM_THRESHOLD) {
-//      pre_time = i * 2;
-//      std::vector<PointPtr> seg;
-//      for(; start < i; start ++) {
-//        seg.push_back(inputs.at(start));
-//      }
-//      // here we set weight to 1
-//      cmm.load(seg, center, dim, weight); // according to arrival rate, can adjust if necessary
-//      /*Transform the pre and GT data into specific CMM structures
-//       * Clist: predicted clusters
-//       * CList: GT clusters
-//       * C:(PClusterID, PCluster)
-//       * CL:(GTClusterID, GTCluster)
-//       * */
+  for (int i = 25; i < inputs.size(); i+=25) {
+    // segment the stream data into horizons(windows) according to threshold
+    CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
+    std::vector<PointPtr> seg;
+    for(; start < i; start ++) {
+      seg.push_back(inputs.at(start));
+    }
+    cmm.load(seg, predicts, dim, i*10);
+    cmm.voteMap();
+    double cmmValue = cmm.compCMM();
 //      cmm.voteMap();  // TODO: change voteMap according to the paper
-//      double cmmValue = cmm.compCMM();
-      CMMValues.push_back(cmmValue);
+    CMMValues.push_back(cmmValue);
 //      std::cout << "cmm: " << cmmValue << std::endl;
 
     }

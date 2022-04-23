@@ -80,7 +80,7 @@ class CMMDriver {
   std::unordered_set<CMMClusterPtr> faultClu;
 
   CMMDriver(int dim, double a, double lambda);
-  void load(const std::vector<PointPtr> &input, const std::vector<PointPtr> &center,
+  void load(const std::vector<PointPtr> &inputs, const std::vector<PointPtr> &predicts,
             int dim, double weight);
   void voteMap();
   double computeWeight(double deltaTime);

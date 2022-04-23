@@ -17,8 +17,8 @@ class Purity {
   static double getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample,
                               std::vector<std::vector<PointPtr>> &GT);
  public:
-  static double purityCost(const std::vector<PointPtr> &input,
-                         const std::vector<PointPtr> &result,
+  static double purityCost(const std::vector<PointPtr> &inputs,
+                         const std::vector<PointPtr> &predicts,
                          int dim, bool decay);
 };
 
