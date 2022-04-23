@@ -60,41 +60,39 @@ double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample
   return max;
 }
 
-double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
-                               const std::vector<SESAME::PointPtr> &result,
+double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &inputs,
+                               const std::vector<SESAME::PointPtr> &predicts,
                                int dim, bool decay) {
   double purity;
   double size = 0;
-  std::vector<PointPtr> input;
-  UtilityFunctions::groupByCenters(result, center, input, dim);
-  for(int i = 0; i < input.size(); i++){
+  for(int i = 0; i < predicts.size(); i++){
     double w = 1;
     if(decay){ // 分段函数来设置weight
-      if(input.size() - input[i]->getIndex() <= 101) {
+      if(predicts.size() - predicts[i]->getIndex() <= 101) {
         w = 1;
-      } else if(input[i]->getIndex() < input.size() / 100) {
+      } else if(predicts[i]->getIndex() < predicts.size() / 100) {
         w = 0;
       } else {
-        w = double (input[i]->getIndex() - input.size() / 100) / double (input.size() - 100 -input.size() / 100);
+        w = double (predicts[i]->getIndex() - predicts.size() / 100) / double (predicts.size() - 100 -predicts.size() / 100);
       }
     } else {
       w = 1;
     }
-    input[i]->setWeight(w);
+    predicts[i]->setWeight(w);
     size += w;
   }
 
   std::vector<std::vector<PointPtr>> GT;
   std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT);
-  pointToGroup(input, sample);
+  pointToGroup(inputs, GT);
+  pointToGroup(predicts, sample);
 
   double sum = 0;
   for(auto& el: sample) {
     sum += getMaxBelongs(el, GT);
   }
-  if(!result.empty()) {
+  if(!inputs.empty()) {
     SESAME_DEBUG("Purity:" << sum / size);
     purity=sum / size;
   } else{

@@ -469,21 +469,21 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
-  std::vector<SESAME::PointPtr> outputs;
+  std::vector<SESAME::PointPtr> predicts;
   if (results.empty()) {
     std::cerr << "ERROR! No output!" << std::endl;
   }
   // TODO: be sure the output clusterID start from 0!
   if (cmd_params.run_offline) {
     SESAME::UtilityFunctions::groupByCentersWithOffline(
-        inputs, results, outputs, cmd_params.dim);
+        inputs, results, predicts, cmd_params.dim);
     // 使用offline的算法不管是否detect
     // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
     // clustering center
   } else {
     // the output is the clustering center so we need to help every input data
     // find its nearest center
-    SESAME::UtilityFunctions::groupByCenters(inputs, results, outputs,
+    SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts,
                                              cmd_params.dim);
   }
 
@@ -494,7 +494,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   auto res = SESAME::Evaluation::runEvaluation(
       cmd_params.dim, cmd_params.num_clusters, cmd_params.time_decay,
-      sourcePtr->getInputs(), sinkPtr->getResults());
+      inputs, predicts);
 
   engine.stop();
 

@@ -29,19 +29,19 @@ This project aims at building a scalable stream mining library on modern hardwar
 | CoverType | 581012  | 54        | 7              |
 | KDD-99    | 494021  | 43        | 23             |
 | Sensor    | 2219803 | 5         | 54             |
-|           |         |           |                |
-|           |         |           |                |
+| EDS       |         |           |                |
+| EDS_O     |         |           |                |
 |           |         |           |                |
 
 ### Parameter Range
 
 ##### (1) BIRCH
 
-| Parameter         | CoverType      | KDD-99         | Sensor         |
-| ----------------- | -------------- | -------------- | -------------- |
-| max_in_nodes      | [10,10,400]    | [100,100,4000] | [100,100,4000] |
-| max_leaf_nodes    | [10,10,400]    | [100,100,4000] | [100,100,4000] |
-| distance_threshold| [100,100,2000] | [100,100,2000] | [10,5,60]      |
+| Parameter          | CoverType         | KDD-99            | Sensor            |
+| ------------------ | ----------------- | ----------------- | ----------------- |
+| max_in_nodes       | [1000,1000,40000] | [1000,1000,40000] | [1000,1000,40000] |
+| max_leaf_nodes     | [1000,1000,40000] | [1000,1000,40000] | [1000,1000,40000] |
+| distance_threshold | [100,100,2000]    | [100,100,2000]    | [10,5,60]         |
 
 ##### (2) StreamKM++
 
@@ -105,7 +105,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 | num_online_clusters  | [80,10,150]    | [60,10,150]    | [100,10,200] |
 | radius               | [2,1,26]       | [2,1,8]        | 15           |
 | buf_size             | [500,500,1500] | [500,500,1500] | 500          |
-| offline_time_window  | random         | random         | random       |
+| offline_time_window  | 0              | 0              | 0            |
 
 ##### (8) SL-KMeans
 
