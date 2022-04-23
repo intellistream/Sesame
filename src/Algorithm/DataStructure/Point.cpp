@@ -9,12 +9,13 @@
 
 #include <cassert>
 #include <cmath>
+#include <immintrin.h>
 
 namespace SESAME {
 
 Point::Point(int dim, int index, double weight, double cost,
              int timestamp)
-    : feature(dim, 0.0) {
+    : feature((dim + 3) / 4 * 4, 0.0) {
   this->index = index;
   this->weight = weight;
   this->dim = dim;
@@ -55,7 +56,9 @@ int Point::getTimeStamp() const { return this->timestamp; }
  * @param source
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
+
 int Point::getDimension() const { return this->dim; }
+
 int Point::getFeatureLength() { return (int)this->feature.size(); }
 
 double Point::getDisTo(PointPtr p) {
@@ -66,7 +69,9 @@ double Point::getDisTo(PointPtr p) {
   }
   return sqrt(distance);
 }
+
 double Point::getMinDist() const { return minDist; }
+
 void Point::setMinDist(double min_dist) { minDist = min_dist; }
 
 double Point::distance(PointPtr centroid) {
@@ -80,16 +85,30 @@ double Point::distance(PointPtr centroid) {
 
 double Point::Radius(PointPtr centroid) {
   double sum = 0.0;
-  for (int i = 0; i < getDimension(); i++) {
+  const int dim = getDimension();
+  auto a = feature.data(), b = centroid->feature.data();
+  // auto sum_v = _mm256_setzero_pd();
+  // for(size_t i = 0; i < dim; i += 4) {
+  //   __m256d diff = _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
+  //   __m256d square = _mm256_mul_pd(diff, diff);
+  //   sum_v = _mm256_add_pd(sum_v, square);
+  // }
+  // double v[4];
+  // _mm256_storeu_pd(v, sum_v);
+  // sum += v[0] + v[1] + v[2] + v[3];
+  for (int i = 0; i < dim; i++) {
+#ifndef NDEBUG
     assert(std::isnan(centroid->getFeatureItem(i)) == false);
     assert(std::isnan(getFeatureItem(i)) == false);
-    auto val = centroid->getFeatureItem(i) - getFeatureItem(i);
+#endif
+    auto val = a[i] - b[i];
     sum += val * val;
   }
-  assert(sum >= 0.0);
   return sqrt(sum);
 }
+
 void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
+
 bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
 
 PointPtr Point::Reverse() {
