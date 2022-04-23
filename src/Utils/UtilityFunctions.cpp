@@ -7,6 +7,8 @@
 #include <cmath>
 #include <random>
 
+#include <omp.h>
+
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti;             /* mti==N+1 means mt[N] is not initialized */
 
@@ -85,16 +87,18 @@ SESAME::UtilityFunctions::createBarrier(int count) {
 void SESAME::UtilityFunctions::groupByCenters(
     const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
     std::vector<PointPtr> &output, int dim) {
-  int selectCenterIndex = -1;
-  for (int i = 0; i < input.size(); i++) {
-    output.push_back(input.at(i)->copy());
+  auto n = input.size();
+  for (int i = 0; i < n; i++)
+    output.push_back(input[i]->copy());
+#pragma omp parallel for
+  for (int i = 0; i < n; i++) {
     auto min = DBL_MAX;
+    int selectCenterIndex = -1;
     for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
       for (int k = 0; k < dim; k++) {
-        dis += pow((output.at(i)->getFeatureItem(k) -
-                    centers.at(j)->getFeatureItem(k)),
-                   2);
+        auto val = output[i]->getFeatureItem(k) - centers[j]->getFeatureItem(k);
+        dis += val * val;
       }
       if (min > dis) {
         selectCenterIndex = j;
@@ -104,18 +108,21 @@ void SESAME::UtilityFunctions::groupByCenters(
     output[i]->setClusteringCenter(selectCenterIndex);
   }
 }
+
 void SESAME::UtilityFunctions::groupByCentersWithOffline(
     const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
     std::vector<PointPtr> &output, int dim) {
-  for (int i = 0; i < input.size(); i++) {
-    output.push_back(input.at(i)->copy());
+  auto n = input.size();
+  for (int i = 0; i < n; i++)
+    output.push_back(input[i]->copy());
+#pragma omp parallel for
+  for (int i = 0; i < n; i++) {
     auto min = DBL_MAX;
     for (int j = 0; j < centers.size(); j++) {
       double dis = 0;
       for (int k = 0; k < dim; k++) {
-        dis += pow(
-            (input.at(i)->getFeatureItem(k) - centers.at(j)->getFeatureItem(k)),
-            2);
+        auto val = input[i]->getFeatureItem(k) - centers[j]->getFeatureItem(k);
+        dis += val * val;
       }
       if (min > dis) {
         output[i]->setClusteringCenter(centers[j]->getClusteringCenter());

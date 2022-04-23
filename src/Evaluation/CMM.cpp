@@ -2,11 +2,13 @@
 // Created by tuidan on 2021/10/11.
 //
 
-#include <Evaluation/CMM.hpp>
-#include <Utils/Logger.hpp>
-#include <Utils/UtilityFunctions.hpp>
+#include "Evaluation/CMM.hpp"
+#include "Utils/Logger.hpp"
+#include "Utils/UtilityFunctions.hpp"
+
 #include <cmath>
 #include <numeric>
+#include <cassert>
 
 /**
  * @Description: CMMPoint
@@ -165,16 +167,10 @@ void SESAME::CMMDriver::voteMap() {
       if (m.second > max) {
         max = m.second;
         label = m.first;
-        if(label == -1) {
-          std::cout << 1;
-        }
+        assert(label != -1);
       }
     }
-    if (label == -1) {
-      SESAME_ERROR("the label is null, this is error");
-    } else {
-      c->groundTruth = label;
-    }
+    c->groundTruth = label;
   }
 }
 

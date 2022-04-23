@@ -1,10 +1,13 @@
 //
 // Created by tuidan on 2021/10/11.
 //
-#include <Utils/UtilityFunctions.hpp>
-#include <Evaluation/Purity.hpp>
-#include <Utils/Logger.hpp>
+#include "Utils/UtilityFunctions.hpp"
+#include "Evaluation/Purity.hpp"
+#include "Utils/Logger.hpp"
+
 #include <cmath>
+#include <unordered_set>
+
 /**
  * @Description: Please note that the order of the cluster index has to be consecutive
  */
@@ -33,12 +36,13 @@ void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
 double SESAME::Purity::calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &groupA,
                                             std::vector<SESAME::PointPtr> &groupB) {
   double count = 0;
-  for(const auto& elA:groupA) {
-    for(const auto& elB:groupB) {
-      if(elA->getIndex() == elB->getIndex()) {
-        count += elA->getWeight();
-        break;
-      }
+  std::unordered_set<int> setB;
+  for(auto& el : groupB) {
+    setB.insert(el->getIndex());
+  }
+  for(auto& el: groupA) {
+    if(setB.contains(el->getIndex())) {
+      count += el->getWeight();
     }
   }
   return count;

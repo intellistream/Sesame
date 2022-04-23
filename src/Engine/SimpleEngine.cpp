@@ -104,7 +104,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   sinkPtr->Ended();//Let sink knows that there won't be any more data coming.
   SESAME_INFO("Engine sourceEnd emit data");
-  // barrierPtr->arrive_and_wait();//wait for source and sink.
+  barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
   // printTime();
   algoPtr->PrintPerf();

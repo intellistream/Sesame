@@ -14,4 +14,6 @@ flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_node
 
 // flags.map(x => { console.log(`--${x}="\${${x}}" \\`) });
 
-flags.map(x => { console.log(`\t\t${x} DOUBLE,\\`) });
+// flags.map(x => { console.log(`\t\t${x} DOUBLE,\\`) });
+
+flags.map(x => { process.stdout.write(` ${x}=[[bench.sesame.${x}]]`) });

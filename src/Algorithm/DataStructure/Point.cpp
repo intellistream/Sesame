@@ -32,7 +32,7 @@ double Point::getWeight() const { return this->weight; }
 void Point::setWeight(double weight) { this->weight = weight; }
 
 double Point::getFeatureItem(int index) const {
-  return this->feature.at(index);
+  return this->feature[index];
 }
 
 void Point::setFeatureItem(double feature, int index) {

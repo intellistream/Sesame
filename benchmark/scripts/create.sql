@@ -42,4 +42,6 @@ CREATE TABLE IF NOT EXISTS sesame (
                 qps DOUBLE, \
                 cmm DOUBLE, \
                 purity DOUBLE \
-)
+);
+
+CREATE VIEW birch as SELECT id, bench_begin, algo, workload, max_in_nodes, max_leaf_nodes, distance_threshold, cmm, purity FROM sesame WHERE algo = 'Birch'; 

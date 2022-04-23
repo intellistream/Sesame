@@ -32,7 +32,7 @@ class DataSource {
   TimeMeter overallMeter;
   std::atomic_bool sourceEnd;
  public:
-  void load(int point_number, int dim, std::vector<string> input);
+  void load(int point_number, int dim, std::vector<string> &input);
   bool empty();
   PointPtr get();
   std::vector<PointPtr> getInputs();

@@ -26,7 +26,7 @@ using namespace std::chrono;
  * @return
  */
 void SESAME::DataSource::load(int point_number, int dim,
-                              vector<string> input) {
+                              vector<string> &input) {
 
   // The step used to generate random timestamps
   const int timeStep = 100000;
@@ -34,8 +34,7 @@ void SESAME::DataSource::load(int point_number, int dim,
     int timeStamp = timeStep * i + rand() % timeStep;
     PointPtr point = DataStructureFactory::createPoint(
         i, DEFAULT_WEIGHT, dim, DEFAULT_COST, timeStamp);
-    char *charData = new char[INT32_MAX];
-    strcpy(charData, input[i].c_str());
+    auto charData = input[i].data();
     // use c_str() to convert string to char * but it's just a temp pointer we
     // have to use strcpy to store it
     const char *sep = " ";
@@ -81,7 +80,7 @@ void SESAME::DataSource::runningRoutine() {
   SESAME_INFO("sourceEnd set to true");
   sourceEnd = true; // Let engine knows that there won't be any more data
                     // coming.
-  // barrierPtr->arrive_and_wait();
+  barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();
   SESAME_INFO("DataSource sourceEnd emit data");
   printTime();
