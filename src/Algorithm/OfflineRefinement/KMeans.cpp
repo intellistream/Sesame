@@ -20,7 +20,6 @@ void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
 
   std::vector<int> indexs; // for unique
   int id = rand() % numberOfInput;
-  std::cout<< id<<" ";
   indexs.push_back(input[id]->getIndex());
   centers.push_back(input[id]->copy());
   int c = 1; // count the number of element in center
@@ -28,7 +27,6 @@ void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
 
   while (c < numberOfCenters) {
     id = rand() % numberOfInput;
-    std::cout<< id<<" ";
     if (count(indexs.begin(), indexs.end(), id) == 0) {
       indexs.push_back(input[id]->getIndex());
       centers.push_back(input[id]->copy());
