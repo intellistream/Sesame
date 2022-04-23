@@ -9,12 +9,13 @@
 
 #include <cassert>
 #include <cmath>
+#include <immintrin.h>
 
 namespace SESAME {
 
 Point::Point(int dim, int index, double weight, double cost,
              int timestamp)
-    : feature(dim, 0.0) {
+    : feature((dim + 3) / 4 * 4, 0.0) {
   this->index = index;
   this->weight = weight;
   this->dim = dim;
@@ -86,6 +87,15 @@ double Point::Radius(PointPtr centroid) {
   double sum = 0.0;
   const int dim = getDimension();
   auto a = feature.data(), b = centroid->feature.data();
+  // auto sum_v = _mm256_setzero_pd();
+  // for(size_t i = 0; i < dim; i += 4) {
+  //   __m256d diff = _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
+  //   __m256d square = _mm256_mul_pd(diff, diff);
+  //   sum_v = _mm256_add_pd(sum_v, square);
+  // }
+  // double v[4];
+  // _mm256_storeu_pd(v, sum_v);
+  // sum += v[0] + v[1] + v[2] + v[3];
   for (int i = 0; i < dim; i++) {
 #ifndef NDEBUG
     assert(std::isnan(centroid->getFeatureItem(i)) == false);
