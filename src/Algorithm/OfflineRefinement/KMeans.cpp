@@ -5,7 +5,6 @@
 //
 
 #include <Algorithm/OfflineRefinement/KMeans.hpp>
-#include <Utils/UtilityFunctions.hpp>
 #include <Utils/Logger.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <Algorithm/DesignAspect/Param.hpp>
@@ -20,14 +19,14 @@ void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
   // put one point into the result
 
   std::vector<int> indexs; // for unique
-  int id = SESAME::UtilityFunctions::genrand_int31() % numberOfInput;
+  int id = rand() % numberOfInput;
   indexs.push_back(input[id]->getIndex());
   centers.push_back(input[id]->copy());
   int c = 1; // count the number of element in center
   // run the loop to insert the randomly selected indexes
 
   while (c < numberOfCenters) {
-    id = SESAME::UtilityFunctions::genrand_int31() % numberOfInput;
+    id = rand() % numberOfInput;
     if (count(indexs.begin(), indexs.end(), id) == 0) {
       indexs.push_back(input[id]->getIndex());
       centers.push_back(input[id]->copy());
@@ -56,9 +55,6 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
 
   std::vector<int> indexs; // for unique
   indexs.push_back(centers.at(0)->getIndex());
-
-  default_random_engine e(time(NULL));
-  uniform_real_distribution<double> u(0.0, 1.0);
   //cout << "KMeans++ randomly select indexes: ";
   int times = 0;
   while (times < numberOfCenters) {
@@ -87,7 +83,7 @@ void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfIn
     }
 
     double left = 0, right = 0;
-    double r = u(e);
+    double r = ((double) rand() / (RAND_MAX));
     for (int i = 0; i < leftOver.size(); i++) {
       right += probability.at(i);
       if (r > left && r <= right) {
@@ -206,7 +202,7 @@ void SESAME::KMeans::checkStopStatus(bool &flag, std::vector<std::vector<PointPt
     flag = false;
   }
   if (!flag) {
-    SESAME_INFO("Point cluster need to be adjust, start a new iteration!");
+    // SESAME_INFO("Point cluster need to be adjust, start a new iteration!");
   }
 }
 
@@ -241,10 +237,11 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
                                std::vector<PointPtr> &input,
                                std::vector<std::vector<PointPtr>> &oldGroups,
                                std::vector<std::vector<PointPtr>> &newGroups,
+                               int seed,
                                bool kmeanspp) {
 
   bool flagToStop = false;
-
+  srand(seed);
   if (kmeanspp) {
     // run the first step in KMeans++
     SESAME_INFO("KMeans++ start!!!");
@@ -288,20 +285,21 @@ void SESAME::KMeans::runKMeans(int numberOfCenters,
 void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
                          vector<PointPtr> &onlineCenters,
                          SESAME::DataSinkPtr sinkPtr) {
- if(onlineCenters.size() <= param.num_clusters){
-   int i = 0;
-   for(auto el : onlineCenters) {
+  srand(param.seed);
+  if(onlineCenters.size() <= param.num_clusters){
+    int i = 0;
+    for(auto el : onlineCenters) {
      el->setClusteringCenter(i++);
      sinkPtr->put(el);
-   }
- } else{
-   bool flagToStop = false;
-   int numberOfCenters = param.num_clusters;
-   int numberOfInput = (int)onlineCenters.size();
-   std::vector<PointPtr> offlineCenters;
-   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+    }
+  } else{
+    bool flagToStop = false;
+    int numberOfCenters = param.num_clusters;
+    int numberOfInput = (int)onlineCenters.size();
+    std::vector<PointPtr> offlineCenters;
+    std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-   if (param.kmeanspp) {
+    if (param.kmeanspp) {
      // run the first step in KMeans++
      SESAME_INFO("KMeans++ start!!!");
      randomSelectCenters(1, numberOfInput, onlineCenters, offlineCenters);
@@ -311,16 +309,16 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
      // run the second step in KMeans++
      groupPointsByCenters(numberOfCenters, numberOfInput, onlineCenters, offlineCenters, oldGroups);
 
-   } else {
+    } else {
      SESAME_INFO("KMeans start!!!");
      // run the first step in KMeans
      randomSelectCenters(numberOfCenters, numberOfInput, onlineCenters, offlineCenters);
 
      // run the second step in KMeans
      groupPointsByCenters(numberOfCenters, numberOfInput, onlineCenters, offlineCenters, oldGroups);
-   }
+    }
 
-   do {
+    do {
      // run the third step in KMeans
      adjustClusteringCenters(offlineCenters, oldGroups);
 
@@ -333,13 +331,13 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
      // refresh the groups, store newGroups in oldGroups and clean newGroups
      refreshGroup(oldGroups, newGroups);
 
-   } while (!flagToStop);
-   if (param.kmeanspp) {
+    } while (!flagToStop);
+    if (param.kmeanspp) {
      SESAME_INFO("KMeans++ sourceEnd!!!");
-   } else {
+    } else {
      SESAME_INFO("KMeans sourceEnd!!!");
-   }
-   produceResult(oldGroups,sinkPtr);
- }
+    }
+    produceResult(oldGroups,sinkPtr);
+  }
 }
 

@@ -27,6 +27,7 @@ TEST(DesignTest, V1) {
   cmd_params.num_clusters = 7;
   cmd_params.dim = 54;
   cmd_params.num_clusters = 7;
+  cmd_params.seed = 10;
   cmd_params.time_decay = false;
   cmd_params.landmark = 1000;
   cmd_params.outlier_distance_threshold = 5000;
@@ -57,5 +58,5 @@ TEST(DesignTest, V1) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  ASSERT_NEAR(res->purity, 0.66, 0.05);
+  ASSERT_NEAR(res->purity, 0.46, 0.05);
 }

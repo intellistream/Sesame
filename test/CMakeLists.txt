@@ -16,6 +16,7 @@ add_executable(google_test
         DesignAspect/V8Test.cpp
         DesignAspect/V9Test.cpp
         Generic/GenericTest.cpp
+        SystemTest/SlidingWindowClusteringTest.cpp
 )
 
 target_compile_features(google_test PUBLIC cxx_std_20)

@@ -128,7 +128,7 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &inputs,
       CLlist.push_back(c);
     }
     int ci = predicts.at(i)->getClusteringCenter();
-    if (C.count(ci)) {
+    if(C.count(ci)){
       C[ci]->add(p);
     } else {
       CMMClusterPtr c = std::make_shared<CMMCluster>();

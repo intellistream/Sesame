@@ -65,6 +65,7 @@ void SESAME::StreamKM::RunOffline(DataSinkPtr sinkPtr) {
                      this->streamingCoreset,
                      oldGroups,
                      newGroups,
+                     this->StreamKMParam.seed,
                      true);
   // store the result input output
   this->km.produceResult(oldGroups,sinkPtr);
