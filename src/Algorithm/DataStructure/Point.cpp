@@ -55,7 +55,9 @@ int Point::getTimeStamp() const { return this->timestamp; }
  * @param source
  */
 PointPtr Point::copy() { return std::make_shared<Point>(*this); }
+
 int Point::getDimension() const { return this->dim; }
+
 int Point::getFeatureLength() { return (int)this->feature.size(); }
 
 double Point::getDisTo(PointPtr p) {
@@ -66,7 +68,9 @@ double Point::getDisTo(PointPtr p) {
   }
   return sqrt(distance);
 }
+
 double Point::getMinDist() const { return minDist; }
+
 void Point::setMinDist(double min_dist) { minDist = min_dist; }
 
 double Point::distance(PointPtr centroid) {
@@ -80,16 +84,21 @@ double Point::distance(PointPtr centroid) {
 
 double Point::Radius(PointPtr centroid) {
   double sum = 0.0;
-  for (int i = 0; i < getDimension(); i++) {
+  const int dim = getDimension();
+  auto a = feature.data(), b = centroid->feature.data();
+  for (int i = 0; i < dim; i++) {
+#ifndef NDEBUG
     assert(std::isnan(centroid->getFeatureItem(i)) == false);
     assert(std::isnan(getFeatureItem(i)) == false);
-    auto val = centroid->getFeatureItem(i) - getFeatureItem(i);
+#endif
+    auto val = a[i] - b[i];
     sum += val * val;
   }
-  assert(sum >= 0.0);
   return sqrt(sum);
 }
+
 void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
+
 bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
 
 PointPtr Point::Reverse() {

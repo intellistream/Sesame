@@ -95,11 +95,7 @@ void SESAME::UtilityFunctions::groupByCenters(
     auto min = DBL_MAX;
     int selectCenterIndex = -1;
     for (int j = 0; j < centers.size(); j++) {
-      double dis = 0;
-      for (int k = 0; k < dim; k++) {
-        auto val = output[i]->getFeatureItem(k) - centers[j]->getFeatureItem(k);
-        dis += val * val;
-      }
+      double dis = output[i]->Radius(centers[j]);
       if (min > dis) {
         selectCenterIndex = j;
         min = dis;
@@ -119,11 +115,7 @@ void SESAME::UtilityFunctions::groupByCentersWithOffline(
   for (int i = 0; i < n; i++) {
     auto min = DBL_MAX;
     for (int j = 0; j < centers.size(); j++) {
-      double dis = 0;
-      for (int k = 0; k < dim; k++) {
-        auto val = input[i]->getFeatureItem(k) - centers[j]->getFeatureItem(k);
-        dis += val * val;
-      }
+      double dis = output[i]->Radius(centers[j]);
       if (min > dis) {
         output[i]->setClusteringCenter(centers[j]->getClusteringCenter());
         min = dis;
