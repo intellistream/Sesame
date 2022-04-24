@@ -77,8 +77,9 @@ void SESAME::Birch::updateNLS(SESAME::NodePtr &node, SESAME::PointPtr &point, bo
 void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centroid) {
   centroid->setIndex(-1);
   centroid->setClusteringCenter(-1);
-  vector<double> ls = cf->getLS();
-  for(int i = 0; i < ls.size(); i++) centroid->setFeatureItem(ls.at(i) / (double)ls.size(), i);
+  auto &ls = cf->LS;
+  const auto n = ls.size();
+  for(int i = 0; i < n; ++i) centroid->feature[i] = ls[i] / n;
 }
 
 // use Manhattan Distance

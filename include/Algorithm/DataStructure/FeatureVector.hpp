@@ -15,10 +15,10 @@ class CF {
  private:
   // N是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
   int NumberOfNodes;
-  std::vector<double> LS;
-  std::vector<double> SS;
   int index;
  public:
+  std::vector<double> LS;
+  std::vector<double> SS;
   CF();
   ~CF();
   int getN() const;
