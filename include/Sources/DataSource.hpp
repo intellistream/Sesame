@@ -27,11 +27,12 @@ typedef std::shared_ptr<DataSource> DataSourcePtr;
 class DataSource {
  private:
   std::vector<PointPtr> input;
-  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
+  std::shared_ptr<std::queue<PointPtr>> inputQueue;
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
   TimeMeter overallMeter;
   std::atomic_bool sourceEnd;
+  param_t param;
  public:
   void load(int point_number, int dim, std::vector<string> &input);
   bool empty();

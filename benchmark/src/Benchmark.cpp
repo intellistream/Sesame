@@ -100,6 +100,7 @@ int main(int argc, char **argv) {
   cmd_params.num_samples = FLAGS_num_samples;
 
   cmd_params.output_file = "results.txt";
+  cmd_params.fast_source = true;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

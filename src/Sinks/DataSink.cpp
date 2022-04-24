@@ -7,8 +7,7 @@
 #include <Sinks/DataSink.hpp>
 
 SESAME::DataSink::DataSink() {
-  outputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>
-      (1000);//TODO: remove hard-coded queue initialization.
+  outputQueue = std::make_shared<std::queue<PointPtr>>();
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -17,13 +16,13 @@ void SESAME::DataSink::runningRoutine() {
   SESAME_INFO("DataSink start to grab data");
   while (!sourceEnd) {
     if (!outputQueue->empty()) {
-      PointPtr result = *outputQueue->front();
+      PointPtr result = outputQueue->front();
       output.push_back(result);
       outputQueue->pop();
     }
   }
   while (!outputQueue->empty()) {
-    PointPtr result = *outputQueue->front();
+    PointPtr result = outputQueue->front();
     output.push_back(result);
     outputQueue->pop();
   }

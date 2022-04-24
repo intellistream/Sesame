@@ -6,13 +6,17 @@
 
 #ifndef SESAME_INCLUDE_SINKS_DATASINK_HPP_
 #define SESAME_INCLUDE_SINKS_DATASINK_HPP_
+
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Utils/SPSCQueue.hpp"
+#include "Utils/UtilityFunctions.hpp"
+#include "Utils/Logger.hpp"
+#include "Engine/SingleThread.hpp"
+
 #include <string>
 #include <vector>
-#include <Algorithm/DataStructure/Point.hpp>
-#include <Utils/SPSCQueue.hpp>
-#include <Utils/UtilityFunctions.hpp>
-#include <Utils/Logger.hpp>
-#include <Engine/SingleThread.hpp>
+#include <queue>
+
 namespace SESAME {
 class DataSink;
 typedef std::shared_ptr<DataSink> DataSinkPtr;
@@ -20,7 +24,7 @@ typedef std::shared_ptr<DataSink> DataSinkPtr;
 class DataSink {
  private:
   std::vector<PointPtr> output;
-  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> outputQueue;
+  std::shared_ptr<std::queue<PointPtr>> outputQueue;
   SingleThreadPtr threadPtr;
   std::atomic_bool sourceEnd;
   std::atomic_bool finished;

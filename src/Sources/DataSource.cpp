@@ -32,8 +32,8 @@ void SESAME::DataSource::load(int point_number, int dim,
   const int timeStep = 100000;
   for (int i = 0; i < point_number; i++) {
     int timeStamp = timeStep * i + rand() % timeStep;
-    PointPtr point = DataStructureFactory::createPoint(
-        i, DEFAULT_WEIGHT, dim, DEFAULT_COST, timeStamp);
+    PointPtr point = DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, dim,
+                                                       DEFAULT_COST, timeStamp);
     auto charData = input[i].data();
     // use c_str() to convert string to char * but it's just a temp pointer we
     // have to use strcpy to store it
@@ -55,8 +55,8 @@ void SESAME::DataSource::load(int point_number, int dim,
   }
 }
 
-SESAME::DataSource::DataSource(const param_t &param) {
-  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(param.num_points);//TODO: remove hard-coded queue initialization: done
+SESAME::DataSource::DataSource(const param_t &param) : param(param) {
+  inputQueue = std::make_shared<std::queue<PointPtr>>();
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -68,14 +68,21 @@ void SESAME::DataSource::runningRoutine() {
   // Initialize timer at time 0
   auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
-  for (PointPtr p : this->input) {
-    int timestamp = p->getTimeStamp();
-    auto now = high_resolution_clock::now();
-    if(timestamp > duration_cast<nanoseconds>(now - start).count()) {
-      std::this_thread::sleep_for(nanoseconds(timestamp - duration_cast<nanoseconds>(now - start).count()));
+  if (param.fast_source) {
+    for (PointPtr p : this->input) {
+      inputQueue->push(p->copy());
     }
-    // Wait until (currentTime - startTime) >= timestamp to push point
-    inputQueue->push(p->copy());
+  } else {
+    for (PointPtr p : this->input) {
+      int timestamp = p->getTimeStamp();
+      auto now = high_resolution_clock::now();
+      if (timestamp > duration_cast<nanoseconds>(now - start).count()) {
+        std::this_thread::sleep_for(nanoseconds(
+            timestamp - duration_cast<nanoseconds>(now - start).count()));
+      }
+      // Wait until (currentTime - startTime) >= timestamp to push point
+      inputQueue->push(p->copy());
+    }
   }
   SESAME_INFO("sourceEnd set to true");
   sourceEnd = true; // Let engine knows that there won't be any more data
@@ -92,6 +99,7 @@ bool SESAME::DataSource::start(int id) {
   SESAME_INFO("DataSource spawn thread=" << threadPtr->getID());
   return true;
 }
+
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
     SESAME_INFO("DataSource::stop try to join threads=" << threadPtr->getID());
@@ -104,11 +112,14 @@ bool SESAME::DataSource::stop() {
   }
   return true;
 }
+
 bool SESAME::DataSource::empty() { return inputQueue->empty(); }
 
 SESAME::PointPtr SESAME::DataSource::get() {
+#ifndef NDEBUG
   assert(inputQueue->size());
-  auto rt = *inputQueue->front();
+#endif
+  auto rt = inputQueue->front();
   inputQueue->pop();
   return rt;
 }
@@ -117,9 +128,12 @@ void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {
   this->barrierPtr = barrierPtr;
 }
 SESAME::DataSource::~DataSource() { stop(); }
+
 vector<SESAME::PointPtr> SESAME::DataSource::getInputs() { return input; }
+
 void SESAME::DataSource::printTime() {
   SESAME_INFO("DataSource takes " << overallMeter.MeterUSEC()
                                   << " useconds to finish.");
 }
+
 bool SESAME::DataSource::sourceEnded() { return sourceEnd; }

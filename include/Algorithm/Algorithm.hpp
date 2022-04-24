@@ -55,6 +55,7 @@ struct param_t {
   int num_points, dim, num_clusters;
   bool time_decay = false;
   int coreset_size, seed;
+  bool fast_source = false;
 
   std::string input_file, output_file;
   AlgoType algo;
