@@ -88,9 +88,7 @@ void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::No
   SESAME::PointPtr centroid = make_shared<SESAME::Point>(BirchParam.dim);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
-  for(int i = 0; i < insertPoint->getDimension(); i++) {
-    dist += abs(centroid->getFeatureItem(i) - insertPoint->getFeatureItem(i));
-  }
+  dist = insertPoint->L1Dist(centroid);
 }
 
 // use Manhattan Distance
