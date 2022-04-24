@@ -129,19 +129,20 @@ double SESAME::Birch::calculateRadius(SESAME::PointPtr &point, SESAME::PointPtr 
 }
 
 void SESAME::Birch::calculateCorDistance(vector<vector<double>> &distance, vector<SESAME::NodePtr> &nodes) {
-  // initialization: create a metrics with nxn
-  for(int i = 0; i < nodes.size(); i++) {
-    vector<double> row;
-    for(int j = 0; j < nodes.size(); j++) {
-      row.push_back(0);
-    }
-    distance.push_back(row);
+  const auto n = nodes.size();
+  distance = vector<vector<double>>(n, vector<double>(n, 0));
+  auto centroids = vector<SESAME::PointPtr>(n);
+  for(int i = 0; i < n; i++) {
+    centroids[i] = make_shared<SESAME::Point>(BirchParam.dim);
+    auto cf = nodes[i]->getCF();
+    calculateCentroid(cf, centroids[i]);
   }
-
   // calculate the correlate distance
   for(int i = 0; i < nodes.size(); i++) {
-    for(int j = i; j < nodes.size(); j++) {
-      double dist = clusterToClusterDist(nodes[i], nodes[j]);
+      SESAME::PointPtr centroidA = centroids[i];
+    for(int j = i + 1; j < nodes.size(); j++) {
+      SESAME::PointPtr centroidB = centroids[j];
+      auto dist = centroidA->L1Dist(centroidB);
       distance[i][j] = dist;
       distance[j][i] = dist;
     }

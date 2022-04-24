@@ -29,8 +29,8 @@ typedef std::shared_ptr<CFTree> CFTreePtr;
 
 class CFTree {
 private:
-  int max_in_nodes; // max CF number of each internal node
-  int max_leaf_nodes;     // max CF number of each leaf node
+  int max_in_nodes;   // max CF number of each internal node
+  int max_leaf_nodes; // max CF number of each leaf node
   double
       distance_threshold; // threshold radius of each sub cluster in leaf nodes
 public:
@@ -90,12 +90,15 @@ public:
 
 template <NodeConcept T>
 std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes) {
-  int n = nodes.size();
+  const int n = nodes.size();
   std::vector<std::vector<double>> adjMatrix(n, std::vector<double>(n, 0.0));
+  std::vector<PointPtr> centroids(n);
+  for (int i = 0; i < n; ++i) {
+    centroids[i] = nodes[i]->Centroid();
+  }
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
-      auto centroid1 = nodes[i]->Centroid(), centroid2 = nodes[j]->Centroid();
-      auto distance = centroid1->L1Dist(centroid2);
+      auto distance = centroids[i]->L1Dist(centroids[j]);
       adjMatrix[i][j] = distance, adjMatrix[j][i] = distance;
     }
   }
@@ -138,8 +141,8 @@ struct ClusteringFeatures {
 class ClusteringFeaturesTree
     : public enable_shared_from_this<ClusteringFeaturesTree> {
 private:
-  const int max_in_nodes; // max CF number of each internal node
-  const int max_leaf_nodes;     // max CF number of each leaf node
+  const int max_in_nodes;   // max CF number of each internal node
+  const int max_leaf_nodes; // max CF number of each leaf node
   const double
       distance_threshold; // threshold radius of each sub cluster in leaf nodes
   const int dim;
