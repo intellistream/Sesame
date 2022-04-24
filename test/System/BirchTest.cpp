@@ -2,10 +2,9 @@
 // (https://github.com/intellistream)
 
 //
-// Created by wzru on 2022/4/10.
+// Created by tuidan on 2021/8/25.
 //
 
-#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
@@ -13,38 +12,36 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
-#include "gtest/gtest.h"
-
 #include <filesystem>
 
-using namespace SESAME;
+#include <gtest/gtest.h>
 
-TEST(SystemTest, SlidingWindowClustering) {
+TEST(SystemTest, Birch) {
   // Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.num_points = 3000;
-  cmd_params.num_clusters = 7;
+  cmd_params.num_points = 100000;
+  cmd_params.max_in_nodes = 1000;
+  cmd_params.max_leaf_nodes = 1000;
+  cmd_params.distance_threshold = 100;
   cmd_params.dim = 54;
   cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
-  cmd_params.sliding = 100;
-  cmd_params.delta_grid = 0.2;
-  cmd_params.num_samples = 1;
-  cmd_params.outlier_distance_threshold = 5000;
-  cmd_params.outlier_cap = 10;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
-                         "/datasets/CoverType.txt";
+                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
-  cmd_params.algo = SESAME::Generic;
-  cmd_params.run_offline = true;
+  cmd_params.algo = SESAME::BirchType;
+
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
 
   // Create Spout.
-  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  SESAME::DataSourcePtr sourcePtr =
+      GenericFactory::New<DataSource>(cmd_params);
   // Directly load data from file. TODO: configure it to load from external
   // sensors, e.g., HTTP.
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
@@ -53,12 +50,8 @@ TEST(SystemTest, SlidingWindowClustering) {
   SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
 
   // Create Algorithm.
-  SESAME::AlgorithmPtr algoPtr =
-      GenericFactory::New<SlidingWindowClustering>(cmd_params);
+  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
   // Run algorithm producing results.
-  auto res =
-      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
-
-//  ASSERT_NEAR(res->purity, 0.46, 0.05);
+  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 }

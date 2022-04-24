@@ -7,6 +7,7 @@
 #ifndef SESAME_SRC_SOURCES_DATASOURCE_HPP_
 #define SESAME_SRC_SOURCES_DATASOURCE_HPP_
 
+#include "Algorithm/Algorithm.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Utils/UtilityFunctions.hpp"
 #include "Utils/SPSCQueue.hpp"
@@ -36,7 +37,7 @@ class DataSource {
   bool empty();
   PointPtr get();
   std::vector<PointPtr> getInputs();
-  DataSource();
+  DataSource(const param_t &);
   ~DataSource();
   void runningRoutine();
   bool start(int i);

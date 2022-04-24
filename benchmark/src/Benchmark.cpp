@@ -6,6 +6,7 @@
  * Users will typically access this file to use the stream clustering algorithm.
  * We use this as the entry point for benchmarking.
  */
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
 #include "Sources/DataSourceFactory.hpp"
@@ -104,7 +105,7 @@ int main(int argc, char **argv) {
   std::vector<SESAME::PointPtr> results;
 
   // Create Spout.
-  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
 
   // Directly load data from file. TODO: configure it to load from external
   // sensors, e.g., HTTP.

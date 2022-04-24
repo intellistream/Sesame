@@ -2,9 +2,10 @@
 // (https://github.com/intellistream)
 
 //
-// Created by tuidan on 2021/8/25.
+// Created by wzru on 2022/4/10.
 //
 
+#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
@@ -16,27 +17,29 @@
 
 #include <filesystem>
 
-TEST(DesignTest, V4) {
+using namespace SESAME;
+
+TEST(SystemTest, SlidingWindowClustering) {
   // Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   param_t cmd_params;
   cmd_params.num_points = 3000;
-  cmd_params.distance_threshold = 100;
-  cmd_params.max_in_nodes = 20;
-  cmd_params.max_leaf_nodes = 40;
+  cmd_params.num_clusters = 7;
   cmd_params.dim = 54;
   cmd_params.num_clusters = 7;
   cmd_params.time_decay = false;
-  cmd_params.sliding = 1000;
-  cmd_params.outlier_distance_threshold = 3000;
-  cmd_params.outlier_cap = 3;
+  cmd_params.sliding = 100;
+  cmd_params.delta_grid = 0.2;
+  cmd_params.num_samples = 1;
+  cmd_params.outlier_distance_threshold = 5000;
+  cmd_params.outlier_cap = 10;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
-  cmd_params.algo = SESAME::V4Stream;
-
+  cmd_params.algo = SESAME::Generic;
+  cmd_params.run_offline = true;
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
 
@@ -50,11 +53,12 @@ TEST(DesignTest, V4) {
   SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
 
   // Create Algorithm.
-  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
+  SESAME::AlgorithmPtr algoPtr =
+      GenericFactory::New<SlidingWindowClustering>(cmd_params);
 
   // Run algorithm producing results.
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.5957, 0.01);
+//  ASSERT_NEAR(res->purity, 0.46, 0.05);
 }

@@ -6,6 +6,7 @@
 
 
 #include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
 #include "Sources/DataSourceFactory.hpp"
 #include "Utils/BenchmarkUtils.hpp"
@@ -40,7 +41,7 @@ TEST(DesignTest, V3) {
   std::vector<SESAME::PointPtr> results;
 
   //Create Spout.
-  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
   //Directly load data from file. TODO: configure it to load from external sensors, e.g., HTTP.
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 

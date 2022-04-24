@@ -6,6 +6,7 @@
 //
 
 #include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
 #include "Sources/DataSourceFactory.hpp"
 #include "Utils/BenchmarkUtils.hpp"
@@ -34,7 +35,7 @@ TEST(DesignTest, V1) {
   cmd_params.outlier_cap = 10;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
-                         "/datasets/CoverType.txt";
+                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::V1Stream;
   cmd_params.run_offline = true;
@@ -43,7 +44,7 @@ TEST(DesignTest, V1) {
   std::vector<SESAME::PointPtr> results;
 
   // Create Spout.
-  SESAME::DataSourcePtr sourcePtr = SESAME::DataSourceFactory::create();
+  SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
   // Directly load data from file. TODO: configure it to load from external
   // sensors, e.g., HTTP.
   BenchmarkUtils::loadData(cmd_params, sourcePtr);

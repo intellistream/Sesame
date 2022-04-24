@@ -55,8 +55,8 @@ void SESAME::DataSource::load(int point_number, int dim,
   }
 }
 
-SESAME::DataSource::DataSource() {
-  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);//TODO: remove hard-coded queue initialization: done
+SESAME::DataSource::DataSource(const param_t &param) {
+  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(param.num_points);//TODO: remove hard-coded queue initialization: done
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }

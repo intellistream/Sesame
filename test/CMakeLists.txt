@@ -1,12 +1,13 @@
 # adding the Google_Tests_run target
 add_executable(google_test
-        SystemTest/CluStreamTest.cpp
-        SystemTest/StreamKMTest.cpp
-        SystemTest/BirchTest.cpp
-        SystemTest/EDMStreamTest.cpp
-        SystemTest/DenStreamTest.cpp
-        SystemTest/DBStreamTest.cpp
-        SystemTest/DStreamTest.cpp
+        System/CluStreamTest.cpp
+        System/StreamKMTest.cpp
+        System/BirchTest.cpp
+        System/EDMStreamTest.cpp
+        System/DenStreamTest.cpp
+        System/DBStreamTest.cpp
+        System/DStreamTest.cpp
+        System/SlidingWindowClusteringTest.cpp
         DesignAspect/V1Test.cpp
         DesignAspect/V2Test.cpp
         DesignAspect/V3Test.cpp
@@ -16,7 +17,6 @@ add_executable(google_test
         DesignAspect/V8Test.cpp
         DesignAspect/V9Test.cpp
         Generic/GenericTest.cpp
-        SystemTest/SlidingWindowClusteringTest.cpp
 )
 
 target_compile_features(google_test PUBLIC cxx_std_20)
