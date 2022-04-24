@@ -49,7 +49,7 @@ public:
     std::vector<T> neighborNodes;
     int neighborDensity = 0, neighborNeighborDensity = 0;
     for (auto node : nodes) {
-      auto dist = point->Radius(node->Centroid());
+      auto dist = point->L2Dist(node->Centroid());
       if (dist < neighbor_distance_) {
         neighborNodes.push_back(node);
         neighborDensity += node->cf.num;
@@ -57,7 +57,7 @@ public:
     }
     for (auto neighbor : neighborNodes) {
       for (auto node : nodes) {
-        if (CalcClusterDist(node, neighbor) < neighbor_distance_) {
+        if (CalcClusterL2Dist(node, neighbor) < neighbor_distance_) {
           neighborNeighborDensity += node->cf.num;
         }
       }

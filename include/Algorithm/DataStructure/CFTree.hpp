@@ -95,7 +95,7 @@ std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes) {
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
       auto centroid1 = nodes[i]->Centroid(), centroid2 = nodes[j]->Centroid();
-      auto distance = centroid1->distance(centroid2);
+      auto distance = centroid1->L1Dist(centroid2);
       adjMatrix[i][j] = distance, adjMatrix[j][i] = distance;
     }
   }
@@ -108,7 +108,7 @@ auto CalcClosestNode(const std::vector<T> &nodes, PointPtr point) {
   T node = nullptr;
   for (auto child : nodes) {
     auto centroid = child->Centroid();
-    auto distance = centroid->Radius(point);
+    auto distance = centroid->L2Dist(point);
     if (distance < minDist) {
       minDist = distance;
       node = child;
@@ -117,14 +117,14 @@ auto CalcClosestNode(const std::vector<T> &nodes, PointPtr point) {
   return std::make_pair(node, minDist);
 }
 
-template <NodeConcept T> double CalcClusterDist(T a, T b) {
-  double dist = 0.0;
+template <NodeConcept T> double CalcClusterL1Dist(T a, T b) {
   auto ca = a->Centroid(), cb = b->Centroid();
-  for (int i = 0; i < ca->getDimension(); ++i) {
-    auto val = ca->getFeatureItem(i) - cb->getFeatureItem(i);
-    dist += val * val;
-  }
-  return sqrt(dist);
+  return ca->L1Dist(cb);
+}
+
+template <NodeConcept T> double CalcClusterL2Dist(T a, T b) {
+  auto ca = a->Centroid(), cb = b->Centroid();
+  return ca->L2Dist(cb);
 }
 
 struct ClusteringFeatures {

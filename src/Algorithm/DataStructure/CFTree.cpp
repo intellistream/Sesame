@@ -107,7 +107,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(PointPtr point) {
     while (1) {
       if (curNode->IsLeaf()) {
         auto centroid = curNode->Centroid();
-        if (point->Radius(centroid) <=
+        if (point->L2Dist(centroid) <=
             distance_threshold) { // concept drift detection
           // whether the new radius is lower than threshold T
           curNode->Update(point, true);
@@ -141,7 +141,7 @@ ClusteringFeaturesTree::NodePtr ClusteringFeaturesTree::Insert(NodePtr node) {
       // timerMeter.dataInsertAccMeasure();
       auto centroid = curNode->Centroid();
       // timerMeter.dataInsertEndMeasure();
-      if (center->Radius(centroid) <=
+      if (center->L2Dist(centroid) <=
           distance_threshold) { // concept drift detection
         // whether the new radius is lower than threshold T
         // timerMeter.dataInsertAccMeasure();

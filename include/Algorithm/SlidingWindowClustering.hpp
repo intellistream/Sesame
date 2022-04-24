@@ -174,7 +174,7 @@ public:
     double min_distance = std::numeric_limits<double>::max();
     int64_t best_center;
     for (int i = 0; i < centers_.size(); i++) {
-      double d = point->Radius(centers_[i]);
+      double d = point->L2Dist(centers_[i]);
       if (d < min_distance) {
         best_center = i;
         min_distance = d;
@@ -252,7 +252,7 @@ public:
     for (int i = 0; i < centers_.size(); i++) {
       double min_distance = std::numeric_limits<double>::max();
       for (const auto &center : *centers) {
-        min_distance = std::min(min_distance, centers_[i]->Radius(center));
+        min_distance = std::min(min_distance, centers_[i]->L2Dist(center));
       }
       cost_instance += 2.0 * min_distance *
                        costs_sum_dist_.at(i).total_after_time(after_time);
@@ -336,7 +336,7 @@ public:
     for (int i = 0; i < centers_.size(); i++) {
       double min_distance = std::numeric_limits<double>::max();
       for (const auto &center : *centers) {
-        min_distance = std::min(min_distance, centers_[i]->Radius(center));
+        min_distance = std::min(min_distance, centers_[i]->L2Dist(center));
       }
       cost_instance +=
           2.0 * min_distance * costs_sum_dist_.at(i).total_after_time(0);
@@ -345,7 +345,7 @@ public:
       double min_distance = std::numeric_limits<double>::max();
       for (const auto &center : *centers) {
         min_distance =
-            std::min(min_distance, summary_A.centers_[i]->Radius(center));
+            std::min(min_distance, summary_A.centers_[i]->L2Dist(center));
       }
       cost_instance +=
           2.0 * min_distance *

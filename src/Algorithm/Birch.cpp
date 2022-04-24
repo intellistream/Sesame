@@ -94,17 +94,13 @@ void SESAME::Birch::pointToClusterDist(SESAME::PointPtr &insertPoint, SESAME::No
 
 // use Manhattan Distance
 double SESAME::Birch::clusterToClusterDist(SESAME::NodePtr &nodeA, SESAME::NodePtr &nodeB) {
-  double dist = 0;
   SESAME::PointPtr centroidA = make_shared<SESAME::Point>(BirchParam.dim);
   SESAME::PointPtr centroidB = make_shared<SESAME::Point>(BirchParam.dim);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
-  calculateCentroid(curCFB, centroidB);;
-  for(int i = 0; i < centroidA->getDimension(); i++) {
-    dist += abs(centroidA->getFeatureItem(i) - centroidB->getFeatureItem(i));
-  }
-  return dist;
+  calculateCentroid(curCFB, centroidB);
+  return centroidA->L1Dist(centroidB);
 }
 
 // select the closest child cluster according to Manhattan Distance

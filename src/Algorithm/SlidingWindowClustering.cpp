@@ -37,7 +37,7 @@ void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
       for (int pos = 0; pos < instance.size(); ++pos) {
         double min_distance = std::min(
             min_distance_to_centers.at(pos),
-            instance[pos].first->Radius(instance.at(centers->back()).first));
+            instance[pos].first->L2Dist(instance.at(centers->back()).first));
         min_distance_to_centers[pos] = min_distance;
         sum_pow_min_distances +=
             std::pow(min_distance, 2) * instance.at(pos).second;
@@ -60,7 +60,7 @@ void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
   for (int pos = 0; pos < instance.size(); ++pos) {
     double min_distance =
         std::min(min_distance_to_centers.at(pos),
-                 instance[pos].first->Radius(instance[centers->back()].first));
+                 instance[pos].first->L2Dist(instance[centers->back()].first));
     *cost += std::pow(min_distance, 2) * instance.at(pos).second;
   }
 }

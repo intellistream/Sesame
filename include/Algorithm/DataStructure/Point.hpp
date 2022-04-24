@@ -56,8 +56,8 @@ public:
   int getTimeStamp() const;
   bool getIsOutlier();
   void setIsOutlier(bool flag);
-  double Radius(PointPtr centroid);
-  double distance(PointPtr centroid);
+  double L2Dist(PointPtr centroid);
+  double L1Dist(PointPtr centroid);
   PointPtr Reverse();
   std::string Serialize() {
     std::string str =

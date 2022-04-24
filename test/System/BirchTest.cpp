@@ -53,5 +53,7 @@ TEST(SystemTest, Birch) {
   SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
   // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+  auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_NEAR(res->purity, 0.7, 0.01);
 }

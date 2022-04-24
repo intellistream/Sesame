@@ -74,16 +74,24 @@ double Point::getMinDist() const { return minDist; }
 
 void Point::setMinDist(double min_dist) { minDist = min_dist; }
 
-double Point::distance(PointPtr centroid) {
+double Point::L1Dist(PointPtr centroid) {
+  static const auto mask = _mm256_set1_pd(0x7fffffff);
   double sum = 0;
-  for (int i = 0; i < getDimension(); i++) {
-    auto val = centroid->getFeatureItem(i) - getFeatureItem(i);
-    sum += fabs(val);
+  const int dim = getDimension();
+  auto a = feature.data(), b = centroid->feature.data();
+  auto sum_v = _mm256_setzero_pd();
+  for(size_t i = 0; i < dim; i += 4) {
+    __m256d diff = _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
+    auto abs_v = _mm256_and_pd(diff, mask);
+    sum_v = _mm256_add_pd(sum_v, abs_v);
   }
+  double v[4];
+  _mm256_storeu_pd(v, sum_v);
+  sum += v[0] + v[1] + v[2] + v[3];
   return sum;
 }
 
-double Point::Radius(PointPtr centroid) {
+double Point::L2Dist(PointPtr centroid) {
   double sum = 0.0;
   const int dim = getDimension();
   auto a = feature.data(), b = centroid->feature.data();
