@@ -51,7 +51,8 @@ double SESAME::CMMPoint::knnDis(int k, SESAME::CMMCluster &c) {
     sum += diss[i];
     num++;
   }
-  return sum / num;
+  if(sum == 0) return 1;
+  else return sum / num;
 }
 
 /**
