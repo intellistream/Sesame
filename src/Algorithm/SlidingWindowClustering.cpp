@@ -6,15 +6,14 @@
 namespace SESAME {
 
 SlidingWindowClustering::SlidingWindowClustering(const param_t &param)
-    : param(param) {}
+    : param(param), r(param.seed) {}
 
 SlidingWindowClustering::~SlidingWindowClustering() {}
 
-void SlidingWindowClustering::Init() {
-  sum_timer.Tick();
-}
+void SlidingWindowClustering::Init() { sum_timer.Tick(); }
 
-void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
+void k_means_plus_plus(Random *r,
+                       const std::vector<std::pair<PointPtr, double>> &instance,
                        int32_t k, std::vector<int32_t> *centers, double *cost) {
   centers->clear();
 
@@ -27,7 +26,7 @@ void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
     }
   } else {
     // add u.a.r. center.
-    auto index = random_uniform(0, (int)instance.size() - 1);
+    auto index = r->random_uniform(0, (int)instance.size() - 1);
     centers->push_back(index);
     while (centers->size() < k) {
       double sum_pow_min_distances = 0.0;
@@ -45,7 +44,7 @@ void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
                                   instance.at(pos).second);
       }
 
-      double random_place = random_uniform(0.0, sum_pow_min_distances);
+      double random_place = r->random_uniform(0.0, sum_pow_min_distances);
       for (int32_t i = 0; i < instance.size(); i++) {
         if (random_place <= min_dist_powers[i]) {
           centers->push_back(i);
@@ -68,8 +67,8 @@ void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
 // Given a series of instances of the problem, runs the k-means++ algorithm on
 // each instance and outputs the vector of costs of the solutions found. Any
 // other algorithm could be used instead of k-means++.
-vector<double> cost_samples(const vector<PointPtr> &samples, int window_size,
-                            int num_samples, int k) {
+vector<double> cost_samples(Random *r, const vector<PointPtr> &samples,
+                            int window_size, int num_samples, int k) {
   vector<double> costs;
   costs.reserve(num_samples);
   for (int i = 0; i < num_samples; i++) {
@@ -79,7 +78,7 @@ vector<double> cost_samples(const vector<PointPtr> &samples, int window_size,
     }
     std::vector<int32_t> ingnored_centers;
     double cost;
-    k_means_plus_plus(instance, k, &ingnored_centers, &cost);
+    k_means_plus_plus(r, instance, k, &ingnored_centers, &cost);
     if (cost > 0) {
       costs.push_back(cost);
     }
@@ -111,9 +110,9 @@ std::pair<double, double> guess_bounds(const vector<double> &costs) {
 }
 
 std::pair<double, double>
-guess_optimum_range_bounds(const vector<PointPtr> &samples, int window_size,
-                           int num_samples, int k) {
-  auto costs = cost_samples(samples, window_size, num_samples, k);
+guess_optimum_range_bounds(Random *r, const vector<PointPtr> &samples,
+                           int window_size, int num_samples, int k) {
+  auto costs = cost_samples(r, samples, window_size, num_samples, k);
   return guess_bounds(costs);
 }
 
@@ -124,9 +123,9 @@ void SlidingWindowClustering::RunOnline(PointPtr input) {
       samples.push_back(input);
     if (samples.size() >= param.num_samples * param.sliding) {
       const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
-          samples, param.sliding, param.num_samples, param.num_clusters);
+          &r, samples, param.sliding, param.num_samples, param.num_clusters);
       framework = GenericFactory::New<FrameworkAlg<KMeansSummary>>(
-          param.sliding, param.num_clusters, param.delta_grid, lower_bound,
+          &r, param.sliding, param.num_clusters, param.delta_grid, lower_bound,
           upper_bound);
       ds_timer.Tick();
       for (auto p : samples) {
@@ -148,7 +147,7 @@ void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {
   double cost_estimate = 0;
   framework->solution(&onlineCenters, &cost_estimate);
   for (auto p : onlineCenters) {
-    sinkPtr->put(p->copy());
+    sinkPtr->put(p);
   }
   ref_timer.Tock();
   sum_timer.Tock();

@@ -34,9 +34,10 @@ TEST(SystemTest, SlidingWindowClustering) {
   cmd_params.num_samples = 1;
   cmd_params.outlier_distance_threshold = 5000;
   cmd_params.outlier_cap = 10;
+  cmd_params.seed = 10;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
-                         "/datasets/CoverType.txt";
+                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::Generic;
   cmd_params.run_offline = true;
@@ -60,5 +61,5 @@ TEST(SystemTest, SlidingWindowClustering) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.46, 0.05);
+  ASSERT_NEAR(res->purity, 0.42, 0.01);
 }

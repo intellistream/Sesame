@@ -13,8 +13,9 @@ SESAME::TreeNodePtr SESAME::DataStructureFactory::createTreeNode() {
 void SESAME::DataStructureFactory::clearTreeNode(SESAME::TreeNodePtr treeNode) {
   treeNode.reset();
 }
-SESAME::PointPtr SESAME::DataStructureFactory::createPoint() {
-  return std::make_shared<Point>(54);
+
+SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int dim) {
+  return std::make_shared<Point>(dim);
 }
 
 SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index,
@@ -32,9 +33,7 @@ SESAME::PointPtr SESAME::DataStructureFactory::createPoint(
 void SESAME::DataStructureFactory::clearPoint(SESAME::PointPtr point) {
   point.reset();
 }
-SESAME::CoresetTreePtr SESAME::DataStructureFactory::createCoresetTree() {
-  return std::make_shared<CoresetTree>();
-}
+
 void SESAME::DataStructureFactory::clearCoresetTree(
     SESAME::CoresetTreePtr tree) {
   tree.reset();

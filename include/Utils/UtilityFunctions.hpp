@@ -66,19 +66,24 @@ public:
                                         int dim);
 };
 
-static std::mt19937 r(std::random_device{}());
-static int random_uniform(int min, int max) {
-  std::uniform_int_distribution<int> dist(min, max);
-  return dist(r);
-}
-static double random_uniform(double min, double max) {
-  std::uniform_real_distribution<double> dist(min, max);
-  return dist(r);
-}
-static bool bernoulli(double p){
-  std::bernoulli_distribution dist(p);
-  return dist(r);
-}
+class Random{
+private:
+  std::mt19937 r;
+public:
+  Random(int seed = 0): r(seed){}
+  int random_uniform(int min, int max) {
+    std::uniform_int_distribution<int> dist(min, max);
+    return dist(r);
+  }
+  double random_uniform(double min, double max) {
+    std::uniform_real_distribution<double> dist(min, max);
+    return dist(r);
+  }
+  bool bernoulli(double p){
+    std::bernoulli_distribution dist(p);
+    return dist(r);
+  }
+};
 
 } // namespace SESAME
 #endif // SESAME_SRC_UTILS_UTILITYFUNCTIONS_HPP_

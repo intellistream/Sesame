@@ -11,7 +11,7 @@
 
 namespace SESAME {
 
-void k_means_plus_plus(const std::vector<std::pair<PointPtr, double>> &instance,
+void k_means_plus_plus(Random *r, const std::vector<std::pair<PointPtr, double>> &instance,
                        int32_t k, std::vector<int32_t> *centers, double *cost);
 
 // Class that handles the time stamps of a sliding window. The timestamps start
@@ -122,9 +122,9 @@ public:
   // epsilon_multiplicities is the epsilon factor used in the estimate of the
   // multiplicites of the centers. k is the target number of centers. gen is a
   // random source.
-  MeyersonSketch(const double max_num_centers, const double denominator_prob,
+  MeyersonSketch(Random *r, const double max_num_centers, const double denominator_prob,
                  const double epsilon_multiplicities, const int32_t k)
-      : max_num_centers_(max_num_centers), denominator_prob_(denominator_prob),
+      : r(r), max_num_centers_(max_num_centers), denominator_prob_(denominator_prob),
         epsilon_multiplicities_(epsilon_multiplicities), k_(k),
         failed_sketch_(false) {}
   // Notice how the number of items stored is updated by the destructor.
@@ -132,6 +132,7 @@ public:
 
   // Copy operator. Handles the number of items stored.
   MeyersonSketch(MeyersonSketch const &other) {
+    r = other.r;
     max_num_centers_ = other.max_num_centers_;
     denominator_prob_ = other.denominator_prob_;
     epsilon_multiplicities_ = other.epsilon_multiplicities_;
@@ -146,6 +147,7 @@ public:
   }
 
   MeyersonSketch &operator=(MeyersonSketch const &other) {
+    r = other.r;
     max_num_centers_ = other.max_num_centers_;
     denominator_prob_ = other.denominator_prob_;
     epsilon_multiplicities_ = other.epsilon_multiplicities_;
@@ -181,7 +183,7 @@ public:
       }
     }
     bool open_new =
-        bernoulli(std::min(1.0, std::pow(min_distance, 2) / denominator_prob_));
+        r->bernoulli(std::min(1.0, std::pow(min_distance, 2) / denominator_prob_));
     if (open_new) {
       create_center(point);
     } else {
@@ -239,7 +241,7 @@ public:
 
     // Solve k-means.
     std::vector<int32_t> pos_centers;
-    k_means_plus_plus(instance, k_, &pos_centers, &cost_instance);
+    k_means_plus_plus(r, instance, k_, &pos_centers, &cost_instance);
     for (const auto &pos : pos_centers) {
       assert(pos < instance.size());
       centers->push_back(instance.at(pos).first);
@@ -319,7 +321,7 @@ public:
     double cost_instance = 0;
 
     std::vector<int32_t> pos_centers;
-    k_means_plus_plus(instance, k_, &pos_centers, &cost_instance);
+    k_means_plus_plus(r, instance, k_, &pos_centers, &cost_instance);
     for (const auto &pos : pos_centers) {
       assert(pos < instance.size());
       centers->push_back(instance.at(pos).first);
@@ -412,6 +414,7 @@ private:
   vector<ApproxTimeCountKeeper> multiplicities_;
   vector<ApproxTimeCountKeeper> costs_sum_dist_;
   vector<ApproxTimeCountKeeper> costs_sum_sq_dist_;
+  Random *r;
 
   // Used to avoid recomputation if the solution has not significantly changed.
   mutable std::optional<double> precomputed_cost;
@@ -432,8 +435,8 @@ public:
   // k is the number of centers
   // lambda is the threshold used by the summary
   // gen is a random be generator
-  SummaryAlg(int64_t window, int32_t k, double lambda)
-      : window_(window), k_(k), lambda_(lambda), is_empty_(true),
+  SummaryAlg(Random *r, int64_t window, int32_t k, double lambda)
+      : r(r), window_(window), k_(k), lambda_(lambda), is_empty_(true),
         first_element_time_(-1) {}
   virtual ~SummaryAlg() {}
 
@@ -451,6 +454,8 @@ public:
     first_element_time_ = -1;
     reset_impl();
   }
+
+  Random *r;
 
   // Returns the time of the first element in the stream,
   int64_t first_element_time() const { return first_element_time_; }
@@ -496,8 +501,8 @@ private:
 // using the Meyerson sketch.
 class KMeansSummary : public SummaryAlg {
 public:
-  KMeansSummary(int64_t window, int32_t k, double optimum_upperbound_guess)
-      : SummaryAlg(window, k, optimum_upperbound_guess) {
+  KMeansSummary(Random *r, int64_t window, int32_t k, double optimum_upperbound_guess)
+      : SummaryAlg(r, window, k, optimum_upperbound_guess) {
     max_sketch_size_ = std::pow(2, 2 * 2 + 1) * 4. * k *
                        (1. + std::log(window * 3)) * (1.0 + 1. / 0.5);
     distance_denominator_ =
@@ -583,7 +588,7 @@ protected:
     sketches_.clear();
     sketches_.reserve(kSketchNumber);
     for (int i = 0; i < kSketchNumber; i++) {
-      MeyersonSketch sketch(max_sketch_size_, distance_denominator_,
+      MeyersonSketch sketch(r, max_sketch_size_, distance_denominator_,
                             kEpsilonMult, k_);
       sketches_.push_back(sketch);
     }
@@ -610,10 +615,10 @@ public:
   // window is the window size.
   // k is the number of clusters
   // lambda is the threshold for the.
-  OneThresholdsPairSummaryAlg(int64_t window, int32_t k, double lambda)
-      : window_(window), k_(k), lambda_(lambda),
-        summary_A_(window_, k_, lambda_),
-        summary_B_(window_, k_, lambda_) {
+  OneThresholdsPairSummaryAlg(Random *r, int64_t window, int32_t k, double lambda)
+      : r(r), window_(window), k_(k), lambda_(lambda),
+        summary_A_(r, window_, k_, lambda_),
+        summary_B_(r, window_, k_, lambda_) {
     assert(lambda >= 0);
   }
 
@@ -648,6 +653,7 @@ private:
   SummaryAlg summary_A_;
   SummaryAlg summary_B_;
   PointPtr first_element_B_;
+  Random *r;
 };
 
 // This runs the algorithmic framework for our sliding window algorithm.
@@ -658,9 +664,9 @@ private:
 //  end grid which is the end of the grid.
 template <typename SummaryAlg> class FrameworkAlg {
 public:
-  FrameworkAlg(int64_t window, int32_t k, double delta, double begin_grid,
+  FrameworkAlg(Random *r, int64_t window, int32_t k, double delta, double begin_grid,
                double end_grid)
-      : window_(window), k_(k), delta_(delta), begin_grid_(begin_grid),
+      : r(r), window_(window), k_(k), delta_(delta), begin_grid_(begin_grid),
         end_grid_(end_grid), window_handler_(window) {
     assert(delta > 0);
     assert(begin_grid < end_grid);
@@ -670,7 +676,7 @@ public:
     double lambda = begin_grid_;
     while (lambda <= end_grid_ * (1.0 + delta)) {
       threshold_algs_.push_back(
-          OneThresholdsPairSummaryAlg<SummaryAlg>(window_, k_, lambda));
+          OneThresholdsPairSummaryAlg<SummaryAlg>(r, window_, k_, lambda));
       lambda *= (1 + delta);
     }
   }
@@ -774,6 +780,7 @@ public:
   }
 
 private:
+  Random *r;
   const int64_t window_;
   const int32_t k_;
   const double delta_;
@@ -784,13 +791,15 @@ private:
 };
 
 class SlidingWindowClustering : public Algorithm {
-
-public:
+private:
+  Random r;
   StreamClusteringParam param;
   std::vector<PointPtr> samples;
   bool has_sampled = false;
   std::shared_ptr<FrameworkAlg<KMeansSummary>> framework;
   int count = 0;
+
+public:
 
   SlidingWindowClustering(const param_t &cmd_params);
 

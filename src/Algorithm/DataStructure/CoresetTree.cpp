@@ -256,7 +256,7 @@ SESAME::PointPtr SESAME::CoresetTree::chooseCentre(TreeNodePtr node) {
 
   //stores the nodecost if node is split with the best centre
   double minCost = node->cost;
-  PointPtr bestCentre = DataStructureFactory::createPoint();
+  PointPtr bestCentre = DataStructureFactory::createPoint(param.dim);
 
   //loop counter variable
   int i;

@@ -54,7 +54,7 @@ typedef std::shared_ptr<Algorithm> AlgorithmPtr;
 struct param_t {
   int num_points, dim, num_clusters;
   bool time_decay = false;
-  int coreset_size, seed;
+  int coreset_size, seed = 10;
   bool fast_source = false;
 
   std::string input_file, output_file;
