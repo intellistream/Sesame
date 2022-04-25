@@ -27,11 +27,11 @@ namespace SESAME {
 
 class DataStructureFactory {
 public:
+  static PointPtr createPoint(int dim);
   static PointPtr createPoint(int index, double weight, int dim,
                               double cost, int timestamp);
   static PointPtr createPoint(int index, double weight, int dim,
                               double cost);
-  static PointPtr createPoint();
   static void clearPoint(PointPtr point);
 
   static TreeNodePtr createTreeNode();

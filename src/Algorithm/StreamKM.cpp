@@ -19,7 +19,7 @@ void SESAME::StreamKM::Init() {
       ceil(log((double) this->StreamKMParam.num_points / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
   this->window->windowManager.maxWindowSize = this->StreamKMParam.windowSize;
   this->window->initWindow(this->StreamKMParam.windowSize);
-  this->window->tree = DataStructureFactory::createCoresetTree();
+  this->window->tree = GenericFactory::New<CoresetTree>(param);
   SESAME_DEBUG(
       "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dim: "
           << this->StreamKMParam.dim);
