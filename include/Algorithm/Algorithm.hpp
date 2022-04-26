@@ -56,6 +56,7 @@ struct param_t {
   bool time_decay = false;
   int coreset_size, seed = 10;
   bool fast_source = false;
+  bool store = true;
 
   std::string input_file, output_file;
   AlgoType algo;

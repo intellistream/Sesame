@@ -33,7 +33,6 @@ TEST(SystemTest, StreamKM) {
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
                           "/datasets/CoverType.txt";
-  SESAME_INFO("Default Input Data Directory: " + cmd_params.input_file);
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::StreamKMeansType;
   cmd_params.run_offline = true;

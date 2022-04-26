@@ -326,7 +326,6 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.dataset_option = 0;
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
-  SESAME_INFO("Default Input Data Directory: " + cmd_params.input_file);
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::DBStreamType;
   cmd_params.run_offline = false;
@@ -357,6 +356,10 @@ void BenchmarkUtils::loadData(param_t &cmd_params,
   std::vector<std::string> data;
   ifstream infile;
   infile.open(cmd_params.input_file);
+  if(infile.is_open() == 0) {
+    std::cerr << "input file not found" << std::endl;
+    exit(1);
+  }
   SESAME_INFO("Read from the file...");
 
   // insert the data once per line into the string vector, every string element
@@ -488,9 +491,11 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   // Store results.
-  algoPtr->Store(cmd_params.output_file, cmd_params.dim,
-                 sinkPtr->getResults());
-  SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
+  if(cmd_params.store) {
+    algoPtr->Store(cmd_params.output_file, cmd_params.dim,
+                   sinkPtr->getResults());
+    SESAME_INFO("Finished store results: " << sinkPtr->getResults().size()  );
+  }
 
   auto res = SESAME::Evaluation::runEvaluation(
       cmd_params.dim, cmd_params.num_clusters, cmd_params.time_decay,

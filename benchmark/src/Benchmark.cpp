@@ -101,6 +101,7 @@ int main(int argc, char **argv) {
 
   cmd_params.output_file = "results.txt";
   cmd_params.fast_source = true;
+  cmd_params.store = false;
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
