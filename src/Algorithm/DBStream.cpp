@@ -19,12 +19,12 @@ SESAME::DBStream::DBStream(param_t &cmd_params) {
   this->param = cmd_params;
   this->dbStreamParams.num_points = cmd_params.num_points;
   this->dbStreamParams.dim = cmd_params.dim;
-  this->dbStreamParams.radius=cmd_params.radius;
-  this->dbStreamParams.lambda=cmd_params.lambda;
-  this->dbStreamParams.clean_interval=100;
-  this->dbStreamParams.min_weight= 0.1;
-  this->dbStreamParams.alpha=0.15;
-  this->dbStreamParams.base=cmd_params.base;
+  this->dbStreamParams.radius = cmd_params.radius;
+  this->dbStreamParams.lambda = cmd_params.lambda;
+  this->dbStreamParams.clean_interval = cmd_params.clean_interval;
+  this->dbStreamParams.min_weight = cmd_params.min_weight;
+  this->dbStreamParams.alpha = cmd_params.alpha;
+  this->dbStreamParams.base = cmd_params.base;
 }
 SESAME::DBStream:: ~DBStream()
 = default;
@@ -107,7 +107,7 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   double decayFactor = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
   //TODO this one is using timespec to calculate time
   //double decayFactor0 = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
-  this->microClusterNN = findFixedRadiusNN(dataPoint->copy(),decayFactor);//decayFactor
+  this->microClusterNN = findFixedRadiusNN(dataPoint, decayFactor);//decayFactor
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
 
   /* *
@@ -117,12 +117,12 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   if (microClusterNN.empty()) {
     microClusterIndex++;
     MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dim,
-                                                                                       microClusterIndex,dataPoint->copy(),dbStreamParams.radius);
+                                                                                       microClusterIndex,dataPoint,dbStreamParams.radius);
     microClusters.push_back(newMicroCluster);
     microClusterNN.push_back(newMicroCluster);
   } else {
     for (int i = 0; i < sizeNN; i++) {
-      microClusterNN[i]->insert(dataPoint->copy()); // just update weight //
+      microClusterNN[i]->insert(dataPoint); // just update weight //
 
      // std::cout<<" cluster "<<microClusterNN[i]->id.front()<<"th weight is "<<microClusterNN[i]->weight<<std::endl;
       for (int j = i + 1; j < sizeNN; j++) {

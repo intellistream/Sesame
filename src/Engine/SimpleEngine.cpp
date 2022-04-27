@@ -75,7 +75,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
     if (!sourcePtr->empty()) {
       auto item = sourcePtr->get();
       overallMeter.onlineAccMeasure();
-      algoPtr->RunOnline(item);
+      algoPtr->RunOnline(item->copy());
       overallMeter.onlineAccEMeasure();
     }
   }
@@ -85,7 +85,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
     // SESAME_INFO("processing remaining data");
-    algoPtr->RunOnline(item);
+    algoPtr->RunOnline(item->copy());
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();

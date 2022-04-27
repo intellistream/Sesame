@@ -47,7 +47,7 @@ SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
 BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
 //Create Sink.
-SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
 //Create Algorithm.
 SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);

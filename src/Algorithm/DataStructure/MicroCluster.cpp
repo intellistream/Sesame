@@ -35,7 +35,7 @@ SESAME::MicroCluster::MicroCluster(int dim, int id,PointPtr dataPoint,double rad
 
   for (int i = 0; i < this->dim; i++)
   {
-    double data = dataPoint->getFeatureItem(i);
+    double data = dataPoint->feature[i];
     LS.push_back(data);
     centroid.push_back(data);
   }

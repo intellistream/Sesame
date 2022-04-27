@@ -26,13 +26,10 @@ public:
   bool isOutlier;
   int sgn = 1;
   std::vector<double> feature; // TODO: need to think how to remove * here.
-
-private:
   // the distance to the nearest data point
   int clusteringCenter;         // using index to identify
   int dim;                // feature Length
 
-public:
   Point(int dim, int index = -1, double weight = 1.0, double cost = 0.0,
         int timestamp = 0);
   void setCost(double c);

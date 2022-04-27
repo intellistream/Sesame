@@ -27,7 +27,7 @@ typedef std::shared_ptr<DataSource> DataSourcePtr;
 class DataSource {
  private:
   std::vector<PointPtr> input;
-  std::shared_ptr<std::queue<PointPtr>> inputQueue;
+  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
   TimeMeter overallMeter;

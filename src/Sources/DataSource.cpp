@@ -56,7 +56,7 @@ void SESAME::DataSource::load(int point_number, int dim,
 }
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
-  inputQueue = std::make_shared<std::queue<PointPtr>>();
+  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -70,7 +70,7 @@ void SESAME::DataSource::runningRoutine() {
   SESAME_INFO("DataSource start to emit data");
   if (param.fast_source) {
     for (PointPtr p : this->input) {
-      inputQueue->push(p->copy());
+      inputQueue->push(p);
     }
   } else {
     for (PointPtr p : this->input) {
@@ -81,7 +81,7 @@ void SESAME::DataSource::runningRoutine() {
             timestamp - duration_cast<nanoseconds>(now - start).count()));
       }
       // Wait until (currentTime - startTime) >= timestamp to push point
-      inputQueue->push(p->copy());
+      inputQueue->push(p);
     }
   }
   SESAME_INFO("sourceEnd set to true");
@@ -121,7 +121,7 @@ SESAME::PointPtr SESAME::DataSource::get() {
 #endif
   auto rt = inputQueue->front();
   inputQueue->pop();
-  return rt;
+  return *rt;
 }
 
 void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {

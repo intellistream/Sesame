@@ -58,7 +58,7 @@ TEST(GenericTest, V1) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  DataSinkPtr sinkPtr = DataSinkFactory::create();
+  DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr = GenericFactory::New<StreamClustering<
@@ -105,7 +105,7 @@ TEST(GenericTest, V2) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr = GenericFactory::New<StreamClustering<
@@ -150,7 +150,7 @@ TEST(GenericTest, V3) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr =
@@ -196,7 +196,7 @@ TEST(GenericTest, V4) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr =
@@ -243,7 +243,7 @@ TEST(GenericTest, V5) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr =
@@ -287,7 +287,7 @@ TEST(GenericTest, V6) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr = GenericFactory::New<StreamClustering<
@@ -332,7 +332,7 @@ TEST(GenericTest, V7) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr =
@@ -379,7 +379,7 @@ TEST(GenericTest, V8) {
   BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
   // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = SESAME::DataSinkFactory::create();
+  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
   // Create Algorithm.
   AlgorithmPtr algoPtr =
