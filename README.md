@@ -71,7 +71,7 @@ Times: 30 + 30 + 30 + 30 + 30 = 150
 
 | id   | algo         | workload  | tag       | workload | seed | num_clusters | coreset_size | cmm      | purity   |
 | ---- | ------------ | --------- | --------- | -------- | ---- | ------------ | ------------ | -------- | -------- |
-| 1456 | StreamKMeans | CoverType | CoverType | 1        | 7    | 5000         | 0.406903     | 0.89424  |          |
+| 1456 | StreamKMeans | CoverType |           | CoverType| 1    |  7           | 5000         | 0.406903 | 0.89424  |
 | 2074 | StreamKMeans | EDS       |           | EDS      | 10   | 363          | 5000         | 0.150501 | 0.988853 |
 | 2204 | StreamKMeans | EDS_O     |           | EDS_O    | 10   | 90           | 5000         | 0.372093 | 0.97659  |
 | 2336 | StreamKMeans | KDD99     |           | KDD99    | 100  | 23           | 10000        | 0.591537 | 0.99829  |
