@@ -79,8 +79,8 @@ struct param_t {
   bool run_offline = false; // determine whether to run the offline refinement
   int landmark; // this is the index of landmark point[start from 0](determine
                 // to process the algorithm from which algorithm)
-  int sliding;  // since we test the count-based sliding window, this is the
-                // count number
+  int sliding = 10; // since we test the count-based sliding window, this is the
+                    // count number
   bool detect_outlier = false;       // whether detect outliers
   double outlier_distance_threshold; // the max distance of the incoming point
                                      // to its nearest clusters
