@@ -53,6 +53,8 @@ CREATE VIEW edmstream as SELECT id, bench_begin, algo, workload, radius, delta, 
 
 CREATE VIEW dbstream as SELECT id, bench_begin, algo, workload, lambda, radius, clean_interval, min_weight, alpha, base, cmm, purity FROM sesame WHERE algo = 'DBStream'; 
 
+CREATE VIEW dstream as SELECT id, bench_begin, algo, workload, lambda, beta, cm, cl, grid_width, cmm, purity FROM sesame WHERE algo = 'DStream'; 
+
 CREATE VIEW denstream as SELECT id, bench_begin, algo, workload, buf_size, min_points, epsilon, base, lambda, mu, beta, cmm, purity FROM sesame WHERE algo = 'DenStream'; 
 
 CREATE VIEW clustream as SELECT id, bench_begin, algo, workload, num_last_arr, time_window, num_online_clusters, radius, buf_size, cmm, purity FROM sesame WHERE algo = 'CluStream'; 

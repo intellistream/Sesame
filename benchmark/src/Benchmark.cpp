@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
 
   // Parse parameters.
   param_t cmd_params;
+  cmd_params.algo = (AlgoType)FLAGS_algo;
   BenchmarkUtils::defaultParam(cmd_params);
   // gen from gen_flags.js
   cmd_params.algo = (AlgoType)FLAGS_algo;
@@ -102,6 +103,7 @@ int main(int argc, char **argv) {
   cmd_params.output_file = "results.txt";
   cmd_params.fast_source = true;
   cmd_params.store = false;
+
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;

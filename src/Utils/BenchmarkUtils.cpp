@@ -299,7 +299,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.coreset_size = 100;
   cmd_params.num_last_arr = 60;
   cmd_params.time_window = 6;
-  cmd_params.time_interval = 4;
+  cmd_params.time_interval = 100;
   cmd_params.num_online_clusters = 10;
   cmd_params.radius = 2;
   cmd_params.buf_size = 500;
@@ -327,8 +327,9 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
+  if(cmd_params.algo == V1Stream || cmd_params.algo == V2Stream || cmd_params.algo == DenStreamType || cmd_params.algo == CluStreamType || cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType) 
+    cmd_params.run_offline = true;
   cmd_params.algo = SESAME::DBStreamType;
-  cmd_params.run_offline = false;
   cmd_params.detect_outlier = false;
 }
 
