@@ -5,8 +5,10 @@
 
 namespace SESAME {
 
-SlidingWindowClustering::SlidingWindowClustering(const param_t &param)
-    : param(param), r(param.seed) {}
+SlidingWindowClustering::SlidingWindowClustering(param_t &cmd_params)
+    : r(cmd_params.seed) {
+  this->param = cmd_params;
+}
 
 SlidingWindowClustering::~SlidingWindowClustering() {}
 

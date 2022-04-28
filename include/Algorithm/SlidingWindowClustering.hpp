@@ -793,7 +793,6 @@ private:
 class SlidingWindowClustering : public Algorithm {
 private:
   Random r;
-  StreamClusteringParam param;
   std::vector<PointPtr> samples;
   bool has_sampled = false;
   std::shared_ptr<FrameworkAlg<KMeansSummary>> framework;
@@ -801,7 +800,7 @@ private:
 
 public:
 
-  SlidingWindowClustering(const param_t &cmd_params);
+  SlidingWindowClustering(param_t &cmd_params);
 
   ~SlidingWindowClustering();
 
