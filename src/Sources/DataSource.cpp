@@ -45,6 +45,11 @@ void SESAME::DataSource::load(int point_number, int dim,
     while (feature != nullptr) {
       if (index == dim) {
         point->setClusteringCenter(atoi(feature));
+        if(point->getClusteringCenter() == -1) { // If cluster id == -1, then it is an noise / outlier
+          point->setIsOutlier(true);
+        } else {
+          point->setIsOutlier(false);
+        }
       } else {
         point->setFeatureItem(strtod(feature, nullptr), index);
         index++;

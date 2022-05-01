@@ -140,12 +140,25 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
                                    this->clusterNodes[i]->getCF()->getN(),
                                j);
     }
+    centroid->setIsOutlier(false);
     onlineCenters.push_back(centroid->copy());
   }
-
   // here if num_clusters is lower than online cluster center number, we choose
   // to skip offline.
   this->km->Run(this->V1Param, onlineCenters, sinkPtr);
+  // store outlier nodes
+  for(int i = 0; i < this->outlierNodes.size(); i++) {
+    PointPtr centroid =
+        DataStructureFactory::createPoint(i, 1, V1Param.dim, 0);
+    for (int j = 0; j < V1Param.dim; j++) {
+      centroid->setFeatureItem(this->outlierNodes[i]->getCF()->getLS().at(j) /
+                                   this->outlierNodes[i]->getCF()->getN(),
+                               j);
+    }
+    centroid->setClusteringCenter(-1);
+    centroid->setIsOutlier(true);
+    sinkPtr->put(centroid->copy());
+  }
 
   timerMeter.printTime(false, false, false, false);
 }
