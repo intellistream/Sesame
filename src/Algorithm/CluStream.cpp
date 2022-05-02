@@ -141,6 +141,7 @@ bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
     if (microClusters[i]->getRelevanceStamp(this->CluStreamParam.num_last_arr) < threshold) {
       //SESAME_INFO("Need to delete");
       int newId = this->CluStreamParam.num_clusters + pointsForgot + pointsMerged;
+      delMicroClusters.push_back(microClusters[i]);
       DataStructureFactory::clearMicroCluster(microClusters[i]);
       microClusters[i] = DataStructureFactory::createMicroCluster(CluStreamParam.dim, newId);
       microClusters[i]->Init(std::move(data), elapsedTime);
@@ -309,6 +310,12 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   // store the result input output
   this->kmeans->produceResult(oldGroups,sinkPtr);
   // timerMeter.printTime(true, true,true,false);
+  for(auto out = this->delMicroClusters.begin(); out != this->delMicroClusters.end(); ++ out) {
+    PointPtr center = out->get()->getCenter();
+    center->setClusteringCenter(-1);
+    center->setIsOutlier(true);
+    sinkPtr->put(center->copy());
+  }
   ref_timer.Tock();
   sum_timer.Tock();
 }

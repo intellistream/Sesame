@@ -147,14 +147,18 @@ void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
     for(auto cell = cells.begin(); cell != cells.end(); ++cell) {
       CountNode(cell->get()->copy(), num);
       PointPtr center = cell->get()->GetCenter();
+      center->setIsOutlier(false);
       sinkPtr->put(center->copy());
     }
   }
   for(auto out = this->outres->GetOutliers().begin(); out != this->outres->GetOutliers().end(); ++ out) {
-      i++;
-      sum += num;
-      num = 0;
-      CountNode(out->get()->copy(), num);
+    i++;
+    sum += num;
+    num = 0;
+    CountNode(out->get()->copy(), num);
+    PointPtr center = out->get()->GetCenter();
+    center->setIsOutlier(true);
+    sinkPtr->put(center->copy());
    }
    ref_timer.Tock();
    sum_timer.Tock();

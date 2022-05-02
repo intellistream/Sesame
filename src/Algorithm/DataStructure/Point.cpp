@@ -22,6 +22,7 @@ Point::Point(int dim, int index, double weight, double cost,
   this->cost = cost;
   this->clusteringCenter = -1;
   this->timestamp = timestamp;
+  this->isOutlier = false;
 }
 
 int Point::getIndex() const { return this->index; }

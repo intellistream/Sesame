@@ -4,6 +4,7 @@
 // Created by 1124a on 2021/8/16.
 //
 #include <Algorithm/DataStructure/MicroCluster.hpp>
+#include <Algorithm/DataStructure/DataStructureFactory.hpp>
 #include <Utils/Logger.hpp>
 #include <iterator>
 //Create MC, only initialization, used for DenStream, CluStream
@@ -262,6 +263,14 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid(){
     }
   }
   return dataObject;
+}
+
+//calculate centroid of a  cluster
+SESAME::PointPtr SESAME::MicroCluster::getCenter(){
+  PointPtr center = DataStructureFactory::createPoint(dim);
+  for(int i=0; i<centroid.size(); i++)
+    center->setFeatureItem(LS[i]/weight,i);
+  return center;
 }
 
 double SESAME::MicroCluster::getInclusionProbability(PointPtr datapoint,double radius) {
