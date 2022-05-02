@@ -49,7 +49,7 @@ class CFNode {
 private:
   CFPtr curCF;
   bool isLeaf;
-  bool isOutlier;
+  bool outlier;
   std::vector<NodePtr> children;
   NodePtr parent;
   int index;
@@ -72,8 +72,8 @@ public:
   void setChild(NodePtr &child);
   void setChildren(std::vector<NodePtr> children);
   void clearParents();
-  void setIsOutlier(bool flag);
-  bool getIsOutlier();
+  void setOutlier(bool flag);
+  bool getOutlier();
   std::string Prefix(int d) {
     std::string prefix = "";
     while (d--) {

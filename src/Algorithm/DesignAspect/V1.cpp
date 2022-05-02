@@ -140,7 +140,7 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
                                    this->clusterNodes[i]->getCF()->getN(),
                                j);
     }
-    centroid->setIsOutlier(false);
+    centroid->setOutlier(false);
     onlineCenters.push_back(centroid->copy());
   }
   // here if num_clusters is lower than online cluster center number, we choose
@@ -156,7 +156,7 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
                                j);
     }
     centroid->setClusteringCenter(-1);
-    centroid->setIsOutlier(true);
+    centroid->setOutlier(true);
     sinkPtr->put(centroid->copy());
   }
 

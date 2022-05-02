@@ -313,7 +313,7 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   for(auto out = this->delMicroClusters.begin(); out != this->delMicroClusters.end(); ++ out) {
     PointPtr center = out->get()->getCenter();
     center->setClusteringCenter(-1);
-    center->setIsOutlier(true);
+    center->setOutlier(true);
     sinkPtr->put(center->copy());
   }
   ref_timer.Tock();

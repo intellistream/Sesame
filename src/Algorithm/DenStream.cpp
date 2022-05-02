@@ -210,7 +210,7 @@ void SESAME::DenStream::RunOffline(DataSinkPtr sinkPtr) {
   for(auto out = this->oMicroClusters.begin(); out != this->oMicroClusters.end(); ++ out) {
     PointPtr center = out->get()->getCenter();
     center->setClusteringCenter(-1);
-    center->setIsOutlier(true);
+    center->setOutlier(true);
     sinkPtr->put(center->copy());
   }
   // timerMeter.printTime(true,false,true,false);

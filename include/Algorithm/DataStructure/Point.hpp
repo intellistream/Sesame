@@ -23,12 +23,12 @@ public:
   double cost;
   double minDist;
   int timestamp;
-  bool isOutlier;
+  bool outlier = false;
   int sgn = 1;
   std::vector<double> feature; // TODO: need to think how to remove * here.
   // the distance to the nearest data point
-  int clusteringCenter;         // using index to identify
-  int dim;                // feature Length
+  int clusteringCenter = -1; // using index to identify
+  int dim;                   // feature Length
 
   Point(int dim, int index = -1, double weight = 1.0, double cost = 0.0,
         int timestamp = 0);
@@ -51,14 +51,13 @@ public:
   PointPtr copy();
   void setTimeStamp(int t);
   int getTimeStamp() const;
-  bool getIsOutlier();
-  void setIsOutlier(bool flag);
+  bool getOutlier();
+  void setOutlier(bool flag);
   double L2Dist(PointPtr centroid);
   double L1Dist(PointPtr centroid);
   PointPtr Reverse();
   std::string Serialize() {
-    std::string str =
-        "#" + std::to_string(index) + " " + std::to_string(dim);
+    std::string str = "#" + std::to_string(index) + " " + std::to_string(dim);
     for (int i = 0; i < dim; i++) {
       str += "," + std::to_string(feature.at(i));
     }

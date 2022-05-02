@@ -22,7 +22,7 @@ Point::Point(int dim, int index, double weight, double cost,
   this->cost = cost;
   this->clusteringCenter = -1;
   this->timestamp = timestamp;
-  this->isOutlier = false;
+  this->outlier = false;
 }
 
 int Point::getIndex() const { return this->index; }
@@ -116,9 +116,9 @@ double Point::L2Dist(PointPtr centroid) {
   return sqrt(sum);
 }
 
-void SESAME::Point::setIsOutlier(bool flag) { this->isOutlier = flag; }
+void SESAME::Point::setOutlier(bool flag) { this->outlier = flag; }
 
-bool SESAME::Point::getIsOutlier() { return this->isOutlier; }
+bool SESAME::Point::getOutlier() { return this->outlier; }
 
 PointPtr Point::Reverse() {
   auto res = copy();
