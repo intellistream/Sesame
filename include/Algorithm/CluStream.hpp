@@ -43,6 +43,7 @@ class CluStream : public Algorithm {
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   LandmarkWindowPtr window;
   MicroClusters microClusters; //Defined in Snapshot, std::vector <MicroclusterPtr>
+  MicroClusters delMicroClusters;
   int pointsFitted;
   int pointsForgot;
   int pointsMerged;

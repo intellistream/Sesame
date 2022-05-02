@@ -64,6 +64,7 @@ class MicroCluster {
   double getRadius(double radius);
   double getDeviation();
   dataPoint getCentroid();
+  PointPtr getCenter();
   double getInclusionProbability(PointPtr datapoint,double radius);
   dataPoint getVarianceVector();
   double calCentroidDistance(PointPtr datapoint);

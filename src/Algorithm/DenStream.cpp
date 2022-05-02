@@ -207,6 +207,12 @@ void SESAME::DenStream::RunOffline(DataSinkPtr sinkPtr) {
   this->dbscan->run(transformedPoints);
 
   this->dbscan->produceResult(transformedPoints, sinkPtr);
+  for(auto out = this->oMicroClusters.begin(); out != this->oMicroClusters.end(); ++ out) {
+    PointPtr center = out->get()->getCenter();
+    center->setClusteringCenter(-1);
+    center->setIsOutlier(true);
+    sinkPtr->put(center->copy());
+  }
   // timerMeter.printTime(true,false,true,false);
   ref_timer.Tock();
   sum_timer.Tock();
