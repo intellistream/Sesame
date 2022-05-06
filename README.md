@@ -79,23 +79,23 @@ Here is the  parameter selection of every studied algorithms based on the best p
 
 <u>(5) DStream</u>
 
-| Metrics    | CoverType | KDD-99 | Sensor | EDS  | EDS_O |
-| ---------- | --------- | ------ | ------ | ---- | ----- |
-| Purity     |           |        |        |      |       |
-| CMM        |           |        |        |      |       |
-| Throughput |           |        |        |      |       |
-| Latency    |           |        |        |      |       |
-| ETB        |           |        |        |      |       |
+| Metrics    | CoverType | KDD-99  | Sensor  | EDS       | EDS_O  |
+| ---------- | --------- | ------- | ------- | --------- | ------ |
+| Purity     | 0.66751   | 0.56237 | 0.05913 | 0.0192033 | 0.0792 |
+| CMM        |           |         |         |           |        |
+| Throughput |           |         |         |           |        |
+| Latency    |           |         |         |           |        |
+| ETB        |           |         |         |           |        |
 
 <u>(6) DenStream</u>
 
-| Metrics    | CoverType | KDD-99 | Sensor | EDS  | EDS_O |
-| ---------- | --------- | ------ | ------ | ---- | ----- |
-| Purity     |           |        |        |      |       |
-| CMM        |           |        |        |      |       |
-| Throughput |           |        |        |      |       |
-| Latency    |           |        |        |      |       |
-| ETB        |           |        |        |      |       |
+| Metrics    | CoverType | KDD-99 | Sensor  | EDS    | EDS_O  |
+| ---------- | --------- | ------ | ------- | ------ | ------ |
+| Purity     | 1         | 0.7787 | 0.03025 | 0.0906 | 0.2758 |
+| CMM        |           |        |         |        |        |
+| Throughput |           |        |         |        |        |
+| Latency    |           |        |         |        |        |
+| ETB        |           |        |         |        |        |
 
 <u>(7) CluStream</u>
 
@@ -109,13 +109,13 @@ Here is the  parameter selection of every studied algorithms based on the best p
 
 <u>(8) SL-KMeans</u>
 
-| Metrics    | CoverType | KDD-99 | Sensor | EDS  | EDS_O |
-| ---------- | --------- | ------ | ------ | ---- | ----- |
-| Purity     |           |        |        |      |       |
-| CMM        |           |        |        |      |       |
-| Throughput |           |        |        |      |       |
-| Latency    |           |        |        |      |       |
-| ETB        |           |        |        |      |       |
+| Metrics    | CoverType | KDD-99  | Sensor  | EDS        | EDS_O  |
+| ---------- | --------- | ------- | ------- | ---------- | ------ |
+| Purity     | 0.66751   | 0.56237 | 0.02914 | 0.00718392 | 0.0792 |
+| CMM        |           |         |         |            |        |
+| Throughput |           |         |         |            |        |
+| Latency    |           |         |         |            |        |
+| ETB        |           |         |         |            |        |
 
 ##### 2. Design Aspect Study
 
