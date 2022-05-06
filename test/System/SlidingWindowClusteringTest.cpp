@@ -19,7 +19,7 @@
 
 using namespace SESAME;
 
-TEST(SystemTest, SlidingWindowClustering) {
+TEST(SystemTest, SLKMeans) {
   // Setup Logs.
   setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
@@ -61,5 +61,5 @@ TEST(SystemTest, SlidingWindowClustering) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  ASSERT_NEAR(res->purity, 0.42, 0.01);
+  ASSERT_NEAR(res->purity, 0.45, 0.05);
 }

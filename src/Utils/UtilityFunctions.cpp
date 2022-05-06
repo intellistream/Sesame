@@ -124,7 +124,7 @@ void SESAME::UtilityFunctions::groupByCentersWithOffline(
     for (int j = 0; j < centers.size(); j++) {
       double dis = output[i]->L2Dist(centers[j]);
       if (min > dis) {
-        output[i]->setClusteringCenter(centers[j]->getClusteringCenter());
+        output[i]->setClusteringCenter(j);
         min = dis;
       }
     }

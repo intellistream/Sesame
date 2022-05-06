@@ -257,25 +257,56 @@ void GetKnn(int i, int k, const T<int> &cluster,
 }
 
 void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
-  for (auto i : points) {
+  const int n = points.size();
+  std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
+  for (int i = 0; i < n; ++i)
+    for (int j = i + 1; j < n; ++j) {
+      adjDists[i][j] = adjDists[j][i] =
+          inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
+    }
+  for (int i = 0; i < n; ++i) {
     std::deque<double> dists;
     std::deque<int> indexes;
-    GetKnn(i, k, points, inputs, dists, indexes);
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        double dist = adjDists[i][j];
+        if (dists.size() < k || dist < dists.back()) {
+          int index = 0;
+          while (index < dists.size() && dist > dists[index])
+            ++index;
+          dists.push_back(dist);
+          indexes.push_back(vpoints[j]);
+          if (dists.size() > k) {
+            dists.pop_back();
+            indexes.pop_back();
+          }
+        }
+      }
+    }
     double avgKnn = 0.0;
     for (auto d : dists)
       avgKnn += d;
     if (dists.size())
       avgKnn /= dists.size();
-    inputs[i]->knn = avgKnn;
+    inputs[vpoints[i]]->knn = avgKnn;
     knnMeanAvg += avgKnn;
     knnDevAvg += avgKnn * avgKnn;
   }
-  knnMeanAvg /= points.size();
-  knnDevAvg /= points.size();
+  knnMeanAvg /= n;
+  knnDevAvg /= n;
   double variance = knnDevAvg - knnMeanAvg * knnMeanAvg;
   if (variance <= 0.0)
     variance = 1e-50;
   knnDevAvg = sqrt(variance);
+
+  // calculate the connectivity of each point
+  double upperKnn = knnMeanAvg + knnDevAvg;
+  for (int i = 0; i < n; ++i) {
+    if (inputs[vpoints[i]]->knn < upperKnn)
+      inputs[vpoints[i]]->conn = 1;
+    else
+      inputs[vpoints[i]]->conn = upperKnn / inputs[vpoints[i]]->knn;
+  }
 }
 
 double CMM::CalcConn(int i, int j, const std::vector<PointPtr> &inputs) {
@@ -317,25 +348,24 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
   for (int i = 0; i < inputs.size(); ++i)
     if (inputs[i]->clu_id != -1) {
       auto clu = inputs[i]->clu_id;
-      clusters[clu].points.insert(i);
+      clusters[clu].Insert(i);
     } else {
-      clusters[0].points.insert(i);
+      clusters[0].Insert(i);
     }
 #pragma omp parallel for
   for (int i = 1; i <= param.num_clusters; ++i) {
     clusters[i].CalcKnn(knnNeighbourhood, inputs);
   }
-  for (int i = 0; i < inputs.size(); ++i)
-    if (inputs[i]->clu_id != -1) {
-      inputs[i]->conn = CalcConn(i, inputs);
-    }
+  // for (int i = 0; i < inputs.size(); ++i)
+  //   if (inputs[i]->clu_id != -1) {
+  //     inputs[i]->conn = CalcConn(i, inputs);
+  //   }
 }
 
 void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
                     const std::vector<PointPtr> &predicts) {
   std::vector<std::vector<int>> mapFC(
-      param.num_res, std::vector<int>(param.num_clusters + 1, 0));
-  auto mapGT = mapFC;
+      param.num_res, std::vector<int>(param.num_clusters + 1, 0)), mapGT(param.num_clusters + 1, std::vector<int>(param.num_clusters + 1, 0));
   std::vector<int> sumsFC(param.num_res, 0);
   for (int i = 0; i < inputs.size(); ++i) {
     auto fc = predicts[i]->clu_id, hc = inputs[i]->clu_id;
@@ -350,7 +380,7 @@ void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
       mapGT[hc][hc]++;
     }
   }
-  for (int fc = 0; fc < param.num_clusters; ++fc) {
+  for (int fc = 0; fc < param.num_res; ++fc) {
     int matchIndex = -1;
     for (int hc = 1; hc <= param.num_clusters; ++hc) {
       if (mapFC[fc][hc] != 0) {
@@ -393,7 +423,7 @@ void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
       }
     }
     matchMap[fc] = matchIndex;
-    assert(matchIndex != -1);
+    // assert(matchIndex != -1);
   }
 }
 
