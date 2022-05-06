@@ -95,6 +95,7 @@ struct param_t {
       0.2; // The delta parameter used int the grid for guessing the optimum.
   int num_samples = 100; // The number of samples used in the grid for guessing
                          // the optimum.
+  int num_res;
   void Print() {
     std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
     std::cout << "workload: " << std::filesystem::path(input_file).stem()

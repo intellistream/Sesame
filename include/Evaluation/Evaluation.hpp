@@ -9,6 +9,7 @@
 #define ONLINEMLBENCHMARK_EVALUATIONMETRICS_HPP_
 
 #include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/Param.hpp"
 
 #include <vector>
 
@@ -29,10 +30,9 @@ using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;
 
 class Evaluation {
 public:
-  static BenchmarkResultPtr runEvaluation(int dim, int num_clusters,
-                                          bool decay,
-                                          const std::vector<PointPtr> &inputs,
-                                          const std::vector<PointPtr> &results);
+  static BenchmarkResultPtr Evaluate(const param_t &param,
+                                     const std::vector<PointPtr> &inputs,
+                                     const std::vector<PointPtr> &results);
 };
 
 } // namespace SESAME

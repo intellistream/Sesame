@@ -13,14 +13,13 @@
 
 namespace SESAME {
 
-Point::Point(int dim, int index, double weight, double cost,
-             int timestamp)
+Point::Point(int dim, int index, double weight, double cost, int timestamp)
     : feature((dim + 3) / 4 * 4, 0.0) {
   this->index = index;
   this->weight = weight;
   this->dim = dim;
   this->cost = cost;
-  this->clusteringCenter = -1;
+  this->clu_id = -1;
   this->timestamp = timestamp;
   this->outlier = false;
 }
@@ -33,17 +32,15 @@ double Point::getWeight() const { return this->weight; }
 
 void Point::setWeight(double weight) { this->weight = weight; }
 
-double Point::getFeatureItem(int index) const {
-  return this->feature[index];
-}
+double Point::getFeatureItem(int index) const { return this->feature[index]; }
 
 void Point::setFeatureItem(double feature, int index) {
-  this->feature.at(index) = feature;
+  this->feature[index] = feature;
 }
 
-int Point::getClusteringCenter() const { return this->clusteringCenter; }
+int Point::getClusteringCenter() const { return this->clu_id; }
 
-void Point::setClusteringCenter(int index) { this->clusteringCenter = index; }
+void Point::setClusteringCenter(int index) { this->clu_id = index; }
 
 void Point::setCost(double c) { this->cost = c; }
 
@@ -71,9 +68,9 @@ double Point::getDisTo(PointPtr p) {
   return sqrt(distance);
 }
 
-double Point::getMinDist() const { return minDist; }
+double Point::getMinDist() const { return min_dist; }
 
-void Point::setMinDist(double min_dist) { minDist = min_dist; }
+void Point::setMinDist(double min_dist) { min_dist = min_dist; }
 
 double Point::L1Dist(PointPtr centroid) {
   static const auto mask = _mm256_set1_pd(0x7fffffff);
@@ -81,8 +78,9 @@ double Point::L1Dist(PointPtr centroid) {
   const int dim = getDimension();
   auto a = feature.data(), b = centroid->feature.data();
   auto sum_v = _mm256_setzero_pd();
-  for(size_t i = 0; i < dim; i += 4) {
-    __m256d diff = _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
+  for (size_t i = 0; i < dim; i += 4) {
+    __m256d diff =
+        _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
     auto abs_v = _mm256_and_pd(diff, mask);
     sum_v = _mm256_add_pd(sum_v, abs_v);
   }
@@ -97,22 +95,23 @@ double Point::L2Dist(PointPtr centroid) {
   const int dim = getDimension();
   auto a = feature.data(), b = centroid->feature.data();
   auto sum_v = _mm256_setzero_pd();
-  for(size_t i = 0; i < dim; i += 4) {
-    __m256d diff = _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
+  for (size_t i = 0; i < dim; i += 4) {
+    __m256d diff =
+        _mm256_sub_pd(_mm256_loadu_pd(a + i), _mm256_loadu_pd(b + i));
     __m256d square = _mm256_mul_pd(diff, diff);
     sum_v = _mm256_add_pd(sum_v, square);
   }
   double v[4];
   _mm256_storeu_pd(v, sum_v);
   sum += v[0] + v[1] + v[2] + v[3];
-//   for (int i = 0; i < dim; i++) {
-// #ifndef NDEBUG
-//     assert(std::isnan(centroid->getFeatureItem(i)) == false);
-//     assert(std::isnan(getFeatureItem(i)) == false);
-// #endif
-//     auto val = a[i] - b[i];
-//     sum += val * val;
-//   }
+  //   for (int i = 0; i < dim; i++) {
+  // #ifndef NDEBUG
+  //     assert(std::isnan(centroid->getFeatureItem(i)) == false);
+  //     assert(std::isnan(getFeatureItem(i)) == false);
+  // #endif
+  //     auto val = a[i] - b[i];
+  //     sum += val * val;
+  //   }
   return sqrt(sum);
 }
 
@@ -125,5 +124,14 @@ PointPtr Point::Reverse() {
   res->sgn = -res->sgn;
   return res;
 }
+
+std::string Point::Serialize() {
+  std::string str = "#" + std::to_string(index) + " " + std::to_string(dim);
+  for (int i = 0; i < dim; i++) {
+    str += "," + std::to_string(feature.at(i));
+  }
+  return str;
+}
+void Point::Debug() { std::cerr << Serialize() << std::endl; }
 
 } // namespace SESAME

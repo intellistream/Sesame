@@ -73,8 +73,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       break;
     case 'p':
       cmd_params.num_points = atoi(optarg);
-      SESAME_INFO(
-          "configure cmd_params.num_points: " << cmd_params.num_points);
+      SESAME_INFO("configure cmd_params.num_points: " << cmd_params.num_points);
       break;
     case 'c':
       cmd_params.num_clusters = atoi(optarg);
@@ -138,8 +137,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       break;
     case 'M':
       cmd_params.max_in_nodes = atoi(optarg);
-      SESAME_INFO("configure cmd_params.max_in_nodes: "
-                  << cmd_params.max_in_nodes);
+      SESAME_INFO(
+          "configure cmd_params.max_in_nodes: " << cmd_params.max_in_nodes);
       break;
     case 'D':
       cmd_params.distance_threshold = atof(optarg);
@@ -159,17 +158,17 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       break;
     case 'r':
       cmd_params.radius = atof(optarg);
-      SESAME_INFO(
-          "configure cmd_params.radius: " << cmd_params.radius);
+      SESAME_INFO("configure cmd_params.radius: " << cmd_params.radius);
       break;
     case 'l':
       cmd_params.num_last_arr = atoi(optarg);
-      SESAME_INFO("configure cmd_params.num_last_arr: "
-                  << cmd_params.num_last_arr);
+      SESAME_INFO(
+          "configure cmd_params.num_last_arr: " << cmd_params.num_last_arr);
       break;
     case 'T':
       cmd_params.time_window = atoi(optarg);
-      SESAME_INFO("configure cmd_params.time_window: " << cmd_params.time_window);
+      SESAME_INFO(
+          "configure cmd_params.time_window: " << cmd_params.time_window);
       break;
     case 't':
       cmd_params.time_interval = atoi(optarg);
@@ -212,8 +211,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
       break;
     case 'C':
       cmd_params.clean_interval = atoi(optarg);
-      SESAME_INFO("configure cmd_params.clean_interval: "
-                  << cmd_params.clean_interval);
+      SESAME_INFO(
+          "configure cmd_params.clean_interval: " << cmd_params.clean_interval);
       break;
     case 'w':
       cmd_params.min_weight = atof(optarg);
@@ -257,10 +256,9 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
         cmd_params.input_file =
             std::filesystem::current_path().generic_string() +
             "/datasets/Zelnik.txt";
-      SESAME_INFO(
-          "configure cmd_params.dataset_option: "
-          << cmd_params
-                 .input_file); // cmd_params.input_file cmd_params.dataset_option
+      SESAME_INFO("configure cmd_params.dataset_option: "
+                  << cmd_params.input_file); // cmd_params.input_file
+                                             // cmd_params.dataset_option
       break;
 
     case 'i':
@@ -292,7 +290,7 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  */
 void BenchmarkUtils::defaultParam(param_t &cmd_params) {
   cmd_params.num_points = 542; // number of the data points in the dataset, use
-                                // the whole dataset to run benchmark
+                               // the whole dataset to run benchmark
   cmd_params.seed = 1;
   cmd_params.num_clusters = 2;
   cmd_params.dim = 54;
@@ -325,9 +323,11 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
 
   cmd_params.dataset_option = 0;
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
-                         "/datasets/CoverType.txt";
+                          "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
-  if(cmd_params.algo == V1Stream || cmd_params.algo == V2Stream || cmd_params.algo == DenStreamType || cmd_params.algo == CluStreamType || cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType) 
+  if (cmd_params.algo == V1Stream || cmd_params.algo == V2Stream ||
+      cmd_params.algo == DenStreamType || cmd_params.algo == CluStreamType ||
+      cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType)
     cmd_params.run_offline = true;
   cmd_params.algo = SESAME::DBStreamType;
   cmd_params.detect_outlier = false;
@@ -357,7 +357,7 @@ void BenchmarkUtils::loadData(param_t &cmd_params,
   std::vector<std::string> data;
   ifstream infile;
   infile.open(cmd_params.input_file);
-  if(infile.is_open() == 0) {
+  if (infile.is_open() == 0) {
     std::cerr << "input file not found" << std::endl;
     exit(1);
   }
@@ -474,10 +474,9 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> predicts;
-  if (results.empty()) {
-    std::cerr << "ERROR! No output!" << std::endl;
-  }
-  // TODO: be sure the output clusterID start from 0!
+  assert(!results.empty());
+  cmd_params.num_res = results.size();
+  // the output clusterID start from 0
   if (cmd_params.run_offline) {
     SESAME::UtilityFunctions::groupByCentersWithOffline(
         inputs, results, predicts, cmd_params.dim);
@@ -492,15 +491,13 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   // Store results.
-  if(cmd_params.store) {
+  if (cmd_params.store) {
     algoPtr->Store(cmd_params.output_file, cmd_params.dim,
                    sinkPtr->getResults());
-    SESAME_INFO("Finished store results: " << sinkPtr->getResults().size()  );
+    SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
   }
 
-  auto res = SESAME::Evaluation::runEvaluation(
-      cmd_params.dim, cmd_params.num_clusters, cmd_params.time_decay,
-      inputs, predicts);
+  auto res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
 
   engine.stop();
 

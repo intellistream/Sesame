@@ -3,24 +3,27 @@
 
 #include "Evaluation/Evaluation.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
+#include "Algorithm/Param.hpp"
 #include "Evaluation/CMM.hpp"
 #include "Evaluation/Euclidean.hpp"
 #include "Evaluation/Purity.hpp"
 #include "Utils/Logger.hpp"
+#include "Utils/UtilityFunctions.hpp"
 
 #include <cmath>
-#include <Utils/UtilityFunctions.hpp>
 
 namespace SESAME {
 
-BenchmarkResultPtr Evaluation::runEvaluation(
-    int dim, int num_clusters, bool decay,
-    const std::vector<PointPtr> &inputs, const std::vector<PointPtr> &predicts) {
+BenchmarkResultPtr Evaluation::Evaluate(const param_t &param,
+                                        const std::vector<PointPtr> &inputs,
+                                        const std::vector<PointPtr> &predicts) {
   std::cerr << "Evaluation::Purity begin" << std::endl;
-  double purity = Purity::purityCost(inputs, predicts, dim, decay);
+  double purity =
+      Purity::purityCost(inputs, predicts, param.dim, param.time_decay);
 
   std::cerr << "Evaluation::CMM begin" << std::endl;
-  double CMM = CMM::CMMCost(dim, inputs, predicts);
+  CMM cmm(param);
+  double CMM = cmm.Evaluate(inputs, predicts);
   std::cerr << "Accuracy:" << std::endl
             << "AvgCMM: " << round(CMM * 10000) / 10000 << std::endl
             << "Purity: " << round(purity * 10000) / 10000 << std::endl;
