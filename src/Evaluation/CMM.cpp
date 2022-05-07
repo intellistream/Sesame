@@ -259,11 +259,13 @@ void GetKnn(int i, int k, const T<int> &cluster,
 void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
   const int n = points.size();
   std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
-  for (int i = 0; i < n; ++i)
+#pragma omp parallel for
+  for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
       adjDists[i][j] = adjDists[j][i] =
           inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
     }
+  }
   for (int i = 0; i < n; ++i) {
     std::deque<double> dists;
     for (int j = 0; j < n; ++j) {
@@ -349,8 +351,6 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
     } else {
       clusters[0].Insert(i);
     }
-  omp_set_num_threads(std::min(omp_get_num_procs(), 16));
-#pragma omp parallel for
   for (int i = 1; i <= param.num_clusters; ++i) {
     clusters[i].CalcKnn(knnNeighbourhood, inputs);
   }
