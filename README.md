@@ -22,18 +22,27 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 # Algorithm Evaluation
 
-### DataSet
+## 1. DataSet
 
-| DataSet   | Length                                         | Dimension | Cluster Number |
-| --------- | ---------------------------------------------- | --------- | -------------- |
-| CoverType | 581012                                         | 54        | 7              |
-| KDD-99    | 494021                                         | 41        | 23             |
-| Sensor    | 2219803                                        | 4         | 54             |
-| EDS       | 245270 [45690, 100270, 150645, 200060, 245270] | 2         | 363            |
-| EDS_O     | 100000 [94720,97360,100000]                    | 2         | 90             |
+| DataSet   | Length                                | Dimension | Cluster Number |
+| --------- | ------------------------------------- | --------- | -------------- |
+| CoverType | 581012                                | 54        | 7              |
+| KDD-99    | 494021                                | 41        | 23             |
+| Sensor    | 2219803                               | 4         | 54             |
+| EDS       | 45690, 100270, 150645, 200060, 245270 | 2         | 75, 145, 218, 289, 363 |
+| EDS_O     | 94720,97360,100000                    | 2         | 90, 90, 90 |
 
-### Evaluation Results
+## 2. Flags
+
+```javascript
+flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "num_online_clusters", "delta_grid", "num_samples"];
+```
+
+## 3. Parameter Selection
 Here is the  parameter selection of every studied algorithms based on the best purity value:
+
+<details>
+<summary> <big ><b>Selection</b></big> </summary>
 
 ##### 1. General Comparison
 
@@ -45,7 +54,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |         |        |          |         |
 | Throughput | 13733     | 17692.4 |        |          |         |
 | Latency    |           |         |        |          |         |
-| ETB        |           |         |        |          |         |
+| ETB        |           |         |        | N.A.     | N.A.    |
 
 <u>(2) StreamKM++</u>
 
@@ -65,7 +74,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |        |        |        |        |
 | Throughput |           |        |        |        |        |
 | Latency    |           |        |        |        |        |
-| ETB        |           |        |        |        |        |
+| ETB        |           |        |        | N.A.   | N.A.   |
 
 <u>(4) DBStream</u>
 
@@ -75,7 +84,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |        |        |        |        |
 | Throughput |           |        |        |        |        |
 | Latency    |           |        |        |        |        |
-| ETB        |           |        |        |        |        |
+| ETB        |           |        |        | N.A.   | N.A.   |
 
 <u>(5) DStream</u>
 
@@ -85,7 +94,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |         |         |           |        |
 | Throughput |           |         |         |           |        |
 | Latency    |           |         |         |           |        |
-| ETB        |           |         |         |           |        |
+| ETB        |           |         |         | N.A.      | N.A.   |
 
 <u>(6) DenStream</u>
 
@@ -95,7 +104,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |        |         |        |        |
 | Throughput |           |        |         |        |        |
 | Latency    |           |        |         |        |        |
-| ETB        |           |        |         |        |        |
+| ETB        |           |        |         | N.A.   | N.A.   |
 
 <u>(7) CluStream</u>
 
@@ -105,7 +114,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |        |        |      |       |
 | Throughput |           |        |        |      |       |
 | Latency    |           |        |        |      |       |
-| ETB        |           |        |        |      |       |
+| ETB        |           |        |        | N.A. | N.A.  |
 
 <u>(8) SL-KMeans</u>
 
@@ -115,9 +124,10 @@ Here is the  parameter selection of every studied algorithms based on the best p
 | CMM        |           |         |         |            |        |
 | Throughput |           |         |         |            |        |
 | Latency    |           |         |         |            |        |
-| ETB        |           |         |         |            |        |
+| ETB        |           |         |         | N.A.       | N.A.   |
 
 ##### 2. Design Aspect Study
+</details>
 
 To find the best parameters, we run every algorithm many times according to the following parameter testing ranges:
 
@@ -192,7 +202,7 @@ To find the best parameters, we run every algorithm many times according to the 
 | num_last_arr        | {2,5,8}       | {2,9,16}      | {2,9,16}      | {2,9,16}      | {2,9,16}      |
 | time_window         | {200,275,350} | {200,275,350} | 1000          | {200,275,350} | {200,275,350} |
 | time_interval       | 100           | 100           | 100           | 100           | 100           |
-| num_online_clusters | {80,110,140}  | {60,100,140}  | {100,150,200} | {80,110,140}  | {80,110,140}  |
+| num_online_clusters | {80,110,140}  | {60,100,140}  | {100,150,200} | **{1000, 1500, 2000}** | **{300, 500, 700}** |
 | radius              | {2,14,26}     | {2,5,8}       | 15            | {10,20,30}    | {10,20,30}    |
 | buf_size            | 1500          | 1500          | 500           | 1500          | 1500          |
 | offline_time_window | 0             | 0             | 0             | 0             | 0             |
@@ -461,12 +471,14 @@ all are the same
 all are the same
 </details>
 
+## 4. Evaluation Results
+After selecting the best parameters of every DSC algorithm under the five workloads, we conduct a comprehensive evaluation on them.
+### (1) General Algorithm Comparison
 
-### Flags
 
-```javascript
-flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "num_online_clusters", "delta_grid", "num_samples"];
-```
+
+
+
 
 ## How to Cite Sesame
 
