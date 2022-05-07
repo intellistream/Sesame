@@ -234,27 +234,27 @@ double CMMDriver::computeWeight(double deltaTime) {
   return pow(belta, lamda * (deltaTime));
 }
 
-template <template <typename Ty> class T>
-void GetKnn(int i, int k, const T<int> &cluster,
-            const std::vector<PointPtr> &inputs, std::deque<double> &dists,
-            std::deque<int> indexes) {
-  for (auto j : cluster) {
-    if (i != j) {
-      double dist = inputs[i]->L2Dist(inputs[j]);
-      if (dists.size() < k || dist < dists.back()) {
-        int index = 0;
-        while (index < dists.size() && dist > dists[index])
-          ++index;
-        dists[index] = dist;
-        indexes[index] = j;
-        if (dists.size() > k) {
-          dists.pop_back();
-          indexes.pop_back();
-        }
-      }
-    }
-  }
-}
+// template <template <typename Ty> class T>
+// void GetKnn(int i, int k, const T<int> &cluster,
+//             const std::vector<PointPtr> &inputs, std::deque<double> &dists,
+//             std::deque<int> indexes) {
+//   for (auto j : cluster) {
+//     if (i != j) {
+//       double dist = inputs[i]->L2Dist(inputs[j]);
+//       if (dists.size() < k || dist < dists.back()) {
+//         int index = 0;
+//         while (index < dists.size() && dist > dists[index])
+//           ++index;
+//         dists[index] = dist;
+//         indexes[index] = j;
+//         if (dists.size() > k) {
+//           dists.pop_back();
+//           indexes.pop_back();
+//         }
+//       }
+//     }
+//   }
+// }
 
 void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
   const int n = points.size();
@@ -267,26 +267,24 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
     }
   }
   for (int i = 0; i < n; ++i) {
-    std::deque<double> dists;
+    auto first = std::numeric_limits<double>::max(), second = first;
     for (int j = 0; j < n; ++j) {
       if (i != j) {
         double dist = adjDists[i][j];
-        if (dists.size() < k || dist < dists.back()) {
-          int index = 0;
-          while (index < dists.size() && dist > dists[index])
-            ++index;
-          dists[index] = dist;
-          if (dists.size() > k) {
-            dists.pop_back();
-          }
+        if (dist < first) {
+          second = first;
+          first = dist;
+        } else if (dist < second) {
+          second = dist;
         }
       }
     }
     double avgKnn = 0.0;
-    for (auto d : dists)
-      avgKnn += d;
-    if (dists.size())
-      avgKnn /= dists.size();
+    if (n >= 3) {
+      avgKnn = (first + second) / 2;
+    } else if (n == 2) {
+      avgKnn = first;
+    }
     inputs[vpoints[i]]->knn = avgKnn;
     knnMeanAvg += avgKnn;
     knnDevAvg += avgKnn * avgKnn;
@@ -309,23 +307,33 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
 }
 
 double CMM::CalcConn(int i, int j, const std::vector<PointPtr> &inputs) {
-  std::deque<double> dists;
-  std::deque<int> indexes;
-  GetKnn(i, knnNeighbourhood, clusters[j].points, inputs, dists, indexes);
-  double avgDist = 0.0;
-  for (auto d : dists)
-    avgDist += d;
-  if (dists.size())
-    avgDist /= dists.size();
-  else
-    return 0;
+  // std::deque<double> dists;
+  // std::deque<int> indexes;
+  // GetKnn(i, knnNeighbourhood, clusters[j].points, inputs, dists, indexes);
+  const auto n = clusters[j].vpoints.size();
+  auto first = std::numeric_limits<double>::max(), second = first;
+  for (int j = 0; j < n; ++j) {
+    double dist = inputs[i]->L2Dist(inputs[clusters[j].vpoints[j]]);
+    if (dist < first) {
+      second = first;
+      first = dist;
+    } else if (dist < second) {
+      second = dist;
+    }
+  }
+  double avgKnn = 0.0;
+  if (n >= 2) {
+    avgKnn = (first + second) / 2;
+  } else {
+    avgKnn = first;
+  }
   double upperKnn = clusters[inputs[i]->clu_id].knnMeanAvg +
                     clusters[inputs[i]->clu_id].knnDevAvg;
-  if (avgDist < upperKnn) {
+  if (avgKnn < upperKnn) {
     return 1;
   } else {
     // TODO: useExpConnectivity
-    return upperKnn / avgDist;
+    return upperKnn / avgKnn;
   }
 }
 
