@@ -349,6 +349,7 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
     } else {
       clusters[0].Insert(i);
     }
+  omp_set_num_threads(std::min(omp_get_num_procs(), 16));
 #pragma omp parallel for
   for (int i = 1; i <= param.num_clusters; ++i) {
     clusters[i].CalcKnn(knnNeighbourhood, inputs);
