@@ -259,6 +259,7 @@ double CMMDriver::computeWeight(double deltaTime) {
 void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
   const int n = points.size();
   std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
+  omp_set_num_threads(std::min(omp_get_num_procs(), 8));
 #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
@@ -266,6 +267,7 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
           inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
     }
   }
+
   for (int i = 0; i < n; ++i) {
     auto first = std::numeric_limits<double>::max(), second = first;
     for (int j = 0; j < n; ++j) {
