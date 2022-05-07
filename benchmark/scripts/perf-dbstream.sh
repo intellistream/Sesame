@@ -32,22 +32,22 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
-    : join.new algo 4 \
-    : join.new lambda 0.998 \
-    : join.new radius 20 \
-    : join.new clean_interval 400 \
-    : join.new min_weight 0.5 \
-    : join.new alpha 0.2 \
-    : join.new base 2 \
-    : join.run run.sesame
+# ticat ${meta} : mark-time bench.begin : ${eds} \
+#     : join.new algo 4 \
+#     : join.new lambda 0.998 \
+#     : join.new radius 20 \
+#     : join.new clean_interval 400 \
+#     : join.new min_weight 0.5 \
+#     : join.new alpha 0.2 \
+#     : join.new base 2 \
+#     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${edso} \
-    : join.new algo 4 \
-    : join.new lambda 0.998 \
-    : join.new radius 10 \
-    : join.new clean_interval 400 \
-    : join.new min_weight 0.5 \
-    : join.new alpha 0.2 \
-    : join.new base 2 \
-    : join.run run.sesame
+# ticat ${meta} : mark-time bench.begin : ${edso} \
+#     : join.new algo 4 \
+#     : join.new lambda 0.998 \
+#     : join.new radius 10 \
+#     : join.new clean_interval 400 \
+#     : join.new min_weight 0.5 \
+#     : join.new alpha 0.2 \
+#     : join.new base 2 \
+#     : join.run run.sesame

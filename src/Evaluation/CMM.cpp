@@ -245,8 +245,8 @@ void GetKnn(int i, int k, const T<int> &cluster,
         int index = 0;
         while (index < dists.size() && dist > dists[index])
           ++index;
-        dists.push_back(dist);
-        indexes.push_back(j);
+        dists[index] = dist;
+        indexes[index] = j;
         if (dists.size() > k) {
           dists.pop_back();
           indexes.pop_back();
@@ -266,7 +266,6 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
     }
   for (int i = 0; i < n; ++i) {
     std::deque<double> dists;
-    std::deque<int> indexes;
     for (int j = 0; j < n; ++j) {
       if (i != j) {
         double dist = adjDists[i][j];
@@ -274,11 +273,9 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
           int index = 0;
           while (index < dists.size() && dist > dists[index])
             ++index;
-          dists.push_back(dist);
-          indexes.push_back(vpoints[j]);
+          dists[index] = dist;
           if (dists.size() > k) {
             dists.pop_back();
-            indexes.pop_back();
           }
         }
       }
@@ -365,7 +362,9 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
 void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
                     const std::vector<PointPtr> &predicts) {
   std::vector<std::vector<int>> mapFC(
-      param.num_res, std::vector<int>(param.num_clusters + 1, 0)), mapGT(param.num_clusters + 1, std::vector<int>(param.num_clusters + 1, 0));
+      param.num_res, std::vector<int>(param.num_clusters + 1, 0)),
+      mapGT(param.num_clusters + 1,
+            std::vector<int>(param.num_clusters + 1, 0));
   std::vector<int> sumsFC(param.num_res, 0);
   for (int i = 0; i < inputs.size(); ++i) {
     auto fc = predicts[i]->clu_id, hc = inputs[i]->clu_id;
@@ -429,24 +428,20 @@ void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
 
 double CMM::MisplacedError(int i, int fc, int hc,
                            const std::vector<PointPtr> &inputs) {
-  double weight = 0;
   auto real_hc = matchMap[fc];
   if (real_hc == -1)
     return 1;
   if (real_hc == hc)
     return 0;
-  else {
-    if (clusters[real_hc].points.contains(i)) {
-      weight = 0;
-    } else {
-      weight = 1 - CalcConn(i, real_hc, inputs);
-    }
-  }
-  if (weight == 0) {
-    return 0.00001;
-  } else {
-    return weight * inputs[i]->conn;
-  }
+  // else {
+  //   if (clusters[real_hc].points.contains(i)) {
+  //     return 0.00001;
+  //   } else {
+  //     double weight = 1 - CalcConn(i, real_hc, inputs);
+  //     return weight * inputs[i]->conn;
+  //   }
+  // }
+  return inputs[i]->conn;
 }
 
 double CMM::NoiseError(int i, int fc, int hc,
