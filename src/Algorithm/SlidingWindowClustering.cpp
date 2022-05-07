@@ -148,8 +148,9 @@ void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {
   std::vector<PointPtr> onlineCenters;
   double cost_estimate = 0;
   framework->solution(&onlineCenters, &cost_estimate);
-  for (auto p : onlineCenters) {
-    sinkPtr->put(p);
+  for(int i = 0; i<onlineCenters.size(); i++){
+    onlineCenters[i]->clu_id = i;
+    sinkPtr->put(onlineCenters[i]);
   }
   ref_timer.Tock();
   sum_timer.Tock();
