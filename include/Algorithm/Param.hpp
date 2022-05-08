@@ -16,7 +16,7 @@ enum AlgoType {
   EDMStreamType,
   DStreamType,
   SLKMeansType,
-  V1Stream,
+  V1Stream = 11,
   V2Stream,
   V3Stream,
   V4Stream,
@@ -25,14 +25,19 @@ enum AlgoType {
   V7Stream,
   V8Stream,
   V9Stream,
-  Generic
+  Generic,
+  G1Stream = 21,
+  G2Stream,
+  G3Stream,
+  G4Stream,
+  G5Stream,
+  G6Stream,
+  G7Stream,
+  G8Stream,
+  G9Stream,
 };
 
-static char *algo_names[] = {
-    "Birch",     "StreamKMeans", "CluStream", "DenStream", "DBStream",
-    "EDMStream", "DStream",      "SL-KMeans", "V1Stream",  "V2Stream",
-    "V3Stream",  "V4Stream",     "V5Stream",  "V6Stream",  "V7Stream",
-    "V8Stream",  "V9Stream",     "Generic"};
+extern char const *algo_names[30];
 
 struct param_t {
   int num_points, dim, num_clusters;
