@@ -31,9 +31,9 @@ BenchmarkResultPtr Evaluation::Evaluate(const param_t &param,
   cmm_timer.Tock();
   std::cerr << "Accuracy:" << std::endl
             << "CMM: " << round(CMM * 10000) / 10000 << " et_s: "
-            << pur_timer.sum / 1e9 << std::endl
+            << cmm_timer.sum / 1e9 << std::endl
             << "Purity: " << round(purity * 10000) / 10000 << " et_s: "
-            << cmm_timer.sum / 1e9 << std::endl;
+            << pur_timer.sum / 1e9 << std::endl;
   return GenericFactory::New<BenchmarkResult>(CMM, purity);
 }
 
