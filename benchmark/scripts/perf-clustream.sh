@@ -7,7 +7,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new num_last_arr 2 \
     : join.new time_window 350 \
     : join.new num_online_clusters 110 \
-    : join.new radius 2,14,26 \
+    : join.new radius 14 \
     : join.new buf_size 1500 \
     : join.run run.sesame
 

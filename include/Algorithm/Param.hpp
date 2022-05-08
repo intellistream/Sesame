@@ -138,6 +138,8 @@ struct param_t {
     std::cout << "outlier_distance_threshold: " << outlier_distance_threshold
               << std::endl;
     std::cout << "outlier_cap: " << outlier_cap << std::endl;
+    std::cout << "outlier_density_threshold: " << outlier_density_threshold
+              << std::endl;
     std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
   }
 };
