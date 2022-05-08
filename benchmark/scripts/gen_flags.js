@@ -1,4 +1,4 @@
-flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "num_online_clusters", "delta_grid", "num_samples"];
+flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_nodes", "max_leaf_nodes", "distance_threshold", "seed", "coreset_size", "radius", "delta", "beta", "buf_size", "alpha", "lambda", "clean_interval", "min_weight", "base", "cm", "cl", "grid_width", "min_points", "epsilon", "mu", "num_last_arr", "time_window", "num_online_clusters", "delta_grid", "num_samples", "landmark", "sliding", "outlier_distance_threshold", "outlier_cap", "neighbor_distance"];
 
 // console.log(flags.length)
 
@@ -16,4 +16,4 @@ flags = ["algo", "input_file", "num_points", "dim", "num_clusters", "max_in_node
 
 // flags.map(x => { console.log(`\t\t${x} DOUBLE,\\`) });
 
-flags.map(x => { process.stdout.write(` ${x}=[[bench.sesame.${x}]]`) });
+// flags.map(x => { process.stdout.write(` ${x}=[[bench.sesame.${x}]]`) });

@@ -133,6 +133,12 @@ struct param_t {
     std::cout << "num_online_clusters: " << num_online_clusters << std::endl;
     std::cout << "delta_grid: " << delta_grid << std::endl;
     std::cout << "num_samples: " << num_samples << std::endl;
+    std::cout << "landmark: " << landmark << std::endl;
+    std::cout << "sliding: " << sliding << std::endl;
+    std::cout << "outlier_distance_threshold: " << outlier_distance_threshold
+              << std::endl;
+    std::cout << "outlier_cap: " << outlier_cap << std::endl;
+    std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
   }
 };
 

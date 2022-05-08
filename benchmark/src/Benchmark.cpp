@@ -6,8 +6,8 @@
  * Users will typically access this file to use the stream clustering algorithm.
  * We use this as the entry point for benchmarking.
  */
-#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
 #include "Sources/DataSourceFactory.hpp"
 #include "Utils/BenchmarkUtils.hpp"
@@ -58,6 +58,12 @@ DEFINE_double(
     delta_grid, 0.2,
     "The delta parameter used int the grid for guessing the optimum.");
 DEFINE_int32(num_samples, 100, "Number of samples");
+// Generic
+DEFINE_int32(landmark, 1000, "Landmark");
+DEFINE_int32(sliding, 1000, "Sliding");
+DEFINE_double(outlier_distance_threshold, 1000, "Outlier distance threshold");
+DEFINE_int32(outlier_cap, 100, "Outlier cap");
+DEFINE_double(neighbor_distance, 200, "Neighbor distance");
 
 int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -99,11 +105,15 @@ int main(int argc, char **argv) {
   cmd_params.num_online_clusters = FLAGS_num_online_clusters;
   cmd_params.delta_grid = FLAGS_delta_grid;
   cmd_params.num_samples = FLAGS_num_samples;
+  cmd_params.landmark = FLAGS_landmark;
+  cmd_params.sliding = FLAGS_sliding;
+  cmd_params.outlier_distance_threshold = FLAGS_outlier_distance_threshold;
+  cmd_params.outlier_cap = FLAGS_outlier_cap;
+  cmd_params.neighbor_distance = FLAGS_neighbor_distance;
 
   cmd_params.output_file = "results.txt";
   cmd_params.fast_source = true;
   cmd_params.store = false;
-
 
   std::vector<SESAME::PointPtr> input;
   std::vector<SESAME::PointPtr> results;
