@@ -13,7 +13,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 | V3 | Landmark             | Distance  | CF-Tree | No         |
 | V4 | Sliding(Count-Based) | Distance  | CF-Tree | No         |
 | V5 | Damped               | Distance  | CF-Tree | No         |
-| V6 | Landmark             | No        |CF-Tree  | No         |
+| **V6** | **Landmark**         | **No**    |**CF-Tree**  | **No**     |
 | V7 | Landmark             | Density   | CF-Tree | No         |
 | V8 | Landmark             | Distance  | Micro-Cluster | No         |
 | V9     | Landmark                 | Distance      | Grid          | No             |
@@ -28,7 +28,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 | --------- | ------------------------------------- | --------- | -------------- |
 | CoverType | 581012                                | 54        | 7              |
 | KDD-99    | 494021                                | 41        | 23             |
-| Sensor    | 2219803                               | 4         | 54             |
+| Sensor    | 2219803                               | 5         | 55             |
 | EDS       | 45690, 100270, 150645, 200060, 245270 | 2         | 75, 145, 218, 289, 363 |
 | EDS_O     | 94720,97360,100000                    | 2         | 90, 90, 90 |
 
@@ -100,7 +100,7 @@ Here is the  parameter selection of every studied algorithms based on the best p
 
 | Metrics    | CoverType | KDD-99 | Sensor  | EDS    | EDS_O  |
 | ---------- | --------- | ------ | ------- | ------ | ------ |
-| Purity     | 1         | 0.7787 | 0.03025 | 0.0906 | 0.2758 |
+| Purity     | 0.66751   | 0.7787 | 0.03025 | 0.0906 | 0.2758 |
 | CMM        |           |        |         |        |        |
 | Throughput |           |        |         |        |        |
 | Latency    |           |        |         |        |        |
@@ -322,7 +322,6 @@ To find the best parameters, we run every algorithm many times according to the 
 The running results according to different parameter settings are shown as follows:
 
 <details>
-
 <summary> <big><b>Results</b></big> </summary>
 
 <b>1. General Comparison</b>
