@@ -258,22 +258,24 @@ double CMMDriver::computeWeight(double deltaTime) {
 
 void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
   const int n = points.size();
-  std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
-  omp_set_dynamic(0);
-  omp_set_num_threads(std::min(omp_get_num_procs(), 8));
-#pragma omp parallel for
-  for (int i = 0; i < n; ++i) {
-    for (int j = i + 1; j < n; ++j) {
-      adjDists[i][j] = adjDists[j][i] =
-          inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
-    }
-  }
+  // std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
+  //   omp_set_dynamic(0);
+  //   omp_set_num_threads(std::min(omp_get_num_procs(), 8));
+  // #pragma omp parallel for
+  // for (int i = 0; i < n; ++i) {
+  //   for (int j = i + 1; j < n; ++j) {
+  //     adjDists[i][j] = adjDists[j][i] =
+  //         inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
+  //   }
+  // }
 
+#pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     auto first = std::numeric_limits<double>::max(), second = first;
     for (int j = 0; j < n; ++j) {
       if (i != j) {
-        double dist = adjDists[i][j];
+        // double dist = adjDists[i][j];
+        double dist = inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
         if (dist < first) {
           second = first;
           first = dist;
@@ -292,8 +294,8 @@ void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
     knnMeanAvg += avgKnn;
     knnDevAvg += avgKnn * avgKnn;
   }
-  knnMeanAvg /= n;
-  knnDevAvg /= n;
+  knnMeanAvg = knnMeanAvg.load() / n;
+  knnDevAvg = knnDevAvg.load() / n;
   double variance = knnDevAvg - knnMeanAvg * knnMeanAvg;
   if (variance <= 0.0)
     variance = 1e-50;
@@ -315,8 +317,9 @@ double CMM::CalcConn(int i, int j, const std::vector<PointPtr> &inputs) {
   // GetKnn(i, knnNeighbourhood, clusters[j].points, inputs, dists, indexes);
   const auto n = clusters[j].vpoints.size();
   auto first = std::numeric_limits<double>::max(), second = first;
-  for (int j = 0; j < n; ++j) {
-    double dist = inputs[i]->L2Dist(inputs[clusters[j].vpoints[j]]);
+#pragma omp parallel for
+  for (int k = 0; k < n; ++k) {
+    double dist = inputs[i]->L2Dist(inputs[clusters[j].vpoints[k]]);
     if (dist < first) {
       second = first;
       first = dist;
@@ -362,6 +365,7 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
     } else {
       clusters[0].Insert(i);
     }
+  std::cerr << "CMM::CalcKnn start" << std::endl;
   for (int i = 1; i <= param.num_clusters; ++i) {
     clusters[i].CalcKnn(knnNeighbourhood, inputs);
   }
@@ -445,15 +449,15 @@ double CMM::MisplacedError(int i, int fc, int hc,
     return 1;
   if (real_hc == hc)
     return 0;
-  // else {
-  //   if (clusters[real_hc].points.contains(i)) {
-  //     return 0.00001;
-  //   } else {
-  //     double weight = 1 - CalcConn(i, real_hc, inputs);
-  //     return weight * inputs[i]->conn;
-  //   }
-  // }
-  return inputs[i]->conn;
+  else {
+    if (clusters[real_hc].points.contains(i)) {
+      return 0.00001;
+    } else {
+      double weight = 1 - CalcConn(i, real_hc, inputs);
+      return weight * inputs[i]->conn;
+    }
+  }
+  // return inputs[i]->conn;
 }
 
 double CMM::NoiseError(int i, int fc, int hc,
@@ -555,7 +559,9 @@ double CMM::Evaluate(const std::vector<PointPtr> &inputs,
   }
 #endif
   AnalyseGT(inputs, predicts, false);
+  std::cerr << "CMM::CalcMatch start" << std::endl;
   CalcMatch(inputs, predicts);
+  std::cerr << "CMM::CalcError start" << std::endl;
   CalcError(inputs, predicts);
   return cmm;
 }

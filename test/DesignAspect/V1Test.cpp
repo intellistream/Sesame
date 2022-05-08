@@ -60,5 +60,5 @@ TEST(DesignTest, V1) {
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
   ASSERT_NEAR(res->purity, 0.455, 0.02);
-  ASSERT_NEAR(res->cmm, 0.4687, 0.02);
+  ASSERT_NEAR(res->cmm, 0.8252, 0.02);
 }

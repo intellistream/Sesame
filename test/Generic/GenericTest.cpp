@@ -69,7 +69,7 @@ TEST(GenericTest, V1) {
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
   ASSERT_NEAR(res->purity, 0.433, 0.03);
-  ASSERT_NEAR(res->cmm, 0.433, 0.03);
+  ASSERT_NEAR(res->cmm, 0.7869, 0.03);
 }
 
 TEST(GenericTest, V2) {

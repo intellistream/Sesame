@@ -10,6 +10,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <atomic>
 
 namespace SESAME {
 
@@ -134,7 +135,7 @@ private:
   struct Cluster {
     std::unordered_set<int> points;
     std::vector<int> vpoints;
-    double knnMeanAvg = 0.0, knnDevAvg = 0.0;
+    std::atomic<double> knnMeanAvg = 0.0, knnDevAvg = 0.0;
     void Insert(int i) {
       points.insert(i);
       vpoints.push_back(i);
