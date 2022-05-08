@@ -8,6 +8,7 @@
 #include <atomic>
 #include <cmath>
 #include <omp.h>
+#include <unordered_map>
 #include <unordered_set>
 
 /**
@@ -16,21 +17,12 @@
  */
 void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
                                   std::vector<std::vector<PointPtr>> &group) {
-  std::vector<int> indexList;
+  std::unordered_map<int, std::vector<PointPtr>> centerMap;
   for (auto el : input) {
-    if (std::find(indexList.begin(), indexList.end(),
-                  el->getClusteringCenter()) == indexList.end()) {
-      indexList.push_back(el->getClusteringCenter());
-    }
+    centerMap[el->getClusteringCenter()].push_back(el);
   }
-  for (auto id : indexList) {
-    std::vector<SESAME::PointPtr> cluster;
-    for (auto el : input) {
-      if (id == el->getClusteringCenter()) {
-        cluster.push_back(el);
-      }
-    }
-    group.push_back(cluster);
+  for (auto it : centerMap) {
+    group.push_back(it.second);
   }
 }
 
