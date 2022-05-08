@@ -1,5 +1,5 @@
 // Copyright (C) 2021 by the IntelliStream team
-// (https://github.com/intellistream)
+// (https://github.com/intelliStream) :
 
 //
 // Created by Shuhao Zhang on 26/07/2021.
@@ -11,7 +11,6 @@
 #include "Algorithm/DBStream.hpp"
 #include "Algorithm/DStream.hpp"
 #include "Algorithm/DenStream.hpp"
-#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/DesignAspect/V1.hpp"
 #include "Algorithm/DesignAspect/V2.hpp"
@@ -24,81 +23,66 @@
 #include "Algorithm/DesignAspect/V9.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
+#include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/StreamKM.hpp"
 
 namespace SESAME {
 
 AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
-  if (cmd_params.algo == StreamKMeansType) {
-    shared_ptr<StreamKM> streamkm = std::make_shared<StreamKM>(cmd_params);
-    return (AlgorithmPtr)streamkm;
+  switch (cmd_params.algo) {
+  case (StreamKMeansType): {
+    return std::make_shared<StreamKM>(cmd_params);
   }
-  if (cmd_params.algo == CluStreamType) {
-    shared_ptr<CluStream> cluStream = std::make_shared<CluStream>(cmd_params);
-    return (AlgorithmPtr)cluStream;
+  case (CluStreamType): {
+    return std::make_shared<CluStream>(cmd_params);
   }
-  if (cmd_params.algo == BirchType) {
-    shared_ptr<Birch> birch = std::make_shared<Birch>(cmd_params);
-    return (AlgorithmPtr)birch;
+  case (BirchType): {
+    return std::make_shared<Birch>(cmd_params);
   }
-  if (cmd_params.algo == DenStreamType) {
-    shared_ptr<DenStream> denStream = std::make_shared<DenStream>(cmd_params);
-    return (AlgorithmPtr)denStream;
+  case (DenStreamType): {
+    return std::make_shared<DenStream>(cmd_params);
   }
-  if (cmd_params.algo == EDMStreamType) {
-    shared_ptr<EDMStream> eDMStream = std::make_shared<EDMStream>(cmd_params);
-    return (AlgorithmPtr)eDMStream;
+  case (EDMStreamType): {
+    return std::make_shared<EDMStream>(cmd_params);
   }
-  if (cmd_params.algo == DBStreamType) {
-    shared_ptr<DBStream> dbStream = std::make_shared<DBStream>(cmd_params);
-    return (AlgorithmPtr)dbStream;
+  case (DBStreamType): {
+    return std::make_shared<DBStream>(cmd_params);
   }
-  if (cmd_params.algo == DStreamType) {
-    shared_ptr<DStream> dStream = std::make_shared<DStream>(cmd_params);
-    return (AlgorithmPtr)dStream;
+  case (DStreamType): {
+    return std::make_shared<DStream>(cmd_params);
   }
-  if (cmd_params.algo == SLKMeansType) {
-    shared_ptr<SlidingWindowClustering> slidingWindowClustering =
-        std::make_shared<SlidingWindowClustering>(cmd_params);
-    return (AlgorithmPtr)slidingWindowClustering;
+  case (SLKMeansType): {
+    return std::make_shared<SlidingWindowClustering>(cmd_params);
   }
-  if (cmd_params.algo == V1Stream) {
-    shared_ptr<V1> v1stream = std::make_shared<V1>(cmd_params);
-    return (AlgorithmPtr)v1stream;
+  case (V1Stream): {
+    return std::make_shared<V1>(cmd_params);
   }
-  if (cmd_params.algo == V2Stream) {
-    shared_ptr<V2> V2Stream = std::make_shared<V2>(cmd_params);
-    return (AlgorithmPtr)V2Stream;
+  case (V2Stream): {
+    return std::make_shared<V2>(cmd_params);
   }
-  if (cmd_params.algo == V3Stream) {
-    shared_ptr<V3> V3Stream = std::make_shared<V3>(cmd_params);
-    return (AlgorithmPtr)V3Stream;
+  case (V3Stream): {
+    return std::make_shared<V3>(cmd_params);
   }
-  if (cmd_params.algo == V4Stream) {
-    shared_ptr<V4> V4Stream = std::make_shared<V4>(cmd_params);
-    return (AlgorithmPtr)V4Stream;
+  case (V4Stream): {
+    return std::make_shared<V4>(cmd_params);
   }
-  if (cmd_params.algo == V5Stream) {
-    shared_ptr<V5> V5Stream = std::make_shared<V5>(cmd_params);
-    return (AlgorithmPtr)V5Stream;
+  case (V5Stream): {
+    return std::make_shared<V5>(cmd_params);
   }
-  if (cmd_params.algo == V6Stream) {
-    shared_ptr<V6> V6Stream = std::make_shared<V6>(cmd_params);
-    return (AlgorithmPtr)V6Stream;
+  case (V6Stream): {
+    return std::make_shared<V6>(cmd_params);
   }
-  if (cmd_params.algo == V7Stream) {
-    shared_ptr<V7> V7Stream = std::make_shared<V7>(cmd_params);
-    return (AlgorithmPtr)V7Stream;
+  case (V7Stream): {
+    return std::make_shared<V7>(cmd_params);
   }
-  if (cmd_params.algo == V8Stream) {
-    shared_ptr<V8> V8Stream = std::make_shared<V8>(cmd_params);
-    return (AlgorithmPtr)V8Stream;
+  case (V8Stream): {
+    return std::make_shared<V8>(cmd_params);
   }
-  if (cmd_params.algo == V9Stream) {
-    shared_ptr<V9> V9Stream = std::make_shared<V9>(cmd_params);
-    return (AlgorithmPtr) V9Stream;
+  case (V9Stream):
+  case (G9Stream): {
+    return std::make_shared<V9>(cmd_params);
   }
-  if (cmd_params.algo == Generic) {
+  case (Generic): {
     using W = Landmark;
     using D = ClusteringFeaturesTree;
     using O = DistanceDetection;
@@ -107,6 +91,49 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
         std::make_shared<StreamClustering<W, D, O, R>>(cmd_params);
     return (AlgorithmPtr)generic;
   }
-  throw std::invalid_argument("Unsupported");
+  case (G1Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             DistanceDetection, KMeans>>(
+        cmd_params);
+  }
+  case (G2Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             DistanceDetection, DBSCAN>>(
+        cmd_params);
+  }
+  case (G3Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             DistanceDetection, NoRefinement>>(
+        cmd_params);
+  }
+  case (G4Stream): {
+    return std::make_shared<StreamClustering<Sliding, ClusteringFeaturesTree,
+                                             DistanceDetection, NoRefinement>>(
+        cmd_params);
+  }
+  case (G5Stream): {
+    return std::make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
+                                             DistanceDetection, NoRefinement>>(
+        cmd_params);
+  }
+  case (G6Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             NoDetection, NoRefinement>>(
+        cmd_params);
+  }
+  case (G7Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             DensityDetection, NoRefinement>>(
+        cmd_params);
+  }
+  case (G8Stream): {
+    return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
+                                             DistanceDetection, NoRefinement>>(
+        cmd_params);
+  }
+  default:
+    throw std::invalid_argument("Unsupported algorithm");
+  }
 }
+
 } // namespace SESAME
