@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <map>
 #include <numeric>
 #include <omp.h>
 #include <queue>
@@ -366,8 +367,9 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
       clusters[0].Insert(i);
     }
   std::cerr << "CMM::CalcKnn start" << std::endl;
-  for (int i = 1; i <= param.num_clusters; ++i) {
-    clusters[i].CalcKnn(knnNeighbourhood, inputs);
+  for (auto &cluster : clusters) {
+    if (cluster.first != 0)
+      cluster.second.CalcKnn(knnNeighbourhood, inputs);
   }
   // for (int i = 0; i < inputs.size(); ++i)
   //   if (inputs[i]->clu_id != -1) {
@@ -377,11 +379,8 @@ void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
 
 void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
                     const std::vector<PointPtr> &predicts) {
-  std::vector<std::vector<int>> mapFC(
-      param.num_res, std::vector<int>(param.num_clusters + 1, 0)),
-      mapGT(param.num_clusters + 1,
-            std::vector<int>(param.num_clusters + 1, 0));
-  std::vector<int> sumsFC(param.num_res, 0);
+  std::map<int, std::map<int, int> > mapFC, mapGT;
+  std::map<int, int> sumsFC;
   for (int i = 0; i < inputs.size(); ++i) {
     auto fc = predicts[i]->clu_id, hc = inputs[i]->clu_id;
     if (fc != -1) {
@@ -395,10 +394,12 @@ void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
       mapGT[hc][hc]++;
     }
   }
-  for (int fc = 0; fc < param.num_res; ++fc) {
+  for (auto &it : mapFC) {
+    auto fc = it.first;
     int matchIndex = -1;
-    for (int hc = 1; hc <= param.num_clusters; ++hc) {
-      if (mapFC[fc][hc] != 0) {
+    for (auto &jt : it.second) {
+      auto hc = jt.first;
+      if (jt.second != 0) {
         if (matchIndex == -1) {
           matchIndex = hc;
         } else {
@@ -478,7 +479,6 @@ double CMM::MissedError(int i, int fc, int hc,
   return inputs[i]->conn;
   // for(int i = 1; i<=param.num_clusters; ++i) {
   //   if(matchMap[i]!=-1 && matchMap[i] == hc) {
-
   //   }
   // }
 }

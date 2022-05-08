@@ -8,9 +8,10 @@
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/Param.hpp"
 
+#include <atomic>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include <atomic>
 
 namespace SESAME {
 
@@ -142,14 +143,12 @@ private:
     }
     void CalcKnn(int k, const std::vector<PointPtr> &inputs);
   };
-  std::vector<Cluster> clusters;
-  std::vector<int> matchMap;
+  std::unordered_map<int, Cluster> clusters;
+  std::map<int, int> matchMap;
   double cmm;
 
 public:
-  CMM(param_t param)
-      : param(param), clusters(param.num_clusters + 1),
-        matchMap(param.num_res, 0) {}
+  CMM(param_t param) : param(param) {}
   double Evaluate(const std::vector<PointPtr> &inputs,
                   const std::vector<PointPtr> &predicts);
   void AnalyseGT(const std::vector<PointPtr> &inputs,

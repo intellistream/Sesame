@@ -96,10 +96,8 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &inputs,
     sum += getMaxBelongs(el, GT);
   }
   if (!inputs.empty()) {
-    SESAME_DEBUG("Purity:" << sum / size);
     purity = sum / size;
   } else {
-    SESAME_DEBUG("Purity: 0");
     purity = 0;
   }
   return purity;

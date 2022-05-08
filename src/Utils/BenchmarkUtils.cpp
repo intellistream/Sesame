@@ -474,8 +474,9 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> predicts;
-  assert(!results.empty());
+  assert(results.size() == cmd_params.num_clusters);
   cmd_params.num_res = results.size();
+  std::cerr << "Result size=" << cmd_params.num_res << std::endl;
   // the output clusterID start from 0
   if (cmd_params.run_offline) {
     SESAME::UtilityFunctions::groupByCentersWithOffline(
@@ -494,7 +495,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   if (cmd_params.store) {
     algoPtr->Store(cmd_params.output_file, cmd_params.dim,
                    sinkPtr->getResults());
-    SESAME_INFO("Finished store results: " << sinkPtr->getResults().size());
   }
 
   auto res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
