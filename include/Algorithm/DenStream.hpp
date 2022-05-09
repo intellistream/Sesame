@@ -70,6 +70,7 @@ private:
                             std::vector<MicroClusterPtr> microClusters);
   static void microClusterToPoint(std::vector<MicroClusterPtr> &microClusters,
                                   vector<PointPtr> &points);
+  int findIndex(std::vector<MicroClusterPtr> &microClusters, MicroClusterPtr MC);
   // TODO overlap functions with Clustream, may need to remove to utils folder
 };
 } // namespace SESAME

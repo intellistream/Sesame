@@ -112,7 +112,7 @@ void SESAME::DenStream::RunOnline(PointPtr in) {
           // SESAME_INFO("NOW Xi  "<<Xi);
           if (oMicroClusters.at(iter)->weight < Xi) {
             oMicroClusters.erase(oMicroClusters.begin() + iter);
-        //    SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
+            //SESAME_INFO("NOW oMicroClusterIndex number is: " << oMicroClusters.size());
           }
         }
       }
@@ -175,7 +175,9 @@ bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <Mi
       pMicroClusterIndex++;
       MC->resetID(pMicroClusterIndex);
       pMicroClusters.push_back(MC);
-      std::remove(oMicroClusters.begin(), oMicroClusters.end(), MC);
+      int index=findIndex(oMicroClusters,MC);
+      oMicroClusters.erase(oMicroClusters.begin() + index);
+      //std::remove(oMicroClusters.begin(), oMicroClusters.end(), MC);
     }
     ds_timer.Tock();
     return true;
@@ -183,6 +185,12 @@ bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <Mi
     out_timer.Tock();
     return false;
   }
+}
+int SESAME::DenStream::findIndex(std::vector<MicroClusterPtr> &microClusters, MicroClusterPtr MC) {
+  auto ret = std::find(microClusters.begin(), microClusters.end(), MC);
+  if (ret != microClusters.end())
+    return ret - microClusters.begin();
+  return -1;
 }
 
 SESAME::MicroClusterPtr SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
