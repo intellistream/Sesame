@@ -303,18 +303,19 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   std::vector<PointPtr> centers;
   std::vector<std::vector<PointPtr>> oldGroups, newGroups;
 
-  this->kmeans->runKMeans(this->CluStreamParam.num_offline_clusters, this->CluStreamParam.num_clusters,centers,
-                          TransformedSnapshot, oldGroups, newGroups, this->CluStreamParam.seed, true);
+  this->kmeans->Run(param, centers, sinkPtr);
+  // this->kmeans->runKMeans(this->CluStreamParam.num_offline_clusters, this->CluStreamParam.num_clusters,centers,
+  //                         TransformedSnapshot, oldGroups, newGroups, this->CluStreamParam.seed, true);
   //Count overall time
 
   // store the result input output
-  this->kmeans->produceResult(oldGroups,sinkPtr);
+  // this->kmeans->produceResult(oldGroups,sinkPtr);
   // timerMeter.printTime(true, true,true,false);
   for(auto out = this->delMicroClusters.begin(); out != this->delMicroClusters.end(); ++ out) {
     PointPtr center = out->get()->getCenter();
     center->setClusteringCenter(-1);
     center->setOutlier(true);
-    sinkPtr->put(center->copy());
+    sinkPtr->put(center);
   }
   ref_timer.Tock();
   sum_timer.Tock();

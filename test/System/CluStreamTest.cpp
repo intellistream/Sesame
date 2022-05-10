@@ -23,7 +23,7 @@ TEST(SystemTest, CluStream) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.num_points = 100000;
+  cmd_params.num_points = 10000;
   cmd_params.dim = 2;
   cmd_params.num_clusters = 90;
   cmd_params.num_last_arr = 2;
@@ -58,5 +58,8 @@ TEST(SystemTest, CluStream) {
   SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
   // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+  auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+
+  ASSERT_NEAR(res->cmm, 0.0234, 0.002);
+  ASSERT_NEAR(res->purity, 0.0906, 0.002);
 }
