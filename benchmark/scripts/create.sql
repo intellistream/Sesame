@@ -67,7 +67,7 @@ CREATE VIEW clustream as SELECT id, bench_begin, algo, workload, num_last_arr, t
 
 CREATE VIEW slkmeans as SELECT id, bench_begin, algo, workload, num_points, delta_grid, num_samples, cmm, purity FROM sesame WHERE algo = 'SLKMeans'; 
 
-CREATE VIEW perf as SELECT id, bench_begin, algo, workload, num_points, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id > 6401;
+CREATE VIEW perf as SELECT id, bench_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id >= 6406;
 
 CREATE VIEW g1 as SELECT id, bench_begin, algo, workload, landmark, outlier_distance_threshold as odt, outlier_cap as oc, seed, cmm, purity FROM sesame WHERE algo = 'G1'; 
 
@@ -77,7 +77,7 @@ CREATE VIEW g3 as SELECT id, bench_begin, algo, workload, landmark, outlier_dist
 
 CREATE VIEW g4 as SELECT id, bench_begin, algo, workload, sliding, outlier_distance_threshold as odt, outlier_cap as oc, seed, cmm, purity FROM sesame WHERE algo = 'G4'; 
 
-CREATE VIEW g5 as SELECT id, bench_begin, algo, workload, outlier_distance_threshold as odt, outlier_cap as oc, lambda, alpha, cmm, purity FROM sesame WHERE algo = 'G5'; 
+CREATE VIEW g5 as SELECT id, bench_begin, algo, workload, num_points, outlier_distance_threshold as odt, outlier_cap as oc, lambda, alpha, cmm, purity FROM sesame WHERE algo = 'G5'; 
 
 CREATE VIEW g6 as SELECT id, bench_begin, algo, workload, landmark, cmm, purity FROM sesame WHERE algo = 'G6'; 
 
