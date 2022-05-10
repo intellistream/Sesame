@@ -41,6 +41,7 @@ public:
     cout << "ref_us: " << ref_timer.sum / 1000 << endl;
     auto sum = ds_timer.sum + out_timer.sum + ref_timer.sum;
     cout << "sum_us: " << sum / 1000 << endl;
+    assert(param.num_points);
     cout << "lat_us: " << sum / 1e3 / param.num_points << endl;
     cout << "et_s: " << sum_timer.sum / 1e9 << endl;
     cout << "qps: " << param.num_points * 1e9 / sum_timer.sum << endl;

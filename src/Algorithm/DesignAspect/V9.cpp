@@ -18,12 +18,13 @@ SESAME::V9::V9(param_t &cmd_params) {
   this->V9Param.beta = cmd_params.beta;
   this->V9Param.outlier_distance_threshold =
       cmd_params.outlier_distance_threshold;
+  this->V9Param.outlier_cap = cmd_params.outlier_cap;
   this->gap = 1;
   this->dm = 1.0;
   this->NGrids = 1;
-  this->V9Param.outlier_cap = 1.0;
   this->minVals = std::vector<double>(V9Param.dim, 0);
   this->maxVals = std::vector<double>(V9Param.dim, 0);
+  param = cmd_params;
   sum_timer.Tick();
 }
 
