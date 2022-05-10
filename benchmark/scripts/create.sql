@@ -67,7 +67,7 @@ CREATE VIEW clustream as SELECT id, bench_begin, algo, workload, num_last_arr, t
 
 CREATE VIEW slkmeans as SELECT id, bench_begin, algo, workload, num_points, delta_grid, num_samples, cmm, purity FROM sesame WHERE algo = 'SLKMeans'; 
 
-CREATE VIEW perf as SELECT id, bench_begin, algo, workload, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id > 5008;
+CREATE VIEW perf as SELECT id, bench_begin, algo, workload, num_points, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id > 6401;
 
 CREATE VIEW g1 as SELECT id, bench_begin, algo, workload, landmark, outlier_distance_threshold as odt, outlier_cap as oc, seed, cmm, purity FROM sesame WHERE algo = 'G1'; 
 
