@@ -83,6 +83,6 @@ CREATE VIEW g6 as SELECT id, bench_begin, algo, workload, landmark, cmm, purity 
 
 CREATE VIEW g7 as SELECT id, bench_begin, algo, workload, landmark, outlier_density_threshold as odt, outlier_cap as oc, neighbor_distance as nd, cmm, purity FROM sesame WHERE algo = 'G7'; 
 
-CREATE VIEW g8 as SELECT id, bench_begin, algo, workload, outlier_distance_threshold as odt, outlier_cap as oc, cmm, purity FROM sesame WHERE algo = 'G8'; 
+CREATE VIEW g8 as SELECT id, bench_begin, algo, workload, landmark, outlier_distance_threshold as odt, outlier_cap as oc, cmm, purity FROM sesame WHERE algo = 'G8'; 
 
 CREATE VIEW g9 as SELECT id, bench_begin, algo, workload, landmark, outlier_distance_threshold as odt, outlier_cap as oc, beta, cm, cl, cmm, purity FROM sesame WHERE algo = 'G9'; 
