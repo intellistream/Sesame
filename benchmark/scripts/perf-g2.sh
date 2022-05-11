@@ -6,7 +6,7 @@ ticat ${meta} : mark-time bench_begin : ${cover} \
     : join.new algo 22 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 1600 \
+    : join.new distance_threshold 600 \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 500 \
@@ -18,7 +18,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new algo 22 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 100 \
+    : join.new distance_threshold 600 \
     : join.new landmark 20000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
@@ -28,9 +28,9 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
 
 ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new algo 22 \
-    : join.new max_in_nodes 400 \
+    : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 100 \
+    : join.new distance_threshold 50 \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 20 \
     : join.new outlier_cap 500 \
