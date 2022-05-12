@@ -5,3 +5,13 @@ export kdd99="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/KD
 export sensor="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/sensor.txt : join.new num_points 1000000 : join.new dim 5 : join.new num_clusters 55"
 export eds="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363"
 export edso="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
+
+export eds1="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 45690 : join.new dim 2 : join.new num_clusters 75"
+export eds2="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 100270 : join.new dim 2 : join.new num_clusters 145"
+export eds3="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 150645 : join.new dim 2 : join.new num_clusters 218"
+export eds4="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 200060 : join.new dim 2 : join.new num_clusters 289"
+export eds5="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363"
+
+export edso1="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 94270 : join.new dim 2 : join.new num_clusters 90"
+export edso2="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 97360 : join.new dim 2 : join.new num_clusters 90"
+export edso3="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
