@@ -41,6 +41,7 @@ extern char const *algo_names[30];
 
 struct param_t {
   int num_points, dim, num_clusters;
+  int arr_rate;
   bool time_decay = false;
   int coreset_size, seed = 10;
   bool fast_source = false;
@@ -108,6 +109,7 @@ struct param_t {
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
     std::cout << "num_clusters: " << num_clusters << std::endl;
+    std::cout << "arr_rate: " << arr_rate << std::endl;
     std::cout << "max_in_nodes: " << max_in_nodes << std::endl;
     std::cout << "max_leaf_nodes: " << max_leaf_nodes << std::endl;
     std::cout << "distance_threshold: " << distance_threshold << std::endl;

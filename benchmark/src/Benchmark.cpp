@@ -65,6 +65,7 @@ DEFINE_double(outlier_distance_threshold, 1000, "Outlier distance threshold");
 DEFINE_int32(outlier_cap, 100, "Outlier cap");
 DEFINE_double(outlier_density_threshold, 100, "Outlier density threshold");
 DEFINE_double(neighbor_distance, 200, "Neighbor distance");
+DEFINE_int32(arr_rate, 0, "Arrival rate");
 
 int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -112,6 +113,7 @@ int main(int argc, char **argv) {
   cmd_params.outlier_cap = FLAGS_outlier_cap;
   cmd_params.outlier_density_threshold = FLAGS_outlier_density_threshold;
   cmd_params.neighbor_distance = FLAGS_neighbor_distance;
+  cmd_params.arr_rate = FLAGS_arr_rate;
 
   cmd_params.output_file = "results.txt";
   cmd_params.fast_source = true;

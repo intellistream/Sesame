@@ -45,7 +45,8 @@ void SESAME::DataSource::load(int point_number, int dim,
     while (feature != nullptr) {
       if (index == dim) {
         point->setClusteringCenter(atoi(feature));
-        if(point->getClusteringCenter() == -1) { // If cluster id == -1, then it is an noise / outlier
+        if (point->getClusteringCenter() ==
+            -1) { // If cluster id == -1, then it is an noise / outlier
           point->setOutlier(true);
         } else {
           point->setOutlier(false);
@@ -61,7 +62,8 @@ void SESAME::DataSource::load(int point_number, int dim,
 }
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
-  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
+  inputQueue =
+      std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -76,6 +78,12 @@ void SESAME::DataSource::runningRoutine() {
   if (param.fast_source) {
     for (PointPtr p : this->input) {
       inputQueue->push(p);
+    }
+  } else if (param.arr_rate) {
+    int wait_us = 1e6/ param.arr_rate;
+    for (PointPtr p : this->input) {
+      inputQueue->push(p);
+      std::this_thread::sleep_for(std::chrono::microseconds(wait_us));
     }
   } else {
     for (PointPtr p : this->input) {
