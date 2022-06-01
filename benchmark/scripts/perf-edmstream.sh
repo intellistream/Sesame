@@ -32,6 +32,16 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new lambda 1 \
     : join.run run.sesame
 
+ticat ${meta} : mark-time bench.begin : ${insects} \
+    : join.new algo 5 \
+    : join.new radius 100 \
+    : join.new delta 1500 \
+    : join.new beta 0.7 \
+    : join.new buf_size 10000 \
+    : join.new alpha 0.998 \
+    : join.new lambda 1 \
+    : join.run run.sesame
+
 # ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new algo 5 \
 #     : join.new radius 30 \

@@ -23,6 +23,13 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new distance_threshold 50 \
     : join.run run.sesame
 
+ticat ${meta} : mark-time bench.begin : ${insects} \
+    : join.new algo 0 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 600 \
+    : join.run run.sesame
+
 # ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new algo 0 \
 #     : join.new max_in_nodes 100 \

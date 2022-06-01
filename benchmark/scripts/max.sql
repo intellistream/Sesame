@@ -1,6 +1,6 @@
-SELECT id, algo, workload, max_in_nodes, max_leaf_nodes, distance_threshold, cmm, purity FROM birch WHERE (workload,purity) IN (SELECT workload, max(purity) FROM birch GROUP BY workload) ORDER by workload;
+SELECT id, algo, workload, max_in_nodes, max_leaf_nodes, distance_threshold, cmm, purity FROM birch WHERE (workload,purity) IN (SELECT workload, max(purity) FROM birch WHERE id>6292 GROUP BY workload) ORDER by workload;
 
-SELECT id, algo, workload, tag, workload, seed, num_clusters, coreset_size, cmm, purity FROM streamkm WHERE (workload,purity) IN (SELECT workload, max(purity) FROM streamkm GROUP BY workload) ORDER by workload;
+SELECT id, algo, workload, tag, workload, seed, num_clusters, coreset_size, cmm, purity FROM streamkm WHERE (workload,purity) IN (SELECT workload, max(purity) FROM streamkm WHERE tag="offline" GROUP BY workload) ORDER by workload;
 
 SELECT id, algo, workload, radius, delta, beta, buf_size, alpha, lambda, cmm, purity FROM edmstream WHERE (workload,purity) IN (SELECT workload, max(purity) FROM edmstream GROUP BY workload) ORDER by workload;
 

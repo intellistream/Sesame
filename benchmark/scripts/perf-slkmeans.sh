@@ -20,6 +20,12 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new num_samples 100 \
     : join.run run.sesame
 
+ticat ${meta} : mark-time bench.begin : ${insects} \
+    : join.new algo 7 \
+    : join.new delta_grid 0.2 \
+    : join.new num_samples 100 \
+    : join.run run.sesame
+
 # ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new algo 7 \
 #     : join.new delta_grid 0.2 \

@@ -26,6 +26,14 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
+ticat ${meta} : mark-time bench_begin : ${insects} \
+    : join.new algo 26 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 600 \
+    : join.new landmark 20000 \
+    : join.run run.sesame
+
 # ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new algo 26 \
 #     : join.new max_in_nodes 100 \

@@ -32,6 +32,16 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
+ticat ${meta} : mark-time bench_begin : ${insects} \
+    : join.new algo 29 \
+    : join.new beta 0.001 \
+    : join.new cm 3 \
+    : join.new cl 0.7 \
+    : join.new landmark 10000 \
+    : join.new outlier_distance_threshold 1000 \
+    : join.new outlier_cap 1000 \
+    : join.run run.sesame
+
 # ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new algo 29 \
 #     : join.new beta 0.001,0.3 \
