@@ -15,7 +15,7 @@ ticat ${meta} : mark-time bench.begin : ${kdd99} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
     : join.new beta 0.001 \
-    : join.new cm 1.001 \
+    : join.new cm 1 \
     : join.new cl 0.7 \
     : join.new grid_width 4 \
     : join.run run.sesame
@@ -33,7 +33,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
     : join.new beta 0.001 \
-    : join.new cm 1.001 \
+    : join.new cm 1 \
     : join.new cl 0.7 \
     : join.new grid_width 4 \
     : join.run run.sesame
