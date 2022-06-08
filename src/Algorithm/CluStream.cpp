@@ -252,6 +252,7 @@ void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
     incrementalCluster(input->copy());
   }
   ds_timer.Tock();
+  lat_timer.Add(input->toa);
 }
 
 void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {

@@ -35,6 +35,7 @@ void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input) {
   ds_timer.Tick();
   this->window->insertPoint(input);
   ds_timer.Tock();
+  lat_timer.Add(input->toa);
 }
 
 /**

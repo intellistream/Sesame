@@ -69,6 +69,7 @@ void SESAME::DBStream::Init() {
     lastArrivingTime=pointArrivingTime;
     lastArrivingTime0=pointArrivingTime0;
   }
+  lat_timer.Add(input->toa);
 }
 
 void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {

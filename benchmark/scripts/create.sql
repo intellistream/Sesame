@@ -89,4 +89,8 @@ CREATE VIEW g8 as SELECT id, run_begin, algo, workload, num_points, landmark, ou
 
 CREATE VIEW g9 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, beta, cm, cl, cmm, purity FROM sesame WHERE algo = 'G9'; 
 
-CREATE VIEW insects as SELECT id, run_begin, algo, workload, num_points, arr_rate, cmm, purity, qps, lat_us FROM sesame WHERE workload = 'INSECTS';
+CREATE VIEW edso as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE workload = 'EDS_O' AND id >= 7002;
+
+CREATE VIEW insects as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE workload = 'INSECTS' AND id >= 7002;
+
+CREATE VIEW arr as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, cmm, purity, qps, lat_us FROM sesame WHERE id >= 7002 AND arr_rate != 0;

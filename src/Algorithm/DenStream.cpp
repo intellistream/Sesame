@@ -122,6 +122,7 @@ void SESAME::DenStream::RunOnline(PointPtr in) {
     }
     this->lastPointTime= this->pointArrivingTime;
   }
+  lat_timer.Add(input->toa);
 }
 
 void SESAME::DenStream::merge(PointPtr dataPoint) {

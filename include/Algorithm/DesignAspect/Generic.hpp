@@ -152,6 +152,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
       }
     }
   }
+  lat_timer.Add(input->toa);
 }
 
 template <typename W, typename D, typename O, typename R>

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <chrono>
 
 namespace SESAME {
 class Point;
@@ -18,6 +19,7 @@ typedef std::shared_ptr<Point> PointPtr;
 
 class Point {
 public:
+  using clock_t = std::chrono::_V2::system_clock::time_point;
   int index;         // 1,2,3,4,5....
   double weight = 1; // considering the outdated effect
   double cost;
@@ -25,12 +27,11 @@ public:
   double knn = 0.0, conn = 1.0;
   int timestamp;
   bool outlier = false;
-  int sgn = 1;
-  // the distance to the nearest data point
-  int clu_id = -1; // using index to identify
-  int dim;                   // feature Length
+  int sgn = 1;                 // the distance to the nearest data point
+  int clu_id = -1;             // using index to identify
+  int dim;                     // feature Length
+  clock_t toa;                 // time of arrival
   std::vector<double> feature; // TODO: need to think how to remove * here.
-
   Point(int dim, int index = -1, double weight = 1.0, double cost = 0.0,
         int timestamp = 0);
   PointPtr copy();

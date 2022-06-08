@@ -133,6 +133,7 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
     this->delCluster();
     out_timer.Tock();
   }
+  lat_timer.Add(input->toa);
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
   ref_timer.Tick();

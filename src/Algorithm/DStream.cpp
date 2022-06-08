@@ -86,6 +86,7 @@ void SESAME::DStream::RunOnline(PointPtr input) {
       }
     }
     ds_timer.Tock();
+    lat_timer.Add(input->toa);
   }
 
 

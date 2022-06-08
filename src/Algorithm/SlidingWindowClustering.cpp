@@ -141,6 +141,7 @@ void SlidingWindowClustering::RunOnline(PointPtr input) {
     framework->process_point(input);
     ds_timer.Tock();
   }
+  lat_timer.Add(input->toa);
 }
 
 void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {

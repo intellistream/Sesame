@@ -53,6 +53,7 @@ void SESAME::V9::RunOnline(PointPtr input) {
       ds_timer.Tock();
     }
   }
+  lat_timer.Add(input->toa);
 }
 
 void SESAME::V9::RunOffline(DataSinkPtr sinkPtr) {

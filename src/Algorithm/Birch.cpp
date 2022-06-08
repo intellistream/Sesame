@@ -19,6 +19,7 @@ void SESAME::Birch::RunOnline(const SESAME::PointPtr input) {
   ds_timer.Tick();
   forwardInsert(input);
   ds_timer.Tock();
+  lat_timer.Add(input->toa);
 }
 
 

@@ -75,15 +75,17 @@ void SESAME::DataSource::runningRoutine() {
   // Initialize timer at time 0
   auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
-  if (param.fast_source) {
+  if (param.arr_rate) {
+    int wait_us = 1e6 / param.arr_rate;
     for (PointPtr p : this->input) {
-      inputQueue->push(p);
-    }
-  } else if (param.arr_rate) {
-    int wait_us = 1e6/ param.arr_rate;
-    for (PointPtr p : this->input) {
+      p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
       std::this_thread::sleep_for(std::chrono::microseconds(wait_us));
+    }
+  } else if (param.fast_source) {
+    for (PointPtr p : this->input) {
+      p->toa = std::chrono::high_resolution_clock::now();
+      inputQueue->push(p);
     }
   } else {
     for (PointPtr p : this->input) {
@@ -94,6 +96,7 @@ void SESAME::DataSource::runningRoutine() {
             timestamp - duration_cast<nanoseconds>(now - start).count()));
       }
       // Wait until (currentTime - startTime) >= timestamp to push point
+      p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
     }
   }
