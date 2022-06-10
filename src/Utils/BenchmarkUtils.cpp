@@ -3,6 +3,7 @@
 
 #include "Utils/BenchmarkUtils.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Engine/SimpleEngine.hpp"
 #include "Evaluation/Evaluation.hpp"
 #include "Evaluation/Purity.hpp"
@@ -497,7 +498,13 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
                    sinkPtr->getResults());
   }
 
-  auto res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
+  BenchmarkResultPtr res;
+  if (cmd_params.run_eval) {
+    res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
+  } else {
+    std::cerr << "no need to eval" << std::endl;
+    res = GenericFactory::New<BenchmarkResult>(0.0, 0.0);
+  }
 
   engine.stop();
 
