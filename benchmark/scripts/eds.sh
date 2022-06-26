@@ -95,17 +95,17 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_distance_threshold 15 \
     : join.new outlier_cap 500 \
     : join.run run.sesame
-# ticat ${meta} : mark-time bench.begin : ${eds}\
-#     : join.new algo 25 \
-#     : join.new max_in_nodes 100 \
-#     : join.new max_leaf_nodes 100 \
-#     : join.new distance_threshold 100 \
-#     : join.new landmark 1000 \
-#     : join.new outlier_distance_threshold 15 \
-#     : join.new outlier_cap 500 \
-#     : join.new lambda 0.5 \
-#     : join.new alpha 1.1 \
-#     : join.run run.sesame
+ticat ${meta} : mark-time bench.begin : ${eds}\
+    : join.new algo 25 \
+    : join.new max_in_nodes 100 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 100 \
+    : join.new landmark 1000 \
+    : join.new outlier_distance_threshold 15 \
+    : join.new outlier_cap 500 \
+    : join.new lambda 0.5 \
+    : join.new alpha 1.1 \
+    : join.run run.sesame
 ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new algo 26 \
     : join.new max_in_nodes 100 \
@@ -139,8 +139,8 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_distance_threshold 10 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
-# ticat ${meta} : mark-time bench.begin : ${eds}\
-#     : join.new algo 7 \
-#     : join.new delta_grid 0.2 \
-#     : join.new num_samples 100 \
-#     : join.run run.sesame
+ticat ${meta} : mark-time bench.begin : ${eds}\
+    : join.new algo 7 \
+    : join.new delta_grid 0.2 \
+    : join.new num_samples 100 \
+    : join.run run.sesame

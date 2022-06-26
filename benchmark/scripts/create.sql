@@ -93,4 +93,8 @@ CREATE VIEW edso as SELECT id, run_begin, algo, workload, num_points, arr_rate, 
 
 CREATE VIEW insects as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE workload = 'INSECTS' AND id >= 7002;
 
+CREATE VIEW sensor as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE workload = 'sensor' AND id >= 7094;
+
 CREATE VIEW arr as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, cmm, purity, qps, lat_us FROM sesame WHERE id >= 7002 AND arr_rate != 0;
+
+CREATE VIEW conf as SELECT id, run_begin, algo, workload, num_points, landmark, sliding, alpha, lambda, outlier_distance_threshold, max_in_nodes, max_leaf_nodes, cmm, purity, qps, lat_us FROM sesame WHERE id >= 7002 AND tag = "conf";

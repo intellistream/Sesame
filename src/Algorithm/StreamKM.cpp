@@ -55,21 +55,24 @@ void SESAME::StreamKM::RunOffline(DataSinkPtr sinkPtr) {
       this->streamingCoreset[i]->setFeatureItem(this->streamingCoreset[i]->getFeatureItem(j) / this->streamingCoreset[i]->getWeight(), j);
     }
   }
-  vector <PointPtr> centers;
-  vector <vector<PointPtr>> groups;
-
-  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-
-  this->km.runKMeans(this->StreamKMParam.num_clusters,
-                     parNumber,
-                     centers,
-                     this->streamingCoreset,
-                     oldGroups,
-                     newGroups,
-                     this->StreamKMParam.seed,
-                     true);
-  // store the result input output
-  this->km.produceResult(oldGroups,sinkPtr);
+  if(param.run_offline) {
+    vector <PointPtr> centers;
+    vector <vector<PointPtr>> groups;
+    std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+    this->km.runKMeans(this->StreamKMParam.num_clusters,
+                       parNumber,
+                       centers,
+                       this->streamingCoreset,
+                       oldGroups,
+                       newGroups,
+                       this->StreamKMParam.seed,
+                       true);
+    // store the result input output
+    this->km.produceResult(oldGroups, sinkPtr);
+  } else {
+    for(int i = 0; i < parNumber; i++)
+      sinkPtr->put(streamingCoreset[i]);
+  }
   ref_timer.Tock();
   sum_timer.Tock();
 }
