@@ -65,11 +65,7 @@ CREATE VIEW denstream as SELECT id, run_begin, algo, workload, num_points, buf_s
 
 CREATE VIEW clustream as SELECT id, run_begin, algo, workload, num_last_arr, time_window, num_online_clusters, radius, buf_size, cmm, purity FROM sesame WHERE algo = 'CluStream'; 
 
-CREATE VIEW slkmeans as SELECT id, run_begin, algo, workload, num_points, delta_grid, num_samples, cmm, purity FROM sesame WHERE algo = 'SLKMeans'; 
-
-CREATE VIEW perf as SELECT id, run_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id >= 6406 AND num_points > 100000;
-
-CREATE VIEW step as SELECT id, run_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us FROM sesame WHERE id >= 6490;
+CREATE VIEW slkmeans as SELECT id, run_begin, algo, workload, num_points, delta_grid, num_samples, sliding, cmm, purity FROM sesame WHERE algo = 'SLKMeans'; 
 
 CREATE VIEW g1 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, seed, cmm, purity FROM sesame WHERE algo = 'G1'; 
 
@@ -88,6 +84,10 @@ CREATE VIEW g7 as SELECT id, run_begin, algo, workload, num_points, landmark, ou
 CREATE VIEW g8 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, cmm, purity FROM sesame WHERE algo = 'G8'; 
 
 CREATE VIEW g9 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, beta, cm, cl, cmm, purity FROM sesame WHERE algo = 'G9'; 
+
+CREATE VIEW perf as SELECT id, run_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id >= 6406 AND num_points > 100000;
+
+CREATE VIEW step as SELECT id, run_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us FROM sesame WHERE id >= 6490;
 
 CREATE VIEW edso as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE workload = 'EDS_O' AND id >= 7002;
 
