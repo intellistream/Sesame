@@ -25,7 +25,7 @@ typedef std::shared_ptr<DataSink> DataSinkPtr;
 class DataSink {
  private:
   std::vector<PointPtr> output;
-  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> outputQueue;
+  std::shared_ptr<std::queue<PointPtr>> outputQueue;
   SingleThreadPtr threadPtr;
   std::atomic_bool sourceEnd;
   std::atomic_bool finished;

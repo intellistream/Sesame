@@ -63,7 +63,7 @@ void SESAME::DataSource::load(int point_number, int dim,
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
   inputQueue =
-      std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
+      std::make_shared<std::queue<PointPtr>>();
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -137,7 +137,7 @@ SESAME::PointPtr SESAME::DataSource::get() {
 #endif
   auto rt = inputQueue->front();
   inputQueue->pop();
-  return *rt;
+  return rt;
 }
 
 void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {

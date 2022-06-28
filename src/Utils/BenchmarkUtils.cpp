@@ -23,10 +23,12 @@
  * as p,c,d,s...
  * @Return: void
  */
-void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
+void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params)
+{
 
   int c;
-  while (1) {
+  while (1)
+  {
     static struct option long_options[] = {
         {"help", no_argument, 0, 'h'},
         {"point_number", required_argument, 0, 'p'},
@@ -56,7 +58,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
     /* Detect the end of the options. */
     if (c == -1)
       break;
-    switch (c) { // TODO: change to string type in future. char is limited..
+    switch (c)
+    { // TODO: change to string type in future. char is limited..
     case 0:
       /* If this option set a flag, do nothing else now. */
       if (long_options[option_index].flag != 0)
@@ -112,13 +115,15 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
         cmd_params.algo = SESAME::StreamKMeansType;
       else if (atoi(optarg) == 1)
         cmd_params.algo = SESAME::BirchType;
-      else if (atoi(optarg) == 2) {
+      else if (atoi(optarg) == 2)
+      {
         cmd_params.algo = SESAME::EDMStreamType;
         cmd_params.alpha = 0.998;
         cmd_params.lambda = 1;
         cmd_params.beta = 0.0021;
         cmd_params.opt = 2;
-      } else if (atoi(optarg) == 3)
+      }
+      else if (atoi(optarg) == 3)
         cmd_params.algo = SESAME::DBStreamType;
       else if (atoi(optarg) == 4)
         cmd_params.algo = SESAME::CluStreamType;
@@ -276,7 +281,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
   }
 
   /* Print any remaining command line arguments (not options). */
-  if (optind < argc) {
+  if (optind < argc)
+  {
     SESAME_ERROR("non-option arguments: ");
     while (optind < argc)
       SESAME_ERROR(" " << argv[optind++]);
@@ -289,7 +295,8 @@ void BenchmarkUtils::parseArgs(int argc, char **argv, param_t &cmd_params) {
  * @Param: cmd_params: param_t &
  * @Return:
  */
-void BenchmarkUtils::defaultParam(param_t &cmd_params) {
+void BenchmarkUtils::defaultParam(param_t &cmd_params)
+{
   cmd_params.num_points = 542; // number of the data points in the dataset, use
                                // the whole dataset to run benchmark
   cmd_params.seed = 1;
@@ -327,6 +334,7 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
                           "/datasets/CoverType.txt";
   cmd_params.output_file = "results.txt";
   if (cmd_params.algo == V1Stream || cmd_params.algo == V2Stream ||
+      cmd_params.algo == G1Stream || cmd_params.algo == G2Stream ||
       cmd_params.algo == DenStreamType || cmd_params.algo == CluStreamType ||
       cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType)
     cmd_params.run_offline = true;
@@ -339,7 +347,8 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params) {
  * TODO: Make it more useful @WangXin.
  * @param string
  */
-void BenchmarkUtils::print_help(char *string) {
+void BenchmarkUtils::print_help(char *string)
+{
   SESAME_ERROR("Usage: " << string << " [options]");
   SESAME_ERROR(" Available options: ");
 }
@@ -353,12 +362,14 @@ void BenchmarkUtils::print_help(char *string) {
  * @Return: void
  */
 void BenchmarkUtils::loadData(param_t &cmd_params,
-                              SESAME::DataSourcePtr dataSourcePtr) {
+                              SESAME::DataSourcePtr dataSourcePtr)
+{
   // Pass input file as a string to DataSource.
   std::vector<std::string> data;
   ifstream infile;
   infile.open(cmd_params.input_file);
-  if (infile.is_open() == 0) {
+  if (infile.is_open() == 0)
+  {
     std::cerr << "input file not found" << std::endl;
     exit(1);
   }
@@ -366,7 +377,8 @@ void BenchmarkUtils::loadData(param_t &cmd_params,
 
   // insert the data once per line into the string vector, every string element
   // represents a data line
-  for (int i = 0; i < cmd_params.num_points; i++) {
+  for (int i = 0; i < cmd_params.num_points; i++)
+  {
     data.emplace_back();
     getline(infile, data[i]);
   }
@@ -381,10 +393,12 @@ void BenchmarkUtils::loadData(param_t &cmd_params,
 BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                                 SESAME::DataSourcePtr sourcePtr,
                                                 SESAME::DataSinkPtr sinkPtr,
-                                                SESAME::AlgorithmPtr algoPtr) {
+                                                SESAME::AlgorithmPtr algoPtr)
+{
   std::cerr << "data number: " << cmd_params.num_points << std::endl;
 
-  switch (cmd_params.algo) {
+  switch (cmd_params.algo)
+  {
   case SESAME::CluStreamType:
     std::cerr << "Algorithm: CluStream "
               << "num_last_arr: " << cmd_params.num_last_arr
@@ -479,13 +493,16 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   cmd_params.num_res = results.size();
   std::cerr << "Result size=" << cmd_params.num_res << std::endl;
   // the output clusterID start from 0
-  if (cmd_params.run_offline) {
+  if (cmd_params.run_offline)
+  {
     SESAME::UtilityFunctions::groupByCentersWithOffline(
         inputs, results, predicts, cmd_params.dim);
     // 使用offline的算法不管是否detect
     // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
     // clustering center
-  } else {
+  }
+  else
+  {
     // the output is the clustering center so we need to help every input data
     // find its nearest center
     SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts,
@@ -493,15 +510,19 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   // Store results.
-  if (cmd_params.store) {
+  if (cmd_params.store)
+  {
     algoPtr->Store(cmd_params.output_file, cmd_params.dim,
                    sinkPtr->getResults());
   }
 
   BenchmarkResultPtr res;
-  if (cmd_params.run_eval) {
+  if (cmd_params.run_eval)
+  {
     res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
-  } else {
+  }
+  else
+  {
     std::cerr << "no need to eval" << std::endl;
     res = GenericFactory::New<BenchmarkResult>(0.0, 0.0);
   }
