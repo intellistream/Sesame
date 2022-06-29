@@ -3,10 +3,12 @@
 //
 // Created by 1124a on 2021/8/16.
 //
-#include<Algorithm/CluStream.hpp>
+#include <Algorithm/CluStream.hpp>
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
+
 #include <iterator>
+
 /**
  * @Description: "offline" init micro clusters using KMeans
  * @param size: The size of initial data objects,
@@ -132,7 +134,6 @@ void SESAME::CluStream::insertIntoCluster(PointPtr data, MicroClusterPtr operate
 bool SESAME::CluStream::deleteCreateCluster(PointPtr data) {
   // 3.1 Try to forget old micro clusters
 
-  //int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
    int elapsedTime = data->getIndex();
   int threshold = 0; // Kernels before this can be forgotten
   if (elapsedTime - this->CluStreamParam.time_window >= 0)
@@ -175,7 +176,6 @@ void SESAME::CluStream::MergeCreateCluster(PointPtr data) {
   }
   int newId = this->CluStreamParam.num_clusters + pointsForgot + pointsMerged;
   microClusters[closestA]->merge(microClusters[closestB]);
- // int elapsedTime = (int) ((clock() - startTime) / CLOCKS_PER_SEC);
   int elapsedTime = data->getIndex();
   DataStructureFactory::clearMicroCluster(microClusters[closestB]);
   microClusters[closestB] = DataStructureFactory::createMicroCluster(CluStreamParam.dim, newId);

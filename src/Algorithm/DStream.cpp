@@ -22,8 +22,7 @@ SESAME::DStream:: ~DStream()
 
 void SESAME::DStream::Init() {
   this->dampedWindow = WindowFactory::createDampedWindow(dStreamParams.lambda, 1 );
-  this->startTime = 0;
-  this->pointArrivingTime= 0;
+  this->pointArrivingTime = this->startTime = omp_get_wtime();
 
   //this->dl = dStreamParams.cl/(this->NGrids * (1.0 -  dStreamParams.lambda));
  // this->dm = dStreamParams.cm/(this->NGrids * (1.0 - dStreamParams.lambda));
@@ -63,7 +62,7 @@ void SESAME::DStream::RunOnline(PointPtr input) {
   }
   else
   {
-    this->pointArrivingTime=input->getIndex();
+    this->pointArrivingTime = input->getIndex();
     ifReCalculateN(input);
     if (recalculateN)
     {
@@ -73,12 +72,12 @@ void SESAME::DStream::RunOnline(PointPtr input) {
       // and
       // 6. If tc mod gap == 0, then:
       //Detect and remove sporadic grids from grid_list then adjust clustering
-      if ((clock()-startTime)/CLOCKS_PER_SEC/gap==0 &&!clusterInitial)
+      if (!clusterInitial && seconds()/gap==0)
       {
 
           initialClustering();
       }
-      if(clusterInitial&&(clock()-startTime)/CLOCKS_PER_SEC%(gap*10)==0)
+      if(clusterInitial && seconds()%(gap*10)==0)
       {
         removeSporadic();
         adjustClustering();
@@ -205,7 +204,7 @@ void SESAME::DStream::GridListUpdate(std::vector<double> coordinate){
    // // SESAME_INFO("4 - grid was in grid list!");
     characteristicVec = this->gridList.find(grid)->second;
     characteristicVec.densityWithNew(pointArrivingTime, dStreamParams.lambda);
-    characteristicVec.updateTime=pointArrivingTime;
+    characteristicVec.updateTime = pointArrivingTime;
     this->gridList.find(grid)->second=characteristicVec;
   }
 
@@ -1009,7 +1008,7 @@ void SESAME::DStream::removeSporadic() {
     if (characteristicVec.isSporadic)
     {
       // If currTime - tg > gap, delete g from grid_list
-      if ((clock() - characteristicVec.updateTime)/CLOCKS_PER_SEC >= gap)
+      if (seconds() - characteristicVec.updateTime >= gap)
       {
         int gridClass = characteristicVec.label;
 
@@ -1037,7 +1036,7 @@ void SESAME::DStream::removeSporadic() {
   // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from grid_list.");
   for( DensityGrid &sporadicGrid : removeGridList)
   {
-    this->deletedGrids.insert(std::make_pair(sporadicGrid, clock()));
+    this->deletedGrids.insert(std::make_pair(sporadicGrid, seconds()));
     this->gridList.erase(sporadicGrid);
   }
 }
