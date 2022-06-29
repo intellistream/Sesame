@@ -63,7 +63,7 @@ void SESAME::DataSource::load(int point_number, int dim,
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
   inputQueue =
-      std::make_shared<std::queue<PointPtr>>();
+      std::make_shared<boost::lockfree::spsc_queue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
