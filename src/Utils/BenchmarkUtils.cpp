@@ -520,7 +520,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   BenchmarkResultPtr res;
-  if (cmd_params.run_eval)
+  if (cmd_params.run_eval && results.size())
   {
     res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
   }
