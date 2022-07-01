@@ -510,7 +510,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
     }
   }
 
-  std::cerr << "predicts.size=" << predicts.size() << std::endl;
+  std::cerr << "results.size=" << results.size() << std::endl;
 
   // Store results.
   if (cmd_params.store)
