@@ -13,3 +13,9 @@ SELECT id, algo, workload, num_points, buf_size, min_points, epsilon, base, lamb
 SELECT id, algo, workload, num_last_arr, time_window, num_online_clusters, radius, buf_size, cmm, purity FROM clustream WHERE (workload, purity) IN (SELECT workload, max(purity) FROM clustream GROUP BY workload) ORDER by workload;
 
 SELECT id, algo, workload, delta_grid, num_samples, cmm, purity FROM slkmeans WHERE (workload, purity) IN (SELECT workload, max(purity) FROM slkmeans GROUP BY workload) ORDER by workload;
+
+
+
+SELECT * FROM perf WHERE workload="INSECTS" ORDER BY algo, arr_rate, run_begin;
+
+SELECT * FROM perf WHERE workload="INSECTS" AND id >= 9360 ORDER BY algo, arr_rate, run_begin;

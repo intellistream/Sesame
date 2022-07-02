@@ -20,15 +20,15 @@ BenchmarkResultPtr Evaluation::Evaluate(const param_t &param,
                                         const std::vector<PointPtr> &predicts) {
   Timer pur_timer, cmm_timer;
   double purity = 0.0, cmm = 0.0;
-  std::cerr << "Evaluation::Purity begin" << std::endl;
   pur_timer.Tick();
-  if(predicts.size()) {
+  if(predicts.size() && param.run_pur) {
+    std::cerr << "Evaluation::Purity begin" << std::endl;
     purity = Purity::purityCost(inputs, predicts, param.dim, param.time_decay);
   }
   pur_timer.Tock();
-  std::cerr << "Evaluation::CMM begin" << std::endl;
   cmm_timer.Tick();
-  if(predicts.size()) {
+  if(predicts.size() && param.run_cmm) {
+    std::cerr << "Evaluation::CMM begin" << std::endl;
     CMM eval(param);
     cmm = eval.Evaluate(inputs, predicts);
   }

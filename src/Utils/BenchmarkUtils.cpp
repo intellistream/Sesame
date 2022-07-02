@@ -489,8 +489,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> predicts;
-  // assert(results.size() == cmd_params.num_clusters);
-  cmd_params.num_res = results.size();
   // the output clusterID start from 0
   if (cmd_params.run_eval) {
     if (cmd_params.run_offline)
@@ -510,6 +508,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
     }
   }
 
+  cmd_params.num_res = results.size();
   std::cerr << "results.size=" << results.size() << std::endl;
 
   // Store results.
@@ -532,5 +531,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   engine.stop();
 
+  res->num_res = cmd_params.num_res;
   return res;
 }

@@ -17,9 +17,11 @@ namespace SESAME {
 
 struct BenchmarkResult {
   double cmm = 0.0, purity = 0.0;
+  int num_res = 0;
   BenchmarkResult(double cmm = 0, double purity = 0)
       : cmm(cmm), purity(purity) {}
   void Print() {
+    std::cout << "num_res: " << num_res << std::endl;
     std::cout << "cmm: " << cmm << std::endl;
     std::cout << "purity: " << purity << std::endl;
   }

@@ -12,7 +12,7 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
 ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new algo 1 \
     : join.new seed 100 \
-    : join.new coreset_size 10000 \
+    : join.new coreset_size 55 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${sensor} \
