@@ -76,11 +76,11 @@ void SESAME::DataSource::runningRoutine() {
   auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
   if (param.arr_rate) {
-    int wait_us = 1e6 / param.arr_rate;
+    const int wait_ns = 1e9 / param.arr_rate;
     for (PointPtr p : this->input) {
       p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
-      std::this_thread::sleep_for(std::chrono::microseconds(wait_us));
+      while(std::chrono::high_resolution_clock::now()-(p->toa) < std::chrono::nanoseconds(wait_ns));
     }
   } else if (param.fast_source) {
     for (PointPtr p : this->input) {
