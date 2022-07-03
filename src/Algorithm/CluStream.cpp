@@ -230,12 +230,15 @@ void SESAME::CluStream::Init() {
 void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
   ds_timer.Tick();
   if (!this->initilized) {
-    Init();
     this->initialInputs.push_back(input->copy());
     this->startTime =initialInputs.at(0)->getIndex();
     if (this->initialInputs.size() == this->CluStreamParam.buf_size) {
+      ds_timer.Tock();
+      ref_timer.Tick();
       vector <PointPtr> initData;//initialData
       initOffline(this->initialInputs,initData);
+      ref_timer.Tock();
+      ds_timer.Tick();
       window->pyramidalWindowProcess(startTime, microClusters);
       this->initilized = true;
     }
