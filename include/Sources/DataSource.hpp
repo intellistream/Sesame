@@ -14,11 +14,14 @@
 #include "Engine/SingleThread.hpp"
 #include "Timer/TimeMeter.hpp"
 
+#include <boost/lockfree/spsc_queue.hpp>
+
 #include <string>
 #include <cstring>
 #include <vector>
 #include <atomic>
 #include <queue>
+#include <list>
 
 namespace SESAME {
 class DataSource;
@@ -27,7 +30,7 @@ typedef std::shared_ptr<DataSource> DataSourcePtr;
 class DataSource {
  private:
   std::vector<PointPtr> input;
-  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
+  std::shared_ptr<boost::lockfree::spsc_queue<PointPtr>> inputQueue;
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
   TimeMeter overallMeter;
@@ -47,7 +50,7 @@ class DataSource {
   void printTime();
   bool sourceEnded();
   int size() {
-    return inputQueue->size();
+    return inputQueue->read_available();
   }
 };
 }

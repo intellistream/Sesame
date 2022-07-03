@@ -5,28 +5,21 @@
 #ifndef COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
 #define COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
 #include <Algorithm/Algorithm.hpp>
+#include <Algorithm/DataStructure/CharacteristicVector.hpp>
+#include <Algorithm/DataStructure/DensityGrid.hpp>
+#include <Algorithm/DataStructure/GridCluster.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Sinks/DataSink.hpp>
-#include <Algorithm/DataStructure/DensityGrid.hpp>
-#include <Algorithm/DataStructure/CharacteristicVector.hpp>
-#include <Algorithm/DataStructure/GridCluster.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 namespace SESAME {
 
-class V9Parameter : public AlgorithmParameters {
- public:
-  double beta;
-  double cm;
-  double cl;
-  int landmark;
-  double outlier_distance_threshold;
-  double outlier_cap;
-};
-typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
+typedef std::unordered_map<DensityGrid, CharacteristicVector, GridKeyHash,
+                           EqualGrid>
+    HashMap;
 class V9 : public Algorithm {
 
- public:
-  V9Parameter V9Param;
+public:
+  param_t V9Param;
   int gap;
   double dm;
   int NGrids;
@@ -34,12 +27,11 @@ class V9 : public Algorithm {
 
   TimeMeter timerMeter;
   HashMap gridList;
-  std::unordered_map<DensityGrid, int,GridKeyHash,EqualGrid> deletedGrids;
+  std::unordered_map<DensityGrid, int, GridKeyHash, EqualGrid> deletedGrids;
   std::vector<GridCluster> clusterList;
   std::vector<GridCluster> newClusterList;
   std::vector<double> minVals;
   std::vector<double> maxVals;
-
 
   V9(param_t &cmd_params);
   ~V9();
@@ -47,7 +39,7 @@ class V9 : public Algorithm {
   void RunOnline(PointPtr input) override;
   void RunOffline(DataSinkPtr sinkPtr) override;
 
- private:
+private:
   bool ifReCalculateN(PointPtr point);
   void reCalculateN();
   void GridListUpdate(PointPtr input);
@@ -55,21 +47,29 @@ class V9 : public Algorithm {
   void adjustClustering();
   bool adjustLabels();
   bool inspectChangedGrids();
-  HashMap adjustForSparseGrid(DensityGrid grid, CharacteristicVector characteristicVec, int gridClass);
-  HashMap adjustForTransitionalGrid(DensityGrid grid, CharacteristicVector characteristicVec, int gridClass);
-  HashMap reCluster (GridCluster gridCluster);
+  HashMap adjustForSparseGrid(DensityGrid grid,
+                              CharacteristicVector characteristicVec,
+                              int gridClass);
+  HashMap adjustForTransitionalGrid(DensityGrid grid,
+                                    CharacteristicVector characteristicVec,
+                                    int gridClass);
+  HashMap reCluster(GridCluster gridCluster);
   HashMap adjustNewLabels(HashMap newGridList);
   void mergeClusters(int smallCluster, int bigCluster);
   void cleanClusters();
   HashMap cleanNewClusters(HashMap newGridList);
-  HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
+  HashMap mergeNewClusters(HashMap newGridList, int smallCluster,
+                           int bigCluster);
   double outlier_density_thresholdFunction(int tg, double cl, int NGrids);
   void updateGridListDensity();
   static void mergeGridList(HashMap gridList, const HashMap &otherList);
 
-  bool checkoutOutlier(CharacteristicVector characteristicVec);//checkIfSporadic
+  bool
+  checkoutOutlier(CharacteristicVector characteristicVec); // checkIfSporadic
   void insertIntoOutliers();
-  HashMap checkOutlierTransferCluster(DensityGrid grid, CharacteristicVector characteristicVec, int gridClass);
+  HashMap checkOutlierTransferCluster(DensityGrid grid,
+                                      CharacteristicVector characteristicVec,
+                                      int gridClass);
 };
-}
-#endif //COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
+} // namespace SESAME
+#endif // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_

@@ -98,6 +98,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
     auto out = o->Check(input, d->clusters());
     out_timer.Tock();
     if (out) { // outlier
+      input->outlier = true;
       node = InsertOutliers(input);
       out_timer.Tick();
       out = o->Check(node);
@@ -111,6 +112,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
         ds_timer.Tock();
         if constexpr (has_delete) {
           for (auto &p : node_map_[node]) {
+            p->outlier = false;
             node_map_[newNode].insert(p);
             point_map_[p] = newNode;
           }
@@ -150,6 +152,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
       }
     }
   }
+  lat_timer.Add(input->toa);
 }
 
 template <typename W, typename D, typename O, typename R>
@@ -160,11 +163,19 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
   for (int i = 0; i < clusters.size(); i++) {
     auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
     for (int j = 0; j < param.dim; j++) {
-      centroid->setFeatureItem(clusters[i]->cf.ls[j] / clusters[i]->cf.num, j);
+      centroid->feature[j] = clusters[i]->cf.ls[j] / clusters[i]->cf.num;
     }
     onlineCenters.push_back(centroid);
   }
   r->Run(param, onlineCenters, ptr);
+  for (int i = 0; i < outliers_.size(); ++i) {
+    auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+    for (int j = 0; j < param.dim; j++) {
+      centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+    }
+    centroid->outlier = true;
+    ptr->put(centroid);
+  }
   ref_timer.Tock();
   sum_timer.Tock();
 }

@@ -13,7 +13,7 @@
 using namespace std::chrono_literals;
 
 SESAME::DataSink::DataSink(const SESAME::param_t &param): param(param) {
-  outputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
+  outputQueue = std::make_shared<std::queue<PointPtr>>();
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -23,13 +23,13 @@ void SESAME::DataSink::runningRoutine() {
   SESAME_INFO("DataSink start to grab data");
   while (!sourceEnd) {
     while (!outputQueue->empty()) {
-      output.push_back(*outputQueue->front());
+      output.push_back(outputQueue->front());
       outputQueue->pop();
     }
     std::this_thread::sleep_for(1ms);
   }
   while (!outputQueue->empty()) {
-    output.push_back(*outputQueue->front());
+    output.push_back(outputQueue->front());
     outputQueue->pop();
   }
   finished = true;

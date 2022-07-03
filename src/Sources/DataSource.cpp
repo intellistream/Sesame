@@ -45,6 +45,12 @@ void SESAME::DataSource::load(int point_number, int dim,
     while (feature != nullptr) {
       if (index == dim) {
         point->setClusteringCenter(atoi(feature));
+        if (point->getClusteringCenter() ==
+            -1) { // If cluster id == -1, then it is an noise / outlier
+          point->setOutlier(true);
+        } else {
+          point->setOutlier(false);
+        }
       } else {
         point->setFeatureItem(strtod(feature, nullptr), index);
         index++;
@@ -56,7 +62,8 @@ void SESAME::DataSource::load(int point_number, int dim,
 }
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
-  inputQueue = std::make_shared<rigtorp::SPSCQueue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
+  inputQueue =
+      std::make_shared<boost::lockfree::spsc_queue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -68,8 +75,16 @@ void SESAME::DataSource::runningRoutine() {
   // Initialize timer at time 0
   auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
-  if (param.fast_source) {
+  if (param.arr_rate) {
+    const int wait_ns = 1e9 / param.arr_rate;
     for (PointPtr p : this->input) {
+      p->toa = std::chrono::high_resolution_clock::now();
+      inputQueue->push(p);
+      while(std::chrono::high_resolution_clock::now()-(p->toa) < std::chrono::nanoseconds(wait_ns));
+    }
+  } else if (param.fast_source) {
+    for (PointPtr p : this->input) {
+      p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
     }
   } else {
@@ -81,6 +96,7 @@ void SESAME::DataSource::runningRoutine() {
             timestamp - duration_cast<nanoseconds>(now - start).count()));
       }
       // Wait until (currentTime - startTime) >= timestamp to push point
+      p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
     }
   }
@@ -121,7 +137,7 @@ SESAME::PointPtr SESAME::DataSource::get() {
 #endif
   auto rt = inputQueue->front();
   inputQueue->pop();
-  return *rt;
+  return rt;
 }
 
 void SESAME::DataSource::setBarrier(SESAME::BarrierPtr barrierPtr) {

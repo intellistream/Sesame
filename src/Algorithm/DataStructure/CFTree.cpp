@@ -84,8 +84,8 @@ void CFNode::removeChild(NodePtr &child) {
     }
   }
 }
-bool SESAME::CFNode::getIsOutlier() { return this->isOutlier; }
-void SESAME::CFNode::setIsOutlier(bool flag) { this->isOutlier = flag; }
+bool SESAME::CFNode::getOutlier() { return this->outlier; }
+void SESAME::CFNode::setOutlier(bool flag) { this->outlier = flag; }
 
 ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
 

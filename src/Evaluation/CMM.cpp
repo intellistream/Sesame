@@ -3,19 +3,26 @@
 //
 
 #include "Evaluation/CMM.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
+#include "Algorithm/Param.hpp"
 #include "Utils/Logger.hpp"
 #include "Utils/UtilityFunctions.hpp"
 
 #include <cassert>
 #include <cmath>
+#include <map>
 #include <numeric>
+#include <omp.h>
+#include <queue>
+#include <set>
+
+namespace SESAME {
 
 /**
  * @Description: CMMPoint
  */
-SESAME::CMMPoint::CMMPoint(int id, long startTime, long time,
-                           std::vector<double> &vec, double a, double lambda,
-                           int truth) {
+CMMPoint::CMMPoint(int id, long startTime, long time, std::vector<double> &vec,
+                   double a, double lambda, int truth) {
   this->id = id;
   this->startTime = startTime;
   this->dim = (int)vec.size();
@@ -24,7 +31,7 @@ SESAME::CMMPoint::CMMPoint(int id, long startTime, long time,
   this->truth = truth;
 }
 
-double SESAME::CMMPoint::getDisTo(CMMPointPtr &p) {
+double CMMPoint::getDisTo(CMMPointPtr &p) {
   double dis = 0;
   double temp = 0;
   for (int i = 0; i < dim; i++) {
@@ -34,7 +41,7 @@ double SESAME::CMMPoint::getDisTo(CMMPointPtr &p) {
   return sqrt(dis);
 }
 
-double SESAME::CMMPoint::knnDis(int k, SESAME::CMMCluster &c) {
+double CMMPoint::knnDis(int k, CMMCluster &c) {
   std::vector<CMMPointPtr> list = c.points;
   int size = c.points.size();
   std::vector<double> diss(size);
@@ -51,20 +58,20 @@ double SESAME::CMMPoint::knnDis(int k, SESAME::CMMCluster &c) {
     sum += diss[i];
     num++;
   }
-  if(sum == 0) return 1;
-  else return sum / num;
+  if (sum == 0)
+    return 1;
+  else
+    return sum / num;
 }
 
 /**
  * @Description: CMMCluster
  */
-SESAME::CMMCluster::CMMCluster() {}
+CMMCluster::CMMCluster() {}
 
-void SESAME::CMMCluster::add(SESAME::CMMPointPtr &p) {
-  this->points.push_back(p);
-}
+void CMMCluster::add(CMMPointPtr &p) { this->points.push_back(p); }
 
-void SESAME::CMMCluster::getConn() {
+void CMMCluster::getConn() {
   int size = (int)points.size();
   std::vector<double> knhPDis(size);
   double sum = 0;
@@ -77,7 +84,7 @@ void SESAME::CMMCluster::getConn() {
   }
   knhDis = sum / size;
   for (int i = 0; i < size; i++) {
-    if (type == SESAME::GTCluster) {
+    if (type == GTCluster) {
       if (knhPDis[i] < knhDis) {
         points.at(i)->conCL = 1;
       } else {
@@ -97,15 +104,15 @@ void SESAME::CMMCluster::getConn() {
   }
 }
 
-SESAME::CMMDriver::CMMDriver(int dim, double a, double lambda) {
+CMMDriver::CMMDriver(int dim, double a, double lambda) {
   this->dim = dim;
   this->a = a;
   this->lambda = lambda;
   // this->k = k;
 }
-void SESAME::CMMDriver::load(const std::vector<PointPtr> &inputs,
-                             const std::vector<PointPtr> &predicts, int dim,
-                             double time) {
+void CMMDriver::load(const std::vector<PointPtr> &inputs,
+                     const std::vector<PointPtr> &predicts, int dim,
+                     double time) {
   // time ? weight ?
   // convert to the predicted clustering center index
   for (int i = 0; i < inputs.size(); i++) {
@@ -115,34 +122,34 @@ void SESAME::CMMDriver::load(const std::vector<PointPtr> &inputs,
     }
     int cl = inputs.at(i)->getClusteringCenter();
     assert(cl != -1);
-    SESAME::CMMPointPtr p = std::make_shared<CMMPoint>(
-        predicts.at(i)->getIndex(), (long)predicts.at(i)->getIndex(), time,
-        features, a, lambda, cl);
+    CMMPointPtr p = std::make_shared<CMMPoint>(predicts.at(i)->getIndex(),
+                                               (long)predicts.at(i)->getIndex(),
+                                               time, features, a, lambda, cl);
     if (CL.count(cl)) {
       CL[cl]->add(p);
     } else {
       CMMClusterPtr c = std::make_shared<CMMCluster>();
       c->groundTruth = cl;
-      c->type = SESAME::GTCluster;
+      c->type = GTCluster;
       c->add(p);
       CL.insert(std::pair<int, CMMClusterPtr>(cl, c));
       CLlist.push_back(c);
     }
     int ci = predicts.at(i)->getClusteringCenter();
-    if(C.count(ci)){
+    if (C.count(ci)) {
       C[ci]->add(p);
     } else {
       CMMClusterPtr c = std::make_shared<CMMCluster>();
       ;
       c->groundTruth = ci;
-      c->type = SESAME::Cluster;
+      c->type = Cluster;
       c->add(p);
       C.insert(std::pair<int, CMMClusterPtr>(ci, c));
       Clist.push_back(c);
     }
   }
 }
-void SESAME::CMMDriver::voteMap() {
+void CMMDriver::voteMap() {
   /*
     here CMM uses the mapping strategy rather than the vote, and in the paper
     the author also says that Mapping clusters based on majority voting cannot
@@ -176,7 +183,7 @@ void SESAME::CMMDriver::voteMap() {
   }
 }
 
-void SESAME::CMMDriver::getFaultSet() {
+void CMMDriver::getFaultSet() {
   int csize = (int)Clist.size();
   for (int i = 0; i < csize; i++) {
     CMMClusterPtr c = Clist.at(i);
@@ -196,7 +203,7 @@ void SESAME::CMMDriver::getFaultSet() {
   }
 }
 
-double SESAME::CMMDriver::compCMM() {
+double CMMDriver::compCMM() {
   getFaultSet();
   if (faultSet.empty()) {
     return 1;
@@ -216,38 +223,347 @@ double SESAME::CMMDriver::compCMM() {
     return 1 - totalPen / totalCon;
 }
 
-void SESAME::CMMDriver::compCon() {
+void CMMDriver::compCon() {
   for (auto &c : faultClu) {
     c->getConn();
   }
 }
 
-double SESAME::CMMDriver::computeWeight(double deltaTime) {
+double CMMDriver::computeWeight(double deltaTime) {
   const double belta = 2;
   const double lamda = 1;
   return pow(belta, lamda * (deltaTime));
 }
+
+// template <template <typename Ty> class T>
+// void GetKnn(int i, int k, const T<int> &cluster,
+//             const std::vector<PointPtr> &inputs, std::deque<double> &dists,
+//             std::deque<int> indexes) {
+//   for (auto j : cluster) {
+//     if (i != j) {
+//       double dist = inputs[i]->L2Dist(inputs[j]);
+//       if (dists.size() < k || dist < dists.back()) {
+//         int index = 0;
+//         while (index < dists.size() && dist > dists[index])
+//           ++index;
+//         dists[index] = dist;
+//         indexes[index] = j;
+//         if (dists.size() > k) {
+//           dists.pop_back();
+//           indexes.pop_back();
+//         }
+//       }
+//     }
+//   }
+// }
+
+void CMM::Cluster::CalcKnn(int k, const std::vector<PointPtr> &inputs) {
+  const int n = points.size();
+  // std::vector<std::vector<double>> adjDists(n, std::vector<double>(n, 0));
+  //   omp_set_dynamic(0);
+  //   omp_set_num_threads(std::min(omp_get_num_procs(), 8));
+  // #pragma omp parallel for
+  // for (int i = 0; i < n; ++i) {
+  //   for (int j = i + 1; j < n; ++j) {
+  //     adjDists[i][j] = adjDists[j][i] =
+  //         inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
+  //   }
+  // }
+
+#pragma omp parallel for
+  for (int i = 0; i < n; ++i) {
+    auto first = std::numeric_limits<double>::max(), second = first;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        // double dist = adjDists[i][j];
+        double dist = inputs[vpoints[i]]->L2Dist(inputs[vpoints[j]]);
+        if (dist < first) {
+          second = first;
+          first = dist;
+        } else if (dist < second) {
+          second = dist;
+        }
+      }
+    }
+    double avgKnn = 0.0;
+    if (n >= 3) {
+      avgKnn = (first + second) / 2;
+    } else if (n == 2) {
+      avgKnn = first;
+    }
+    inputs[vpoints[i]]->knn = avgKnn;
+    knnMeanAvg += avgKnn;
+    knnDevAvg += avgKnn * avgKnn;
+  }
+  knnMeanAvg = knnMeanAvg.load() / n;
+  knnDevAvg = knnDevAvg.load() / n;
+  double variance = knnDevAvg - knnMeanAvg * knnMeanAvg;
+  if (variance <= 0.0)
+    variance = 1e-50;
+  knnDevAvg = sqrt(variance);
+
+  // calculate the connectivity of each point
+  double upperKnn = knnMeanAvg + knnDevAvg;
+  for (int i = 0; i < n; ++i) {
+    if (inputs[vpoints[i]]->knn < upperKnn)
+      inputs[vpoints[i]]->conn = 1;
+    else
+      inputs[vpoints[i]]->conn = upperKnn / inputs[vpoints[i]]->knn;
+  }
+}
+
+double CMM::CalcConn(int i, int j, const std::vector<PointPtr> &inputs) {
+  // std::deque<double> dists;
+  // std::deque<int> indexes;
+  // GetKnn(i, knnNeighbourhood, clusters[j].points, inputs, dists, indexes);
+  const auto n = clusters[j].vpoints.size();
+  auto first = std::numeric_limits<double>::max(), second = first;
+#pragma omp parallel for
+  for (int k = 0; k < n; ++k) {
+    double dist = inputs[i]->L2Dist(inputs[clusters[j].vpoints[k]]);
+    if (dist < first) {
+      second = first;
+      first = dist;
+    } else if (dist < second) {
+      second = dist;
+    }
+  }
+  double avgKnn = 0.0;
+  if (n >= 2) {
+    avgKnn = (first + second) / 2;
+  } else {
+    avgKnn = first;
+  }
+  double upperKnn = clusters[inputs[i]->clu_id].knnMeanAvg +
+                    clusters[inputs[i]->clu_id].knnDevAvg;
+  if (avgKnn < upperKnn) {
+    return 1;
+  } else {
+    // TODO: useExpConnectivity
+    return upperKnn / avgKnn;
+  }
+}
+
+double CMM::CalcConn(int i, const std::vector<PointPtr> &inputs) {
+  return CalcConn(i, inputs[i]->clu_id, inputs);
+}
+
 /*here we assume that the data comes every 10 seconds
  * */
-double SESAME::CMM::CMMCost(int dim, const std::vector<PointPtr> &inputs,
-                            const std::vector<PointPtr> &predicts) {
-  std::vector<double> CMMValues;
-  CMMValues.push_back(0);
-  int start = 0;
-  for (int i = 25; i < inputs.size(); i += 25) {
-    // segment the stream data into horizons(windows) according to threshold
-    CMMDriver cmm(dim, CMM_A, CMM_LAMDA);
-    std::vector<PointPtr> seg;
-    for (; start < i; start++) {
-      seg.push_back(inputs.at(start));
-    }
-    cmm.load(seg, predicts, dim, i * 10);
-    cmm.voteMap();
-    double cmmValue = cmm.compCMM();
-    //      cmm.voteMap();  // TODO: change voteMap according to the paper
-    CMMValues.push_back(cmmValue);
-    //      std::cout << "cmm: " << cmmValue << std::endl;
+void CMM::AnalyseGT(const std::vector<PointPtr> &inputs,
+                    const std::vector<PointPtr> &predicts,
+                    bool enableClassMerge) {
+  if (!enableClassMerge) {
+    tauConnection = 1.0;
   }
-  double sum = std::accumulate(std::begin(CMMValues), std::end(CMMValues), 0.0);
-  return sum / (CMMValues.size() - 1);
+  lambdaConn = -log(lambdaConnRefXValue) / log(2) / lambdaConnX;
+  // std::unordered_map<int, int> mapTrueLabelToWorkLabel;
+  // std::vec
+  for (int i = 0; i < inputs.size(); ++i)
+    if (inputs[i]->clu_id != -1) {
+      auto clu = inputs[i]->clu_id;
+      clusters[clu].Insert(i);
+    } else {
+      clusters[0].Insert(i);
+    }
+  std::cerr << "CMM::CalcKnn start" << std::endl;
+  for (auto &cluster : clusters) {
+    if (cluster.first != 0)
+      cluster.second.CalcKnn(knnNeighbourhood, inputs);
+  }
+  // for (int i = 0; i < inputs.size(); ++i)
+  //   if (inputs[i]->clu_id != -1) {
+  //     inputs[i]->conn = CalcConn(i, inputs);
+  //   }
 }
+
+void CMM::CalcMatch(const std::vector<PointPtr> &inputs,
+                    const std::vector<PointPtr> &predicts) {
+  std::map<int, std::map<int, int> > mapFC, mapGT;
+  std::map<int, int> sumsFC;
+  for (int i = 0; i < inputs.size(); ++i) {
+    auto fc = predicts[i]->clu_id, hc = inputs[i]->clu_id;
+    if (fc != -1) {
+      if (hc != -1) {
+        mapFC[fc][hc]++;
+        sumsFC[fc]++;
+      }
+    }
+    if (hc != -1) {
+      // TODO: ?
+      mapGT[hc][hc]++;
+    }
+  }
+  for (auto &it : mapFC) {
+    auto fc = it.first;
+    int matchIndex = -1;
+    for (auto &jt : it.second) {
+      auto hc = jt.first;
+      if (jt.second != 0) {
+        if (matchIndex == -1) {
+          matchIndex = hc;
+        } else {
+          matchIndex = -1;
+          break;
+        }
+      }
+    }
+
+    int minDiff = std::numeric_limits<int>::max();
+    if (sumsFC[fc] != 0 && matchIndex == -1) {
+      std::vector<int> fitCandidates;
+      for (int hc0 = 1; hc0 <= param.num_clusters; ++hc0) {
+        int errDiff = 0;
+        for (int hc1 = 1; hc1 <= param.num_clusters; ++hc1) {
+          double freq_diff = mapFC[fc][hc1] - mapGT[hc0][hc1];
+          if (freq_diff > 0) {
+            errDiff += freq_diff;
+          }
+        }
+        if (errDiff == 0) {
+          fitCandidates.push_back(hc0);
+        }
+        if (errDiff < minDiff) {
+          minDiff = errDiff;
+          matchIndex = hc0;
+        }
+      }
+      if (fitCandidates.size() != 0) {
+        int bestGTfit = fitCandidates[0];
+        for (int i = 1; i < fitCandidates.size(); ++i) {
+          if (mapGT[fc][fitCandidates[i]] > mapFC[fc][bestGTfit]) {
+            bestGTfit = fitCandidates[i];
+          }
+        }
+        matchIndex = bestGTfit;
+      }
+    }
+    matchMap[fc] = matchIndex;
+    // assert(matchIndex != -1);
+  }
+}
+
+double CMM::MisplacedError(int i, int fc, int hc,
+                           const std::vector<PointPtr> &inputs) {
+  auto real_hc = matchMap[fc];
+  if (real_hc == -1)
+    return 1;
+  if (real_hc == hc)
+    return 0;
+  else {
+    if (clusters[real_hc].points.contains(i)) {
+      return 0.00001;
+    } else {
+      double weight = 1 - CalcConn(i, real_hc, inputs);
+      return weight * inputs[i]->conn;
+    }
+  }
+  // return inputs[i]->conn;
+}
+
+double CMM::NoiseError(int i, int fc, int hc,
+                       const std::vector<PointPtr> &inputs) {
+  auto real_hc = matchMap[fc];
+  if (real_hc == -1)
+    return 1;
+  if (clusters[real_hc].points.contains(i))
+    return 0.00001;
+  else {
+    return 1.0 - CalcConn(i, real_hc, inputs);
+  }
+}
+
+double CMM::MissedError(int i, int fc, int hc,
+                        const std::vector<PointPtr> &inputs) {
+  // TODO
+  return inputs[i]->conn;
+  // for(int i = 1; i<=param.num_clusters; ++i) {
+  //   if(matchMap[i]!=-1 && matchMap[i] == hc) {
+  //   }
+  // }
+}
+
+void CMM::CalcError(const std::vector<PointPtr> &inputs,
+                    const std::vector<PointPtr> &predicts) {
+  int totalErrorCount = 0;
+  // int totalRedundancy = 0;
+  int trueCoverage = 0;
+  int totalCoverage = 0;
+
+  int numNoise = 0;
+  double errorNoise = 0;
+  double errorNoiseMax = 0;
+
+  double errorMissed = 0;
+  // double errorMissedMax = 0;
+
+  double errorMisplaced = 0;
+  double errorMisplacedMax = 0;
+
+  double totalError = 0.0;
+  double totalErrorMax = 0.0;
+
+  for (int i = 0; i < inputs.size(); ++i) {
+    auto fc = predicts[i]->clu_id, hc = inputs[i]->clu_id;
+    if (hc == -1) {
+      numNoise++;
+      errorNoiseMax += inputs[i]->weight * inputs[i]->conn;
+    } else {
+      errorMissed += inputs[i]->weight * inputs[i]->conn;
+      errorMisplacedMax += inputs[i]->weight * inputs[i]->conn;
+    }
+    totalErrorMax += inputs[i]->weight;
+    double err = 0;
+    bool flag = false;
+    if (fc != -1) {
+      flag = true;
+      if (hc != -1) {
+        if (matchMap[fc] == hc) {
+          // true match
+        } else {
+          err = MisplacedError(i, fc, hc, inputs);
+          errorMisplaced += inputs[i]->weight * err;
+        }
+      } else {
+        // noise
+        err = NoiseError(i, fc, hc, inputs);
+        errorNoise += inputs[i]->weight * err;
+      }
+    } else {
+      if (hc != -1) {
+        err = MissedError(i, fc, hc, inputs);
+        errorMissed += inputs[i]->weight * err;
+      } else {
+        // NOISE
+      }
+    }
+
+    totalError += err * inputs[i]->weight;
+    if (err != 0)
+      totalErrorCount++;
+    if (flag)
+      totalCoverage++;
+    if (flag && hc != -1)
+      trueCoverage++;
+  }
+  cmm = (totalErrorMax != 0) ? (1 - totalError / totalErrorMax) : 1.0;
+}
+
+/*here we assume that the data comes every 10 seconds
+ * */
+double CMM::Evaluate(const std::vector<PointPtr> &inputs,
+                     const std::vector<PointPtr> &predicts) {
+#ifndef NDEBUG
+  for (int i = 0; i < inputs.size(); i++) {
+    assert(inputs[i]->index == predicts[i]->index);
+  }
+#endif
+  AnalyseGT(inputs, predicts, false);
+  std::cerr << "CMM::CalcMatch start" << std::endl;
+  CalcMatch(inputs, predicts);
+  std::cerr << "CMM::CalcError start" << std::endl;
+  CalcError(inputs, predicts);
+  return cmm;
+}
+
+} // namespace SESAME

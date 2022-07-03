@@ -13,6 +13,11 @@ struct Timer {
     sum += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
                .count();
   }
+  void Add(clock_t t) {
+    auto now = std::chrono::high_resolution_clock::now();
+    sum += std::chrono::duration_cast<std::chrono::nanoseconds>(now - t)
+               .count();
+  }
 };
 
 #endif

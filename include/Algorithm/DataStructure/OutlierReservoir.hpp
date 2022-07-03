@@ -36,8 +36,8 @@ class OutlierReservoir {
   void SetA(double a);
   [[nodiscard]] double GetLamd()    ;
   void SetLamd(double lamd);
-  [[nodiscard]]     std::unordered_set<SESAME::DPNodePtr> &GetOutliers()    ;
-  void SetOutliers(    std::unordered_set<SESAME::DPNodePtr> &outliers);
+  [[nodiscard]]     std::unordered_set<SESAME::DPNodePtr> &getOutliers()    ;
+  void setOutliers(    std::unordered_set<SESAME::DPNodePtr> &outliers);
   OutlierReservoir();
   ~OutlierReservoir();
   OutlierReservoir(double r, double a, double lamd);

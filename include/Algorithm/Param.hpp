@@ -16,7 +16,7 @@ enum AlgoType {
   EDMStreamType,
   DStreamType,
   SLKMeansType,
-  V1Stream,
+  V1Stream = 11,
   V2Stream,
   V3Stream,
   V4Stream,
@@ -25,17 +25,23 @@ enum AlgoType {
   V7Stream,
   V8Stream,
   V9Stream,
-  Generic
+  Generic,
+  G1Stream = 21,
+  G2Stream,
+  G3Stream,
+  G4Stream,
+  G5Stream,
+  G6Stream,
+  G7Stream,
+  G8Stream,
+  G9Stream,
 };
 
-static char *algo_names[] = {
-    "Birch",     "StreamKMeans", "CluStream", "DenStream", "DBStream",
-    "EDMStream", "DStream",      "SL-KMeans", "V1Stream",  "V2Stream",
-    "V3Stream",  "V4Stream",     "V5Stream",  "V6Stream",  "V7Stream",
-    "V8Stream",  "V9Stream",     "Generic"};
+extern char const *algo_names[30];
 
 struct param_t {
   int num_points, dim, num_clusters;
+  int arr_rate;
   bool time_decay = false;
   int coreset_size, seed = 10;
   bool fast_source = false;
@@ -77,6 +83,8 @@ struct param_t {
 
   // used in design aspect
   bool run_offline = false; // determine whether to run the offline refinement
+  bool run_eval = true;
+  bool run_cmm = true, run_pur = true;
   int landmark; // this is the index of landmark point[start from 0](determine
                 // to process the algorithm from which algorithm)
   int sliding = 10; // since we test the count-based sliding window, this is the
@@ -95,6 +103,7 @@ struct param_t {
       0.2; // The delta parameter used int the grid for guessing the optimum.
   int num_samples = 100; // The number of samples used in the grid for guessing
                          // the optimum.
+  int num_res;
   void Print() {
     std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
     std::cout << "workload: " << std::filesystem::path(input_file).stem()
@@ -102,6 +111,7 @@ struct param_t {
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
     std::cout << "num_clusters: " << num_clusters << std::endl;
+    std::cout << "arr_rate: " << arr_rate << std::endl;
     std::cout << "max_in_nodes: " << max_in_nodes << std::endl;
     std::cout << "max_leaf_nodes: " << max_leaf_nodes << std::endl;
     std::cout << "distance_threshold: " << distance_threshold << std::endl;
@@ -127,6 +137,14 @@ struct param_t {
     std::cout << "num_online_clusters: " << num_online_clusters << std::endl;
     std::cout << "delta_grid: " << delta_grid << std::endl;
     std::cout << "num_samples: " << num_samples << std::endl;
+    std::cout << "landmark: " << landmark << std::endl;
+    std::cout << "sliding: " << sliding << std::endl;
+    std::cout << "outlier_distance_threshold: " << outlier_distance_threshold
+              << std::endl;
+    std::cout << "outlier_cap: " << outlier_cap << std::endl;
+    std::cout << "outlier_density_threshold: " << outlier_density_threshold
+              << std::endl;
+    std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
   }
 };
 

@@ -121,7 +121,7 @@ void SESAME::V4::RunOnline(const SESAME::PointPtr input) {
 
 void SESAME::V4::RunOffline(DataSinkPtr sinkPtr) {
   for(int i = 0; i < this->clusterNodes.size(); i++) {
-    if(!this->clusterNodes[i]->getIsOutlier()) {
+    if(!this->clusterNodes[i]->getOutlier()) {
       PointPtr centroid = DataStructureFactory::createPoint(i, 1, V4Param.dim, 0);
       for(int j = 0; j < V4Param.dim; j++) {
         centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) / this->clusterNodes[i]->getCF()->getN(), j);

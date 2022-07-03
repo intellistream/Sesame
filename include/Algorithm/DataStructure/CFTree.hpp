@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <immintrin.h>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -49,7 +50,7 @@ class CFNode {
 private:
   CFPtr curCF;
   bool isLeaf;
-  bool isOutlier;
+  bool outlier;
   std::vector<NodePtr> children;
   NodePtr parent;
   int index;
@@ -72,8 +73,8 @@ public:
   void setChild(NodePtr &child);
   void setChildren(std::vector<NodePtr> children);
   void clearParents();
-  void setIsOutlier(bool flag);
-  bool getIsOutlier();
+  void setOutlier(bool flag);
+  bool getOutlier();
   std::string Prefix(int d) {
     std::string prefix = "";
     while (d--) {
@@ -220,6 +221,12 @@ public:
         cf.ls[i] *= scale;
         cf.ss[i] *= scale * scale;
       }
+      // auto a = cf.ls.data(), b = cf.ss.data();
+      // auto factor1 = _mm256_set1_pd(scale), factor2 = _mm256_set1_pd(scale * scale);
+      // for (size_t i = 0; i < dim; i += 4) {
+      //   _mm256_mul_pd(_mm256_loadu_pd(a + i), factor1);
+      //   _mm256_mul_pd(_mm256_loadu_pd(b + i), factor2);
+      // }
     }
     template <typename T> void Update(T point, bool all) {
       Update(point);
@@ -304,6 +311,12 @@ public:
         cf.ls[i] *= scale;
         cf.ss[i] *= scale * scale;
       }
+      // auto a = cf.ls.data(), b = cf.ss.data();
+      // auto factor1 = _mm256_set1_pd(scale), factor2 = _mm256_set1_pd(scale * scale);
+      // for (size_t i = 0; i < dim; i += 4) {
+      //   _mm256_mul_pd(_mm256_loadu_pd(a + i), factor1);
+      //   _mm256_mul_pd(_mm256_loadu_pd(b + i), factor2);
+      // }
     }
     PointPtr Centroid() {
       auto c = GenericFactory::New<Point>(dim);

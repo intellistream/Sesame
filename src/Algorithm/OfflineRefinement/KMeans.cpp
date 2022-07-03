@@ -207,7 +207,7 @@ void SESAME::KMeans::checkStopStatus(bool &flag, std::vector<std::vector<PointPt
 }
 
 /**
- * @Description: store the result into the output (clusteringCenter)
+ * @Description: store the result into the output (clu_id)
  */
 
 void SESAME::KMeans::storeResult(std::vector<std::vector<PointPtr>> &groups, std::vector<PointPtr> &output) {

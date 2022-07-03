@@ -94,13 +94,20 @@ void SESAME::UtilityFunctions::groupByCenters(
   for (int i = 0; i < n; i++) {
     auto min = DBL_MAX;
     int selectCenterIndex = -1;
+    bool outlier = false;
     for (int j = 0; j < centers.size(); j++) {
       double dis = output[i]->L2Dist(centers[j]);
       if (min > dis) {
         selectCenterIndex = j;
         min = dis;
+        if(centers[j]->getOutlier()){
+          outlier = true;
+        } else {
+          outlier = false;
+        }
       }
     }
+    output[i]->setOutlier(outlier);
     output[i]->setClusteringCenter(selectCenterIndex);
   }
 }
@@ -120,6 +127,11 @@ void SESAME::UtilityFunctions::groupByCentersWithOffline(
         output[i]->setClusteringCenter(centers[j]->getClusteringCenter());
         min = dis;
       }
+    }
+    if(output[i]->getClusteringCenter() == -1){
+      output[i]->setOutlier(true);
+    } else {
+      output[i]->setOutlier(false);
     }
   }
 }
