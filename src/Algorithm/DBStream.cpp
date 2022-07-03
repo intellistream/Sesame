@@ -216,10 +216,11 @@ void  SESAME::DBStream::cleanUp(int nowTime){
   auto iterW=weightedAdjacencyList.begin();
   while ( iterW != weightedAdjacencyList.end())
   {
+   auto val1 = iterW->first.microCluster1->id.front(), val2 = iterW->first.microCluster2->id.front();
    auto exist1 = std::find_if(removeMicroCluster.begin(), removeMicroCluster.end(),
-                              SESAME::finderMicroCluster(iterW->first.microCluster1->id.front()));
+                              [&] (const MicroClusterPtr &mc) { return mc->id.front() == val1; } );
    auto exist2 = std::find_if(removeMicroCluster.begin(), removeMicroCluster.end(),
-                              SESAME::finderMicroCluster(iterW->first.microCluster2->id.front()));
+                              [&] (const MicroClusterPtr &mc) { return mc->id.front() == val2; } );
    if ( exist1!=removeMicroCluster.end()|| exist2!=removeMicroCluster.end()){
      iterW=weightedAdjacencyList.erase(iterW);
    } else {

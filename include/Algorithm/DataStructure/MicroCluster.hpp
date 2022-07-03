@@ -79,15 +79,6 @@ class MicroCluster {
   double distance;
   static double inverseError(double x);
 };
-typedef struct finderMicroCluster
-{
-  finderMicroCluster(int n) : id(n) { }
-  bool operator()(const MicroClusterPtr MC) const
-  {
-    return (id == MC->id.front());
-  }
-  int id;
-}finderMicroCluster;
 
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_MICROCLUSTER_HPP_

@@ -47,7 +47,7 @@ public:
    * @Param: connectivity graph
    * @Return: void
    */
-  void findConnectedComponents(std::vector<MicroClusterPtr> microClusters);
+  void findConnectedComponents(const std::vector<MicroClusterPtr> &microClusters);
 };
 
 } // namespace SESAME
