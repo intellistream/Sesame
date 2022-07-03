@@ -44,15 +44,15 @@ ticat ${meta} : ${insects} \
     : join.new base 2 \
     : join.run run.sesame
 
-# ticat ${meta} : ${eds} \
-#     : join.new algo 4 \
-#     : join.new lambda 0.998 \
-#     : join.new alpha [0.2,0.6,0.1] \
-#     : join.new radius [10,30,10] \
-#     : join.new clean_interval 400 \
-#     : join.new min_weight 0.5 \
-#     : join.new base 2 \
-#     : join.run run.sesame
+ticat ${meta} : ${eds} \
+    : join.new algo 4 \
+    : join.new lambda 0.01,0.05 \
+    : join.new alpha 0.02,0.1 \
+    : join.new radius 0.01,100 \
+    : join.new clean_interval 400,1500,2000 \
+    : join.new min_weight 0.001,0.1 \
+    : join.new base 2 \
+    : join.run run.sesame
 
 
 # ticat ${meta} : ${edso} \
