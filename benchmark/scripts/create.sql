@@ -51,19 +51,19 @@ CREATE TABLE IF NOT EXISTS sesame (
                 purity DOUBLE \
 );
 
-CREATE VIEW birch as SELECT id, run_begin, algo, workload, num_points, max_in_nodes, max_leaf_nodes, distance_threshold, cmm, purity FROM sesame WHERE algo = 'Birch'; 
+CREATE VIEW birch as SELECT id, run_begin, algo, workload, num_points, max_in_nodes, max_leaf_nodes, distance_threshold, cmm, purity, qps, lat_us FROM sesame WHERE algo = 'Birch'; 
 
 CREATE VIEW streamkm as SELECT id, run_begin, algo, tag, workload, seed, num_clusters, coreset_size, cmm, purity FROM sesame WHERE algo = 'StreamKMeans'; 
 
 CREATE VIEW edmstream as SELECT id, run_begin, algo, workload, num_points, radius, delta, beta, buf_size, alpha, lambda, cmm, purity FROM sesame WHERE algo = 'EDMStream'; 
 
-CREATE VIEW dbstream as SELECT id, run_begin, algo, workload, num_points, lambda, radius, clean_interval, min_weight, alpha, base, cmm, purity FROM sesame WHERE algo = 'DBStream'; 
+CREATE VIEW dbstream as SELECT id, run_begin, algo, workload, num_points, lambda, radius, clean_interval, min_weight, alpha, base, cmm, purity, qps, lat_us FROM sesame WHERE algo = 'DBStream'; 
 
 CREATE VIEW dstream as SELECT id, run_begin, algo, workload, lambda, beta, cm, cl, grid_width, cmm, purity FROM sesame WHERE algo = 'DStream'; 
 
 CREATE VIEW denstream as SELECT id, run_begin, algo, workload, num_points, buf_size, min_points, epsilon, base, lambda, mu, beta, cmm, purity FROM sesame WHERE algo = 'DenStream'; 
 
-CREATE VIEW clustream as SELECT id, run_begin, algo, workload, num_last_arr, time_window, num_online_clusters, radius, buf_size, cmm, purity FROM sesame WHERE algo = 'CluStream'; 
+CREATE VIEW clustream as SELECT id, run_begin, algo, workload, arr_rate, num_res, num_last_arr, time_window, num_online_clusters, radius, buf_size, cmm, purity FROM sesame WHERE algo = 'CluStream'; 
 
 CREATE VIEW slkmeans as SELECT id, run_begin, algo, workload, num_points, delta_grid, num_samples, sliding, cmm, purity FROM sesame WHERE algo = 'SLKMeans'; 
 
@@ -85,7 +85,7 @@ CREATE VIEW g8 as SELECT id, run_begin, algo, workload, num_points, landmark, ou
 
 CREATE VIEW g9 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, beta, cm, cl, cmm, purity FROM sesame WHERE algo = 'G9'; 
 
-CREATE VIEW perf as SELECT id, run_begin, algo, workload, num_points, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id >= 6406 AND num_points > 100000;
+CREATE VIEW perf as SELECT id, run_begin, algo, workload, num_points, num_res, arr_rate, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s FROM sesame WHERE id >= 10584;
 
 CREATE VIEW step as SELECT id, run_begin, algo, workload, num_points, timestampdiff(second, run_begin, run_end) as et, purity, cmm, qps, lat_us FROM sesame WHERE id >= 6490;
 

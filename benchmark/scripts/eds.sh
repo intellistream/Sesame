@@ -13,9 +13,9 @@ export edso3="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/ED
 function run(){
 ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new algo 0 \
-    : join.new max_in_nodes 100 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 100 \
+    : join.new max_in_nodes 5 \
+    : join.new max_leaf_nodes 5 \
+    : join.new distance_threshold 1 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${eds}\
@@ -170,6 +170,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_distance_threshold 0.002 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
+
 }
 
 for i in $(seq 1 5)
@@ -183,3 +184,7 @@ do
     export eds=`eval echo \$\{edso$i\}`
     run
 done
+
+export eds="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363 : join.new run_eval false : join.new arr_rate 2000,20000,50000,100000"
+run
+
