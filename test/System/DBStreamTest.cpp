@@ -17,13 +17,11 @@
 #include <gtest/gtest.h>
 
 TEST(SystemTest, DBStream) {
-  // Setup Logs.
-  setupLogging("benchmark.log", LOG_DEBUG);
   // Parse parameters.
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
   // [3, 3, 4, 6, 6, 7, 9, 9]
   param_t cmd_params;
-  cmd_params.num_points = 100000;
+  cmd_params.num_points = 581012;
   cmd_params.dim = 2;
   cmd_params.base = 2;
   cmd_params.lambda = 0.998;
