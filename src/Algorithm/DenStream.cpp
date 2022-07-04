@@ -78,7 +78,7 @@ void SESAME::DenStream::RunOnline(PointPtr in) {
   PointPtr input = in;
 
   if (!this->isInitial) {
-    Init();
+    ds_timer.Tick();
     input->setClusteringCenter(noVisited);
     this->initialBuffer.push_back(input);
     if (this->initialBuffer.size() == this->denStreamParams.buf_sizeSize) {
@@ -86,6 +86,7 @@ void SESAME::DenStream::RunOnline(PointPtr in) {
       Init(this->initialBuffer);
       this->isInitial = true;
     }
+    ds_timer.Tock();
   } else {
     this->pointArrivingTime = input->getIndex();
     merge(input);

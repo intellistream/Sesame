@@ -34,7 +34,7 @@ class DStream : public Algorithm
      public:
       DStreamParams dStreamParams;
       DampedWindowPtr dampedWindow;
-      double startTime;
+      double startTime = 0.0;
       int pointArrivingTime;
       int gap;// Time gap between calls to the offline component
       double dm;// Density threshold for dense grids; controlled by cm
@@ -80,7 +80,7 @@ class DStream : public Algorithm
       bool checkIfSporadic(CharacteristicVector characteristicVec);
       void updateGridListDensity();
       static void mergeGridList(HashMap gridList, const HashMap &otherList);
-      int seconds() { return omp_get_wtime() - startTime; }
+      double seconds() { return omp_get_wtime() - startTime; }
     };
 
 }

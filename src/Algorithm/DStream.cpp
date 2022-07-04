@@ -49,9 +49,6 @@ void SESAME::DStream::Init() {
 void SESAME::DStream::RunOnline(PointPtr input) {
   ds_timer.Tick();
   if (!this->isInitial){
-    // SESAME_INFO("Start initialize...");
-
-    Init();
     this->isInitial = true;
     for(int i = 0 ; i < dStreamParams.dim ; i++)
     {
@@ -62,7 +59,7 @@ void SESAME::DStream::RunOnline(PointPtr input) {
   }
   else
   {
-    this->pointArrivingTime = input->getIndex();
+    this->pointArrivingTime = seconds();
     ifReCalculateN(input);
     if (recalculateN)
     {
@@ -72,12 +69,12 @@ void SESAME::DStream::RunOnline(PointPtr input) {
       // and
       // 6. If tc mod gap == 0, then:
       //Detect and remove sporadic grids from grid_list then adjust clustering
-      if (!clusterInitial && seconds()/gap==0)
+      int sec = seconds();
+      if (!clusterInitial && sec/gap==0)
       {
-
           initialClustering();
       }
-      if(clusterInitial && seconds()%(gap*10)==0)
+      if(clusterInitial && sec%(gap*10)==0)
       {
         removeSporadic();
         adjustClustering();
@@ -1036,7 +1033,7 @@ void SESAME::DStream::removeSporadic() {
   // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from grid_list.");
   for( DensityGrid &sporadicGrid : removeGridList)
   {
-    this->deletedGrids.insert(std::make_pair(sporadicGrid, seconds()));
+    this->deletedGrids.insert(std::make_pair(sporadicGrid, seconds() * 1000000));
     this->gridList.erase(sporadicGrid);
   }
 }
