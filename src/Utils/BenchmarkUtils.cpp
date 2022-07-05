@@ -336,9 +336,9 @@ void BenchmarkUtils::defaultParam(param_t &cmd_params)
   if (cmd_params.algo == V1Stream || cmd_params.algo == V2Stream ||
       cmd_params.algo == G1Stream || cmd_params.algo == G2Stream ||
       cmd_params.algo == DenStreamType || cmd_params.algo == CluStreamType ||
-      cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType)
+      cmd_params.algo == StreamKMeansType || cmd_params.algo == SLKMeansType ||
+      cmd_params.algo == DBStreamType || cmd_params.algo == DStreamType)
     cmd_params.run_offline = true;
-  cmd_params.algo = SESAME::DBStreamType;
   cmd_params.detect_outlier = false;
 }
 
@@ -489,25 +489,27 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> inputs = sourcePtr->getInputs();
   std::vector<SESAME::PointPtr> results = sinkPtr->getResults();
   std::vector<SESAME::PointPtr> predicts;
-  // assert(results.size() == cmd_params.num_clusters);
-  cmd_params.num_res = results.size();
-  std::cerr << "Result size=" << cmd_params.num_res << std::endl;
   // the output clusterID start from 0
-  if (cmd_params.run_offline)
-  {
-    SESAME::UtilityFunctions::groupByCentersWithOffline(
-        inputs, results, predicts, cmd_params.dim);
-    // 使用offline的算法不管是否detect
-    // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
-    // clustering center
+  if (cmd_params.run_eval) {
+    if (cmd_params.run_offline)
+    {
+      SESAME::UtilityFunctions::groupByCentersWithOffline(
+          inputs, results, predicts, cmd_params.dim);
+      // 使用offline的算法不管是否detect
+      // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
+      // clustering center
+    }
+    else
+    {
+      // the output is the clustering center so we need to help every input data
+      // find its nearest center
+      SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts,
+                                               cmd_params.dim);
+    }
   }
-  else
-  {
-    // the output is the clustering center so we need to help every input data
-    // find its nearest center
-    SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts,
-                                             cmd_params.dim);
-  }
+
+  cmd_params.num_res = results.size();
+  std::cerr << "results.size=" << results.size() << std::endl;
 
   // Store results.
   if (cmd_params.store)
@@ -517,7 +519,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   BenchmarkResultPtr res;
-  if (cmd_params.run_eval)
+  if (cmd_params.run_eval && results.size())
   {
     res = SESAME::Evaluation::Evaluate(cmd_params, inputs, predicts);
   }
@@ -529,5 +531,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
 
   engine.stop();
 
+  res->num_res = cmd_params.num_res;
   return res;
 }

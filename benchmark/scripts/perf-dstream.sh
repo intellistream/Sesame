@@ -8,7 +8,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new beta 0.001 \
     : join.new cm 5 \
     : join.new cl 0.8 \
-    : join.new grid_width 12 \
+    : join.new grid_width 0.12 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${kdd99} \
@@ -17,7 +17,7 @@ ticat ${meta} : mark-time bench.begin : ${kdd99} \
     : join.new beta 0.001 \
     : join.new cm 1 \
     : join.new cl 0.7 \
-    : join.new grid_width 4 \
+    : join.new grid_width 0.001 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${sensor} \
@@ -35,7 +35,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new beta 0.001 \
     : join.new cm 1 \
     : join.new cl 0.7 \
-    : join.new grid_width 4 \
+    : join.new grid_width 0.14 \
     : join.run run.sesame
 
 # ticat ${meta} : mark-time bench.begin : ${eds} \

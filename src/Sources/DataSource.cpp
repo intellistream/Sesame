@@ -63,7 +63,7 @@ void SESAME::DataSource::load(int point_number, int dim,
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
   inputQueue =
-      std::make_shared<std::queue<PointPtr>>();
+      std::make_shared<boost::lockfree::spsc_queue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
 }
@@ -76,11 +76,11 @@ void SESAME::DataSource::runningRoutine() {
   auto start = high_resolution_clock::now();
   SESAME_INFO("DataSource start to emit data");
   if (param.arr_rate) {
-    int wait_us = 1e6 / param.arr_rate;
+    const int wait_ns = 1e9 / param.arr_rate;
     for (PointPtr p : this->input) {
       p->toa = std::chrono::high_resolution_clock::now();
       inputQueue->push(p);
-      std::this_thread::sleep_for(std::chrono::microseconds(wait_us));
+      while(std::chrono::high_resolution_clock::now()-(p->toa) < std::chrono::nanoseconds(wait_ns));
     }
   } else if (param.fast_source) {
     for (PointPtr p : this->input) {

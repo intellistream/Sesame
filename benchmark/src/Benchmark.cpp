@@ -67,12 +67,11 @@ DEFINE_double(outlier_density_threshold, 100, "Outlier density threshold");
 DEFINE_double(neighbor_distance, 200, "Neighbor distance");
 DEFINE_int32(arr_rate, 0, "Arrival rate");
 DEFINE_bool(run_eval, true, "Whether run evaluation");
+DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
+DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 
 int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
-  // Setup Logs.
-  setupLogging("benchmark.log", LOG_DEBUG);
-
   // Parse parameters.
   param_t cmd_params;
   cmd_params.algo = (AlgoType)FLAGS_algo;
@@ -116,6 +115,8 @@ int main(int argc, char **argv) {
   cmd_params.neighbor_distance = FLAGS_neighbor_distance;
   cmd_params.arr_rate = FLAGS_arr_rate;
   cmd_params.run_eval = FLAGS_run_eval;
+  cmd_params.run_cmm = FLAGS_run_cmm;
+  cmd_params.run_pur = FLAGS_run_pur;
 
   cmd_params.output_file = "results.txt";
   cmd_params.fast_source = true;
