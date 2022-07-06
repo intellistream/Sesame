@@ -73,6 +73,7 @@ void SESAME::DBStream::Init() {
 }
 
 void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
+   on_timer.Add(sum_timer.start);
    ref_timer.Tick();
    SESAME_INFO("micro clusters "<<microClusters.size());
    SESAME_INFO("weightedAdjacencyList  "<<weightedAdjacencyList.size());

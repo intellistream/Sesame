@@ -24,6 +24,7 @@ void SESAME::Birch::RunOnline(const SESAME::PointPtr input) {
 
 
 void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   for(int i = 0; i < this->leafNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, BirchParam.dim, 0);

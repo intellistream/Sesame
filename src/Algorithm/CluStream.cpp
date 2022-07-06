@@ -259,6 +259,7 @@ void SESAME::CluStream::RunOnline(SESAME::PointPtr input) {
 }
 
 void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   vector <vector<PointPtr>> groups;
   int elapsedTime = this->CluStreamParam.num_points;

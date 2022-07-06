@@ -145,6 +145,7 @@ void SlidingWindowClustering::RunOnline(PointPtr input) {
 }
 
 void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   std::vector<PointPtr> onlineCenters;
   double cost_estimate = 0;

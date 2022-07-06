@@ -136,6 +136,7 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
   lat_timer.Add(input->toa);
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   int i = 0;
   int num = 0;
