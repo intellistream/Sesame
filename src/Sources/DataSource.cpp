@@ -133,7 +133,7 @@ bool SESAME::DataSource::empty() { return inputQueue->empty(); }
 
 SESAME::PointPtr SESAME::DataSource::get() {
 #ifndef NDEBUG
-  assert(inputQueue->size());
+  // assert(inputQueue->size());
 #endif
   auto rt = inputQueue->front();
   inputQueue->pop();
