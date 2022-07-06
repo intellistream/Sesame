@@ -21,6 +21,7 @@
 #include "Algorithm/DesignAspect/V7.hpp"
 #include "Algorithm/DesignAspect/V8.hpp"
 #include "Algorithm/DesignAspect/V9.hpp"
+#include "Algorithm/DesignAspect/V10.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/SlidingWindowClustering.hpp"
@@ -130,6 +131,9 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
     return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                              DistanceDetection, NoRefinement>>(
         cmd_params);
+  }
+  case (V10Stream): {
+      return std::make_shared<V10>(cmd_params);
   }
   default:
     throw std::invalid_argument("Unsupported algorithm");

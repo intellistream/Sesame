@@ -35,6 +35,8 @@ enum AlgoType {
   G7Stream,
   G8Stream,
   G9Stream,
+  V10Stream = 31,
+
 };
 
 extern char const *algo_names[30];
