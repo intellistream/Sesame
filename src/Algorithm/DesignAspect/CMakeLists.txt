@@ -8,4 +8,5 @@ add_source_sesame(
         V7.cpp
         V8.cpp
         V9.cpp
+        V10.cpp
 )

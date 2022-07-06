@@ -112,7 +112,7 @@ SESAME::DPNodePtr SESAME::EDMStream::retrive(SESAME::PointPtr p, int opt, double
   }
 }
 
-void CountNode(const SESAME::DPNodePtr &node, int &num) {
+void SESAME::EDMStream::CountNode(const SESAME::DPNodePtr &node, int &num) {
   num = num + 1;
   if(!node->GetSucs().empty()) {
     for(const SESAME::DPNodePtr &el : node->GetSucs()) {
