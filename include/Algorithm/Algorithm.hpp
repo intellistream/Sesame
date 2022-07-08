@@ -45,13 +45,13 @@ public:
     auto sum = ds_timer.sum + out_timer.sum + ref_timer.sum;
     cout << "sum_us: " << sum / 1000 << endl;
     assert(param.num_points);
-    cout << "et.size()=" << et.size() << endl;
-    assert(et.size() == 5);
-    cout << "on_20: " << et[0] / 1e6 << endl;
-    cout << "on_40: " << et[1] / 1e6 << endl;
-    cout << "on_60: " << et[2] / 1e6 << endl;
-    cout << "on_80: " << et[3] / 1e6 << endl;
-    cout << "on_100: " << et[4] / 1e6 << endl;
+    if(et.size() == 5) {
+      cout << "on_20: " << et[0] / 1e6 << endl;
+      cout << "on_40: " << et[1] / 1e6 << endl;
+      cout << "on_60: " << et[2] / 1e6 << endl;
+      cout << "on_80: " << et[3] / 1e6 << endl;
+      cout << "on_100: " << et[4] / 1e6 << endl;
+    }
     cout << "lat_us: " << lat_timer.sum / 1e3 / param.num_points << endl;
     cout << "et_s: " << on_timer.sum / 1e9 << endl;
     cout << "qps: " << param.num_points * 1e9 / sum_timer.sum << endl;
