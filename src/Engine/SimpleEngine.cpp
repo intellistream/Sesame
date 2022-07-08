@@ -76,16 +76,19 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
       auto item = sourcePtr->get();
       overallMeter.onlineAccMeasure();
       algoPtr->RunOnline(item->copy());
+      algoPtr->Count();
       overallMeter.onlineAccEMeasure();
     }
   }
 
   SESAME_INFO("ready to process remaining data");
+  std::cerr << "queue.size=" << sourcePtr->size() << std::endl;
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
     // SESAME_INFO("processing remaining data");
     algoPtr->RunOnline(item->copy());
+    algoPtr->Count();
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();
