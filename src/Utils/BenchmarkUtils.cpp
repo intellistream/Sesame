@@ -395,8 +395,8 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                                 SESAME::DataSinkPtr sinkPtr,
                                                 SESAME::AlgorithmPtr algoPtr)
 {
+#ifndef NDEBUG
   std::cerr << "data number: " << cmd_params.num_points << std::endl;
-
   switch (cmd_params.algo)
   {
   case SESAME::CluStreamType:
@@ -476,6 +476,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   default:
     break;
   }
+#endif
   SESAME::SimpleEngine engine(
       sourcePtr, sinkPtr,
       algoPtr); // TODO: create multithread engine in future.

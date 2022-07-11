@@ -4,13 +4,16 @@
 // Created by Shuhao Zhang on 19/07/2021.
 //
 
+#include "Engine/SimpleEngine.hpp"
+#include "Utils/SPSCQueue.hpp"
+#include "Utils/Logger.hpp"
+
+#include <boost/progress.hpp>
+
 #include <iostream>
 #include <utility>
 #include <vector>
 #include <thread>
-#include <Engine/SimpleEngine.hpp>
-#include <Utils/SPSCQueue.hpp>
-#include <Utils/Logger.hpp>
 
 using namespace std;
 
@@ -70,6 +73,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   algoPtr->Init();
 
+  boost::progress_display show_progress(algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
+
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
@@ -77,18 +82,16 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
       overallMeter.onlineAccMeasure();
       algoPtr->RunOnline(item->copy());
       algoPtr->Count();
+      ++show_progress;
       overallMeter.onlineAccEMeasure();
     }
   }
-
-  SESAME_INFO("ready to process remaining data");
-  std::cerr << "queue.size=" << sourcePtr->size() << std::endl;
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
-    // SESAME_INFO("processing remaining data");
     algoPtr->RunOnline(item->copy());
     algoPtr->Count();
+    ++show_progress;
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();

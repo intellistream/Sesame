@@ -107,29 +107,29 @@ void SESAME::DataSource::runningRoutine() {
       push(p->copy());
     }
   }
-  SESAME_INFO("sourceEnd set to true");
+  SESAME_DEBUG("sourceEnd set to true");
   sourceEnd = true; // Let engine knows that there won't be any more data
                     // coming.
   barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();
-  SESAME_INFO("DataSource sourceEnd emit data");
+  SESAME_DEBUG("DataSource sourceEnd emit data");
   printTime();
 }
 
 bool SESAME::DataSource::start(int id) {
   auto fun = [this]() { runningRoutine(); };
   threadPtr->construct(fun, id);
-  SESAME_INFO("DataSource spawn thread=" << threadPtr->getID());
+  SESAME_DEBUG("DataSource spawn thread=" << threadPtr->getID());
   return true;
 }
 
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
-    SESAME_INFO("DataSource::stop try to join threads=" << threadPtr->getID());
+    SESAME_DEBUG("DataSource::stop try to join threads=" << threadPtr->getID());
     threadPtr->join();
     threadPtr.reset();
   } else {
-    SESAME_INFO("DataSource "
+    SESAME_DEBUG("DataSource "
                 << ": Thread is not joinable");
     return false;
   }
