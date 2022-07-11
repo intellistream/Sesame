@@ -34,7 +34,7 @@ DEFINE_int32(coreset_size, 100, "Coreset size");
 DEFINE_double(radius, 50.0, "Radius");
 DEFINE_double(delta, 100.0, "Delta");
 DEFINE_double(beta, 0.1, "Beta");
-DEFINE_int32(buf_size, 100, "Buffer size");
+DEFINE_int32(buf_size, 10000, "Buffer size");
 DEFINE_double(alpha, 0.998, "Alpha");
 DEFINE_double(lambda, 1.0, "Lambda");
 // DBStream

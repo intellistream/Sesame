@@ -55,11 +55,19 @@ public:
 class Damped : WindowModel {
 private:
   const double alpha_, lambda_;
-
+  const int buf_size_;
+  int cnt_ = 0;
 public:
   Damped(const StreamClusteringParam &param)
-      : alpha_(param.alpha), lambda_(param.lambda) {}
-  bool Add(const PointPtr input) { return true; }
+      : alpha_(param.alpha), lambda_(param.lambda), buf_size_(param.buf_size) {}
+  bool Add(const PointPtr input) { ++cnt_; return true; }
+  bool Update() {
+    if(cnt_ >= buf_size_) {
+      cnt_ = 0;
+      return true;
+    }
+    return false;
+  }
   template <NodeConcept T> void Update(T node) {
     node->Scale(pow(alpha_, -lambda_));
   }
