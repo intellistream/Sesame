@@ -33,12 +33,10 @@ void SESAME::DStream::Init() {
   // Ensure that gap is not zero (i.e. if the procedure to calculate gap rounds down to zero,
   // then set gap to 1 and adjust clustering every instance)
  // if(this->gap == 0)
-   // this->gap = 1;
-   this->gap = 1;
-   this->dm = -1.0;
-   this->dl  = -1.0;
-   this->NGrids = 1;
- // // SESAME_INFO(" A is " <<optionA<<", B is "<<optionB<<" and gap = "<<gap);
+  this->gap = 1;
+  this->dm = -1.0;
+  this->dl  = -1.0;
+  this->NGrids = 1;
   this->minVals = std::vector<double> (dStreamParams.dim, 0);
   this->maxVals = std::vector<double> (dStreamParams.dim, 0);
   this->tempCoord = std::vector<double> (dStreamParams.dim, 0);
@@ -431,7 +429,7 @@ bool SESAME::DStream::inspectChangedGrids(){
 	 *
 	 * @return a HashMap containing density grids for update after this iteration
 	 */
-SESAME::HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
+HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
                                                      CharacteristicVector characteristicVec, int gridClass)
 {
   HashMap newGridList;
@@ -461,7 +459,7 @@ SESAME::HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
 * @param gridCluster the grid cluster to be re clustered
 * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after this iteration
 */
-SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
+HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
 {
   // SESAME_INFO("Now re-cluster!");
   HashMap newGridList;
@@ -509,7 +507,7 @@ SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
 }
 
 
-SESAME::HashMap SESAME::DStream::adjustNewLabels(SESAME::HashMap newGridList)
+HashMap SESAME::DStream::adjustNewLabels(HashMap &newGridList)
 {
   HashMap gridListAdjusted;
   // a. For each cluster c
@@ -579,7 +577,7 @@ SESAME::HashMap SESAME::DStream::adjustNewLabels(SESAME::HashMap newGridList)
 	 *
 	 * @return a HashMapcontaining density grids for update after this iteration
 	 */
-SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
+HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
                                                     CharacteristicVector characteristicVec, int gridClass)
 {
   // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
@@ -724,7 +722,7 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
  *
  * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after this iteration
  */
-SESAME::HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid, CharacteristicVector characteristicVec,
+HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid, CharacteristicVector characteristicVec,
                                                            int gridClass)
 {
   // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
@@ -779,11 +777,11 @@ SESAME::HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid, Cha
 
 
 
-SESAME::HashMap SESAME::DStream::mergeNewClusters(SESAME::HashMap newGridList, int smallCluster, int bigCluster)
+HashMap SESAME::DStream::mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster)
 {
   //System.out.println("Merge new clusters "+smallCluster+" and "+bigCluster+".");
   // Iterate through the density grids in grid_list to find those which are in highClass
-  for (HashMap::iterator gridIter =newGridList.begin(); gridIter != gridList.end(); gridIter++)
+  for (auto gridIter =newGridList.begin(); gridIter != gridList.end(); ++gridIter)
   {
     DensityGrid grid = gridIter->first;
     CharacteristicVector characteristicVec = gridIter->second;
@@ -875,19 +873,14 @@ void SESAME::DStream::mergeClusters(int smallCluster, int bigCluster){
 }
 
 
-void SESAME::DStream::mergeGridList(HashMap thisGridList, const HashMap& otherList){
-//  // SESAME_INFO("merge Grid List");
+void SESAME::DStream::mergeGridList(HashMap &thisGridList, const HashMap& otherList) {
   for(auto & gridIter : otherList)
   {
-    if(thisGridList.find(gridIter.first) != thisGridList.end())
-      thisGridList.find(gridIter.first)->second= gridIter.second;
-
-    else
-      thisGridList.insert(std::make_pair(gridIter.first, gridIter.second));
+      thisGridList.insert(gridIter);
   }
 }
 
-SESAME::HashMap SESAME::DStream::cleanNewClusters(SESAME::HashMap newGridList)
+HashMap SESAME::DStream::cleanNewClusters(HashMap newGridList)
 {
   std::vector<GridCluster> toRemove;
   // Check to see if there are any empty clusters

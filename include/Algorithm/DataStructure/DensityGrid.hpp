@@ -87,19 +87,20 @@ struct GridKeyHash{
 };
 
 struct EqualGrid
-    {
+{
   bool operator() (const DensityGrid &densityGrid1, const DensityGrid &densityGrid2) const
   {
     if(densityGrid1.dims != densityGrid2.dims)
       return false;
-    for(int i = 0 ; i < densityGrid1.dims ; i++)
+    auto a = densityGrid1.coordinates.data(), b = densityGrid2.coordinates.data();
+    for(int i = 0 ; i < densityGrid1.dims ; ++i, ++a, ++b)
     {
-      if(densityGrid1.coordinates[i] != densityGrid2.coordinates[i])
+      if(*a != *b)
         return false;
     }
     return true;
   }
-    };
+};
 
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_DENSITYGRID_HPP_

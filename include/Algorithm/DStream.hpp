@@ -71,7 +71,7 @@ class DStream : public Algorithm
       HashMap adjustForTransitionalGrid(DensityGrid grid, CharacteristicVector characteristicVec, int gridClass);
       void removeSporadic();
       HashMap reCluster (GridCluster gridCluster);
-      HashMap adjustNewLabels(HashMap newGridList);
+      HashMap adjustNewLabels(HashMap &newGridList);
       void mergeClusters(int smallCluster, int bigCluster);
       void cleanClusters();
       HashMap cleanNewClusters(HashMap newGridList);
@@ -79,7 +79,7 @@ class DStream : public Algorithm
       double outlier_density_thresholdFunction(int tg, double cl, double decayFactor, int NGrids);
       bool checkIfSporadic(CharacteristicVector characteristicVec);
       void updateGridListDensity();
-      static void mergeGridList(HashMap gridList, const HashMap &otherList);
+      static void mergeGridList(HashMap &gridList, const HashMap &otherList);
       double seconds() { return omp_get_wtime() - startTime; }
     };
 

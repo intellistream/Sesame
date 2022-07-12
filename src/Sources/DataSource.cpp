@@ -81,7 +81,7 @@ void SESAME::DataSource::runningRoutine() {
   overallMeter.START_MEASURE();
   // Initialize timer at time 0
   auto start = high_resolution_clock::now();
-  SESAME_INFO("DataSource start to emit data");
+  SESAME_DEBUG("DataSource start to emit data");
   if (param.arr_rate) {
     const int wait_ns = 1e9 / param.arr_rate;
     for (PointPtr &p : this->input) {
