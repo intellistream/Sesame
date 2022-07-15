@@ -67,7 +67,8 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
 ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new algo 7 \
     : join.new delta_grid 0.2 \
-    : join.new num_samples 100 \
+    : join.new num_samples 10 \
+    : join.new sliding 100 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench_begin : ${sensor} \
@@ -119,8 +120,9 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new distance_threshold 50 \
     : join.new outlier_distance_threshold 20 \
     : join.new outlier_cap 100 \
-    : join.new lambda 0.5 \
-    : join.new alpha 2 \
+    : join.new lambda 1 \
+    : join.new alpha 0.998 \
+    : join.new buf_size 10000 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench_begin : ${sensor} \
@@ -158,4 +160,15 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new landmark 1000 \
     : join.new outlier_distance_threshold 100 \
     : join.new outlier_cap 100 \
+    : join.run run.sesame
+
+ticat ${meta} : mark-time bench.begin : ${sensor} \
+    : join.new algo 30 \
+    : join.new radius 1.6 \
+    : join.new delta 300 \
+    : join.new beta 0.7 \
+    : join.new buf_size 10000 \
+    : join.new alpha 0.998 \
+    : join.new lambda 1 \
+    : join.new landmark 10000 \
     : join.run run.sesame

@@ -9,7 +9,7 @@
 
 namespace SESAME {
 
-char const *algo_names[30] = {[BirchType] = "Birch",
+char const *algo_names[40] = {[BirchType] = "Birch",
                               [StreamKMeansType] = "StreamKMeans",
                               [CluStreamType] = "CluStream",
                               [DenStreamType] = "DenStream",
@@ -38,7 +38,9 @@ char const *algo_names[30] = {[BirchType] = "Birch",
                               [G6Stream] = "G6",
                               [G7Stream] = "G7",
                               [G8Stream] = "G8",
-                              [G9Stream] = "G9"};
+                              [G9Stream] = "G9",
+                              [V10Stream] = "G10",
+                              };
 
 void Algorithm::Store(std::string output_file, int dim,
                       std::vector<PointPtr> result) {

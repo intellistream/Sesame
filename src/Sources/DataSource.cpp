@@ -63,9 +63,16 @@ void SESAME::DataSource::load(int point_number, int dim,
 
 SESAME::DataSource::DataSource(const param_t &param) : param(param) {
   inputQueue =
-      std::make_shared<boost::lockfree::spsc_queue<PointPtr>>(DEFAULT_QUEUE_CAPACITY);
+      GenericFactory::New<boost::lockfree::spsc_queue<PointPtr>>((size_t) param.num_points);
   threadPtr = std::make_shared<SingleThread>();
   sourceEnd = false;
+}
+
+void SESAME::DataSource::push(const PointPtr &p) {
+  bool flag = false;
+  do {
+    flag = inputQueue->push(p);
+  } while(!flag);
 }
 
 // TODO: we can control the source speed here: done
@@ -77,18 +84,18 @@ void SESAME::DataSource::runningRoutine() {
   SESAME_INFO("DataSource start to emit data");
   if (param.arr_rate) {
     const int wait_ns = 1e9 / param.arr_rate;
-    for (PointPtr p : this->input) {
+    for (PointPtr &p : this->input) {
       p->toa = std::chrono::high_resolution_clock::now();
-      inputQueue->push(p);
+      push(p->copy());
       while(std::chrono::high_resolution_clock::now()-(p->toa) < std::chrono::nanoseconds(wait_ns));
     }
   } else if (param.fast_source) {
-    for (PointPtr p : this->input) {
+    for (PointPtr &p : this->input) {
       p->toa = std::chrono::high_resolution_clock::now();
-      inputQueue->push(p);
+      push(p->copy());
     }
   } else {
-    for (PointPtr p : this->input) {
+    for (PointPtr &p : this->input) {
       int timestamp = p->getTimeStamp();
       auto now = high_resolution_clock::now();
       if (timestamp > duration_cast<nanoseconds>(now - start).count()) {
@@ -97,32 +104,32 @@ void SESAME::DataSource::runningRoutine() {
       }
       // Wait until (currentTime - startTime) >= timestamp to push point
       p->toa = std::chrono::high_resolution_clock::now();
-      inputQueue->push(p);
+      push(p->copy());
     }
   }
-  SESAME_INFO("sourceEnd set to true");
+  SESAME_DEBUG("sourceEnd set to true");
   sourceEnd = true; // Let engine knows that there won't be any more data
                     // coming.
   barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();
-  SESAME_INFO("DataSource sourceEnd emit data");
+  SESAME_DEBUG("DataSource sourceEnd emit data");
   printTime();
 }
 
 bool SESAME::DataSource::start(int id) {
   auto fun = [this]() { runningRoutine(); };
   threadPtr->construct(fun, id);
-  SESAME_INFO("DataSource spawn thread=" << threadPtr->getID());
+  SESAME_DEBUG("DataSource spawn thread=" << threadPtr->getID());
   return true;
 }
 
 bool SESAME::DataSource::stop() {
   if (threadPtr) {
-    SESAME_INFO("DataSource::stop try to join threads=" << threadPtr->getID());
+    SESAME_DEBUG("DataSource::stop try to join threads=" << threadPtr->getID());
     threadPtr->join();
     threadPtr.reset();
   } else {
-    SESAME_INFO("DataSource "
+    SESAME_DEBUG("DataSource "
                 << ": Thread is not joinable");
     return false;
   }
@@ -133,7 +140,7 @@ bool SESAME::DataSource::empty() { return inputQueue->empty(); }
 
 SESAME::PointPtr SESAME::DataSource::get() {
 #ifndef NDEBUG
-  assert(inputQueue->size());
+  // assert(inputQueue->size());
 #endif
   auto rt = inputQueue->front();
   inputQueue->pop();

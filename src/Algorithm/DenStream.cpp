@@ -210,6 +210,7 @@ SESAME::MicroClusterPtr SESAME::DenStream::nearestNeighbor(PointPtr dataPoint, s
 }
 
 void SESAME::DenStream::RunOffline(DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   vector<PointPtr> transformedPoints;
   std::vector<std::vector<PointPtr>> oldGroups;

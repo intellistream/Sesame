@@ -88,6 +88,7 @@ void SESAME::DStream::RunOnline(PointPtr input) {
 
 void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   // SESAME_INFO(" cluster list size "<<clusterList.size());
   std::vector<SESAME::PointPtr> points;
