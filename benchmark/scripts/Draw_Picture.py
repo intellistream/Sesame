@@ -238,17 +238,17 @@ def execution_time_breakdown(reader, general, workload):
 
 
 @click.command()
-@click.option('--purity_file', default='Raw/Purity.csv', show_default=True)
-@click.option('--throughput_file', default='Raw/Throughput.csv', show_default=True)
-@click.option('--cmm_file', default='Raw/CMM.csv', show_default=True)
-@click.option('--progressive_fct', default='Raw/Progressiveness_FCT.csv', show_default=True)
-@click.option('--progressive_kdd', default='Raw/Progressiveness_KDD.csv', show_default=True)
-@click.option('--progressive_sensor', default='Raw/Progressiveness_Sensor.csv', show_default=True)
-@click.option('--progressive_insects', default='Raw/Progressiveness_Insects.csv', show_default=True)
-@click.option('--etb_fct', default='Raw/Execution_Time_Breakdown_FCT.csv', show_default=True)
-@click.option('--etb_kdd', default='Raw/Execution_Time_Breakdown_KDD.csv', show_default=True)
-@click.option('--etb_sensor', default='Raw/Execution_Time_Breakdown_Sensor.csv', show_default=True)
-@click.option('--etb_insects', default='Raw/Execution_Time_Breakdown_Insects.csv', show_default=True)
+@click.option('--purity_file', default='', show_default=True)
+@click.option('--throughput_file', default='', show_default=True)
+@click.option('--cmm_file', default='', show_default=True)
+@click.option('--progressive_fct', default='', show_default=True)
+@click.option('--progressive_kdd', default='', show_default=True)
+@click.option('--progressive_sensor', default='', show_default=True)
+@click.option('--progressive_insects', default='', show_default=True)
+@click.option('--etb_fct', default='', show_default=True)
+@click.option('--etb_kdd', default='', show_default=True)
+@click.option('--etb_sensor', default='', show_default=True)
+@click.option('--etb_insects', default='', show_default=True)
 def draw_all_pictures(purity_file, throughput_file, cmm_file,
                       progressive_fct, progressive_kdd, progressive_sensor, progressive_insects,
                       etb_fct, etb_kdd, etb_sensor, etb_insects):
