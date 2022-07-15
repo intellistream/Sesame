@@ -46,6 +46,7 @@ void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input) {
  * @param output
  */
 void SESAME::StreamKM::RunOffline(DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   this->window->getCoresetFromManager(
       this->streamingCoreset); // streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);

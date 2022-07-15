@@ -76,7 +76,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 600 \
-    : join.new landmark 0 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
@@ -98,7 +98,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 600 \
-    : join.new landmark 0 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
@@ -120,6 +120,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new distance_threshold 600 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
+    : join.new buf_size 10000 \
     : join.new lambda 0.5 \
     : join.new alpha 1.1 \
     : join.run run.sesame
@@ -146,7 +147,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
 ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new algo 28 \
     : join.new distance_threshold 600 \
-    : join.new landmark 0 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
@@ -156,7 +157,18 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new beta 0.001 \
     : join.new cm 3 \
     : join.new cl 0.7 \
-    : join.new landmark 10000 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 1000 \
+    : join.run run.sesame
+
+ticat ${meta} : mark-time bench.begin : ${kdd99} \
+    : join.new algo 30 \
+    : join.new radius 100 \
+    : join.new delta 1500 \
+    : join.new beta 0.7 \
+    : join.new buf_size 10000 \
+    : join.new alpha 0.998 \
+    : join.new lambda 1 \
+    : join.new landmark 10000 \
     : join.run run.sesame

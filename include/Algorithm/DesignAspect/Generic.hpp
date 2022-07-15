@@ -131,8 +131,10 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
     }
   }
   if constexpr (has_update) {
-    d->ForEach([&](NodePtr node) { w->Update(node); });
-    std::ranges::for_each(outliers_, [&](NodePtr node) { w->Update(node); });
+    if(w->Update()) {
+      d->ForEach([&](NodePtr node) { w->Update(node); });
+      std::ranges::for_each(outliers_, [&](NodePtr node) { w->Update(node); });
+    }
   }
   if constexpr (has_delete) {
     PointPtr point = w->Delete();
@@ -157,6 +159,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   std::vector<PointPtr> onlineCenters;
   auto clusters = d->clusters();

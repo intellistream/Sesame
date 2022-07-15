@@ -52,6 +52,7 @@ class DataSource {
   int size() {
     return inputQueue->read_available();
   }
+  void push(const PointPtr &p);
 };
 }
 #endif //SESAME_SRC_SOURCES_DATASOURCE_HPP_

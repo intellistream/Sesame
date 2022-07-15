@@ -35,11 +35,11 @@ enum AlgoType {
   G7Stream,
   G8Stream,
   G9Stream,
-  V10Stream = 31,
+  V10Stream,
 
 };
 
-extern char const *algo_names[30];
+extern char const *algo_names[40];
 
 struct param_t {
   int num_points, dim, num_clusters;

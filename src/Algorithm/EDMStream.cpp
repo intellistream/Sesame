@@ -121,14 +121,13 @@ void SESAME::EDMStream::CountNode(const SESAME::DPNodePtr &node, int &num) {
   }
 }
 void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
-  double curTime = input->getTimeStamp() / 100000;
+  double curTime = input->index;
   auto c = retrive(input, this->EDMParam.opt, curTime);
   if(input->getIndex() % 100 == 0 && this->EDMParam.isInit) {
     ds_timer.Tick();
     setMinDelta(adjustMinDelta());
     this->dpTree->adjustCluster(this->clusters);
     ds_timer.Tock();
-
     out_timer.Tick();
     this->delCluster();
     out_timer.Tock();
@@ -136,6 +135,7 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input) {
   lat_timer.Add(input->toa);
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   int i = 0;
   int num = 0;
