@@ -20,23 +20,23 @@ TEST(SystemTest, EDMStream) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.num_points = 5000;
-  cmd_params.dim = 5;
+  cmd_params.num_points = 45690;
+  cmd_params.dim = 2;
   cmd_params.alpha = 0.998;
-  cmd_params.num_cache = 100;
-  cmd_params.radius = 0.1; // 220
+  cmd_params.num_cache = 10000;
+  cmd_params.radius = 30; // 220
   cmd_params.lambda = 1;
-  cmd_params.delta = 10;
+  cmd_params.delta = 300;
 
-  cmd_params.beta = 0.001;
-  cmd_params.opt = 2;
+  cmd_params.beta = 1;
+//  cmd_params.opt = 2;
   // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
   // [3, 3, 4, 6, 6, 7, 9, 9]
-  cmd_params.num_clusters = 54;
-  cmd_params.time_decay = true;
+  cmd_params.num_clusters = 75;
+  cmd_params.time_decay = false;
 
   cmd_params.input_file =
-      std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
+      std::filesystem::current_path().generic_string() + "/datasets/EDS.txt";
   cmd_params.output_file = "results.txt";
   cmd_params.algo = SESAME::EDMStreamType;
 
@@ -56,5 +56,5 @@ TEST(SystemTest, EDMStream) {
   SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
   // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+  auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 }

@@ -159,11 +159,10 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
     centroid->setOutlier(true);
     sinkPtr->put(centroid->copy());
   }
-
-  timerMeter.printTime(false, false, false, false);
 }
 
 SESAME::V1::V1(param_t &cmd_params) {
+  this->param = cmd_params;
   this->V1Param.num_points = cmd_params.num_points;
   this->V1Param.dim = cmd_params.dim;
   this->V1Param.max_in_nodes = cmd_params.max_in_nodes;

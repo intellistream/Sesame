@@ -481,7 +481,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "   Distance_Threshold: " << cmd_params.distance_threshold
               << "   outlier_distance_threshold: " << cmd_params.outlier_distance_threshold
               << "   outlier_cap: " << cmd_params.outlier_cap
-              << "   Landmark: " << cmd_params.landmark << "\n";;
+              << "   Landmark: " << cmd_params.landmark << "\n";
   default:
     break;
   }
