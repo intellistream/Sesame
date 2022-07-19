@@ -9,6 +9,7 @@ add_source_sesame(
         SlidingWindowClustering.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
+        CluEStream.cpp
 )
 add_subdirectory(ConceptDrift)
 add_subdirectory(DataStructure)

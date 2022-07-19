@@ -396,7 +396,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
                                                 SESAME::AlgorithmPtr algoPtr)
 {
 #ifndef NDEBUG
-  std::cerr << "data number: " << cmd_params.num_points << std::endl;
+  SESAME_INFO("data number: " << cmd_params.num_points);
   switch (cmd_params.algo)
   {
   case SESAME::CluStreamType:
@@ -438,11 +438,10 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "   CoresetSize: " << cmd_params.coreset_size << "\n";
     break;
   case SESAME::BirchType:
-    std::cerr << "Algorithm: Birch "
+    std::cout << "Algorithm: Birch "
               << "maxLeafNode: " << cmd_params.max_leaf_nodes
               << "   maxInnerNodes: " << cmd_params.max_in_nodes
-              << "   distance_threshold: " << cmd_params.distance_threshold
-              << "\n";
+              << "   distance_threshold: " << cmd_params.distance_threshold;
     break;
   case SESAME::V1Stream:
     std::cerr << "Algorithm: BirchV1 "
@@ -470,9 +469,19 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
               << "CacheNum: " << cmd_params.num_cache
               << "   Radius: " << cmd_params.radius
               << "   MinDelta: " << cmd_params.delta << "\n";
+    break;
   case SESAME::Generic:
     std::cerr << "Algorithm: Generic "
               << "\n";
+    break;
+  case SESAME::CluEStreamType:
+    std::cerr << "Algorithm: CluEStream "
+              << "Inner: " << cmd_params.max_in_nodes
+              << "   Leaf: " << cmd_params.max_leaf_nodes
+              << "   Distance_Threshold: " << cmd_params.distance_threshold
+              << "   outlier_distance_threshold: " << cmd_params.outlier_distance_threshold
+              << "   outlier_cap: " << cmd_params.outlier_cap
+              << "   Landmark: " << cmd_params.landmark << "\n";;
   default:
     break;
   }
@@ -510,7 +519,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   }
 
   cmd_params.num_res = results.size();
-  std::cerr << "results.size=" << results.size() << std::endl;
+  SESAME_INFO("results.size=" << results.size());
 
   // Store results.
   if (cmd_params.store)

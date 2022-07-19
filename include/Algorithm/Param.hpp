@@ -16,6 +16,7 @@ enum AlgoType {
   EDMStreamType,
   DStreamType,
   SLKMeansType,
+  CluEStreamType,
   V1Stream = 11,
   V2Stream,
   V3Stream,

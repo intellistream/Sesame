@@ -73,7 +73,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   algoPtr->Init();
 
-  boost::progress_display show_progress(algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
+//  boost::progress_display show_progress(algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
 
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
@@ -82,7 +82,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
       overallMeter.onlineAccMeasure();
       algoPtr->RunOnline(item->copy());
       algoPtr->Count();
-      ++show_progress;
+//      ++show_progress;
       overallMeter.onlineAccEMeasure();
     }
   }
@@ -91,7 +91,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
     overallMeter.onlineAccMeasure();
     algoPtr->RunOnline(item->copy());
     algoPtr->Count();
-    ++show_progress;
+//    ++show_progress;
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();

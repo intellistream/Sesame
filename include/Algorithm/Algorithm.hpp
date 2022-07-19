@@ -39,22 +39,23 @@ public:
   int cnt = 0;
   std::vector<int64> et;
   void PrintPerf() {
-    cout << "ds_us: " << ds_timer.sum / 1000 << endl;
-    cout << "out_us: " << out_timer.sum / 1000 << endl;
-    cout << "ref_us: " << ref_timer.sum / 1000 << endl;
+    SESAME_INFO("ds_us: " << ds_timer.sum / 1000);
+    SESAME_INFO("out_us: " << out_timer.sum / 1000);
+    SESAME_INFO("ref_us: " << ref_timer.sum / 1000);
     auto sum = ds_timer.sum + out_timer.sum + ref_timer.sum;
-    cout << "sum_us: " << sum / 1000 << endl;
+    SESAME_INFO("sum_us: " << sum / 1000);
+    if(sum > 0) std::cout << "";
     assert(param.num_points);
     if(et.size() == 5) {
-      cout << "on_20: " << et[0] / 1e6 << endl;
-      cout << "on_40: " << et[1] / 1e6 << endl;
-      cout << "on_60: " << et[2] / 1e6 << endl;
-      cout << "on_80: " << et[3] / 1e6 << endl;
-      cout << "on_100: " << et[4] / 1e6 << endl;
+      SESAME_INFO( "on_20: " << et[0] / 1e6);
+      SESAME_INFO("on_40: " << et[1] / 1e6);
+      SESAME_INFO("on_60: " << et[2] / 1e6);
+      SESAME_INFO("on_80: " << et[3] / 1e6);
+      SESAME_INFO("on_100: " << et[4] / 1e6);
     }
-    cout << "lat_us: " << lat_timer.sum / 1e3 / param.num_points << endl;
-    cout << "et_s: " << on_timer.sum / 1e9 << endl;
-    cout << "qps: " << param.num_points * 1e9 / sum_timer.sum << endl;
+    SESAME_INFO("lat_us: " << lat_timer.sum / 1e3 / param.num_points);
+    SESAME_INFO("et_s: " << on_timer.sum / 1e9);
+    SESAME_INFO("qps: " << param.num_points * 1e9 / sum_timer.sum);
   }
   void Count() {
     ++cnt;

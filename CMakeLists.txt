@@ -58,6 +58,8 @@ if (ENABLE_UNIT_TESTS)
 endif ()
 
 find_package(OpenMP)
+find_package(Boost 1.74.0 REQUIRED COMPONENTS filesystem)
+include_directories(${Boost_INCLUDE_DIRS})
 
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")

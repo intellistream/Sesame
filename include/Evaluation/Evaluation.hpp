@@ -21,9 +21,9 @@ struct BenchmarkResult {
   BenchmarkResult(double cmm = 0, double purity = 0)
       : cmm(cmm), purity(purity) {}
   void Print() {
-    std::cout << "num_res: " << num_res << std::endl;
-    std::cout << "cmm: " << cmm << std::endl;
-    std::cout << "purity: " << purity << std::endl;
+//    std::cout << "num_res: " << num_res << std::endl;
+//    std::cout << "cmm: " << cmm << std::endl;
+//    std::cout << "purity: " << purity << std::endl;
   }
 };
 using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;

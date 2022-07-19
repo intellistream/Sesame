@@ -26,6 +26,7 @@
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/StreamKM.hpp"
+#include "Algorithm/CluEStream.hpp"
 
 namespace SESAME {
 
@@ -134,6 +135,9 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   }
   case (V10Stream): {
       return std::make_shared<V10>(cmd_params);
+  }
+  case (CluEStreamType): {
+    return std::make_shared<CluEStream>(cmd_params);
   }
   default:
     throw std::invalid_argument("Unsupported algorithm");

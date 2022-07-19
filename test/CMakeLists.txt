@@ -8,6 +8,7 @@ add_executable(google_test
         System/DBStreamTest.cpp
         System/DStreamTest.cpp
         System/SlidingWindowClusteringTest.cpp
+        System/CluEStreamTest.cpp
         DesignAspect/V1Test.cpp
         DesignAspect/V2Test.cpp
         DesignAspect/V3Test.cpp
