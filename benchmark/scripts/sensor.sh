@@ -5,7 +5,7 @@ export sensor="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/s
 ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new algo 0 \
     : join.new max_in_nodes 1000 \
-    : join.new max_leaf_nodes 100 \
+    : join.new max_leaf_nodes 1000 \
     : join.new distance_threshold 50 \
     : join.run run.sesame
 
@@ -164,10 +164,10 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
 
 ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new algo 30 \
-    : join.new radius 1.6 \
+    : join.new radius 20 \
     : join.new delta 300 \
     : join.new beta 0.7 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 50000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 10000 \

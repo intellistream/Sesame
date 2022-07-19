@@ -164,10 +164,10 @@ ticat ${meta} : mark-time bench_begin : ${cover} \
 
 ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new algo 30 \
-    : join.new radius 100 \
+    : join.new radius 200 \
     : join.new delta 1500 \
     : join.new beta 1 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 4000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 10000 \

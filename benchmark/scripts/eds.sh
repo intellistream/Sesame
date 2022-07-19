@@ -137,9 +137,9 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
 
 ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new algo 26 \
-    : join.new max_in_nodes 100 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 100 \
+    : join.new max_in_nodes 5 \
+    : join.new max_leaf_nodes 5 \
+    : join.new distance_threshold 1 \
     : join.new landmark 1000 \
     : join.run run.sesame
 
