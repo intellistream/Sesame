@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,7 +11,7 @@ from typing import List
 real_world_workloads = ["CoverType", "KDD99", "Sensor", "Insects"]
 synthetic_workloads = ['EDS', 'ODS']
 design_aspects = ['Window_Model', 'Outlier_Detection', 'Data_Structure', 'Offline_Refinement']
-general_algo_name = ['BIRCH', 'StreamKM++', 'CluStream', 'DenStream', 'DBStream', 'EDMStream', 'DStream', 'SL-KMeans']
+general_algo_name = ['BIRCH', 'StreamKM++', 'CluStream', 'DenStream', 'DBStream', 'EDMStream', 'DStream', 'SLKMeans']
 generic_algo_name = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10']
 general_colors = ['orange', 'gold', 'yellowgreen', 'grey', 'seagreen', 'cornflowerblue', 'crimson', 'blue']
 generic_colors = ['salmon', 'peru', 'lawngreen', 'turquoise', 'mediumslateblue', 'cornflowerblue', 'violet', 'hotpink',
