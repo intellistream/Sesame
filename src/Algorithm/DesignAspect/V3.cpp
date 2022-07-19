@@ -111,7 +111,19 @@ void SESAME::V3::RunOffline(DataSinkPtr sinkPtr) {
     }
     sinkPtr->put(centroid->copy());
   }
-  timerMeter.printTime(false,false,false,false);
+  // store outlier nodes
+  for(int i = 0; i < this->outlierNodes.size(); i++) {
+    PointPtr centroid =
+        DataStructureFactory::createPoint(i, 1, V3Param.dim, 0);
+    for (int j = 0; j < V3Param.dim; j++) {
+      centroid->setFeatureItem(this->outlierNodes[i]->getCF()->getLS().at(j) /
+                                   this->outlierNodes[i]->getCF()->getN(),
+                               j);
+    }
+    centroid->setClusteringCenter(-1);
+    centroid->setOutlier(true);
+    sinkPtr->put(centroid->copy());
+  }
 }
 
 SESAME::V3::V3(param_t &cmd_params) {

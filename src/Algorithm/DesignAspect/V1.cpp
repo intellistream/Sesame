@@ -160,7 +160,6 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
     sinkPtr->put(centroid->copy());
   }
 
-  timerMeter.printTime(false, false, false, false);
 }
 
 SESAME::V1::V1(param_t &cmd_params) {
