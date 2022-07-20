@@ -6,7 +6,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 0 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
+    : join.new distance_threshold 0.5 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${insects} \
@@ -59,9 +59,9 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
     : join.new beta 0.001 \
-    : join.new cm 1 \
-    : join.new cl 0.7 \
-    : join.new grid_width 0.14 \
+    : join.new cm 3 \
+    : join.new cl 0.01 \
+    : join.new grid_width 0.008 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${insects} \
@@ -75,8 +75,8 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 21,22,23 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
-    : join.new landmark 1000 \
+    : join.new distance_threshold 0.5 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
@@ -85,7 +85,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 24 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
+    : join.new distance_threshold 0.5 \
     : join.new sliding 200000 \
     : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 100 \
@@ -95,7 +95,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 25 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
+    : join.new distance_threshold 0.5 \
     : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 100 \
     : join.new lambda 0.5 \
@@ -107,8 +107,8 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 26 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
-    : join.new landmark 1000 \
+    : join.new distance_threshold 0.5 \
+    : join.new landmark 20000 \
     : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
@@ -117,7 +117,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 27 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.05 \
+    : join.new distance_threshold 0.5 \
     : join.new landmark 10000 \
     : join.new outlier_density_threshold 100 \
     : join.new neighbor_distance 300 \
@@ -126,9 +126,9 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 
 ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 28 \
-    : join.new distance_threshold 600 \
+    : join.new distance_threshold 0.5 \
     : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 0.15 \
+    : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
