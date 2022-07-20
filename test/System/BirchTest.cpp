@@ -23,12 +23,12 @@ TEST(SystemTest, Birch) {
   // [3, 3, 4, 6, 6, 7, 9, 9]
   // Parse parameters.
   param_t cmd_params;
-  cmd_params.num_points = 45690;
+  cmd_params.num_points = 100270;
   cmd_params.max_in_nodes = 100;
   cmd_params.max_leaf_nodes = 100;
   cmd_params.distance_threshold = 50;
   cmd_params.dim = 2;
-  cmd_params.num_clusters = 75;
+  cmd_params.num_clusters = 145;
   cmd_params.time_decay = false;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +

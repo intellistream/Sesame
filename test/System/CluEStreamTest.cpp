@@ -21,16 +21,16 @@ TEST(SystemTest, CluEStream) {
   setupLogging("benchmark.log", LOG_DEBUG);
   //Parse parameters.
   param_t cmd_params;
-  cmd_params.num_points = 45690;
-  cmd_params.distance_threshold = 100;
+  cmd_params.num_points = 100270;
+  cmd_params.distance_threshold = 50;
   cmd_params.max_in_nodes = 100;
   cmd_params.max_leaf_nodes = 100;
   cmd_params.dim = 2;
-  cmd_params.num_clusters = 75;
+  cmd_params.num_clusters = 145;
   cmd_params.time_decay = false;
-  cmd_params.landmark = 1000;
-  cmd_params.outlier_distance_threshold = 15;
-  cmd_params.outlier_cap = 500;
+  cmd_params.landmark = 0;
+  cmd_params.outlier_distance_threshold = 500;
+  cmd_params.outlier_cap = 2000;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() + "/datasets/EDS.txt";
   cmd_params.output_file = "results.txt";
