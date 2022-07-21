@@ -47,7 +47,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
 
 ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 5 \
-    : join.new radius 0.04 \
+    : join.new radius 0.4 \
     : join.new delta 1500 \
     : join.new beta 0.4 \
     : join.new buf_size 10000 \
@@ -144,7 +144,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 
 ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 30 \
-    : join.new radius 0.04 \
+    : join.new radius 0.4 \
     : join.new delta 1500 \
     : join.new beta 0.4 \
     : join.new buf_size 10000 \
