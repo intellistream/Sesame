@@ -354,10 +354,10 @@ def draw_all_pictures(purity, throughput, cmm,
         assert (len(etb_kdd_reader.iloc[i].to_list()) == len(etb_kdd_reader.iloc[i + 1].to_list()) for i in
                 range(18))
         assert design_aspects == etb_kdd_reader.columns.tolist()[1:]
-        print('---------start drawing Execution Time Breakdown of general algorithms on CoverType---------')
-        execution_time_breakdown(etb_kdd_reader, True, 'FCT')
-        print('---------start drawing Execution Time Breakdown of generic algorithms on CoverType---------')
-        execution_time_breakdown(etb_kdd_reader, False, 'FCT')
+        print('---------start drawing Execution Time Breakdown of general algorithms on KDD---------')
+        execution_time_breakdown(etb_kdd_reader, True, 'KDD')
+        print('---------start drawing Execution Time Breakdown of generic algorithms on KDD---------')
+        execution_time_breakdown(etb_kdd_reader, False, 'KDD')
 
     if etb_sensor != '':
         etb_sensor_reader = pd.read_csv(etb_sensor)
@@ -366,10 +366,10 @@ def draw_all_pictures(purity, throughput, cmm,
         assert (len(etb_sensor_reader.iloc[i].to_list()) == len(etb_sensor_reader.iloc[i + 1].to_list()) for i in
                 range(18))
         assert design_aspects == etb_sensor_reader.columns.tolist()[1:]
-        print('---------start drawing Execution Time Breakdown of general algorithms on CoverType---------')
-        execution_time_breakdown(etb_sensor_reader, True, 'FCT')
-        print('---------start drawing Execution Time Breakdown of generic algorithms on CoverType---------')
-        execution_time_breakdown(etb_sensor_reader, False, 'FCT')
+        print('---------start drawing Execution Time Breakdown of general algorithms on Sensor---------')
+        execution_time_breakdown(etb_sensor_reader, True, 'Sensor')
+        print('---------start drawing Execution Time Breakdown of generic algorithms on Sensor---------')
+        execution_time_breakdown(etb_sensor_reader, False, 'Sensor')
 
     if etb_insects != '':
         etb_insects_reader = pd.read_csv(etb_insects)
@@ -378,10 +378,10 @@ def draw_all_pictures(purity, throughput, cmm,
         assert (len(etb_insects_reader.iloc[i].to_list()) == len(etb_insects_reader.iloc[i + 1].to_list()) for i in
                 range(18))
         assert design_aspects == etb_insects_reader.columns.tolist()[1:]
-        print('---------start drawing Execution Time Breakdown of general algorithms on CoverType---------')
-        execution_time_breakdown(etb_insects_reader, True, 'FCT')
-        print('---------start drawing Execution Time Breakdown of generic algorithms on CoverType---------')
-        execution_time_breakdown(etb_insects_reader, False, 'FCT')
+        print('---------start drawing Execution Time Breakdown of general algorithms on INSECTS---------')
+        execution_time_breakdown(etb_insects_reader, True, 'INSECTS')
+        print('---------start drawing Execution Time Breakdown of generic algorithms on INSECTS---------')
+        execution_time_breakdown(etb_insects_reader, False, 'INSECTS')
 
 
 if __name__ == '__main__':

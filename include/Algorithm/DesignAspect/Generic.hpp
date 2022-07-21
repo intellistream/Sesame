@@ -131,19 +131,20 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
     }
   }
   if constexpr (has_update) {
+    win_timer.Tick();
     if(w->Update()) {
       d->ForEach([&](NodePtr node) { w->Update(node); });
       std::ranges::for_each(outliers_, [&](NodePtr node) { w->Update(node); });
     }
+    win_timer.Tock();
   }
   if constexpr (has_delete) {
+    win_timer.Tick();
     PointPtr point = w->Delete();
     if (point != nullptr) {
       assert(point_map_.contains(point));
       auto node = point_map_[point];
-      ds_timer.Tick();
       node->Update(point->Reverse(), true);
-      ds_timer.Tock();
       point_map_.erase(point);
       node_map_[node].erase(point);
       if (node->cf.num == 0) {
@@ -153,6 +154,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
         outliers_.erase(first, last);
       }
     }
+    win_timer.Tock();
   }
   lat_timer.Add(input->toa);
 }

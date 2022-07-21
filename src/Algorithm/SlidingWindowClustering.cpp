@@ -121,8 +121,10 @@ guess_optimum_range_bounds(Random *r, const vector<PointPtr> &samples,
 void SlidingWindowClustering::RunOnline(PointPtr input) {
   ++count;
   if (!has_sampled) {
+    win_timer.Tick();
     if (samples.size() < param.num_samples * param.sliding)
       samples.push_back(input);
+    win_timer.Tock();
     if (samples.size() >= param.num_samples * param.sliding) {
       const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
           &r, samples, param.sliding, param.num_samples, param.num_clusters);
