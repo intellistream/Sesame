@@ -10,8 +10,8 @@ from typing import List
 
 real_world_workloads = ["CoverType", "KDD99", "Sensor", "Insects"]
 synthetic_workloads = ['EDS', 'ODS']
-design_aspects = ['Window_Model', 'Outlier_Detection', 'Data_Structure', 'Offline_Refinement']
-general_algo_name = ['BIRCH', 'StreamKM++', 'CluStream', 'DenStream', 'DBStream', 'EDMStream', 'DStream', 'SLKMeans']
+design_aspects = ['WindowModel', 'OutlierDetection', 'DataStructure', 'OfflineRefinement']
+general_algo_name = ['Birch', 'StreamKMeans', 'CluStream', 'DenStream', 'DBStream', 'EDMStream', 'DStream', 'SLKMeans']
 generic_algo_name = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10']
 general_colors = ['orange', 'gold', 'yellowgreen', 'grey', 'seagreen', 'cornflowerblue', 'crimson', 'blue']
 generic_colors = ['salmon', 'peru', 'lawngreen', 'turquoise', 'mediumslateblue', 'cornflowerblue', 'violet', 'hotpink',
@@ -57,14 +57,14 @@ def purity_and_throughput(reader, purity, real, general):
                 plt.ylabel('Purity', fontsize=20)
                 plt.legend(bbox_to_anchor=(0.44, 1.25), loc=9, borderaxespad=0, fontsize=15, ncol=4)
                 # plt.show()
-                plt.savefig("JPG/Purity_Real_General.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Purity_Real_General.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Purity_Real_General.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Purity_Real_General.pdf", bbox_inches='tight', transparent=True)
             else:
                 plt.ylabel('Tpt.(tuples/second)', fontsize=20)
                 plt.legend(bbox_to_anchor=(0.44, 1.35), loc=9, borderaxespad=0, fontsize=15, ncol=4)
                 # plt.show()
-                plt.savefig("PDF/Throughput_Real_General.pdf", bbox_inches='tight', transparent=True)
-                plt.savefig("JPG/Throughput_Real_General.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Throughput_Real_General.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Throughput_Real_General.jpg", bbox_inches='tight', transparent=True)
         else:
             print(reader.loc[8:18, ['Algorithm'] + real_world_workloads])
             width = 0.08
@@ -76,13 +76,13 @@ def purity_and_throughput(reader, purity, real, general):
             if purity:
                 plt.legend(bbox_to_anchor=(0.5, 1.12), loc=9, borderaxespad=0, fontsize=12, ncol=10)
                 # plt.show()
-                plt.savefig("JPG/Purity_Real_Generic.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Purity_Real_Generic.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Purity_Real_Generic.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Purity_Real_Generic.pdf", bbox_inches='tight', transparent=True)
             else:
                 plt.legend(bbox_to_anchor=(0.5, 1.22), loc=9, borderaxespad=0, fontsize=12, ncol=10)
                 # plt.show()
-                plt.savefig("JPG/Throughput_Real_Generic.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Throughput_Real_Generic.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Throughput_Real_Generic.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Throughput_Real_Generic.pdf", bbox_inches='tight', transparent=True)
     else:
         plt.figure(figsize=(8, 4))
         ind = np.arange(2)
@@ -99,13 +99,13 @@ def purity_and_throughput(reader, purity, real, general):
                 plt.ylabel('Purity', fontsize=20)
                 plt.legend(loc=1, bbox_to_anchor=(1.01, 1.25), ncol=4, fontsize=12)
                 # plt.show()
-                plt.savefig("JPG/Purity_Synthetic_General.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Purity_Synthetic_General.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Purity_Synthetic_General.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Purity_Synthetic_General.pdf", bbox_inches='tight', transparent=True)
             else:
                 plt.legend(loc=1, bbox_to_anchor=(1.01, 1.35), ncol=4, fontsize=12)
                 # plt.show()
-                plt.savefig("PDF/Throughput_Synthetic_General.pdf", bbox_inches='tight', transparent=True)
-                plt.savefig("JPG/Throughput_Synthetic_General.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Throughput_Synthetic_General.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Throughput_Synthetic_General.jpg", bbox_inches='tight', transparent=True)
         else:
             print(reader.loc[8:18, ['Algorithm'] + synthetic_workloads])
             width = 0.08
@@ -117,19 +117,19 @@ def purity_and_throughput(reader, purity, real, general):
             if purity:
                 plt.legend(bbox_to_anchor=(0.5, 1.25), loc=9, borderaxespad=0, fontsize=15, ncol=5)
                 # plt.show()
-                plt.savefig("JPG/Purity_Synthetic_Generic.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Purity_Synthetic_Generic.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Purity_Synthetic_Generic.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Purity_Synthetic_Generic.pdf", bbox_inches='tight', transparent=True)
             else:
                 plt.legend(bbox_to_anchor=(0.5, 1.35), loc=9, borderaxespad=0, fontsize=15, ncol=5)
                 # plt.show()
-                plt.savefig("JPG/Throughput_Synthetic_Generic.jpg", bbox_inches='tight', transparent=True)
-                plt.savefig("PDF/Throughput_Synthetic_Generic.pdf", bbox_inches='tight', transparent=True)
+                plt.savefig("jpg/Throughput_Synthetic_Generic.jpg", bbox_inches='tight', transparent=True)
+                plt.savefig("pdf/Throughput_Synthetic_Generic.pdf", bbox_inches='tight', transparent=True)
     plt.close()
 
 
 def cmm(reader, general):
     plt.figure(figsize=(12, 4))
-    ind = np.arange(29)
+    ind = np.arange(5)
     plt.xlabel('Phases of EDS Stream', fontsize=18)
     plt.ylabel('CMM', fontsize=18)
     plt.yticks(size=18)
@@ -142,16 +142,16 @@ def cmm(reader, general):
                      marker=markers[i], label=general_algo_name[i])
         plt.legend(bbox_to_anchor=(0.5, 1.25), loc=9, borderaxespad=0, fontsize=16, ncol=4)
         # plt.show()
-        plt.savefig("JPG/CMM_EDS_General.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/CMM_EDS_General.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/CMM_EDS_General.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/CMM_EDS_General.pdf", bbox_inches='tight', transparent=True)
     else:
         for i in range(len(generic_algo_name)):
             plt.plot(ind, reader.iloc[i + 8].to_list()[1:], '-', markersize=10, color=generic_colors[i],
                      marker=markers[i], label=generic_algo_name[i])
         plt.legend(bbox_to_anchor=(0.45, 1.15), loc=9, borderaxespad=0, fontsize=12, ncol=10)
         # plt.show()
-        plt.savefig("JPG/CMM_EDS_Generic.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/CMM_EDS_Generic.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/CMM_EDS_Generic.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/CMM_EDS_Generic.pdf", bbox_inches='tight', transparent=True)
     plt.close()
 
 
@@ -172,8 +172,8 @@ def progressiveness(reader, general, workload):
                      marker=markers[i], label=general_algo_name[i])
         plt.legend(bbox_to_anchor=(0.44, 1.2), loc=9, borderaxespad=0, fontsize=12, ncol=4)
         # plt.show()
-        plt.savefig("JPG/Progressiveness_" + workload + "_General.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/Progressiveness_" + workload + "_General.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/Progressiveness_" + workload + "_General.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/Progressiveness_" + workload + "_General.pdf", bbox_inches='tight', transparent=True)
     else:
         for i in range(len(generic_algo_name)):
             elapse_time = reader.iloc[i + 8].to_list()[1:]
@@ -182,8 +182,8 @@ def progressiveness(reader, general, workload):
                      marker=markers[i], label=generic_algo_name[i])
         plt.legend(bbox_to_anchor=(0.49, 1.25), loc=9, borderaxespad=0, fontsize=15, ncol=5)
         # plt.show()
-        plt.savefig("JPG/Progressiveness_" + workload + "_Generic.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/Progressiveness_" + workload + "_Generic.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/Progressiveness_" + workload + "_Generic.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/Progressiveness_" + workload + "_Generic.pdf", bbox_inches='tight', transparent=True)
     plt.close()
 
 
@@ -218,8 +218,8 @@ def execution_time_breakdown(reader, general, workload):
                 hatch=hatches[0])
         plt.legend(loc=1, bbox_to_anchor=(1.02, 1.28), ncol=2, prop={'size': 11})
         # plt.show()
-        plt.savefig("JPG/ETB_" + workload + "_General.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/ETB_" + workload + "_General.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/ETB_" + workload + "_General.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/ETB_" + workload + "_General.pdf", bbox_inches='tight', transparent=True)
     else:
         ind = np.arange(len(generic_algo_name))
         plt.xticks(ind, generic_algo_name, rotation=25, size=11)
@@ -234,28 +234,28 @@ def execution_time_breakdown(reader, general, workload):
                 hatch=hatches[0])
         plt.legend(loc=1, bbox_to_anchor=(1.02, 1.28), ncol=2, prop={'size': 11})
         # plt.show()
-        plt.savefig("JPG/ETB_" + workload + "_Generic.jpg", bbox_inches='tight', transparent=True)
-        plt.savefig("PDF/ETB_" + workload + "_Generic.pdf", bbox_inches='tight', transparent=True)
+        plt.savefig("jpg/ETB_" + workload + "_Generic.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/ETB_" + workload + "_Generic.pdf", bbox_inches='tight', transparent=True)
     plt.close()
 
 
 @click.command()
-@click.option('--purity_file', default='', show_default=True)
-@click.option('--throughput_file', default='', show_default=True)
-@click.option('--cmm_file', default='', show_default=True)
-@click.option('--progressive_fct', default='', show_default=True)
-@click.option('--progressive_kdd', default='', show_default=True)
-@click.option('--progressive_sensor', default='', show_default=True)
-@click.option('--progressive_insects', default='', show_default=True)
-@click.option('--etb_fct', default='', show_default=True)
-@click.option('--etb_kdd', default='', show_default=True)
-@click.option('--etb_sensor', default='', show_default=True)
-@click.option('--etb_insects', default='', show_default=True)
-def draw_all_pictures(purity_file, throughput_file, cmm_file,
-                      progressive_fct, progressive_kdd, progressive_sensor, progressive_insects,
+@click.option('--purity', default='', show_default=True)
+@click.option('--throughput', default='', show_default=True)
+@click.option('--cmm', default='', show_default=True)
+@click.option('--prog-fct', default='', show_default=True)
+@click.option('--prog-kdd', default='', show_default=True)
+@click.option('--prog-sensor', default='', show_default=True)
+@click.option('--prog-insects', default='', show_default=True)
+@click.option('--etb-fct', default='', show_default=True)
+@click.option('--etb-kdd', default='', show_default=True)
+@click.option('--etb-sensor', default='', show_default=True)
+@click.option('--etb-insects', default='', show_default=True)
+def draw_all_pictures(purity, throughput, cmm,
+                      prog_fct, prog_kdd, prog_sensor, prog_insects,
                       etb_fct, etb_kdd, etb_sensor, etb_insects):
-    if purity_file != '':
-        purity_reader = pd.read_csv(purity_file)
+    if purity != '':
+        purity_reader = pd.read_csv(purity)
         assert real_world_workloads == [column for column in purity_reader][1:5]
         assert synthetic_workloads == [column for column in purity_reader][5:7]
         assert general_algo_name == purity_reader['Algorithm'].to_list()[0:8]
@@ -269,8 +269,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing purity of generic algorithms on synthetic workloads---------')
         purity_and_throughput(purity_reader, True, False, False)
 
-    if throughput_file != '':
-        throughput_reader = pd.read_csv(throughput_file)
+    if throughput != '':
+        throughput_reader = pd.read_csv(throughput)
         assert real_world_workloads == [column for column in throughput_reader][1:5]
         assert synthetic_workloads == [column for column in throughput_reader][5:7]
         assert general_algo_name == throughput_reader['Algorithm'].to_list()[0:8]
@@ -284,8 +284,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing throughput of generic algorithms on synthetic workloads---------')
         purity_and_throughput(throughput_reader, False, False, False)
 
-    if cmm_file != '':
-        cmm_reader = pd.read_csv(cmm_file)
+    if cmm != '':
+        cmm_reader = pd.read_csv(cmm)
         assert general_algo_name == cmm_reader['Algorithm'].to_list()[0:8]
         assert generic_algo_name == cmm_reader['Algorithm'].to_list()[8:18]
         assert (len(cmm_reader.iloc[i].to_list()) == len(cmm_reader.iloc[i + 1].to_list()) for i in range(18))
@@ -294,8 +294,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing CMM of general algorithms on EDS---------')
         cmm(cmm_reader, False)
 
-    if progressive_fct != '':
-        p_fct_reader = pd.read_csv(progressive_fct)
+    if prog_fct != '':
+        p_fct_reader = pd.read_csv(prog_fct)
         assert general_algo_name == p_fct_reader['Algorithm'].to_list()[0:8]
         assert generic_algo_name == p_fct_reader['Algorithm'].to_list()[8:18]
         assert (len(p_fct_reader.iloc[i].to_list()) == len(p_fct_reader.iloc[i + 1].to_list()) for i in range(18))
@@ -304,8 +304,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing Progressiveness of generic algorithms on CoverType---------')
         progressiveness(p_fct_reader, False, 'FCT')
 
-    if progressive_kdd != '':
-        p_kdd_reader = pd.read_csv(progressive_kdd)
+    if prog_kdd != '':
+        p_kdd_reader = pd.read_csv(prog_kdd)
         assert general_algo_name == p_kdd_reader['Algorithm'].to_list()[0:8]
         assert generic_algo_name == p_kdd_reader['Algorithm'].to_list()[8:18]
         assert (len(p_kdd_reader.iloc[i].to_list()) == len(p_kdd_reader.iloc[i + 1].to_list()) for i in range(18))
@@ -314,8 +314,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing Progressiveness of generic algorithms on KDD99---------')
         progressiveness(p_kdd_reader, False, 'KDD99')
 
-    if progressive_sensor != '':
-        p_sensor_reader = pd.read_csv(progressive_sensor)
+    if prog_sensor != '':
+        p_sensor_reader = pd.read_csv(prog_sensor)
         assert general_algo_name == p_sensor_reader['Algorithm'].to_list()[0:8]
         assert generic_algo_name == p_sensor_reader['Algorithm'].to_list()[8:18]
         assert (len(p_sensor_reader.iloc[i].to_list()) == len(p_sensor_reader.iloc[i + 1].to_list()) for i in range(18))
@@ -324,8 +324,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
         print('---------start drawing Progressiveness of generic algorithms on Sensor---------')
         progressiveness(p_sensor_reader, False, 'Sensor')
 
-    if progressive_insects != '':
-        p_insects_reader = pd.read_csv(progressive_insects)
+    if prog_insects != '':
+        p_insects_reader = pd.read_csv(prog_insects)
         assert general_algo_name == p_insects_reader['Algorithm'].to_list()[0:8]
         assert generic_algo_name == p_insects_reader['Algorithm'].to_list()[8:18]
         assert (len(p_insects_reader.iloc[i].to_list()) == len(p_insects_reader.iloc[i + 1].to_list()) for i in
@@ -386,8 +386,8 @@ def draw_all_pictures(purity_file, throughput_file, cmm_file,
 
 if __name__ == '__main__':
     folder = os.getcwd()
-    if not os.path.exists(folder + '/JPG'):
-        os.makedirs(folder + '/JPG')
-    if not os.path.exists(folder + '/PDF'):
-        os.makedirs(folder + '/PDF')
+    if not os.path.exists(folder + '/jpg'):
+        os.makedirs(folder + '/jpg')
+    if not os.path.exists(folder + '/pdf'):
+        os.makedirs(folder + '/pdf')
     draw_all_pictures()
