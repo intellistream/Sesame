@@ -102,8 +102,7 @@ void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr) {
  * @Return: void
  */
 void SESAME::DBStream::update(PointPtr dataPoint){
-  ds_timer.Tick();
-
+  win_timer.Tick();
   this->pointArrivingTime=dataPoint->getIndex();
   clock_gettime(CLOCK_REALTIME, &this->pointArrivingTime0);
   double decayFactor = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
@@ -111,25 +110,30 @@ void SESAME::DBStream::update(PointPtr dataPoint){
   //double decayFactor0 = dampedWindow->decayFunction(lastArrivingTime,this->pointArrivingTime);
   this->microClusterNN = findFixedRadiusNN(dataPoint, decayFactor);//decayFactor
   std::vector<MicroClusterPtr>::size_type sizeNN=microClusterNN.size();
+  win_timer.Tock();
 
   /* *
    * If this point fits in no micro clusters
    * */
-
   if (microClusterNN.empty()) {
+    ds_timer.Tick();
     microClusterIndex++;
     MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dim,
                                                                                        microClusterIndex,dataPoint,dbStreamParams.radius);
     microClusters.push_back(newMicroCluster);
     microClusterNN.push_back(newMicroCluster);
+    ds_timer.Tock();
   } else {
     for (int i = 0; i < sizeNN; i++) {
+      ds_timer.Tick();
       microClusterNN[i]->insert(dataPoint); // just update weight //
-
+      ds_timer.Tock();
      // std::cout<<" cluster "<<microClusterNN[i]->id.front()<<"th weight is "<<microClusterNN[i]->weight<<std::endl;
       for (int j = i + 1; j < sizeNN; j++) {
-
+        ds_timer.Tick();
         MicroClusterPair microClusterPair(microClusterNN[i], microClusterNN.at(j));
+        ds_timer.Tock();
+        win_timer.Tick();
         if (weightedAdjacencyList.find(microClusterPair) != weightedAdjacencyList.end())
         {
           //update existing micro cluster pair in the graph
@@ -146,12 +150,14 @@ void SESAME::DBStream::update(PointPtr dataPoint){
           DensityGraph densityGraph( microClusterPair ,adjustedWeight);
           weightedAdjacencyList.insert(densityGraph);
         }
+        win_timer.Tock();
       }
     }
+    ds_timer.Tick();
     if (checkMove(microClusterNN))
       for (const MicroClusterPtr& microCluster : microClusterNN) microCluster->move();
+    ds_timer.Tock();
   }
-  ds_timer.Tock();
   out_timer.Tick();
 
  //if (((pointArrivingTime-this->lastCleanTime)/CLOCKS_PER_SEC)>= dbStreamParams.clean_interval && dataPoint->getIndex()!=0)
