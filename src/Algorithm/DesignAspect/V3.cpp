@@ -97,13 +97,16 @@ void SESAME::V3::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
 
 void SESAME::V3::RunOnline(const SESAME::PointPtr input) {
   // insert the root
+  ds_timer.Tick();
   if(input->getIndex() >= this->V3Param.landmark){
     forwardInsert(input->copy());
   }
+  ds_timer.Tock();
 }
 
 
 void SESAME::V3::RunOffline(DataSinkPtr sinkPtr) {
+  ds_timer.Tick();
   for(int i = 0; i < this->clusterNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, V3Param.dim, 0);
     for(int j = 0; j < V3Param.dim; j++) {
@@ -123,6 +126,7 @@ void SESAME::V3::RunOffline(DataSinkPtr sinkPtr) {
     centroid->setOutlier(true);
     sinkPtr->put(centroid->copy());
   }
+  ds_timer.Tock();
 }
 
 SESAME::V3::V3(param_t &cmd_params) {

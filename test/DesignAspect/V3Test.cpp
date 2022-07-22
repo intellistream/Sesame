@@ -27,9 +27,9 @@ TEST(DesignTest, V3) {
   cmd_params.max_leaf_nodes = 100;
   cmd_params.dim = 2;
   cmd_params.num_clusters = 75;
-  cmd_params.time_decay = false;
+  cmd_params.time_decay = true;
   cmd_params.landmark = 0;
-  cmd_params.outlier_distance_threshold = 500;
+  cmd_params.outlier_distance_threshold = 600;
   cmd_params.outlier_cap = 2000;
 
 

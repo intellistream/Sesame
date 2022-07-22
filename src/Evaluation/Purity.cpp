@@ -69,13 +69,13 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &inputs,
   for (int i = 0; i < predicts.size(); i++) {
     double w = 1;
     if (decay) { // 分段函数来设置weight
-      if (predicts.size() - predicts[i]->getIndex() <= 101) {
+      if (predicts.size() - predicts[i]->getIndex() <= int(predicts.size() * 0.25)) {
         w = 1;
-      } else if (predicts[i]->getIndex() < predicts.size() / 100) {
+      } else if (predicts[i]->getIndex() < int(predicts.size() * 0.25)) {
         w = 0;
       } else {
-        w = double(predicts[i]->getIndex() - predicts.size() / 100) /
-            double(predicts.size() - 100 - predicts.size() / 100);
+        w = double(predicts[i]->getIndex() - int(predicts.size() * 0.25)) /
+            double(predicts.size() - int(predicts.size() * 0.25) - int(predicts.size() * 0.25));
       }
     } else {
       w = 1;

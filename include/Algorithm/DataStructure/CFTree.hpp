@@ -56,6 +56,8 @@ private:
   int index;
 
 public:
+  using clock_t = std::chrono::_V2::system_clock::time_point;
+  clock_t update;
   CFNode();
   ~CFNode();
   CFPtr getCF();

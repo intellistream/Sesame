@@ -37,12 +37,13 @@ void SESAME::CluEStream::insertPointIntoOutliers(SESAME::PointPtr &point) {
     insertCluster = make_shared<CFNode>();
     updateNLS(insertCluster, point, false);
     insertCluster->setIndex(0);
+    insertCluster->update = std::chrono::high_resolution_clock::now();
     this->outlierNodes.push_back(insertCluster);
   } else {
     int i = 0;
-    for(auto outlierCluster : this->outlierNodes) {
-      double temp =0.0;
-      pointToClusterDist(point, outlierCluster, temp);
+    for(auto node:outlierNodes){
+      double temp = 0.0;
+      pointToClusterDist(point, node, temp);
       if(temp < distance) {
         distance = temp;
         index = i;
@@ -54,14 +55,53 @@ void SESAME::CluEStream::insertPointIntoOutliers(SESAME::PointPtr &point) {
     pointToClusterDist(point, insertCluster, pointToOutlierDist);
     if(pointToOutlierDist < this->param.distance_threshold) {
       updateNLS(insertCluster, point, false);
+      // mod: merge start
+      vector<int> mergeIndex;
+      for(int i = 0; i < outlierNodes.size() and i not_eq index; i++) {
+        if(clusterToClusterDist(outlierNodes[index], outlierNodes[i]) < mergeDistance){
+          mergeIndex.push_back(i);
+          out_merge_times++;
+        }
+      }
+      for(int i = 0; i < mergeIndex.size(); i++){
+        addNodeNLSToNode(outlierNodes[i], outlierNodes[index], false);
+      }
+      for(int i = 0; i < mergeIndex.size(); i++) {
+        outlierNodes.erase(outlierNodes.begin() + i);
+      }
+      // mod: merge end
+      insertCluster->update = std::chrono::high_resolution_clock::now();
     } else {
       insertCluster = make_shared<CFNode>();
       updateNLS(insertCluster, point, false);
       insertCluster->setIndex(this->outlierNodes.size());
+      insertCluster->update = std::chrono::high_resolution_clock::now();
       this->outlierNodes.push_back(insertCluster);
     }
   }
+  //mod: start delete
+  auto curTime = std::chrono::high_resolution_clock::now();
+  if(curTime - lastTime > std::chrono::nanoseconds(outdatedGap) / 10) {
+    search_delete_times++;
+    for (auto iter = outlierNodes.begin(); iter != outlierNodes.end();) {
+      if (curTime - (iter->get()->update) > std::chrono::nanoseconds(outdatedGap) and
+          iter->get()->getCF()->getN() < deleteDensity) {
+//      auto a = std::chrono::nanoseconds(outdatedGap).count();
+//      auto b = (std::chrono::high_resolution_clock::now()-(iter->get()->update)).count();
+//      std::cout << a << std::endl;
+//      std::cout << b << std::endl;
+        out_delete_times++;
+        iter = outlierNodes.erase(iter);
+      } else {
+        iter++;
+      }
+    }
+    lastTime = curTime;
+  }
+  // mod: end delete
+  // mod: start split outlier clusters
   checkOutlierTransferCluster(insertCluster);
+  // mod: end split outlier clusters
 }
 
 void SESAME::CluEStream::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
@@ -72,7 +112,7 @@ void SESAME::CluEStream::checkOutlierTransferCluster(SESAME::NodePtr &outCluster
     PointPtr center = make_shared<Point>(param.dim);
     auto cf = outCluster->getCF();
     calculateCentroid(cf, center);
-    while(1) {
+    while(true) {
       vector<NodePtr> childrenNode = curNode->getChildren();
       if(curNode->getIsLeaf()) {
         CFPtr curCF = curNode->getCF();
@@ -97,13 +137,19 @@ void SESAME::CluEStream::checkOutlierTransferCluster(SESAME::NodePtr &outCluster
 
 void SESAME::CluEStream::RunOnline(const SESAME::PointPtr input) {
   // insert the root
+  ds_timer.Tick();
   if(input->getIndex() >= this->param.landmark){
     forwardInsert(input->copy());
   }
+  ds_timer.Tock();
 }
 
 
 void SESAME::CluEStream::RunOffline(DataSinkPtr sinkPtr) {
+  ds_timer.Tick();
+  std::cout << "Search Delete Times:" << search_delete_times << std::endl;
+  std::cout << "Delete Times:" << out_delete_times << std::endl;
+  std::cout << "Merge Times:" << out_merge_times << std::endl;
   for(int i = 0; i < this->clusterNodes.size(); i++) {
     PointPtr centroid = DataStructureFactory::createPoint(i, 1, param.dim, 0);
     for(int j = 0; j < param.dim; j++) {
@@ -123,9 +169,11 @@ void SESAME::CluEStream::RunOffline(DataSinkPtr sinkPtr) {
     centroid->setOutlier(true);
     sinkPtr->put(centroid->copy());
   }
+  ds_timer.Tock();
 }
 
 SESAME::CluEStream::CluEStream(param_t &cmd_params) {
+  assert(cmd_params.distance_threshold <= cmd_params.outlier_distance_threshold);
   this->param.num_points = cmd_params.num_points;
   this->param.dim = cmd_params.dim;
   this->param.max_in_nodes = cmd_params.max_in_nodes;
@@ -134,6 +182,7 @@ SESAME::CluEStream::CluEStream(param_t &cmd_params) {
   this->param.landmark = cmd_params.landmark;
   this->param.outlier_distance_threshold = cmd_params.outlier_distance_threshold; // a
   this->param.outlier_cap = cmd_params.outlier_cap; // 2
+  lastTime = std::chrono::high_resolution_clock::now();
 }
 SESAME::CluEStream::~CluEStream() {
 
@@ -314,38 +363,36 @@ void SESAME::CluEStream::forwardInsert(SESAME::PointPtr point){
   if(curNode->getCF()->getN() == 0) {
     updateNLS(curNode, point, true);
     this->clusterNodes.push_back(curNode);
-  } else{
-    if(checkoutOutlier(point)) {
-      while(true) {
+  } else {
+    if (checkoutOutlier(point)) {
+      while (true) {
         vector<NodePtr> childrenNode = curNode->getChildren();
-        if(curNode->getIsLeaf()) {
+        if (curNode->getIsLeaf()) {
           CFPtr curCF = curNode->getCF();
-          if(curCF->getN() == 0) {
+          if (curCF->getN() == 0) {
             initializeCF(curCF, point->getDimension());
           }
           PointPtr centroid = make_shared<Point>(param.dim);
           calculateCentroid(curCF, centroid);
-          if(calculateRadius(point,  centroid) <= this->cfTree->getT()) { // concept drift detection
+          if (calculateRadius(point, centroid) <= this->cfTree->getT()) { // concept drift detection
             // whether the new radius is lower than threshold T
             updateNLS(curNode, point, true);
-  //          checkOutliers(curNode);
+            //          checkOutliers(curNode);
             // means this point could get included in this cluster
-            //SESAME_DEBUG("No concept drift occurs(t <= T), insert tha point into the leaf node...");
             break;
             // Normally insert the data point into the tree leafNode without concept drift
           } else {
             // concept drift adaption
-            // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity reaches the threshold T");
             auto nullNode = make_shared<CFNode>();
             nullNode->setIndex(-1);
             backwardEvolution(curNode, point, nullNode);
             break;
           }
-        } else{
+        } else {
           selectChild(childrenNode, point, curNode);
         }
       }
-    }else{
+    } else {
       insertPointIntoOutliers(point);
     }
   }
@@ -450,7 +497,7 @@ void SESAME::CluEStream::backwardEvolution(SESAME::NodePtr &curNode, SESAME::Poi
         int seedB = 0;
         double max = 0;
         for(int i = 0; i < broNodes.size(); i++) {
-          for(int j = i; j < broNodes.size(); j++) {
+          for(int j = i + 1; j < broNodes.size(); j++) {
             if(max < corCFDistance[i][j]) {
               seedA = i;
               seedB = j;

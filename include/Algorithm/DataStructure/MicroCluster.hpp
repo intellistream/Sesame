@@ -12,6 +12,7 @@
 #include <Algorithm/DataStructure/Point.hpp>
 #include <cassert>
 #include <iostream>
+#include <chrono>
 namespace SESAME {
 
 typedef std::vector<double> dataPoint;
@@ -37,6 +38,7 @@ class MicroCluster {
   int createTime;
   int lastUpdateTime;
   bool visited;
+
 
   //TODO 1. Need to subtract Base class of CF vector when all cf-vector based-algorithms have been implemented
   // 2.this may need to modify in the future (All algorithms used this, e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
