@@ -6,11 +6,14 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_
+
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/DataStructure/TreeNode.hpp"
+#include "Algorithm/Algorithm.hpp"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <Algorithm/DataStructure/Point.hpp>
-#include <Algorithm/DataStructure/TreeNode.hpp>
 #include <vector>
 
 namespace SESAME {
@@ -18,9 +21,11 @@ class CoresetTree;
 typedef std::shared_ptr<CoresetTree> CoresetTreePtr;
 
 class CoresetTree {
+private:
+  param_t param;
 
  public:
-
+  CoresetTree(const param_t &param): param(param) {}
   /**
  * initalizes root as a treenode with the union of setA and setB as pointset and centre as centre
  * @param root

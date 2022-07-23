@@ -7,16 +7,21 @@
 #ifndef SESAME_SRC_SOURCES_DATASOURCE_HPP_
 #define SESAME_SRC_SOURCES_DATASOURCE_HPP_
 
-#include <Algorithm/DataStructure/Point.hpp>
+#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Utils/UtilityFunctions.hpp"
+#include "Utils/SPSCQueue.hpp"
+#include "Engine/SingleThread.hpp"
+#include "Timer/TimeMeter.hpp"
+
+#include <boost/lockfree/spsc_queue.hpp>
+
 #include <string>
 #include <cstring>
 #include <vector>
-#include <Utils/UtilityFunctions.hpp>
-#include <Utils/SPSCQueue.hpp>
-#include <Engine/SingleThread.hpp>
-#include <Timer/TimeMeter.hpp>
-
-using namespace std;
+#include <atomic>
+#include <queue>
+#include <list>
 
 namespace SESAME {
 class DataSource;
@@ -25,17 +30,18 @@ typedef std::shared_ptr<DataSource> DataSourcePtr;
 class DataSource {
  private:
   std::vector<PointPtr> input;
-  std::shared_ptr<rigtorp::SPSCQueue<PointPtr>> inputQueue;
+  std::shared_ptr<boost::lockfree::spsc_queue<PointPtr>> inputQueue;
   SingleThreadPtr threadPtr;
   BarrierPtr barrierPtr;
   TimeMeter overallMeter;
-  bool sourceEnd;
+  std::atomic_bool sourceEnd;
+  param_t param;
  public:
-  void load(int point_number, int dimension, vector<string> input);
+  void load(int point_number, int dim, std::vector<string> &input);
   bool empty();
   PointPtr get();
   std::vector<PointPtr> getInputs();
-  DataSource();
+  DataSource(const param_t &);
   ~DataSource();
   void runningRoutine();
   bool start(int i);
@@ -43,6 +49,10 @@ class DataSource {
   void setBarrier(BarrierPtr barrierPtr);
   void printTime();
   bool sourceEnded();
+  int size() {
+    return inputQueue->read_available();
+  }
+  void push(const PointPtr &p);
 };
 }
 #endif //SESAME_SRC_SOURCES_DATASOURCE_HPP_

@@ -44,7 +44,7 @@ void SESAME::DPTree::insert(SESAME::DPNodePtr &cc, int opt) {
   if (size == num) {
     SESAME_DEBUG("lack of DPTree nodes");
   }}
-void SESAME::DPTree::init(std::vector<SESAME::DPNodePtr> &clus,
+void SESAME::DPTree::Init(std::vector<SESAME::DPNodePtr> &clus,
                           int size,
                           double minRho,
                           double minDelta,
@@ -467,9 +467,8 @@ void SESAME::DPTree::adjustCluster(std::unordered_set<SESAME::ClusterPtr> &clust
   std::vector<ClusterPtr> set;//
 
   if (Clus[0] == nullptr) {
-    SESAME_DEBUG(size);
-    SESAME_DEBUG("there is no cluser-cell, r is very small");
-    SESAME_DEBUG("please adjust your r parameter larger");
+    // SESAME_DEBUG("there is no cluser-cell, r is very small");
+    // SESAME_DEBUG("please adjust your r parameter larger");
   } else if (Clus[0]->GetCluster() == nullptr) {// there is new cluster center appearing
     auto cluster = std::make_shared<Cluster>(cluLabel++);
     clusters.insert(cluster);

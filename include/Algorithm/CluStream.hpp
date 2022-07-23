@@ -7,30 +7,33 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 
+#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/MicroCluster.hpp"
+#include "Algorithm/OfflineRefinement/KMeans.hpp"
+#include "Algorithm/WindowModel/LandmarkWindow.hpp"
+#include "Algorithm/DataStructure/Snapshot.hpp"
+#include "Utils/BenchmarkUtils.hpp"
+#include "Timer/Timer.hpp"
+
 #include <cmath>
 #include <cassert>
 #include <limits>
 #include <ctime>
 #include <cstdio>
-#include <Algorithm/Algorithm.hpp>
-#include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Algorithm/DataStructure/Snapshot.hpp>
-#include <Utils/BenchmarkUtils.hpp>
-#include <Timer/TimeMeter.hpp>
+
 namespace SESAME {
 
 class CluStreamParameter : public AlgorithmParameters {
  public:
-  int lastArrivingNum;
-  int timeWindow;
-  unsigned int timeInterval;
-  int clusterNumber; //total number of micro clusters online
-  int offlineClusterNumber; //total number of micro clusters online
-  double radiusFactor;//radius factor
-  int initBuffer;
-  int offlineTimeWindow;
+  int num_last_arr;
+  int time_window;
+  unsigned int time_interval;
+  int num_clusters; //total number of micro clusters online
+  int num_offline_clusters; //total number of micro clusters online
+  double radius;//radius factor
+  int buf_size;
+  int offline_time_window;
+  int seed;
 };
 
 const double doubleMax = std::numeric_limits<double>::max();
@@ -40,19 +43,18 @@ class CluStream : public Algorithm {
   std::shared_ptr<KMeans> kmeans; //used for offline initialization
   LandmarkWindowPtr window;
   MicroClusters microClusters; //Defined in Snapshot, std::vector <MicroclusterPtr>
+  MicroClusters delMicroClusters;
   int pointsFitted;
   int pointsForgot;
   int pointsMerged;
-  clock_t startTime;
+  int startTime;
   int lastUpdateTime;
   CluStream(param_t &cmd_params);
   ~CluStream();
-  TimeMeter timerMeter;
-  //bool insert;
 
-  void Initilize() override;
-  void runOnlineClustering(PointPtr input) override;
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void Init() override;
+  void RunOnline(PointPtr input) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
  private:
   void initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData);

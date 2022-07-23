@@ -4,13 +4,16 @@
 // Created by Shuhao Zhang on 19/07/2021.
 //
 
+#include "Engine/SimpleEngine.hpp"
+#include "Utils/SPSCQueue.hpp"
+#include "Utils/Logger.hpp"
+
+#include <boost/progress.hpp>
+
 #include <iostream>
 #include <utility>
 #include <vector>
 #include <thread>
-#include <Engine/SimpleEngine.hpp>
-#include <Utils/SPSCQueue.hpp>
-#include <Utils/Logger.hpp>
 
 using namespace std;
 
@@ -68,29 +71,36 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   overallMeter.setInterval(100);
   //initialization
 
-  algoPtr->Initilize();
+  algoPtr->Init();
+
+  boost::progress_display show_progress(algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
 
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
       auto item = sourcePtr->get();
       overallMeter.onlineAccMeasure();
-      algoPtr->runOnlineClustering(item);
+      algoPtr->RunOnline(item->copy());
+      algoPtr->Count();
+      ++show_progress;
       overallMeter.onlineAccEMeasure();
     }
   }
-
   while (!sourcePtr->empty()) {//process the remaining data streams after source stops.
     auto item = sourcePtr->get();
     overallMeter.onlineAccMeasure();
-    algoPtr->runOnlineClustering(item);
+    algoPtr->RunOnline(item->copy());
+    algoPtr->Count();
+    ++show_progress;
     overallMeter.onlineAccEMeasure();
   }
   overallMeter.onlineEndMeasure();
 
+  SESAME_INFO("ready to offline clustering");
+
   // run offline clustering
   overallMeter.refinementStartMeasure();
-  algoPtr->runOfflineClustering(sinkPtr);
+  algoPtr->RunOffline(sinkPtr);
   SESAME_INFO("Engine sourceEnd process data");
   overallMeter.refinementEndMeasure();
 
@@ -102,8 +112,9 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   SESAME_INFO("Engine sourceEnd emit data");
   barrierPtr->arrive_and_wait();//wait for source and sink.
   SESAME_DEBUG("Engine sourceEnd wait for source and sink.");
-  printTime();
-  overallMeter.printCumulative();
+  // printTime();
+  algoPtr->PrintPerf();
+  // overallMeter.printCumulative();
 }
 
 bool SESAME::SimpleEngine::stop() {

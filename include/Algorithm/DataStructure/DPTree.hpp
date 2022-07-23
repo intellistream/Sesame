@@ -55,7 +55,7 @@ class DPTree {
   ~DPTree();
   DPTree(int num, double CluR);
   void insert(SESAME::DPNodePtr &cc, int opt);
-  void init(std::vector<SESAME::DPNodePtr> &clus, int size, double minRho, double minDelta,
+  void Init(std::vector<SESAME::DPNodePtr> &clus, int size, double minRho, double minDelta,
             SESAME::OutPtr &outs, std::unordered_set<ClusterPtr> &clusters);
   SESAME::DPNodePtr findNN(PointPtr p, double coef, int opt, double time);
   void adjustNoDelta(int index);

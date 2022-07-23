@@ -102,7 +102,7 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
 /**
       * Inside Grids are defined in Definition 3.5 of Chen and Tu 2007 as:
       * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g has
-      * neighboring grids in every dimension i =1, ·· · ,d, then g is an inside grid
+      * neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
       * in G.Otherwise g is an outside grid in G.
       *
       * @param grid the density grid to label as being inside or out
@@ -125,7 +125,7 @@ bool SESAME::GridCluster::isInside(DensityGrid grid)
 /**
     * Inside Grids are defined in Definition 3.5 of Chen and Tu 2007 as:
     * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g has
-    * neighboring grids in every dimension i =1, ·· · ,d, then g is an inside grid
+    * neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
     * in G. Otherwise g is an outside grid in G.
     *
     * @param grid the density grid being labelled as inside or outside

@@ -11,15 +11,15 @@ namespace SESAME {
 class Purity {
  private:
   static void pointToGroup(const std::vector<SESAME::PointPtr> &input,
-                           std::vector<std::vector<PointPtr>> &group, int number);
+                           std::vector<std::vector<PointPtr>> &group);
   static double calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &groupA,
                                      std::vector<SESAME::PointPtr> &groupB);
   static double getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample,
                               std::vector<std::vector<PointPtr>> &GT);
  public:
-  static double purityCost(const std::vector<PointPtr> &input,
-                         const std::vector<PointPtr> &result,
-                         int dimension, int GTclusterNumber, bool decay);
+  static double purityCost(const std::vector<PointPtr> &inputs,
+                         const std::vector<PointPtr> &predicts,
+                         int dim, bool decay);
 };
 
 }

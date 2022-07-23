@@ -1,6 +1,6 @@
 echo "---------start Testing DenStream on the 5 selected Dataset---------"
 
-echo  ">> Parameter Test: initBuffer, minPoints, epsilon, lambda, mu, beta <<"
+echo  ">> Parameter Test: buf_size, min_points, epsilon, lambda, mu, beta <<"
 
 for o in $(seq 0 4)
   do
@@ -23,10 +23,10 @@ for o in $(seq 0 4)
                          # for q in ${beta[*]}
                           #  do
                           if [ $o == 0 ]; then
-                                ./benchmark.exe -p 3000 -d 54 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                ./benchmark -p 3000 -d 54 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                           fi
                           if [ $o == 1 ]; then
-                                ./benchmark.exe -p 3000 -d 41 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                ./benchmark -p 3000 -d 41 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                           fi
                           #done
                         done
@@ -39,8 +39,8 @@ for o in $(seq 0 4)
       if [ $o == 2 ] ; then
         for b in $(seq 300 200 500)
           do
-            minPoints=(3 5 8)
-            for n in ${minPoints[*]}
+            min_points=(3 5 8)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.1 0.2 6)
                 for e in ${epsilon[*]}
@@ -54,7 +54,7 @@ for o in $(seq 0 4)
                             beta=(0.125 0.25)
                             for q in ${beta[*]}
                               do
-                                  ./benchmark.exe -p 5000 -d 5 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
+                                  ./benchmark -p 5000 -d 5 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q $q
                             done
                           done
                       done
@@ -66,8 +66,8 @@ for o in $(seq 0 4)
   :'  if [ $o == 3 ] ; then
         for b in $(seq 150 150 500)
           do
-            minPoints=(5 8 15)
-            for n in ${minPoints[*]}
+            min_points=(5 8 15)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.8)
                 for e in ${epsilon[*]}
@@ -81,7 +81,7 @@ for o in $(seq 0 4)
                            # beta=(0.125 0.25)
                            # for q in ${beta[*]}
                             #  do
-                                  ./benchmark.exe -p 3000 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
+                                  ./benchmark -p 3000 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.25
                             #done
                           done
                       done
@@ -93,8 +93,8 @@ for o in $(seq 0 4)
       if [ $o == 4 ] ; then
         for b in $(seq 100 100 200)
           do
-            minPoints=(5 8 10)
-            for n in ${minPoints[*]}
+            min_points=(5 8 10)
+            for n in ${min_points[*]}
               do
                 epsilon=(0.125)
                 for e in ${epsilon[*]}
@@ -108,7 +108,7 @@ for o in $(seq 0 4)
                            # beta=(0.125 0.25)
                            # for q in ${beta[*]}
                             #  do
-                                  ./benchmark.exe -p 622 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.125
+                                  ./benchmark -p 622 -d 2 -a 5 -B 2 -O $o -b $b -n $n -e $e -L $L -u $u -q 0.125
                             #done
                           done
                       done

@@ -15,9 +15,10 @@ class CF {
  private:
   // N是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
   int NumberOfNodes;
+  int index;
+ public:
   std::vector<double> LS;
   std::vector<double> SS;
- public:
   CF();
   ~CF();
   int getN() const;
@@ -29,6 +30,8 @@ class CF {
   void setLS(std::vector<double> &newLs);
   void setSS(std::vector<double> &newSs);
   SESAME::CFPtr copy();
+  int getIndex();
+  void setIndex(int id);
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_FEATUREVECTOR_H_

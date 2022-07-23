@@ -3,6 +3,8 @@
 #ifndef SESAME_SRC_TIMER_CYCLEMETER_HPP_
 #define SESAME_SRC_TIMER_CYCLEMETER_HPP_
 
+#include "Algorithm/Algorithm.hpp"
+
 #include <ctime>           /* gettimeofday */
 #include <cstddef>
 #include <cstdint>
@@ -11,7 +13,6 @@
 #include <fstream>
 #include <cmath>
 #include <chrono>
-#include <Algorithm/Algorithm.hpp>
 
 namespace SESAME {
 struct T_TIMER {

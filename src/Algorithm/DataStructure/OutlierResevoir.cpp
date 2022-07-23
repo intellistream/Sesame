@@ -43,10 +43,10 @@ double SESAME::OutlierReservoir::GetLamd()  {
 void SESAME::OutlierReservoir::SetLamd(double lamd) {
   OutlierReservoir::lamd = lamd;
 }
- std::unordered_set<SESAME::DPNodePtr> &SESAME::OutlierReservoir::GetOutliers()  {
+ std::unordered_set<SESAME::DPNodePtr> &SESAME::OutlierReservoir::getOutliers()  {
   return outliers;
 }
-void SESAME::OutlierReservoir::SetOutliers( std::unordered_set<SESAME::DPNodePtr> &outliers) {
+void SESAME::OutlierReservoir::setOutliers( std::unordered_set<SESAME::DPNodePtr> &outliers) {
   OutlierReservoir::outliers = outliers;
 }
 SESAME::OutlierReservoir::OutlierReservoir(double r, double a, double lamd) {

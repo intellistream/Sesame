@@ -9,7 +9,7 @@
 #include <Algorithm/Algorithm.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <iostream>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
+#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 
@@ -19,7 +19,7 @@ class StreamKMParameter : public AlgorithmParameters {
  public:
   int windowSize;
   int seed;
-  int clusterNumber;
+  int num_clusters;
 };
 
 class StreamKM : public Algorithm {
@@ -32,16 +32,15 @@ class StreamKM : public Algorithm {
   vector <PointPtr> inputs;//buffered inputs.
   vector <PointPtr> streamingCoreset;//intermediate results.
   KMeans km;//used for offline processing.
-  TimeMeter timerMeter;
   StreamKM(param_t &cmd_params);
 
   ~StreamKM();
 
-  void Initilize() override;
+  void Init() override;
 
-  void runOnlineClustering(PointPtr input) override;
+  void RunOnline(PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
  private:
   void dumpResults(vector <PointPtr> &centers, vector <vector<SESAME::PointPtr>> groups, DataSinkPtr ptr) const;

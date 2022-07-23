@@ -19,10 +19,10 @@ class EDMParameter : public AlgorithmParameters {
  public:
   bool isInit = false;
 
-  double a;
+  double alpha;
   double lamda;
   double beta;
-  int cacheNum;
+  int num_cache;
   double radius;
 
   double minDelta;
@@ -41,14 +41,13 @@ class EDMStream : public Algorithm {
   DPTreePtr dpTree;
   OutPtr outres;
   CachePtr cache;
-  TimeMeter timerMeter;
   std::unordered_set<ClusterPtr> clusters;
 
   EDMStream(param_t &cmd_params);
   ~EDMStream();
-  void Initilize() override;
+  void Init() override;
   void setMinDelta(double minDelta);
-
+  void CountNode(const SESAME::DPNodePtr &node, int &num);
   void InitDP(double time);
   SESAME::DPNodePtr streamProcess(SESAME::PointPtr p, int opt, double time);
   double computeAlpha();
@@ -56,9 +55,9 @@ class EDMStream : public Algorithm {
   void delCluster();
   SESAME::DPNodePtr retrive(SESAME::PointPtr p, int opt, double time);
 
-  void runOnlineClustering(SESAME::PointPtr input) override;
+  void RunOnline(SESAME::PointPtr input) override;
 
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 };
 }
 #endif //SESAME_INCLUDE_ALGORITHM_EDMSTREAM_HPP_

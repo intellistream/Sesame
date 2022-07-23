@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by tuidan on 2021/7/20.
@@ -6,20 +7,35 @@
 
 #ifndef ONLINEMLBENCHMARK_EVALUATIONMETRICS_HPP_
 #define ONLINEMLBENCHMARK_EVALUATIONMETRICS_HPP_
-#include <Algorithm/DataStructure/Point.hpp>
+
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/Param.hpp"
+
 #include <vector>
+
 namespace SESAME {
+
+struct BenchmarkResult {
+  double cmm = 0.0, purity = 0.0;
+  int num_res = 0;
+  BenchmarkResult(double cmm = 0, double purity = 0)
+      : cmm(cmm), purity(purity) {}
+  void Print() {
+    std::cout << "num_res: " << num_res << std::endl;
+    std::cout << "cmm: " << cmm << std::endl;
+    std::cout << "purity: " << purity << std::endl;
+  }
+};
+using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;
 
 // enum evaluateType { euclideanCostType, cmmType, purityType };
 
 class Evaluation {
- public:
-  static void runEvaluation(int dimension,int GTClusterNumber, bool decay,
-                            const std::vector<PointPtr> &inputs,
-                            const std::vector<PointPtr> &results);
-
-
+public:
+  static BenchmarkResultPtr Evaluate(const param_t &param,
+                                     const std::vector<PointPtr> &inputs,
+                                     const std::vector<PointPtr> &results);
 };
 
-}
-#endif //ONLINEMLBENCHMARK_EVALUATIONMETRICS_H
+} // namespace SESAME
+#endif // ONLINEMLBENCHMARK_EVALUATIONMETRICS_H

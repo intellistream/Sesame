@@ -11,20 +11,19 @@
 #include <Algorithm/WindowModel/WindowFactory.hpp>
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
 
-void SESAME::StreamKM::Initilize() {
+void SESAME::StreamKM::Init() {
   // initial the landmark window
-  timerMeter.initialMeasure();
   UtilityFunctions::init_genrand(this->StreamKMParam.seed);
   this->window = WindowFactory::createLandmarkWindow();
   this->window->windowManager.numberOfWindow =
-      ceil(log((double) this->StreamKMParam.pointNumber / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
+      ceil(log((double) this->StreamKMParam.num_points / (double) this->StreamKMParam.windowSize) / log(2)) + 2;
   this->window->windowManager.maxWindowSize = this->StreamKMParam.windowSize;
   this->window->initWindow(this->StreamKMParam.windowSize);
-  this->window->tree = DataStructureFactory::createCoresetTree();
+  this->window->tree = GenericFactory::New<CoresetTree>(param);
   SESAME_DEBUG(
-      "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dimension: "
-          << this->StreamKMParam.dimension);
-  timerMeter.initialEndMeasure();
+      "Created manager with " << this->window->windowManager.numberOfWindow << " windows of dim: "
+          << this->StreamKMParam.dim);
+  sum_timer.Tick();
 }
 
 /**
@@ -32,79 +31,60 @@ void SESAME::StreamKM::Initilize() {
  * @Param:
  * @Return: although void, but actually we store the output result(with computed clustering center) into this->streamingCoreset
  */
-void SESAME::StreamKM::runOnlineClustering(const SESAME::PointPtr input) {
-//  if(input->getIndex() == 15100){
-//    cout<< 111;
-//  }
-  this->window->insertPoint(input->copy());
-//  this->inputs.push_back(input);
+void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input) {
+  ds_timer.Tick();
+  this->window->insertPoint(input);
+  ds_timer.Tock();
+  lat_timer.Add(input->toa);
 }
 
 /**
  * @Description: we run offline KMeans++ algorithm 5 times using the final m coreset points(this->streamingCoreset)[m>k]
- * @param clusterNumber
- * @param coresetSize
- * @param dimension
+ * @param num_clusters
+ * @param coreset_size
+ * @param dim
  * @param output
  */
-void SESAME::StreamKM::runOfflineClustering(DataSinkPtr sinkPtr) {
-  this->window->timerMeter.printTime(false,false,false,false);
+void SESAME::StreamKM::RunOffline(DataSinkPtr sinkPtr) {
+  on_timer.Add(sum_timer.start);
+  ref_timer.Tick();
   this->window->getCoresetFromManager(
       this->streamingCoreset); // streamingCoreset = LandmarkWindow::getCoresetFromManager(manager);
   int parNumber = this->streamingCoreset.size();
   for(int i = 0; i < parNumber; i++) {
-    for(int j = 0; j < this->StreamKMParam.dimension; j++) {
+    for(int j = 0; j < this->StreamKMParam.dim; j++) {
       this->streamingCoreset[i]->setFeatureItem(this->streamingCoreset[i]->getFeatureItem(j) / this->streamingCoreset[i]->getWeight(), j);
     }
   }
-  vector <PointPtr> centers;
-  vector <vector<PointPtr>> groups;
-
-  std::vector<std::vector<PointPtr>> oldGroups, newGroups;
-
-  this->km.runKMeans(this->StreamKMParam.clusterNumber,
-                     parNumber,
-                     centers,
-                     this->streamingCoreset,
-                     oldGroups,
-                     newGroups,
-                     true);
-  // store the result input output
-  for(int i = 0; i < centers.size(); i++) {
-    sinkPtr->put(centers[i]->copy());
+  if(param.run_offline) {
+    vector <PointPtr> centers;
+    vector <vector<PointPtr>> groups;
+    std::vector<std::vector<PointPtr>> oldGroups, newGroups;
+    this->km.runKMeans(this->StreamKMParam.num_clusters,
+                       parNumber,
+                       centers,
+                       this->streamingCoreset,
+                       oldGroups,
+                       newGroups,
+                       this->StreamKMParam.seed,
+                       true);
+    // store the result input output
+    this->km.produceResult(oldGroups, sinkPtr);
+  } else {
+    for(int i = 0; i < parNumber; i++)
+      sinkPtr->put(streamingCoreset[i]);
   }
-//  this->km.storeResult(oldGroups, centers);
-//  this->km.groupPointsByCenters((int) centers.size(), (int) this->inputs.size(),
-//                                const_cast<vector <PointPtr> &>(this->inputs), centers, groups);
-//  // print the clustering information
-//  dumpResults(centers, groups, sinkPtr);
-//  cout << endl;
+  ref_timer.Tock();
+  sum_timer.Tock();
 }
-//void SESAME::StreamKM::dumpResults(vector <PointPtr> &centers,
-//                                   vector <vector<SESAME::PointPtr>> groups,
-//                                   DataSinkPtr sinkPtr) const {
-//  int cluster = 0;
-//  cout << cluster << " cluster: ";
-//  for (int i = 0; i < groups.size(); i++) {
-//    if (cluster != centers.at(i)->getClusteringCenter()) {
-//      cluster = centers.at(i)->getClusteringCenter();
-//      cout << endl << cluster << " cluster: ";
-//    }
-//    for (int j = 0; j < groups[i].size(); j++) {
-//      groups[i][j]->setClusteringCenter(centers[i]->getClusteringCenter());
-//      cout << groups[i][j]->getIndex() << " ";
-//      sinkPtr->put(groups[i][j]);
-//    }
-//  }
-//  cout << endl;
-//}
 
 SESAME::StreamKM::StreamKM(param_t &cmd_params) {
-  this->StreamKMParam.pointNumber = cmd_params.pointNumber;
-  this->StreamKMParam.clusterNumber = cmd_params.clusterNumber;
-  this->StreamKMParam.windowSize = cmd_params.coresetSize;
+  this->param = cmd_params;
+  this->StreamKMParam.num_points = cmd_params.num_points;
+  this->StreamKMParam.num_clusters = cmd_params.num_clusters;
+  this->StreamKMParam.windowSize = cmd_params.coreset_size;
   this->StreamKMParam.seed = cmd_params.seed;
-  this->StreamKMParam.dimension = cmd_params.dimension;
+  this->StreamKMParam.dim = cmd_params.dim;
 }
 SESAME::StreamKM::~StreamKM() {
 
