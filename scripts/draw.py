@@ -10,6 +10,7 @@ from typing import List
 
 real_world_workloads = ["CoverType", "KDD99", "Sensor", "Insects"]
 synthetic_workloads = ['EDS', 'ODS']
+varying_arrival_rate = ['0.1k/s', '1k/s', '10k/s', '100k/s']
 design_aspects = ['WindowModel', 'OutlierDetection', 'DataStructure', 'OfflineRefinement']
 general_algo_name = ['Birch', 'StreamKMeans', 'CluStream', 'DenStream', 'DBStream', 'EDMStream', 'DStream', 'SLKMeans']
 generic_algo_name = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10']
@@ -125,6 +126,39 @@ def purity_and_throughput(reader, purity, real, general):
                 plt.savefig("jpg/Throughput_Synthetic_Generic.jpg", bbox_inches='tight', transparent=True)
                 plt.savefig("pdf/Throughput_Synthetic_Generic.pdf", bbox_inches='tight', transparent=True)
     plt.close()
+
+
+def throughput_varying_arrival_rate(reader, general):
+    plt.rcParams['font.size'] = 20
+    plt.rc('ytick', labelsize=20)
+    plt.figure(figsize=(10, 4))
+    ind = np.arange(4)
+    plt.xticks([0.3, 1.3, 2.3, 3.3], varying_arrival_rate, fontsize=20)
+    if general:
+        print(reader.loc[0:7, ['Algorithm'] + varying_arrival_rate])
+        width = 0.1
+        for i in range(len(general_algo_name)):
+            plt.bar(ind + width * i, reader.iloc[i].to_list()[1:5], width, color=general_colors[i],
+                    hatch=hatches[i],
+                    label=general_algo_name[i],
+                    edgecolor="k")
+        plt.ylabel('Tpt.(tuples/second)', fontsize=20)
+        plt.legend(bbox_to_anchor=(0.44, 1.35), loc=9, borderaxespad=0, fontsize=15, ncol=4)
+        # plt.show()
+        plt.savefig("JPG/Throughput_Arrival_General.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("PDF/Throughput_Arrival_General.pdf", bbox_inches='tight', transparent=True)
+    else:
+        print(reader.loc[8:18, ['Algorithm'] + varying_arrival_rate])
+        width = 0.08
+        for i in range(len(generic_algo_name)):
+            plt.bar(ind + width * i, reader.iloc[i + 8].to_list()[1:5], width, color=generic_colors[i],
+                    hatch=hatches[i],
+                    label=generic_algo_name[i],
+                    edgecolor="k")
+        plt.legend(bbox_to_anchor=(0.5, 1.22), loc=9, borderaxespad=0, fontsize=12, ncol=10)
+        # plt.show()
+        plt.savefig("JPG/Throughput_Arrival_Generic.jpg", bbox_inches='tight', transparent=True)
+        plt.savefig("PDF/Throughput_Arrival_Generic.pdf", bbox_inches='tight', transparent=True)
 
 
 def cmm(reader, general):
@@ -251,9 +285,10 @@ def execution_time_breakdown(reader, general, workload):
 @click.option('--etb-kdd', default='', show_default=True)
 @click.option('--etb-sensor', default='', show_default=True)
 @click.option('--etb-insects', default='', show_default=True)
+@click.option('--arrival_rate', default='Raw/Arrival_Rate.csv', show_default=True)
 def draw_all_pictures(purity, throughput, cmm,
                       prog_fct, prog_kdd, prog_sensor, prog_insects,
-                      etb_fct, etb_kdd, etb_sensor, etb_insects):
+                      etb_fct, etb_kdd, etb_sensor, etb_insects, arrival_rate):
     if purity != '':
         purity_reader = pd.read_csv(purity)
         assert real_world_workloads == [column for column in purity_reader][1:5]
@@ -382,6 +417,19 @@ def draw_all_pictures(purity, throughput, cmm,
         execution_time_breakdown(etb_insects_reader, True, 'INSECTS')
         print('---------start drawing Execution Time Breakdown of generic algorithms on INSECTS---------')
         execution_time_breakdown(etb_insects_reader, False, 'INSECTS')
+
+    if arrival_rate != '':
+        arrival_rate_reader = pd.read_csv(arrival_rate)
+        assert general_algo_name == arrival_rate_reader['Algorithm'].to_list()[0:8]
+        assert generic_algo_name == arrival_rate_reader['Algorithm'].to_list()[8:18]
+        assert (len(arrival_rate_reader.iloc[i].to_list()) == len(arrival_rate_reader.iloc[i + 1].to_list()) for i in
+                range(18))
+        assert varying_arrival_rate == arrival_rate_reader.columns.tolist()[1:]
+        print('---------start drawing throughput under varying arrival rate of general algorithms on EDS---------')
+        throughput_varying_arrival_rate(arrival_rate_reader, True)
+        print('---------start drawing throughput under varying arrival rate of generic algorithms on EDS---------')
+        throughput_varying_arrival_rate(arrival_rate_reader, False)
+
 
 
 if __name__ == '__main__':
