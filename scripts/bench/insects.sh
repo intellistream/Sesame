@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export insects="join.new input_file /home/shaun/Sesame/build/benchmark/datasets/INSECTS.txt : join.new num_points 905145 : join.new dim 33 : join.new num_clusters 24 : join.new run_cmm false : join.new arr_rate 0"
+export insects="join.new input_file $HOME/Sesame/build/benchmark/datasets/INSECTS.txt : join.new num_points 905145 : join.new dim 33 : join.new num_clusters 24 : join.new run_cmm false : join.new arr_rate 0"
 
 ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new algo 0 \
