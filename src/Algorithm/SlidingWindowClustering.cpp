@@ -124,20 +124,18 @@ void SlidingWindowClustering::RunOnline(PointPtr input) {
     win_timer.Tick();
     if (samples.size() < param.num_samples * param.sliding)
       samples.push_back(input);
-    win_timer.Tock();
     if (samples.size() >= param.num_samples * param.sliding) {
       const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
           &r, samples, param.sliding, param.num_samples, param.num_clusters);
       framework = GenericFactory::New<FrameworkAlg<KMeansSummary>>(
           &r, param.sliding, param.num_clusters, param.delta_grid, lower_bound,
           upper_bound);
-      ds_timer.Tick();
       for (auto p : samples) {
         framework->process_point(p);
       }
-      ds_timer.Tock();
       has_sampled = true;
     }
+    win_timer.Tock();
   } else {
     ds_timer.Tick();
     framework->process_point(input);
