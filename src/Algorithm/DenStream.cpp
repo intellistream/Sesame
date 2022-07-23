@@ -129,9 +129,7 @@ void SESAME::DenStream::RunOnline(PointPtr in) {
 void SESAME::DenStream::merge(PointPtr dataPoint) {
   bool index = false;
   if (!this->pMicroClusters.empty()) {
-    ds_timer.Tick();
     index = mergeToMicroCluster(dataPoint, this->pMicroClusters);
-    ds_timer.Tock();
   //  std::cout<<"Merge into PMC! "<<pMicroClusters.size()<<","<< index<<","<<std::endl;
   }
 
@@ -155,23 +153,29 @@ void SESAME::DenStream::merge(PointPtr dataPoint) {
 
 
 bool SESAME::DenStream::mergeToMicroCluster(PointPtr dataPoint, std::vector<MicroClusterPtr> microClusters) {
+  ds_timer.Tick();
   bool index = false;
   MicroClusterPtr MC = nearestNeighbor(dataPoint, microClusters);
+  ds_timer.Tock();
+  win_timer.Tick();
   double decayFactor = this->dampedWindow->decayFunction(lastPointTime, pointArrivingTime);
   if (MC!=NULL&& MC->insert(dataPoint, decayFactor, denStreamParams.epsilon)) {
       index = true;
   }
+  win_timer.Tock();
   return index;
 }
 
 bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <MicroClusterPtr> microClusters ){
   out_timer.Tick();
   MicroClusterPtr MC = nearestNeighbor(dataPoint, microClusters);
+  out_timer.Tock();
+  win_timer.Tick();
   double decayFactor = this->dampedWindow->decayFunction(lastPointTime, pointArrivingTime);
   if (MC!=NULL&& MC->insert(dataPoint, decayFactor, denStreamParams.epsilon)) {
     double decayValue =
         this->dampedWindow->decayFunction(MC->lastUpdateTime, pointArrivingTime);
-    out_timer.Tock();
+    win_timer.Tock();
     ds_timer.Tick();
     if (MC->weight * decayValue > minWeight) {
       pMicroClusterIndex++;
@@ -184,7 +188,7 @@ bool SESAME::DenStream:: mergeToOMicroCluster(PointPtr dataPoint,std::vector <Mi
     ds_timer.Tock();
     return true;
   } else {
-    out_timer.Tock();
+    win_timer.Tock();
     return false;
   }
 }

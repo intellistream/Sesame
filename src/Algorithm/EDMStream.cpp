@@ -53,9 +53,11 @@ void SESAME::EDMStream::InitDP(double time) {
 }
 
 SESAME::DPNodePtr SESAME::EDMStream::streamProcess(SESAME::PointPtr p, int opt, double time) {
-  ds_timer.Tick();
+  win_timer.Tick();
   double coef = pow(this->EDMParam.alpha, this->EDMParam.lamda * (time - dpTree->GetLastTime()));
   dpTree->SetLastTime(time);
+  win_timer.Tock();
+  ds_timer.Tick();
   auto nn = dpTree->findNN(p, coef, opt, time);
   ds_timer.Tock();
   out_timer.Tick();
