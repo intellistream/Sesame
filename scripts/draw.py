@@ -168,7 +168,7 @@ def draw_cmm(reader, general):
     plt.ylabel('CMM', fontsize=18)
     plt.yticks(size=18)
     plt.xticks(size=18)
-    plt.ylim(0.4, 1)
+    plt.ylim(0, 1)
     plt.grid(axis='y', linestyle='--', linewidth=0.5)
     if general:
         for i in range(len(general_algo_name)):
@@ -227,28 +227,39 @@ def execution_time_breakdown(reader, general, workload):
     plt.ylabel('Percentage(%)', fontsize=11)
     plt.rc('ytick', labelsize=11)
     width = 0.35
-    Bottom = reader[design_aspects[0]].to_list()
-    Center1 = reader[design_aspects[1]].to_list()
-    Center2 = reader[design_aspects[2]].to_list()
-    Top = reader[design_aspects[3]].to_list()
-    AccumulateCenter1 = [];
+    Bottom = reader[design_aspects[0]].values
+    Center1 = reader[design_aspects[1]].values
+    Center2 = reader[design_aspects[2]].values
+    Top = reader[design_aspects[3]].values
+    Sum = Bottom + Center1 + Center2 + Top
+    Bottom = (Bottom / Sum).tolist()
+    Center1 = (Center1 / Sum).tolist()
+    Center2 = (Center2 / Sum).tolist()
+    Top = (Top / Sum).tolist()
+    AccumulateCenter1 = []
     AccumulateCenter2 = []
+    AccumulateCenter3 = []
     for i in range(0, len(Bottom)):
         sum = Bottom[i] + Center1[i]
         AccumulateCenter1.append(sum)
     for i in range(0, len(AccumulateCenter1)):
         sum = AccumulateCenter1[i] + Center2[i]
         AccumulateCenter2.append(sum)
+    for i in range(0, len(AccumulateCenter2)):
+        sum = AccumulateCenter2[i] + Top[i]
+        AccumulateCenter3.append(sum)
     if general:
         ind = np.arange(len(general_algo_name))
         plt.xticks(ind, general_algo_name, rotation=25, size=11)
         plt.bar(ind, Bottom[0:8], width, label="Window Model", color=etb_colors[0], hatch=hatches[3])
-        plt.bar(ind, AccumulateCenter1[0:8], width, label="Outlier Detection", bottom=Bottom[0:8], color=etb_colors[1],
+        plt.bar(ind, Center1[0:8], width, label="Outlier Detection", bottom=Bottom[0:8],
+                color=etb_colors[1],
                 hatch=hatches[1])
-        plt.bar(ind, AccumulateCenter2[0:8], width, label="Data Structure", bottom=AccumulateCenter1[0:8],
+        plt.bar(ind, Center2[0:8], width, label="Data Structure", bottom=AccumulateCenter1[0:8],
                 color=etb_colors[2],
                 hatch=hatches[2])
-        plt.bar(ind, Top[0:8], width, label="Offline Refinement", bottom=AccumulateCenter2[0:8], color=etb_colors[3],
+        plt.bar(ind, Top[0:8], width, label="Offline Refinement", bottom=AccumulateCenter2[0:8],
+                color=etb_colors[3],
                 hatch=hatches[0])
         plt.legend(loc=1, bbox_to_anchor=(1.02, 1.28), ncol=2, prop={'size': 11})
         # plt.show()
@@ -259,12 +270,14 @@ def execution_time_breakdown(reader, general, workload):
         plt.xticks(ind, generic_algo_name, rotation=25, size=11)
         plt.xticks(ind, generic_algo_name, rotation=25, size=11)
         plt.bar(ind, Bottom[8:18], width, label=design_aspects[0], color=etb_colors[0], hatch=hatches[3])
-        plt.bar(ind, AccumulateCenter1[8:18], width, label=design_aspects[1], bottom=Bottom[8:18], color=etb_colors[1],
+        plt.bar(ind, Center1[8:18], width, label=design_aspects[1], bottom=Bottom[8:18],
+                color=etb_colors[1],
                 hatch=hatches[1])
-        plt.bar(ind, AccumulateCenter2[8:18], width, label=design_aspects[2], bottom=AccumulateCenter1[8:18],
+        plt.bar(ind, Center2[8:18], width, label=design_aspects[2], bottom=AccumulateCenter1[8:18],
                 color=etb_colors[2],
                 hatch=hatches[2])
-        plt.bar(ind, Top[8:18], width, label=design_aspects[3], bottom=AccumulateCenter2[8:18], color=etb_colors[3],
+        plt.bar(ind, Top[8:18], width, label=design_aspects[3], bottom=AccumulateCenter2[8:18],
+                color=etb_colors[3],
                 hatch=hatches[0])
         plt.legend(loc=1, bbox_to_anchor=(1.02, 1.28), ncol=2, prop={'size': 11})
         # plt.show()
@@ -274,18 +287,31 @@ def execution_time_breakdown(reader, general, workload):
 
 
 @click.command()
-@click.option('--purity', default='raw/purity.csv', show_default=True)
-@click.option('--throughput', default='raw/throughput.csv', show_default=True)
-@click.option('--cmm', default='raw/cmm.csv', show_default=True)
-@click.option('--prog-fct', default='raw/prog-fct.csv', show_default=True)
-@click.option('--prog-kdd', default='raw/prog-kdd.csv', show_default=True)
-@click.option('--prog-sensor', default='raw/prog-sensor.csv', show_default=True)
-@click.option('--prog-insects', default='raw/prog-insects.csv', show_default=True)
+# @click.option('--purity', default='raw/purity.csv', show_default=True)
+# @click.option('--throughput', default='raw/throughput.csv', show_default=True)
+# @click.option('--cmm', default='raw/cmm.csv', show_default=True)
+# @click.option('--prog-fct', default='raw/prog-fct.csv', show_default=True)
+# @click.option('--prog-kdd', default='raw/prog-kdd.csv', show_default=True)
+# @click.option('--prog-sensor', default='raw/prog-sensor.csv', show_default=True)
+# @click.option('--prog-insects', default='raw/prog-insects.csv', show_default=True)
+# @click.option('--etb-fct', default='raw/etb-fct.csv', show_default=True)
+# @click.option('--etb-kdd', default='raw/etb-kdd.csv', show_default=True)
+# @click.option('--etb-sensor', default='raw/etb-sensor.csv', show_default=True)
+# @click.option('--etb-insects', default='raw/etb-insects.csv', show_default=True)
+# @click.option('--arr-rate', default='raw/arr-rate.csv', show_default=True)
+#
+@click.option('--purity', default='', show_default=True)
+@click.option('--throughput', default='', show_default=True)
+@click.option('--cmm', default='', show_default=True)
+@click.option('--prog-fct', default='', show_default=True)
+@click.option('--prog-kdd', default='', show_default=True)
+@click.option('--prog-sensor', default='', show_default=True)
+@click.option('--prog-insects', default='', show_default=True)
 @click.option('--etb-fct', default='raw/etb-fct.csv', show_default=True)
 @click.option('--etb-kdd', default='raw/etb-kdd.csv', show_default=True)
 @click.option('--etb-sensor', default='raw/etb-sensor.csv', show_default=True)
 @click.option('--etb-insects', default='raw/etb-insects.csv', show_default=True)
-@click.option('--arr-rate', default='raw/arr-rate.csv', show_default=True)
+@click.option('--arr-rate', default='', show_default=True)
 def draw_all_pictures(purity, throughput, cmm,
                       prog_fct, prog_kdd, prog_sensor, prog_insects,
                       etb_fct, etb_kdd, etb_sensor, etb_insects, arr_rate):
