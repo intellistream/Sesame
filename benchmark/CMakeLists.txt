@@ -18,11 +18,9 @@ if (BUILD_BENCHMARKS)
     include_directories("include/")
     add_executable(benchmark "src/Benchmark.cpp")
     target_link_libraries(benchmark sesame gflags)
-
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/datasets
-            DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-            DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_target(link_datasets ALL
+                  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/datasets ${CMAKE_CURRENT_BINARY_DIR}/datasets)
+    add_dependencies(benchmark link_datasets)
     message("---Done building benchmarks")
 else (BUILD_BENCHMARKS)
     message("---Not building benchmarks!")

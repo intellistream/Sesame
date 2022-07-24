@@ -1,6 +1,6 @@
 # Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.17)
 project(SESAME CXX)
 
 # Custom CMake find instructions and macros
