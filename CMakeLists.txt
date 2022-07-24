@@ -19,7 +19,7 @@ message(STATUS "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc
 message(STATUS "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11")
 
 # Set Optimization Flags
-set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -Werror=unused-variable -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -mavx")
+set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -Werror=unused-variable -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -mavx -static")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
 
@@ -74,7 +74,7 @@ add_subdirectory(third_party/gflags)
 # Add Library
 get_source_sesame(sesame_SOURCE_FILES)
 get_header_sesame(sesame_HEADER_FILES)
-add_library(sesame SHARED ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+add_library(sesame STATIC ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(sesame PUBLIC "include")
 target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread gflags)
