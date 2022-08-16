@@ -37,9 +37,9 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   case (CluStreamType): {
     return std::make_shared<CluStream>(cmd_params);
   }
-  case (BirchType): {
-    return std::make_shared<Birch>(cmd_params);
-  }
+  // case (BirchType): {
+  //   return std::make_shared<Birch>(cmd_params);
+  // }
   case (DenStreamType): {
     return std::make_shared<DenStream>(cmd_params);
   }
@@ -70,6 +70,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   case (V5Stream): {
     return std::make_shared<V5>(cmd_params);
   }
+  case (BirchType):
   case (V6Stream): {
     return std::make_shared<V6>(cmd_params);
   }
