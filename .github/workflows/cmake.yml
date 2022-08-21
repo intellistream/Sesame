@@ -24,6 +24,7 @@ jobs:
         submodules: recursive
     - name: Install gcc-11
       run: |
+        sudo apt-get -y upgrade
         sudo add-apt-repository 'deb http://mirrors.kernel.org/ubuntu hirsute main universe'
         sudo apt-get update
         sudo apt install gcc-11 g++-11
