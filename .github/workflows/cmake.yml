@@ -24,10 +24,9 @@ jobs:
         submodules: recursive
     - name: Install gcc-11
       run: |
-        sudo apt-get -y upgrade
-        sudo add-apt-repository 'deb http://mirrors.kernel.org/ubuntu focal main universe'
-        sudo apt-get update
-        sudo apt install gcc-11 g++-11
+        sudo sudo apt install build-essential manpages-dev software-properties-common
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt update && sudo apt install gcc-11 g++-11
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
         sudo apt install libboost-all-dev
