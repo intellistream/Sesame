@@ -4,13 +4,17 @@
 
 #ifndef COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
 #define COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
-#include <Algorithm/Algorithm.hpp>
-#include <Algorithm/DataStructure/CharacteristicVector.hpp>
-#include <Algorithm/DataStructure/DensityGrid.hpp>
-#include <Algorithm/DataStructure/GridCluster.hpp>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Sinks/DataSink.hpp>
-#include <Utils/BenchmarkUtils.hpp>
+
+#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/CharacteristicVector.hpp"
+#include "Algorithm/DataStructure/DensityGrid.hpp"
+#include "Algorithm/DataStructure/GridCluster.hpp"
+#include "Algorithm/WindowModel/LandmarkWindow.hpp"
+#include "Sinks/DataSink.hpp"
+#include "Utils/BenchmarkUtils.hpp"
+
+#include <omp.h>
+
 namespace SESAME {
 
 typedef std::unordered_map<DensityGrid, CharacteristicVector, GridKeyHash,
@@ -23,6 +27,7 @@ public:
   int gap;
   double dm;
   int NGrids;
+  double startTime = 0.0;
   int pointArrivingTime;
 
   TimeMeter timerMeter;
@@ -40,6 +45,7 @@ public:
   void RunOffline(DataSinkPtr sinkPtr) override;
 
 private:
+  bool clusterInitial = false;
   bool ifReCalculateN(PointPtr point);
   void reCalculateN();
   void GridListUpdate(PointPtr input);
@@ -70,6 +76,7 @@ private:
   HashMap checkOutlierTransferCluster(DensityGrid grid,
                                       CharacteristicVector characteristicVec,
                                       int gridClass);
+  double seconds() { return omp_get_wtime() - startTime; }
 };
 } // namespace SESAME
 #endif // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_

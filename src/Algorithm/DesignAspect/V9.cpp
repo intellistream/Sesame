@@ -24,6 +24,7 @@ SESAME::V9::V9(param_t &cmd_params) {
   this->NGrids = 1;
   this->minVals = std::vector<double>(V9Param.dim, 0);
   this->maxVals = std::vector<double>(V9Param.dim, 0);
+  pointArrivingTime = startTime = omp_get_wtime();
   param = cmd_params;
   sum_timer.Tick();
 }
@@ -31,7 +32,7 @@ SESAME::V9::V9(param_t &cmd_params) {
 SESAME::V9::~V9() = default;
 
 void SESAME::V9::RunOnline(PointPtr input) {
-  this->pointArrivingTime = input->getIndex();
+  this->pointArrivingTime = seconds();
   if (input->getIndex() >= this->V9Param.landmark) {
     ds_timer.Tick();
     if (ifReCalculateN(input)) {
@@ -39,12 +40,12 @@ void SESAME::V9::RunOnline(PointPtr input) {
       reCalculateN();
       GridListUpdate(input->copy()); // tempCoord
       //  timerMeter.dataInsertEndMeasure();
-      if ((input->getIndex() - this->V9Param.landmark) >= gap &&
-          (input->getIndex() - this->V9Param.landmark) / gap == 0)
+      int sec = seconds();
+      if (!clusterInitial && sec/gap==0)
         initialClustering();
       ds_timer.Tock();
       out_timer.Tick();
-      if ((input->getIndex() - this->V9Param.landmark) % (gap * 10) == 0) {
+      if (clusterInitial && sec % (gap * 10) == 0) {
         insertIntoOutliers();
         adjustClustering();
       }
@@ -206,6 +207,7 @@ void SESAME::V9::initialClustering() {
     changesMade = adjustLabels();
   } while (changesMade); // while changes are being made
   // // SESAME_INFO("INITIAL CLUSTERING FINISHED");
+  clusterInitial = true;
 }
 /**
  * Makes first change available to it by following the steps:
