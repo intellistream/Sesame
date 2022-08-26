@@ -37,7 +37,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new algo 3 \
     : join.new buf_size 500 \
     : join.new min_points 30 \
-    : join.new epsilon 20 \
+    : join.new epsilon 200 \
     : join.new base 2 \
     : join.new lambda 0.25 \
     : join.new mu 6 \
