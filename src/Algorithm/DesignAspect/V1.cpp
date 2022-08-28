@@ -30,9 +30,9 @@ std::string SESAME::V1::Serialize() {
 
 void SESAME::V1::Init() {
   this->cfTree = DataStructureFactory::createCFTree();
-  this->cfTree->setB(V1Param.max_in_nodes);
-  this->cfTree->setL(V1Param.max_leaf_nodes);
-  this->cfTree->setT(V1Param.distance_threshold);
+  this->cfTree->setB(param.max_in_nodes);
+  this->cfTree->setL(param.max_leaf_nodes);
+  this->cfTree->setT(param.distance_threshold);
   this->root = DataStructureFactory::createNode();
   this->root->setIsLeaf(true);
   this->root->setIndex(this->leafMask++);
@@ -49,7 +49,7 @@ bool SESAME::V1::checkoutOutlier(SESAME::PointPtr &point) {
       minDIstance = distance;
     }
   }
-  if (minDIstance > this->V1Param.outlier_distance_threshold)
+  if (minDIstance > this->param.outlier_distance_threshold)
     return false;
   else
     return true;
@@ -78,7 +78,7 @@ void SESAME::V1::insertPointIntoOutliers(SESAME::PointPtr &point) {
     double pointToOutlierDist = 0;
     insertCluster = this->outlierNodes[index];
     pointToClusterDist(point, insertCluster, pointToOutlierDist);
-    if (pointToOutlierDist < this->V1Param.distance_threshold) {
+    if (pointToOutlierDist < this->param.distance_threshold) {
       updateNLS(insertCluster, point, false);
     } else {
       insertCluster = make_shared<CFNode>();
@@ -91,12 +91,12 @@ void SESAME::V1::insertPointIntoOutliers(SESAME::PointPtr &point) {
 }
 
 void SESAME::V1::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
-  if (outCluster->getCF()->getN() >= this->V1Param.outlier_cap) {
+  if (outCluster->getCF()->getN() >= this->param.outlier_cap) {
     // need to transfer outlier cluster into real cluster
     this->outlierNodes.erase(this->outlierNodes.begin() +
                              outCluster->getIndex());
     auto curNode = this->root;
-    PointPtr center = make_shared<Point>(V1Param.dim);
+    PointPtr center = make_shared<Point>(param.dim);
     auto cf = outCluster->getCF();
     calculateCentroid(cf, center);
     while (1) {
@@ -106,7 +106,7 @@ void SESAME::V1::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
         if (curCF->getN() == 0) {
           initializeCF(curCF, center->getDimension());
         }
-        PointPtr centroid = make_shared<Point>(V1Param.dim);
+        PointPtr centroid = make_shared<Point>(param.dim);
         calculateCentroid(curCF, centroid);
         if (calculateRadius(center, centroid) <=
             this->cfTree->getT()) { // concept drift detection
@@ -125,7 +125,7 @@ void SESAME::V1::checkOutlierTransferCluster(SESAME::NodePtr &outCluster) {
 
 void SESAME::V1::RunOnline(const SESAME::PointPtr input) {
   // insert the root
-  if (input->getIndex() >= this->V1Param.landmark) {
+  if (input->getIndex() >= this->param.landmark) {
     forwardInsert(input->copy());
   }
 }
@@ -134,8 +134,8 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
   std::vector<PointPtr> onlineCenters;
   for (int i = 0; i < this->clusterNodes.size(); i++) {
     PointPtr centroid =
-        DataStructureFactory::createPoint(i, 1, V1Param.dim, 0);
-    for (int j = 0; j < V1Param.dim; j++) {
+        DataStructureFactory::createPoint(i, 1, param.dim, 0);
+    for (int j = 0; j < param.dim; j++) {
       centroid->setFeatureItem(this->clusterNodes[i]->getCF()->getLS().at(j) /
                                    this->clusterNodes[i]->getCF()->getN(),
                                j);
@@ -145,12 +145,12 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
   }
   // here if num_clusters is lower than online cluster center number, we choose
   // to skip offline.
-  this->km->Run(this->V1Param, onlineCenters, sinkPtr);
+  this->km->Run(this->param, onlineCenters, sinkPtr);
   // store outlier nodes
   for(int i = 0; i < this->outlierNodes.size(); i++) {
     PointPtr centroid =
-        DataStructureFactory::createPoint(i, 1, V1Param.dim, 0);
-    for (int j = 0; j < V1Param.dim; j++) {
+        DataStructureFactory::createPoint(i, 1, param.dim, 0);
+    for (int j = 0; j < param.dim; j++) {
       centroid->setFeatureItem(this->outlierNodes[i]->getCF()->getLS().at(j) /
                                    this->outlierNodes[i]->getCF()->getN(),
                                j);
@@ -163,7 +163,7 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
 }
 
 SESAME::V1::V1(param_t &cmd_params) {
-  this->V1Param = cmd_params;
+  this->param = cmd_params;
 }
 SESAME::V1::~V1() {}
 // when a new point insert into the CF, update the CF N, LS and SS
@@ -210,7 +210,7 @@ void SESAME::V1::calculateCentroid(SESAME::CFPtr &cf,
 void SESAME::V1::pointToClusterDist(SESAME::PointPtr &insertPoint,
                                     SESAME::NodePtr &node, double &dist) {
   dist = 0;
-  SESAME::PointPtr centroid = make_shared<SESAME::Point>(V1Param.dim);
+  SESAME::PointPtr centroid = make_shared<SESAME::Point>(param.dim);
   SESAME::CFPtr curCF = node->getCF();
   calculateCentroid(curCF, centroid);
   for (int i = 0; i < insertPoint->getDimension(); i++) {
@@ -224,8 +224,8 @@ void SESAME::V1::pointToClusterDist(SESAME::PointPtr &insertPoint,
 double SESAME::V1::clusterToClusterDist(SESAME::NodePtr &nodeA,
                                         SESAME::NodePtr &nodeB) {
   double dist = 0;
-  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(V1Param.dim);
-  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(V1Param.dim);
+  SESAME::PointPtr centroidA = make_shared<SESAME::Point>(param.dim);
+  SESAME::PointPtr centroidB = make_shared<SESAME::Point>(param.dim);
   SESAME::CFPtr curCFA = nodeA->getCF();
   SESAME::CFPtr curCFB = nodeB->getCF();
   calculateCentroid(curCFA, centroidA);
@@ -313,7 +313,7 @@ void SESAME::V1::addNodeNLSToNode(SESAME::NodePtr &child,
     vector<double> newLs, newSs;
     if (parCF->getLS().empty()) {
       parCF->setN(childCF->getN());
-      for (int i = 0; i < this->V1Param.dim; i++) {
+      for (int i = 0; i < this->param.dim; i++) {
         newLs.push_back((childCF->getLS().at(i)));
         newSs.push_back((childCF->getSS().at(i)));
       }
@@ -324,7 +324,7 @@ void SESAME::V1::addNodeNLSToNode(SESAME::NodePtr &child,
         newSs.push_back(childCF->getSS().at(i) + parCF->getSS().at(i));
       }
     }
-    if (newLs.size() != this->V1Param.dim) {
+    if (newLs.size() != this->param.dim) {
       std::cout << "Error!" << std::endl;
     }
     parCF->setLS(newLs);
@@ -368,7 +368,7 @@ void SESAME::V1::forwardInsert(SESAME::PointPtr point) {
           if (curCF->getN() == 0) {
             initializeCF(curCF, point->getDimension());
           }
-          PointPtr centroid = make_shared<Point>(V1Param.dim);
+          PointPtr centroid = make_shared<Point>(param.dim);
           calculateCentroid(curCF, centroid);
           if (calculateRadius(point, centroid) <=
               this->cfTree->getT()) { // concept drift detection

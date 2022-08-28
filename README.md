@@ -6,17 +6,18 @@ This project aims at building a scalable stream mining library on modern hardwar
 - The code is still under active development and more algorithms will be introduced.
 - We welcome your contributions, if you are interested to contribute to the project, please fork and submit a PR. If you have questions, feel free to log an issue or write an email to me: shuhao_zhang AT sutd.edu.sg
 
-| Algorithm  | Window Model                 | Outlier Detection | Data Structure  | Offline Refinement |
-| ---------- | ---------------------------- | ----------------- | --------------- | ------------------ |
-| V1 | Landmark             | Distance  | CF-Tree | KMeans++   |
-| V2 | Landmark             | Distance  | CF-Tree | DBSCAN     |
-| V3 | Landmark             | Distance  | CF-Tree | No         |
-| V4 | Sliding(Count-Based) | Distance  | CF-Tree | No         |
-| V5 | Damped               | Distance  | CF-Tree | No         |
-| **V6** | **Landmark**         | **No**    |**CF-Tree**  | **No**     |
-| V7 | Landmark             | Density   | CF-Tree | No         |
-| V8 | Landmark             | Distance  | Micro-Cluster | No         |
-| V9     | Landmark                 | Distance      | Grid          | No             |
+| Algorithm  | Window Model                 | Outlier Detection | Primitive Data Structure  |  Global Data Structure  | Offline Refinement |
+| ---------- | ---------------------------- | ----------------- | --------------------------| ----------------------- | -------------------|
+| V1 | Landmark             | Distance  | MC | Hierarchical |   KMeans++   |
+| V2 | Landmark             | Distance  | MC | Hierarchical |   DBSCAN     |
+| V3 | Landmark             | Distance  | MC | Hierarchical |   No         |
+| V4 | Sliding(Count-Based) | Distance  | MC | Hierarchical |   No         |
+| V5 | Damped               | Distance  | MC | Hierarchical |   No         |
+| **V6** | **Landmark**         | **No**    |**MC**  | **Hierarchical** |  **No**     |
+| V7 | Landmark             | Density   | MC | Hierarchical |  No         |
+| V8 | Landmark             | Distance  | MC | Partitioning |  No         |
+| V9 | Landmark                 | Distance      | Grid |  Partitioning |   No             |
+| V10 | Landmark                 | Distance      | Cluster Cell |  Hierarchical |   No             |
 
 
 

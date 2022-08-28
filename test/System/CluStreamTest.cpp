@@ -30,6 +30,7 @@ TEST(SystemTest, CluStream) {
   cmd_params.time_window = 200;
   cmd_params.time_interval = 100;
   cmd_params.num_online_clusters = 1000;
+  cmd_params.kmeansK = 100;
   cmd_params.radius = 10;
   cmd_params.buf_size = 1500;
   cmd_params.offline_time_window = 0;
