@@ -81,10 +81,11 @@ void SESAME::StreamKM::RunOffline(DataSinkPtr sinkPtr) {
 SESAME::StreamKM::StreamKM(param_t &cmd_params) {
   this->param = cmd_params;
   this->StreamKMParam.num_points = cmd_params.num_points;
-  this->StreamKMParam.num_clusters = cmd_params.num_clusters;
+  this->StreamKMParam.num_clusters = cmd_params.kmeansK;
   this->StreamKMParam.windowSize = cmd_params.coreset_size;
   this->StreamKMParam.seed = cmd_params.seed;
   this->StreamKMParam.dim = cmd_params.dim;
+
 }
 SESAME::StreamKM::~StreamKM() {
 

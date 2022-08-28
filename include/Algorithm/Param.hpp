@@ -100,6 +100,7 @@ struct param_t {
                                      // neighborhoods
   int outlier_cap;      // transfer outlier cluster and true cluster
   bool kmeanspp = true; // whether use kmeans++ to initialize the centroids
+  int kmeansK; // number of k in kmeans / kmeanspp
 
   double delta_grid =
       0.2; // The delta parameter used int the grid for guessing the optimum.

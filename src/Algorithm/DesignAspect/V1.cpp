@@ -163,18 +163,7 @@ void SESAME::V1::RunOffline(DataSinkPtr sinkPtr) {
 }
 
 SESAME::V1::V1(param_t &cmd_params) {
-  this->V1Param.num_points = cmd_params.num_points;
-  this->V1Param.dim = cmd_params.dim;
-  this->V1Param.max_in_nodes = cmd_params.max_in_nodes;
-  this->V1Param.max_leaf_nodes = cmd_params.max_leaf_nodes;           // 1
-  this->V1Param.distance_threshold = cmd_params.distance_threshold; // b
-  this->V1Param.landmark = cmd_params.landmark;
-  this->V1Param.num_clusters = cmd_params.num_clusters;
-  this->V1Param.seed = cmd_params.seed;
-  this->V1Param.outlier_distance_threshold =
-      cmd_params.outlier_distance_threshold;                                  // a
-  this->V1Param.outlier_cap = cmd_params.outlier_cap; // 2
-  this->V1Param.kmeanspp = true;
+  this->V1Param = cmd_params;
 }
 SESAME::V1::~V1() {}
 // when a new point insert into the CF, update the CF N, LS and SS
