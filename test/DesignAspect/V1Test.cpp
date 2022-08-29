@@ -25,7 +25,7 @@ TEST(DesignTest, V1) {
   cmd_params.distance_threshold = 100;
   cmd_params.max_in_nodes = 10;
   cmd_params.max_leaf_nodes = 20;
-  cmd_params.kmeansK = 7;
+  cmd_params.k = 7;
   cmd_params.dim = 54;
   cmd_params.num_clusters = 7;
   cmd_params.seed = 10;

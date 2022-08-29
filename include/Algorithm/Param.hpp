@@ -36,7 +36,6 @@ enum AlgoType {
   G8Stream,
   G9Stream,
   V10Stream,
-
 };
 
 extern char const *algo_names[40];
@@ -100,7 +99,7 @@ struct param_t {
                                      // neighborhoods
   int outlier_cap;      // transfer outlier cluster and true cluster
   bool kmeanspp = true; // whether use kmeans++ to initialize the centroids
-  int kmeansK; // number of k in kmeans / kmeanspp
+  int k = 0; // number of k in kmeans / kmeanspp
 
   double delta_grid =
       0.2; // The delta parameter used int the grid for guessing the optimum.
@@ -108,6 +107,7 @@ struct param_t {
                          // the optimum.
   int num_res;
   void Print() {
+    std::cout << "algo_id: \"" << algo << "\"" << std::endl;
     std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
     std::cout << "workload: " << std::filesystem::path(input_file).stem()
               << std::endl;
@@ -148,6 +148,7 @@ struct param_t {
     std::cout << "outlier_density_threshold: " << outlier_density_threshold
               << std::endl;
     std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
+    std::cout << "k: " << k << std::endl;
   }
 };
 

@@ -41,7 +41,7 @@ TEST(GenericTest, V1) {
   cmd_params.landmark = 1000;
   cmd_params.outlier_distance_threshold = 5000;
   cmd_params.outlier_cap = 10;
-  cmd_params.kmeansK = 100;
+  cmd_params.k = 100;
 
   cmd_params.input_file = std::filesystem::current_path().generic_string() +
                          "/datasets/CoverType.txt";

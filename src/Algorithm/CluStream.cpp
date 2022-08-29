@@ -23,7 +23,7 @@ SESAME::CluStream::CluStream(param_t &cmd_params) {
   this->CluStreamParam.num_last_arr = cmd_params.num_last_arr;
   this->CluStreamParam.time_window = cmd_params.time_window;
   this->CluStreamParam.time_interval = cmd_params.time_interval;
-  this->CluStreamParam.num_offline_clusters = cmd_params.kmeansK;
+  this->CluStreamParam.num_offline_clusters = cmd_params.k;
   this->CluStreamParam.radius = cmd_params.radius;
   this->CluStreamParam.seed = cmd_params.seed;
   this->CluStreamParam.buf_size = cmd_params.buf_size;

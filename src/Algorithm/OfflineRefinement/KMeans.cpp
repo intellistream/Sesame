@@ -286,7 +286,7 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
                          vector<PointPtr> &onlineCenters,
                          SESAME::DataSinkPtr sinkPtr) {
   srand(param.seed);
-  if(onlineCenters.size() <= param.kmeansK){
+  if(onlineCenters.size() <= param.k){
     int i = 0;
     for(auto el : onlineCenters) {
      el->setClusteringCenter(i++);
@@ -294,7 +294,7 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param,
     }
   } else{
     bool flagToStop = false;
-    int numberOfCenters = param.kmeansK;
+    int numberOfCenters = param.k;
     int numberOfInput = (int)onlineCenters.size();
     std::vector<PointPtr> offlineCenters;
     std::vector<std::vector<PointPtr>> oldGroups, newGroups;
