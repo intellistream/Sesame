@@ -85,6 +85,8 @@ CREATE VIEW g8 as SELECT id, run_begin, algo, workload, num_points, landmark, ou
 
 CREATE VIEW g9 as SELECT id, run_begin, algo, workload, num_points, landmark, outlier_distance_threshold as odt, outlier_cap as oc, beta, cm, cl, cmm, purity FROM sesame WHERE algo = 'G9'; 
 
+CREATE VIEW g10 as SELECT id, run_begin, algo, workload, num_points, qps, cmm, purity, landmark, radius, delta, beta, buf_size, alpha, lambda FROM sesame WHERE algo = 'G10'; 
+
 CREATE VIEW perf as SELECT id, run_begin, algo, workload, num_points, num_res, arr_rate, et_s, purity, cmm, qps, lat_us, sum_us/1000000 as sum_s, win_us/1000000 as win_s, ds_us/1000000 as ds_s, out_us/1000000 as out_s, ref_us/1000000 as off_s, on_20, on_40, on_60, on_80, on_100 FROM sesame WHERE id >= 10584;
 CREATE VIEW temp AS SELECT * FROM perf WHERE id>=13512;
 

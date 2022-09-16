@@ -164,11 +164,14 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
 
 ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new algo 30 \
-    : join.new radius 20 \
+    : join.new radius 100 \
     : join.new delta 300 \
     : join.new beta 0.7 \
-    : join.new buf_size 50000 \
+    : join.new buf_size 500 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 10000 \
     : join.run run.sesame
+
+# radius: larger faster
+# buf_size: larger slower
