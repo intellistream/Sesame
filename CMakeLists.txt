@@ -19,9 +19,9 @@ message(STATUS "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc
 message(STATUS "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11")
 
 # Set Optimization Flags
-set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -Werror=unused-variable -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -mavx -static")
+set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -Werror=unused-variable -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -static")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG -march=native")
 
 # Set LOGGING_LEVEL Flag
 if (SESAME_LOGGING_LEVEL)
