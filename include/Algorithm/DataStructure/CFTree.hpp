@@ -322,7 +322,7 @@ public:
       auto c = GenericFactory::New<Point>(dim);
       c->setIndex(-1);
       c->setClusteringCenter(-1);
-      for (int i = 0; i < cf.ls.size(); ++i)
+      for (int i = 0; i < dim; ++i)
         c->setFeatureItem(cf.ls[i] / cf.num, i);
       return c;
     }

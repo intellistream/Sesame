@@ -368,9 +368,8 @@ ClusteringFeaturesList::~ClusteringFeaturesList() {}
 
 ClusteringFeaturesList::NodePtr ClusteringFeaturesList::Insert(PointPtr point) {
   if (clusters_.empty()) {
-    auto node = GenericFactory::New<Node>(dim);
+    auto node = GenericFactory::New<Node>(point);
     clusters_.push_back(node);
-    node->Update(point);
     return node;
   } else {
     auto [node, dist] = CalcClosestNode(clusters_, point);
