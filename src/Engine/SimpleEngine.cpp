@@ -73,7 +73,11 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   algoPtr->Init();
 
+#ifndef NDEBUG
   boost::progress_display show_progress(algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
+#else
+  int show_progress = 0;
+#endif
 
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.

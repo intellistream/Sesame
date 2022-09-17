@@ -107,7 +107,7 @@ struct param_t {
                          // the optimum.
   int num_res;
   void Print() {
-    std::cout << "algo_id: \"" << algo << "\"" << std::endl;
+    std::cout << "algo_id: " << algo << std::endl;
     std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
     std::cout << "workload: " << std::filesystem::path(input_file).stem()
               << std::endl;

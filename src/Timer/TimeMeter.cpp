@@ -306,20 +306,20 @@ void SESAME::TimeMeter::AccumulateWithPointTimer(timespec start, timespec end, l
 
 
 void SESAME::TimeMeter::printTime( bool initial,bool snapshot,bool outlierBuffer,bool finalCluster){//
-  std::cout << "Time (Count in ns) \n"
+  std::cerr << "Time (Count in ns) \n"
   << "data insertion: "<<dataInsertTime << "\n"
   << "cluster update: "<<onlineClusterUpdateTime<< std::endl;
   if(initial)//
   {
     MeterInitialUSEC();
-    std::cout<< "initial: "<<initialTime << std::endl;
+    std::cerr<< "initial: "<<initialTime << std::endl;
   }
   if(snapshot)//
-    std::cout<< "snapshot: "<<snapshotTime << ", count "<<timer.snapshotCnt<< std::endl;
+    std::cerr<< "snapshot: "<<snapshotTime << ", count "<<timer.snapshotCnt<< std::endl;
   if(outlierBuffer)//
-    std::cout<< "outlier Detection: "<<outlierDetectionTime <<  std::endl;
+    std::cerr<< "outlier Detection: "<<outlierDetectionTime <<  std::endl;
   if(finalCluster)//
-    std::cout<< "final cluster: "<<finalClusterTime << ", count "<<timer.periodicalCluCnt<< std::endl;
+    std::cerr<< "final cluster: "<<finalClusterTime << ", count "<<timer.periodicalCluCnt<< std::endl;
 }
 void SESAME::TimeMeter::printCumulative(){
   std::cerr << "Cumulative Overall Time every "<<interval<<" tuples (Count in ns)\n";
