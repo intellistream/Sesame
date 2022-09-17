@@ -113,7 +113,7 @@ void SESAME::DataSource::runningRoutine() {
   barrierPtr->arrive_and_wait();
   overallMeter.END_MEASURE();
   SESAME_DEBUG("DataSource sourceEnd emit data");
-  printTime();
+  // printTime();
 }
 
 bool SESAME::DataSource::start(int id) {

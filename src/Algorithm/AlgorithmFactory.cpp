@@ -70,7 +70,6 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
   case (V5Stream): {
     return std::make_shared<V5>(cmd_params);
   }
-  case (BirchType):
   case (V6Stream): {
     return std::make_shared<V6>(cmd_params);
   }
@@ -118,6 +117,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params) {
                                              DistanceDetection, NoRefinement>>(
         cmd_params);
   }
+  case (BirchType):
   case (G6Stream): {
     return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
                                              NoDetection, NoRefinement>>(
