@@ -176,7 +176,7 @@ TEST(GenericTest, V3) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.403, 0.01);
+  ASSERT_NEAR(res->purity, 0.994, 0.01);
 }
 
 TEST(GenericTest, V4) {
@@ -269,7 +269,7 @@ TEST(GenericTest, V5) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.451, 0.01);
+  ASSERT_NEAR(res->purity, 0.4163, 0.01);
 }
 
 TEST(GenericTest, V6) {
@@ -312,7 +312,7 @@ TEST(GenericTest, V6) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.3987, 0.01);
+  ASSERT_NEAR(res->purity, 0.7938, 0.01);
 }
 
 TEST(GenericTest, V7) {
@@ -406,5 +406,5 @@ TEST(GenericTest, V8) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-//  ASSERT_NEAR(res->purity, 0.3887, 0.01);
+  ASSERT_NEAR(res->purity, 0.9962, 0.01);
 }
