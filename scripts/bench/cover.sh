@@ -79,6 +79,7 @@ ticat ${meta} : mark-time bench_begin : ${cover} \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 500 \
+    : join.new k 70 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench_begin : ${cover} \

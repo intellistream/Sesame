@@ -72,7 +72,28 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench_begin : ${insects} \
-    : join.new algo 21,22,23 \
+    : join.new algo 21 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 0.5 \
+    : join.new landmark 20000 \
+    : join.new outlier_distance_threshold 0.12 \
+    : join.new outlier_cap 100 \
+    : join.new k 102 \
+    : join.run run.sesame
+
+ticat ${meta} : mark-time bench_begin : ${insects} \
+    : join.new algo 22 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 0.5 \
+    : join.new landmark 20000 \
+    : join.new outlier_distance_threshold 0.12 \
+    : join.new outlier_cap 100 \
+    : join.run run.sesame
+
+ticat ${meta} : mark-time bench_begin : ${insects} \
+    : join.new algo 23 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 0.5 \
