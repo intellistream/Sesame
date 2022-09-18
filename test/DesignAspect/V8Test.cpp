@@ -54,5 +54,5 @@ TEST(DesignTest, V8) {
   auto res =
       BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-  ASSERT_NEAR(res->purity, 0.3887, 0.01);
+  ASSERT_NEAR(res->purity, 0.2987, 0.01);
 }
