@@ -13,6 +13,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new algo 1 \
     : join.new seed 1 \
     : join.new coreset_size 7 \
+    : join.new k 70 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${cover} \

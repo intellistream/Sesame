@@ -22,6 +22,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new algo 1 \
     : join.new seed 10 \
     : join.new coreset_size 363 \
+    : join.new k 588 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${eds}\
