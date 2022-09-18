@@ -26,7 +26,10 @@ public:
   NoRefinement(const StreamClusteringParam &param) {}
   void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input,
            DataSinkPtr sinkPtr) {
+    int i = 0;
     for (auto p : input) {
+      p->setClusteringCenter(i);
+      i++;
       sinkPtr->put(p->copy());
     }
   }

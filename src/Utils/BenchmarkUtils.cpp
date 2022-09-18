@@ -492,21 +492,21 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &cmd_params,
   std::vector<SESAME::PointPtr> predicts;
   // the output clusterID start from 0
   if (cmd_params.run_eval) {
-    if (cmd_params.run_offline)
-    {
-      SESAME::UtilityFunctions::groupByCentersWithOffline(
-          inputs, results, predicts, cmd_params.dim);
-      // 使用offline的算法不管是否detect
-      // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
-      // clustering center
-    }
-    else
-    {
+//    if (cmd_params.run_offline)
+//    {
+//      SESAME::UtilityFunctions::groupByCentersWithOffline(
+//          inputs, results, predicts, cmd_params.dim);
+//      // 使用offline的算法不管是否detect
+//      // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
+//      // clustering center
+//    }
+//    else
+//    {
       // the output is the clustering center so we need to help every input data
       // find its nearest center
       SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts,
                                                cmd_params.dim);
-    }
+//    }
   }
 
   cmd_params.num_res = results.size();

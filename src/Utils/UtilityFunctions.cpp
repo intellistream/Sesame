@@ -84,35 +84,35 @@ std::shared_ptr<std::barrier<>>
 SESAME::UtilityFunctions::createBarrier(int count) {
   return std::make_shared<std::barrier<>>(count);
 }
-void SESAME::UtilityFunctions::groupByCenters(
-    const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
-    std::vector<PointPtr> &output, int dim) {
-  auto n = input.size();
-  for (int i = 0; i < n; i++)
-    output.push_back(input[i]->copy());
-#pragma omp parallel for
-  for (int i = 0; i < n; i++) {
-    auto min = DBL_MAX;
-    int selectCenterIndex = -1;
-    bool outlier = false;
-    for (int j = 0; j < centers.size(); j++) {
-      double dis = output[i]->L2Dist(centers[j]);
-      if (min > dis) {
-        selectCenterIndex = j;
-        min = dis;
-        if(centers[j]->getOutlier()){
-          outlier = true;
-        } else {
-          outlier = false;
-        }
-      }
-    }
-    output[i]->setOutlier(outlier);
-    output[i]->setClusteringCenter(selectCenterIndex);
-  }
-}
+//void SESAME::UtilityFunctions::groupByCenters(
+//    const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
+//    std::vector<PointPtr> &output, int dim) {
+//  auto n = input.size();
+//  for (int i = 0; i < n; i++)
+//    output.push_back(input[i]->copy());
+//#pragma omp parallel for
+//  for (int i = 0; i < n; i++) {
+//    auto min = DBL_MAX;
+//    int selectCenterIndex = -1;
+//    bool outlier = false;
+//    for (int j = 0; j < centers.size(); j++) {
+//      double dis = output[i]->L2Dist(centers[j]);
+//      if (min > dis) {
+//        selectCenterIndex = j;
+//        min = dis;
+//        if(centers[j]->getOutlier()){
+//          outlier = true;
+//        } else {
+//          outlier = false;
+//        }
+//      }
+//    }
+//    output[i]->setOutlier(outlier);
+//    output[i]->setClusteringCenter(selectCenterIndex);
+//  }
+//}
 
-void SESAME::UtilityFunctions::groupByCentersWithOffline(
+void SESAME::UtilityFunctions::groupByCenters(
     const std::vector<PointPtr> &input, const std::vector<PointPtr> &centers,
     std::vector<PointPtr> &output, int dim) {
   auto n = input.size();
@@ -128,10 +128,10 @@ void SESAME::UtilityFunctions::groupByCentersWithOffline(
         min = dis;
       }
     }
-    if(output[i]->getClusteringCenter() == -1){
-      output[i]->setOutlier(true);
-    } else {
-      output[i]->setOutlier(false);
-    }
+//    if(output[i]->getClusteringCenter() == -1){
+//      output[i]->setOutlier(true);
+//    } else {
+//      output[i]->setOutlier(false);
+//    }
   }
 }
