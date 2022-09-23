@@ -107,9 +107,9 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 24 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.5 \
+    : join.new distance_threshold 1 \
     : join.new sliding 200000 \
-    : join.new outlier_distance_threshold 0.12 \
+    : join.new outlier_distance_threshold 1.2 \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
@@ -139,7 +139,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 27 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 0.5 \
+    : join.new distance_threshold 0.7 \
     : join.new landmark 10000 \
     : join.new outlier_density_threshold 100 \
     : join.new neighbor_distance 300 \
@@ -148,10 +148,10 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 
 ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new algo 28 \
-    : join.new distance_threshold 2 \
+    : join.new distance_threshold 0.5 \
     : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 100 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_distance_threshold 0.12 \
+    : join.new outlier_cap 100 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench_begin : ${insects} \
