@@ -197,6 +197,6 @@ do
     run
 done
 
-export eds="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363 : join.new run_eval false : join.new arr_rate 2000,20000,50000,100000"
+export eds="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363 : join.new run_eval false : join.new arr_rate 25000,50000,100000,200000"
 run
 
