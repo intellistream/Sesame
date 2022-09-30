@@ -1,0 +1,1 @@
+SELECT algo, sliding, purity, qps FROM extra WHERE tag="extra.sliding" ORDER BY algo, sliding;

@@ -149,6 +149,7 @@ struct param_t {
               << std::endl;
     std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
     std::cout << "k: " << k << std::endl;
+    std::cout << "run_offline: " << run_offline << std::endl;
   }
 };
 

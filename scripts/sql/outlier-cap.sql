@@ -1,0 +1,1 @@
+SELECT algo, outlier_cap, purity, qps FROM extra WHERE tag="extra.outlier_cap" ORDER BY algo, outlier_cap;
