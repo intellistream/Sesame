@@ -15,7 +15,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new distance_threshold 100 \
     : join.new landmark 1000 \
     : join.new outlier_distance_threshold 500 \
-    : join.new outlier_cap 100,200,500,1000,2000,5000,10000,20000,50000,100000 \
+    : join.new outlier_cap 100,200,500,1000,2000,5000,10000,20000,40000,60000,80000,100000 \
     : join.run run.sesame
 
 ticat ${meta} : mark-time bench.begin : ${eds}\
@@ -26,7 +26,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new landmark 1000 \
     : join.new outlier_density_threshold 100 \
     : join.new neighbor_distance 500 \
-    : join.new outlier_cap 100,200,500,1000,2000,5000,10000,20000,50000,100000 \
+    : join.new outlier_cap 100,200,500,1000,2000,5000,10000,20000,40000,60000,80000,100000 \
     : join.run run.sesame
 
 meta="$ori_meta {bench.tag=extra.landmark}"
@@ -51,6 +51,34 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new sliding 1000,2000,4000,8000,16000,20000,24000,32000,64000,128000 \
     : join.new outlier_distance_threshold 15 \
     : join.new outlier_cap 500 \
+    : join.run run.sesame
+
+meta="$ori_meta {bench.tag=extra.damped}"
+
+ticat ${meta} : mark-time bench.begin : ${eds}\
+    : join.new algo 25 \
+    : join.new max_in_nodes 100 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 100 \
+    : join.new landmark 1000 \
+    : join.new outlier_distance_threshold 15 \
+    : join.new outlier_cap 500 \
+    : join.new lambda [0.2,2,0.2] \
+    : join.new alpha 1.1 \
+    : join.new buf_size 10000 \
+    : join.run run.sesame
+
+ticat ${meta} : mark-time bench.begin : ${eds}\
+    : join.new algo 25 \
+    : join.new max_in_nodes 100 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 100 \
+    : join.new landmark 1000 \
+    : join.new outlier_distance_threshold 15 \
+    : join.new outlier_cap 500 \
+    : join.new lambda 0.5 \
+    : join.new alpha [1.1,2.9,0.2] \
+    : join.new buf_size 10000 \
     : join.run run.sesame
 
 meta="$ori_meta {bench.tag=extra.offline} join.new run_offline false,true"

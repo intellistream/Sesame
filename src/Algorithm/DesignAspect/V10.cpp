@@ -140,6 +140,8 @@ void SESAME::V10::RunOnline(SESAME::PointPtr input) {
 }
 
 void SESAME::V10::RunOffline(SESAME::DataSinkPtr sinkPtr) {
+  std::cout << "cluster_size: " << clusters.size() << std::endl;
+  std::cout << "outlier_size: " << outres->getOutliers().size() << std::endl;
   on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   int i = 0;

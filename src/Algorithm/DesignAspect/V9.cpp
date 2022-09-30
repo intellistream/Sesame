@@ -58,6 +58,8 @@ void SESAME::V9::RunOnline(PointPtr input) {
 }
 
 void SESAME::V9::RunOffline(DataSinkPtr sinkPtr) {
+  std::cout << "cluster_size: " << clusterList.size() << std::endl;
+  std::cout << "outlier_size: " << gridList.size() << std::endl;
   on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   std::vector<SESAME::PointPtr> points;

@@ -1,9 +1,9 @@
 algo,workload,run_offline,purity,qps
-StreamKMeans,CoverType,0,0.489109,24074.9
-StreamKMeans,CoverType,1,0.489109,24105.1
-StreamKMeans,INSECTS,0,0.478671,20576.8
-StreamKMeans,INSECTS,1,0.488874,20593.8
-StreamKMeans,KDD99,0,0.598914,30096.2
-StreamKMeans,KDD99,1,0.598914,30077.4
-StreamKMeans,sensor,0,0.0693233,76336.5
-StreamKMeans,sensor,1,0.0693233,75915.2
+StreamKMeans,CoverType,0,0.489109,23966
+StreamKMeans,CoverType,1,0.489109,24154.3
+StreamKMeans,INSECTS,0,0.478671,20728.5
+StreamKMeans,INSECTS,1,0.488874,20851
+StreamKMeans,KDD99,0,0.598914,30318
+StreamKMeans,KDD99,1,0.598914,30294.2
+StreamKMeans,sensor,0,0.0693233,76896.1
+StreamKMeans,sensor,1,0.0693233,76847.7

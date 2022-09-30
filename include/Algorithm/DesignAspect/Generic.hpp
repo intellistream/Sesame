@@ -161,6 +161,8 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input) {
 
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr) {
+  std::cout << "cluster_size: " << d->clusters().size() << std::endl;
+  std::cout << "outlier_size: " << outliers_.size() << std::endl;
   on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   std::vector<PointPtr> onlineCenters;
