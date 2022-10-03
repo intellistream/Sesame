@@ -27,7 +27,7 @@ SESAME::DPNodePtr SESAME::Cache::add(SESAME::PointPtr &p, double startTime) {
   double minDis = FLT_MAX;
   SESAME::DPNodePtr nn;
   for (int i = 0; i < size; i++) {
-    dis = p->getDisTo(buffer[i]->GetCenter());
+    dis = p->L2Dist(buffer[i]->GetCenter());
     if (dis < minDis) {
       minDis = dis;
       nn = buffer[i];
@@ -62,7 +62,7 @@ void SESAME::Cache::compDeltaRho(double time) {
     DPNodePtr cc = clus[i];
     auto minDis = DBL_MAX;
     for (int j = i - 1; j >= 0; j--) {
-      dis = cc->GetCenter()->getDisTo(clus[j]->GetCenter());
+      dis = cc->GetCenter()->L2Dist(clus[j]->GetCenter());
       if (minDis > dis) {
         minDis = dis;
         cc->SetDep(clus[j]);

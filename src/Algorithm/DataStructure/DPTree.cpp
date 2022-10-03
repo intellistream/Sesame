@@ -95,7 +95,7 @@ SESAME::DPNodePtr SESAME::DPTree::findNN(SESAME::PointPtr p,
   auto minDis = DBL_MAX;
   for (int i = 0; i < size; i++) {
     Clus[i]->SetRho(Clus[i]->GetRho() * coef);
-    dis = p->getDisTo(Clus[i]->GetCenter());
+    dis = p->L2Dist(Clus[i]->GetCenter());
     Clus[i]->SetDis(dis);
     if (dis < minDis) {
       minDis = dis;
@@ -171,7 +171,7 @@ void SESAME::DPTree::computeDeltaNoOpt(int index) {
   clu->SetDelta(DBL_MAX);
   for (int i = size - 1; i >= 0; i--) {
     if (i < index) {
-      dis = clu->GetCenter()->getDisTo(Clus[i]->GetCenter());
+      dis = clu->GetCenter()->L2Dist(Clus[i]->GetCenter());
       if (clu->GetDelta() > dis) {
         if (clu->GetDep() != nullptr) {
           clu->GetDep()->removeSuccessor(clu);
@@ -250,7 +250,7 @@ void SESAME::DPTree::computeDeltaF1(int index) {
   // with one optimization
 
   for (int i = index - 1; i >= 0; i--) {
-    dis = clu->GetCenter()->getDisTo(Clus[i]->GetCenter());
+    dis = clu->GetCenter()->L2Dist(Clus[i]->GetCenter());
     if (dis < clu->GetDelta()) {
       clu->SetDep(Clus[i]);
       clu->SetDelta(dis);
@@ -339,7 +339,7 @@ void SESAME::DPTree::computeDelta(int index) {
 
   for (int i = index - 1; i >= 0; i--) {
     if (clu->GetDelta() > Clus[i]->GetDis() - clu->GetDis()) {
-      dis = clu->GetCenter()->getDisTo(Clus[i]->GetCenter());
+      dis = clu->GetCenter()->L2Dist(Clus[i]->GetCenter());
 
       if (dis < clu->GetDelta()) {
         clu->SetDep(Clus[i]);

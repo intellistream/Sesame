@@ -48,7 +48,6 @@ public:
   int getDimension() const;
   void setDimension(int d);
   int getFeatureLength();
-  double getDisTo(PointPtr p);
   double getMinDist() const;
   void setMinDist(double min_dist);
   void setTimeStamp(int t);

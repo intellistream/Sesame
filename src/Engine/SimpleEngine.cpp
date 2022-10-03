@@ -10,6 +10,10 @@
 
 #include <boost/progress.hpp>
 
+#ifdef GPERF
+#include <gperftools/profiler.h>
+#endif
+
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -79,6 +83,11 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   int show_progress = 0;
 #endif
 
+#ifdef GPERF
+  std::string prof = "/tmp/" + algoPtr->param.Workload() + "." + algoPtr->param.Name() + ".prof";
+  ProfilerStart(prof.c_str());
+#endif
+
   // run online clustering
   while (!sourcePtr->sourceEnded()) {//continuously processing infinite incoming data streams.
     if (!sourcePtr->empty()) {
@@ -107,6 +116,10 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
   algoPtr->RunOffline(sinkPtr);
   SESAME_INFO("Engine sourceEnd process data");
   overallMeter.refinementEndMeasure();
+
+#ifdef GPERF
+  ProfilerStop();
+#endif
 
   overallMeter.overallEndMeasure();
   overallMeter.END_MEASURE();

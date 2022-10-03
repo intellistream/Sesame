@@ -108,9 +108,8 @@ struct param_t {
   int num_res;
   void Print() {
     std::cout << "algo_id: " << algo << std::endl;
-    std::cout << "algo: \"" << algo_names[algo] << "\"" << std::endl;
-    std::cout << "workload: " << std::filesystem::path(input_file).stem()
-              << std::endl;
+    std::cout << "algo: \"" << Name() << "\"" << std::endl;
+    std::cout << "workload: \"" << Workload() << "\"" << std::endl;
     std::cout << "num_points: " << num_points << std::endl;
     std::cout << "dim: " << dim << std::endl;
     std::cout << "num_clusters: " << num_clusters << std::endl;
@@ -150,6 +149,12 @@ struct param_t {
     std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
     std::cout << "k: " << k << std::endl;
     std::cout << "run_offline: " << run_offline << std::endl;
+  }
+  std::string Workload() {
+    return std::filesystem::path(input_file).stem();
+  }
+  std::string Name() {
+    return algo_names[algo];
   }
 };
 

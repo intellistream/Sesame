@@ -74,7 +74,7 @@ SESAME::DPNodePtr SESAME::OutlierReservoir::insert(SESAME::PointPtr &p, double t
       this->outliers.erase(it++);
       continue;
     } else {
-      dis = p->getDisTo(it->get()->GetCenter());
+      dis = p->L2Dist(it->get()->GetCenter());
       if (dis < minDis) {
         minDis = dis;
         nn = it->get()->copy();

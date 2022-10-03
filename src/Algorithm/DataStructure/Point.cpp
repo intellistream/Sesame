@@ -59,15 +59,6 @@ int Point::getDimension() const { return this->dim; }
 
 int Point::getFeatureLength() { return (int)this->feature.size(); }
 
-double Point::getDisTo(PointPtr p) {
-  double distance = 0;
-  for (int i = 0; i < this->dim; i++) {
-    distance =
-        distance + pow(p->getFeatureItem(i) - this->getFeatureItem(i), 2);
-  }
-  return sqrt(distance);
-}
-
 double Point::getMinDist() const { return min_dist; }
 
 void Point::setMinDist(double min_dist) { min_dist = min_dist; }
