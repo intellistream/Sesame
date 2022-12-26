@@ -2,6 +2,10 @@
 // Created by tuidan on 2021/9/15.
 //
 
+#include <gtest/gtest.h>
+
+#include <filesystem>
+
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Sinks/DataSinkFactory.hpp"
@@ -9,52 +13,47 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
-#include <filesystem>
+TEST(SystemTest, EDMStream)
+{
+    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+    // [3, 3, 4, 6, 6, 7, 9, 9]
+    // Parse parameters.
+    param_t cmd_params;
+    cmd_params.num_points = 5000;
+    cmd_params.dim        = 5;
+    cmd_params.alpha      = 0.998;
+    cmd_params.num_cache  = 100;
+    cmd_params.radius     = 0.1;  // 220
+    cmd_params.lambda     = 1;
+    cmd_params.delta      = 10;
 
-#include <gtest/gtest.h>
+    cmd_params.beta = 0.001;
+    cmd_params.opt  = 2;
+    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+    // [3, 3, 4, 6, 6, 7, 9, 9]
+    cmd_params.num_clusters = 54;
+    cmd_params.time_decay   = true;
 
-TEST(SystemTest, EDMStream) {
-  // Setup Logs.
-  setupLogging("benchmark.log", LOG_DEBUG);
-  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-  // [3, 3, 4, 6, 6, 7, 9, 9]
-  // Parse parameters.
-  param_t cmd_params;
-  cmd_params.num_points = 5000;
-  cmd_params.dim = 5;
-  cmd_params.alpha = 0.998;
-  cmd_params.num_cache = 100;
-  cmd_params.radius = 0.1; // 220
-  cmd_params.lambda = 1;
-  cmd_params.delta = 10;
+    cmd_params.input_file =
+        std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
+    cmd_params.output_file = "results.txt";
+    cmd_params.algo        = SESAME::EDMStreamType;
 
-  cmd_params.beta = 0.001;
-  cmd_params.opt = 2;
-  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-  // [3, 3, 4, 6, 6, 7, 9, 9]
-  cmd_params.num_clusters = 54;
-  cmd_params.time_decay = true;
+    std::vector<SESAME::PointPtr> input;
+    std::vector<SESAME::PointPtr> results;
 
-  cmd_params.input_file =
-      std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
-  cmd_params.output_file = "results.txt";
-  cmd_params.algo = SESAME::EDMStreamType;
+    // Create Spout.
+    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
+    // Directly load data from file. TODO: configure it to load from external
+    // sensors, e.g., HTTP.
+    BenchmarkUtils::loadData(cmd_params, sourcePtr);
 
-  std::vector<SESAME::PointPtr> input;
-  std::vector<SESAME::PointPtr> results;
+    // Create Sink.
+    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
 
-  // Create Spout.
-  SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-  // Directly load data from file. TODO: configure it to load from external
-  // sensors, e.g., HTTP.
-  BenchmarkUtils::loadData(cmd_params, sourcePtr);
+    // Create Algorithm.
+    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
 
-  // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-  // Create Algorithm.
-  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
-  // Run algorithm producing results.
-  BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    // Run algorithm producing results.
+    BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 }
