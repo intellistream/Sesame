@@ -176,24 +176,24 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
                     }
                 }
             }
-            if(timer_enabled){
-              for (auto iter = outliers_.begin(); iter != outliers_.end();) {
-                auto node = iter->get();
-                if (node != nullptr) {
-                  bool b = true;
-                  if (input->index - node->timestamp < param.clean_interval) {
-                    b = false;
-                  }
-                  if(b) {
-                    outliers_.erase(iter++);
-                  }else{
-                    iter ++;
-                  }
-                }else{
-                  iter ++;
-                }
-              }
-            }
+//            if(timer_enabled){
+//              for (auto iter = outliers_.begin(); iter != outliers_.end();) {
+//                auto node = iter->get();
+//                if (node != nullptr) {
+//                  bool b = true;
+//                  if (input->index - node->timestamp < param.clean_interval) {
+//                    b = false;
+//                  }
+//                  if(b) {
+//                    outliers_.erase(iter++);
+//                  }else{
+//                    iter ++;
+//                  }
+//                }else{
+//                  iter ++;
+//                }
+//              }
+//            }
         }
     } else{
       win_timer.Tick();
