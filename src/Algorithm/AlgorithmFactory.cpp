@@ -168,19 +168,19 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     case (G11Stream):
     {
         return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 NoDetection<false, true>, NoRefinement>>(
+                                                 DistanceDetection<false, true>, NoRefinement>>(
             cmd_params);
     }
     case (G12Stream):
     {
         return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 NoDetection<false, false>, NoRefinement>>(
+                                                 DistanceDetection<false, false>, NoRefinement>>(
             cmd_params);
     }
     case (G13Stream):
     {
         return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 NoDetection<true, true>, NoRefinement>>(
+                                                 DistanceDetection<true, true>, NoRefinement>>(
             cmd_params);
     }
     default: throw std::invalid_argument("Unsupported algorithm");

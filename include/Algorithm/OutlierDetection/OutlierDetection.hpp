@@ -46,7 +46,19 @@ public:
     template <NodeConcept N>
     bool Check(N node)
     {
-        return node->cf.num < outlier_cap_;
+        if (node != nullptr) return node->cf.num < outlier_cap_;
+        return false;
+    }
+    template <NodeConcept N>
+    bool TimerCheck(PointPtr input, N node)
+    {
+        if (node == nullptr) return false;
+        bool is_outlier = node->cf.num < outlier_cap_;
+        if constexpr (timer_enabled)
+        {
+            if (input->index - node->timestamp < interval_) is_outlier = false;
+        }
+        return is_outlier;
     }
 };
 
@@ -100,18 +112,35 @@ public:
     template <NodeConcept N>
     bool Check(N node)
     {
-        return node->cf.num < outlier_cap_;
+        if (node != nullptr) return node->cf.num < outlier_cap_;
+        return false;
+    }
+    template <NodeConcept N>
+    bool TimerCheck(PointPtr input, N node)
+    {
+        if (node == nullptr) return false;
+        bool is_outlier = node->cf.num < outlier_cap_;
+        if constexpr (timer_enabled)
+        {
+            if (input->index - node->timestamp < interval_) is_outlier = false;
+        }
+        return is_outlier;
     }
 };
 
 template <bool B, bool T>
 class NoDetection : public OutlierDetection
 {
+    const int outlier_cap_;
+    const size_t interval_;
+
 public:
     static constexpr bool buffer_enabled = B;
     static constexpr bool timer_enabled  = T;
 
-    NoDetection(const StreamClusteringParam &param) {}
+    NoDetection(const StreamClusteringParam &param)
+        : outlier_cap_(param.outlier_cap), interval_(param.clean_interval)
+    {}
     template <NodeConcept N>
     bool Check(PointPtr point, std::vector<N> &nodes)
     {
@@ -120,7 +149,19 @@ public:
     template <NodeConcept N>
     bool Check(N node)
     {
+        if (node != nullptr) return node->cf.num < outlier_cap_;
         return false;
+    }
+    template <NodeConcept N>
+    bool TimerCheck(PointPtr input, N node)
+    {
+        if (node == nullptr) return false;
+        bool is_outlier = node->cf.num < outlier_cap_;
+        if constexpr (timer_enabled)
+        {
+            if (input->index - node->timestamp < interval_) is_outlier = false;
+        }
+        return is_outlier;
     }
 };
 

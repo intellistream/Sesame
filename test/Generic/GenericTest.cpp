@@ -67,8 +67,8 @@ TEST(GenericTest, V1)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.676, 0.03);
-    ASSERT_NEAR(res->cmm, 0.941, 0.03);
+    ASSERT_NEAR(res->purity, 0.6323, 0.03);
+    ASSERT_NEAR(res->cmm, 0.9338, 0.03);
 }
 
 TEST(GenericTest, V2)
@@ -128,7 +128,7 @@ TEST(GenericTest, V3)
     cmd_params.dim                        = 2;
     cmd_params.num_clusters               = 75;
     cmd_params.time_decay                 = true;
-    cmd_params.landmark                   = 0;
+    cmd_params.landmark                   = 1000;
     cmd_params.outlier_distance_threshold = 500;
     cmd_params.outlier_cap                = 2000;
 
@@ -157,7 +157,8 @@ TEST(GenericTest, V3)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.994, 0.01);
+    ASSERT_NEAR(res->purity, 0.8032, 0.02);
+    ASSERT_NEAR(res->cmm, 0.7709, 0.02);
 }
 
 TEST(GenericTest, V4)
@@ -240,7 +241,7 @@ TEST(GenericTest, V5)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.4163, 0.01);
+    ASSERT_NEAR(res->purity, 0.2987, 0.01);
 }
 
 TEST(GenericTest, V6)
@@ -281,7 +282,7 @@ TEST(GenericTest, V6)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.7938, 0.01);
+    ASSERT_NEAR(res->purity, 0.8514, 0.02);
 }
 
 TEST(GenericTest, V7)
@@ -323,7 +324,7 @@ TEST(GenericTest, V7)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.401, 0.01);
+    ASSERT_NEAR(res->purity, 0.432, 0.02);
 }
 
 TEST(GenericTest, V8)
@@ -337,7 +338,7 @@ TEST(GenericTest, V8)
     cmd_params.dim                        = 2;
     cmd_params.num_clusters               = 75;
     cmd_params.time_decay                 = true;
-    cmd_params.landmark                   = 0;
+    cmd_params.landmark                   = 1000;
     cmd_params.run_offline                = false;
     cmd_params.outlier_distance_threshold = 600;
     cmd_params.outlier_cap                = 2000;
@@ -409,7 +410,7 @@ TEST(GenericTest, V11)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.5689, 0.01);
+    ASSERT_NEAR(res->purity, 0.82, 0.01);
 }
 
 TEST(GenericTest, V12)
@@ -450,7 +451,7 @@ TEST(GenericTest, V12)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.7938, 0.01);
+    ASSERT_NEAR(res->purity, 0.3559, 0.01);
 }
 
 TEST(GenericTest, V13)
@@ -492,5 +493,5 @@ TEST(GenericTest, V13)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.802, 0.01);
+    ASSERT_NEAR(res->purity, 0.8344, 0.01);
 }
