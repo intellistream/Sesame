@@ -207,15 +207,15 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
         }
         onlineCenters.push_back(centroid);
       }
-      for (int i = 0; i < outliers_.size(); ++i)
-      {
-        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
-        for (int j = 0; j < param.dim; j++)
-        {
-          centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
-        }
-        onlineCenters.push_back(centroid);
-      }
+//      for (int i = 0; i < outliers_.size(); ++i)
+//      {
+//        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+//        for (int j = 0; j < param.dim; j++)
+//        {
+//          centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+//        }
+//        onlineCenters.push_back(centroid);
+//      }
       d = GenericFactory::New<D>(param);
       o = GenericFactory::New<O>(param);
       d->Init();
@@ -279,15 +279,15 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
         }
         onlineCenters.push_back(centroid);
     }
-    for (int i = 0; i < outliers_.size(); ++i)
-    {
-        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
-        for (int j = 0; j < param.dim; j++)
-        {
-            centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
-        }
-        onlineCenters.push_back(centroid);
-    }
+//    for (int i = 0; i < outliers_.size(); ++i)
+//    {
+//        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+//        for (int j = 0; j < param.dim; j++)
+//        {
+//            centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+//        }
+//        onlineCenters.push_back(centroid);
+//    }
     r->Run(param, onlineCenters, ptr);
     ref_timer.Tock();
     sum_timer.Tock();
