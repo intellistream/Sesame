@@ -215,8 +215,8 @@ TEST(GenericTest, V5)
     cmd_params.time_decay                 = false;
     cmd_params.lambda                     = 1.25;
     cmd_params.alpha                      = 2;
-    cmd_params.outlier_distance_threshold = 5000;
-    cmd_params.outlier_cap                = 10;
+    cmd_params.outlier_distance_threshold = 500;
+    cmd_params.outlier_cap                = 100;
 
     cmd_params.input_file = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
