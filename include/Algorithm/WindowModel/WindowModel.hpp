@@ -28,7 +28,7 @@ private:
 
 public:
   Landmark(const StreamClusteringParam &param) : landmark_(param.landmark) {}
-  bool Add(PointPtr input) { return input->getIndex() >= landmark_; }
+  bool Add(PointPtr input) { return input->getIndex() % landmark_ != 0; }
 };
 
 class Sliding : WindowModel {

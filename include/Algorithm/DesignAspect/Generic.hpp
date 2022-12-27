@@ -74,6 +74,7 @@ private:
     std::shared_ptr<O> o;
     std::shared_ptr<R> r;
 
+    std::vector<PointPtr> onlineCenters;
     std::vector<NodePtr> outliers_;
     std::unordered_map<PointPtr, NodePtr> point_map_;
     std::unordered_map<NodePtr, std::unordered_set<PointPtr>> node_map_;
@@ -157,25 +158,68 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
             node_map_[node].insert(input);
             point_map_[input] = node;
         }
-        if constexpr (timer_enabled)
-        {
-            if (input->index % param.time_window == 0)
-            {
-                auto &cls = d->clusters();
-                for (auto &node : cls)
-                    if (node != nullptr)
-                    {
-                        if (input->index - node->timestamp >= param.clean_interval)
-                        {
-                            if constexpr (buffer_enabled)
-                            {
-                                outliers_.push_back(node);
-                            }
-                            d->Remove(node);
+        if (input->index % param.time_window == 0) {
+          auto &cls = d->clusters();
+            for (auto &node : cls) {
+                if (node != nullptr) {
+                    if (node->cf.num < param.outlier_cap) {
+                      bool b = true;
+                      if (input->index - node->timestamp < param.clean_interval and timer_enabled) {
+                        b = false;
+                      }
+                      if (b) {
+                        if constexpr (buffer_enabled) {
+                          outliers_.push_back(node);
                         }
+                        d->Remove(node);
+                      }
                     }
+                }
+            }
+            if(timer_enabled){
+              for (auto iter = outliers_.begin(); iter != outliers_.end();) {
+                auto node = iter->get();
+                if (node != nullptr) {
+                  bool b = true;
+                  if (input->index - node->timestamp < param.clean_interval) {
+                    b = false;
+                  }
+                  if(b) {
+                    outliers_.erase(iter++);
+                  }else{
+                    iter ++;
+                  }
+                }else{
+                  iter ++;
+                }
+              }
             }
         }
+    } else{
+      win_timer.Tick();
+      auto clusters = d->clusters();
+      for (int i = 0; i < clusters.size(); i++)
+      {
+        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+        for (int j = 0; j < param.dim; j++)
+        {
+          centroid->feature[j] = clusters[i]->cf.ls[j] / clusters[i]->cf.num;
+        }
+        onlineCenters.push_back(centroid);
+      }
+      for (int i = 0; i < outliers_.size(); ++i)
+      {
+        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+        for (int j = 0; j < param.dim; j++)
+        {
+          centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+        }
+        onlineCenters.push_back(centroid);
+      }
+      d = GenericFactory::New<D>(param);
+      o = GenericFactory::New<O>(param);
+      d->Init();
+      win_timer.Tock();
     }
     if constexpr (has_update)
     {
@@ -256,6 +300,7 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
     {
         auto node   = GenericFactory::New<Node>(d, point);
         node->index = 0;
+        node->timestamp = point->getIndex();
         outliers_.push_back(node);
         return node;
     }
@@ -265,12 +310,14 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
         if (closest.second < param.distance_threshold)
         {
             closest.first->Update(point);
+            closest.first->timestamp = point->getIndex();
             return closest.first;
         }
         else
         {
             auto node   = GenericFactory::New<Node>(d, point);
             node->index = outliers_.size();
+            node->timestamp = point->getIndex();
             outliers_.push_back(node);
             return node;
         }
