@@ -28,6 +28,7 @@ TEST(SystemTest, Birch)
     cmd_params.distance_threshold = 100;
     cmd_params.dim                = 54;
     cmd_params.num_clusters       = 7;
+    cmd_params.landmark           = 1000;
     cmd_params.time_decay         = false;
 
     cmd_params.input_file =
@@ -53,6 +54,6 @@ TEST(SystemTest, Birch)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.7017, 0.02);
-    ASSERT_NEAR(res->cmm, 0.8897, 0.02);
+    ASSERT_NEAR(res->purity, 0.739, 0.02);
+    ASSERT_NEAR(res->cmm, 0.9141, 0.02);
 }
