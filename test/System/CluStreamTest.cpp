@@ -59,6 +59,5 @@ TEST(SystemTest, CluStream)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->cmm, 0.0234, 0.002);
     ASSERT_NEAR(res->purity, 0.0906, 0.002);
 }

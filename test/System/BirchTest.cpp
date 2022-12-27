@@ -55,5 +55,4 @@ TEST(SystemTest, Birch)
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
     ASSERT_NEAR(res->purity, 0.4367, 0.02);
-    ASSERT_NEAR(res->cmm, 0.7774, 0.02);
 }
