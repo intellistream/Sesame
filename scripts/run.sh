@@ -1,17 +1,20 @@
 #!/bin/bash
 
+export bench_begin=`date +"%Y-%m-%d %H:%M:%S"`
+export bench_id=`date +"%H%M%S"`
+
 . $HOME/.bashrc
 cd $(dirname ${BASH_SOURCE[0]})
 rm run.log
 
-export bench_begin=`date +"%Y-%m-%d %H:%M:%S"`
+echo "bench_id=${bench_id}"
 
 # export bench_begin='2022-09-30 17:19:10'
 
 sh_files=`ls bench/`
 for sh in ${sh_files[@]}; do
     echo "running $sh..."
-    # bash <bench/$sh >>run.log 2>&1
+    bash <bench/$sh >>run-${bench_id}.log 2>&1
 done
 
 export bench_end=`date +"%Y-%m-%d %H:%M:%S"`
