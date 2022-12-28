@@ -78,6 +78,7 @@ private:
     std::unordered_map<PointPtr, NodePtr> point_map_;
     std::unordered_map<NodePtr, std::unordered_set<PointPtr>> node_map_;
     std::vector<PointPtr> online_centers;
+    size_t cluster_size_ = 0, outlier_size_ = 0;
     NodePtr InsertOutliers(PointPtr point);
     void OutputOnline();
 };
@@ -231,11 +232,11 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 {
-    std::cout << "cluster_size: " << d->clusters().size() << std::endl;
-    std::cout << "outlier_size: " << outliers_.size() << std::endl;
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     OutputOnline();
+    std::cout << "cluster_size: " << cluster_size_ << std::endl;
+    std::cout << "outlier_size: " << outlier_size_ << std::endl;
     r->Run(param, online_centers, ptr);
     ref_timer.Tock();
     sum_timer.Tock();
@@ -276,6 +277,8 @@ template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::OutputOnline()
 {
     auto clusters = d->clusters();
+    cluster_size_ += clusters.size();
+    outlier_size_ += outliers_.size();
     for (int i = 0; i < clusters.size(); i++)
     {
         auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
