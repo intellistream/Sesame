@@ -14,10 +14,10 @@
 #include "Sinks/DataSink.hpp"
 #include "Sources/DataSource.hpp"
 
+#include <getopt.h>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
-#include <getopt.h>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -25,17 +25,13 @@
 
 using namespace SESAME;
 
-class BenchmarkUtils {
+class BenchmarkUtils
+{
 public:
-  static void print_help(char *string);
-  static void parseArgs(int argc, char **argv, param_t &cmd_params);
-  static void defaultParam(param_t &cmd_params);
-  static void loadData(param_t &cmd_params,
-                       DataSourcePtr dataSourcePtr);
-  static BenchmarkResultPtr runBenchmark(param_t &cmd_params,
-                                         DataSourcePtr sourcePtr,
-                                         DataSinkPtr sinkPtr,
-                                         AlgorithmPtr algoPtr);
+    static void defaultParam(param_t &cmd_params);
+    static void loadData(param_t &cmd_params, DataSourcePtr dataSourcePtr);
+    static BenchmarkResultPtr runBenchmark(param_t &cmd_params, DataSourcePtr sourcePtr,
+                                           DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
 };
 
-#endif // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
+#endif  // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

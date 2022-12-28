@@ -15,6 +15,9 @@
 
 #include <gflags/gflags.h>
 
+#include <filesystem>
+
+using namespace std::filesystem;
 using namespace std;
 using namespace SESAME;
 
@@ -38,7 +41,7 @@ DEFINE_int32(buf_size, 10000, "Buffer size");
 DEFINE_double(alpha, 0.998, "Alpha");
 DEFINE_double(lambda, 1.0, "Lambda");
 // DBStream
-DEFINE_int32(clean_interval, 400, "Clean interval");
+DEFINE_int32(clean_interval, 2500, "Clean interval");
 DEFINE_double(min_weight, 0.5, "Minimum weight");
 DEFINE_double(base, 2, "Base");
 // DStream
@@ -51,12 +54,10 @@ DEFINE_double(epsilon, 20.0, "Epsilon");
 DEFINE_double(mu, 2.0, "Mu");
 // Clustream
 DEFINE_int32(num_last_arr, 2, "Number of last arrive");
-DEFINE_int32(time_window, 200, "Time window");
+DEFINE_int32(time_window, 50, "Time window");
 DEFINE_int32(num_online_clusters, 80, "Number of online clusters");
 // SL-KMeans
-DEFINE_double(
-    delta_grid, 0.2,
-    "The delta parameter used int the grid for guessing the optimum.");
+DEFINE_double(delta_grid, 0.2, "The delta parameter used int the grid for guessing the optimum.");
 DEFINE_int32(num_samples, 100, "Number of samples");
 // Generic
 DEFINE_int32(landmark, 1000, "Landmark");
@@ -72,81 +73,81 @@ DEFINE_bool(run_eval, true, "Whether run evaluation");
 DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
 DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 
-int main(int argc, char **argv) {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-  // Parse parameters.
-  param_t cmd_params;
-  cmd_params.algo = (AlgoType)FLAGS_algo;
-  BenchmarkUtils::defaultParam(cmd_params);
-  // gen from gen_flags.js
-  cmd_params.algo = (AlgoType)FLAGS_algo;
-  cmd_params.input_file = FLAGS_input_file;
-  cmd_params.num_points = FLAGS_num_points;
-  cmd_params.dim = FLAGS_dim;
-  cmd_params.num_clusters = FLAGS_num_clusters;
-  cmd_params.max_in_nodes = FLAGS_max_in_nodes;
-  cmd_params.max_leaf_nodes = FLAGS_max_leaf_nodes;
-  cmd_params.distance_threshold = FLAGS_distance_threshold;
-  cmd_params.seed = FLAGS_seed;
-  cmd_params.coreset_size = FLAGS_coreset_size;
-  cmd_params.radius = FLAGS_radius;
-  cmd_params.delta = FLAGS_delta;
-  cmd_params.beta = FLAGS_beta;
-  cmd_params.buf_size = FLAGS_buf_size;
-  cmd_params.alpha = FLAGS_alpha;
-  cmd_params.lambda = FLAGS_lambda;
-  cmd_params.clean_interval = FLAGS_clean_interval;
-  cmd_params.min_weight = FLAGS_min_weight;
-  cmd_params.base = FLAGS_base;
-  cmd_params.cm = FLAGS_cm;
-  cmd_params.cl = FLAGS_cl;
-  cmd_params.grid_width = FLAGS_grid_width;
-  cmd_params.min_points = FLAGS_min_points;
-  cmd_params.epsilon = FLAGS_epsilon;
-  cmd_params.mu = FLAGS_mu;
-  cmd_params.num_last_arr = FLAGS_num_last_arr;
-  cmd_params.time_window = FLAGS_time_window;
-  cmd_params.num_online_clusters = FLAGS_num_online_clusters;
-  cmd_params.delta_grid = FLAGS_delta_grid;
-  cmd_params.num_samples = FLAGS_num_samples;
-  cmd_params.landmark = FLAGS_landmark;
-  cmd_params.sliding = FLAGS_sliding;
-  cmd_params.outlier_distance_threshold = FLAGS_outlier_distance_threshold;
-  cmd_params.outlier_cap = FLAGS_outlier_cap;
-  cmd_params.outlier_density_threshold = FLAGS_outlier_density_threshold;
-  cmd_params.neighbor_distance = FLAGS_neighbor_distance;
-  cmd_params.k = FLAGS_k;
-  cmd_params.arr_rate = FLAGS_arr_rate;
-  cmd_params.run_offline = FLAGS_run_offline;
-  cmd_params.run_eval = FLAGS_run_eval;
-  cmd_params.run_cmm = FLAGS_run_cmm;
-  cmd_params.run_pur = FLAGS_run_pur;
+int main(int argc, char **argv)
+{
+    // Parse parameters.
+    param_t param;
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+    param.algo = (AlgoType)FLAGS_algo;
+    BenchmarkUtils::defaultParam(param);
+    // gen from gen_flags.js
+    param.algo                       = (AlgoType)FLAGS_algo;
+    param.input_file                 = FLAGS_input_file;
+    param.num_points                 = FLAGS_num_points;
+    param.dim                        = FLAGS_dim;
+    param.num_clusters               = FLAGS_num_clusters;
+    param.max_in_nodes               = FLAGS_max_in_nodes;
+    param.max_leaf_nodes             = FLAGS_max_leaf_nodes;
+    param.distance_threshold         = FLAGS_distance_threshold;
+    param.seed                       = FLAGS_seed;
+    param.coreset_size               = FLAGS_coreset_size;
+    param.radius                     = FLAGS_radius;
+    param.delta                      = FLAGS_delta;
+    param.beta                       = FLAGS_beta;
+    param.buf_size                   = FLAGS_buf_size;
+    param.alpha                      = FLAGS_alpha;
+    param.lambda                     = FLAGS_lambda;
+    param.clean_interval             = FLAGS_clean_interval;
+    param.min_weight                 = FLAGS_min_weight;
+    param.base                       = FLAGS_base;
+    param.cm                         = FLAGS_cm;
+    param.cl                         = FLAGS_cl;
+    param.grid_width                 = FLAGS_grid_width;
+    param.min_points                 = FLAGS_min_points;
+    param.epsilon                    = FLAGS_epsilon;
+    param.mu                         = FLAGS_mu;
+    param.num_last_arr               = FLAGS_num_last_arr;
+    param.time_window                = FLAGS_time_window;
+    param.num_online_clusters        = FLAGS_num_online_clusters;
+    param.delta_grid                 = FLAGS_delta_grid;
+    param.num_samples                = FLAGS_num_samples;
+    param.landmark                   = FLAGS_landmark;
+    param.sliding                    = FLAGS_sliding;
+    param.outlier_distance_threshold = FLAGS_outlier_distance_threshold;
+    param.outlier_cap                = FLAGS_outlier_cap;
+    param.outlier_density_threshold  = FLAGS_outlier_density_threshold;
+    param.neighbor_distance          = FLAGS_neighbor_distance;
+    param.k                          = FLAGS_k;
+    param.arr_rate                   = FLAGS_arr_rate;
+    param.run_offline                = FLAGS_run_offline;
+    param.run_eval                   = FLAGS_run_eval;
+    param.run_cmm                    = FLAGS_run_cmm;
+    param.run_pur                    = FLAGS_run_pur;
 
-  cmd_params.output_file = "results.txt";
-  cmd_params.fast_source = true;
-  cmd_params.store = false;
+    param.output_file = "results.txt";
+    param.fast_source = true;
+    param.store       = false;
 
-  std::vector<SESAME::PointPtr> input;
-  std::vector<SESAME::PointPtr> results;
+    std::vector<SESAME::PointPtr> input;
+    std::vector<SESAME::PointPtr> results;
 
-  // Create Spout.
-  SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
+    // Create Spout.
+    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
 
-  // Directly load data from file. TODO: configure it to load from external
-  // sensors, e.g., HTTP.
-  BenchmarkUtils::loadData(cmd_params, sourcePtr);
+    // Directly load data from file. TODO: configure it to load from external
+    // sensors, e.g., HTTP.
+    BenchmarkUtils::loadData(param, sourcePtr);
 
-  // Create Sink.
-  SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
+    // Create Sink.
+    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
 
-  // Create Algorithm.
-  SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
+    // Create Algorithm.
+    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(param);
 
-  cmd_params.Print();
+    param.Print();
 
-  // Run algorithm producing results.
-  auto res =
-      BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    // Run algorithm producing results.
+    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
-  res->Print();
+    res->Print();
 }

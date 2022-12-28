@@ -54,6 +54,7 @@ struct param_t
     bool store       = true;
 
     std::string input_file, output_file;
+    std::string bin_dir;
     AlgoType algo;
     int dataset_option;
 
@@ -90,7 +91,7 @@ struct param_t
     // used in design aspect
     bool run_offline = false;  // determine whether to run the offline refinement
     bool run_eval    = true;
-    bool run_cmm = false, run_pur = true;
+    bool run_cmm = true, run_pur = true;
     int landmark = 1000;          // this is the index of landmark point[start from 0](determine
                                   // to process the algorithm from which algorithm)
     int sliding = 10;             // since we test the count-based sliding window, this is
