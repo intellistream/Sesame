@@ -174,3 +174,13 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new lambda 1 \
     : join.new landmark 10000 \
     : join.run run.sesame
+
+ticat ${meta} : mark-time bench_begin : ${cover} \
+    : join.new algo 31,32,33 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 600 \
+    : join.new landmark 10000 \
+    : join.new outlier_distance_threshold 1000 \
+    : join.new outlier_cap 500 \
+    : join.run run.sesame
