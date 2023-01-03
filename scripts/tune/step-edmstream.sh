@@ -5,7 +5,7 @@
 for i in $(seq 1 5)
 do
     eds=`eval echo \$\{eds$i\}`
-    ticat ${meta} : mark-time bench.begin : ${eds} \
+    ticat ${meta} : ${eds} \
         : join.new algo 5 \
         : join.new radius 30 \
         : join.new delta 300 \
@@ -20,7 +20,7 @@ done
 for i in $(seq 1 3)
 do
     edso=`eval echo \$\{edso$i\}`
-    ticat ${meta} : mark-time bench.begin : ${edso} \
+    ticat ${meta} : ${edso} \
         : join.new algo 5 \
         : join.new radius 20 \
         : join.new delta 300 \

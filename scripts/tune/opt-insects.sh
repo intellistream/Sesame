@@ -9,7 +9,7 @@ export insects="join.new input_file $HOME/Sesame/benchmark/datasets/INSECTS.txt 
 #     : join.new distance_threshold 50,100,250,600 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 2 \
 #     : join.new num_last_arr 2 \
 #     : join.new time_window 200 \
@@ -28,7 +28,7 @@ export insects="join.new input_file $HOME/Sesame/benchmark/datasets/INSECTS.txt 
 #     : join.new base 2 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 3 \
 #     : join.new buf_size 500,1000,1500,2000 \
 #     : join.new min_points 30 \
@@ -58,7 +58,7 @@ ticat ${meta} : ${insects} \
     : join.new lambda 1 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 7 \
 #     : join.new num_samples 100,500,1000 \
 #     : join.new sliding 100,1000,2000 \

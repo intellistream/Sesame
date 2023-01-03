@@ -2,7 +2,7 @@
 
 . "`cd $(dirname ${BASH_SOURCE[0]}) && pwd`/all.sh"
 
-ticat ${meta} : mark-time bench.begin : ${cover} \
+ticat ${meta} : ${cover} \
     : join.new algo 4 \
     : join.new lambda 0.125 \
     : join.new radius 300 \
@@ -12,7 +12,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 4 \
     : join.new lambda 0.25 \
     : join.new radius 200 \
@@ -22,7 +22,7 @@ ticat ${meta} : mark-time bench.begin : ${kdd99} \
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 4 \
     : join.new lambda 0.01 \
     : join.new radius 5 \
@@ -32,7 +32,7 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 4 \
     : join.new lambda 0.001 \
     : join.new radius 0.1 \
@@ -42,7 +42,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new base 2 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${eds} \
+# ticat ${meta} : ${eds} \
 #     : join.new algo 4 \
 #     : join.new lambda 0.998 \
 #     : join.new radius 20 \
@@ -52,7 +52,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
 #     : join.new base 2 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 4 \
 #     : join.new lambda 0.998 \
 #     : join.new radius 10 \

@@ -34,7 +34,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${eds} \
+# ticat ${meta} : ${eds} \
 #     : join.new algo 28 \
 #     : join.new distance_threshold 100 \
 #     : join.new landmark 1000,10000,20000 \
@@ -42,7 +42,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 #     : join.new outlier_cap 100,300,500 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 28 \
 #     : join.new distance_threshold 20 \
 #     : join.new landmark 1000,10000,20000 \

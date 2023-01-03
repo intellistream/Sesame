@@ -26,3 +26,5 @@
 /cmake-*
 /debug
 .vscode/
+
+*.log

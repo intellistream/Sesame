@@ -34,7 +34,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new landmark 20000 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${eds} \
+# ticat ${meta} : ${eds} \
 #     : join.new algo 26 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -42,7 +42,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 #     : join.new landmark 1000,10000,20000 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 26 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \

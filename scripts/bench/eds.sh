@@ -11,21 +11,21 @@ export edso2="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.tx
 export edso3="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
 
 function run(){
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 0 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
     : join.new distance_threshold 10 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 1 \
     : join.new seed 10 \
     : join.new coreset_size 363 \
     : join.new k 588 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 200 \
@@ -34,7 +34,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new buf_size 1500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 3 \
     : join.new buf_size 500 \
     : join.new min_points 30 \
@@ -45,7 +45,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new beta 0.2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 4 \
     : join.new lambda 0.01 \
     : join.new radius 100 \
@@ -55,7 +55,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 5 \
     : join.new radius 30 \
     : join.new delta 300 \
@@ -65,7 +65,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new lambda 1 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 6 \
     : join.new lambda 0.998 \
     : join.new beta 0.001 \
@@ -74,14 +74,14 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new grid_width 4 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 7 \
     : join.new delta_grid 0.2 \
     : join.new num_samples 10 \
     : join.new sliding 10 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 21 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -92,7 +92,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new k 588 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 22 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -104,7 +104,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new epsilon 10 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 23 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -114,7 +114,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 200 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 24 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -124,7 +124,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 25 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -137,7 +137,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new buf_size 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 26 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -147,7 +147,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 200 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 27 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \
@@ -158,7 +158,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 28 \
     : join.new distance_threshold 100 \
     : join.new landmark 1000 \
@@ -166,7 +166,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 29 \
     : join.new beta 0.001 \
     : join.new cm 0.001 \
@@ -176,7 +176,7 @@ ticat ${meta} : mark-time bench.begin : ${eds}\
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 30 \
     : join.new radius 30 \
     : join.new delta 300 \
@@ -186,7 +186,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new lambda 1 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds}\
+ticat ${meta} : ${eds}\
     : join.new algo 31,32,33 \
     : join.new max_in_nodes 50 \
     : join.new max_leaf_nodes 10 \

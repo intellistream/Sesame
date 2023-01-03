@@ -32,7 +32,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 29 \
     : join.new beta 0.001,0.002 \
     : join.new cm 0.0005,0.001,0.002 \
@@ -42,7 +42,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${edso} \
+ticat ${meta} : ${edso} \
     : join.new algo 29 \
     : join.new beta 0.001,0.3 \
     : join.new cm 4\

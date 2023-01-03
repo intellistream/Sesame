@@ -9,7 +9,7 @@ function SEQ()
 }
 
 # window model
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 23 \
     : join.new max_in_nodes 100 \
     : join.new max_leaf_nodes 100 \
@@ -19,7 +19,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 23 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -29,7 +29,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
 #     : join.new outlier_cap 500 \
 #     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 24 \
     : join.new max_in_nodes 100 \
     : join.new max_leaf_nodes 100 \
@@ -39,7 +39,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 24 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -53,7 +53,7 @@ for l in $(SEQ 0.2 0.2 2.0)
 do
     # a=$(python3 -c "print($l+1.0)")
     # echo a=$a,l=$l
-    ticat ${meta} : mark-time bench.begin : ${eds} \
+    ticat ${meta} : ${eds} \
     : join.new algo 25 \
     : join.new max_in_nodes 100 \
     : join.new max_leaf_nodes 100 \
@@ -68,7 +68,7 @@ done
 
 for a in $(SEQ 1.2 0.2 3.0)
 do
-    ticat ${meta} : mark-time bench.begin : ${edso} \
+    ticat ${meta} : ${edso} \
         : join.new algo 25 \
         : join.new max_in_nodes 100 \
         : join.new max_leaf_nodes 100 \
@@ -82,7 +82,7 @@ do
 done
 
 # buffer size
-# ticat ${meta} : mark-time bench.begin : ${eds} \
+# ticat ${meta} : ${eds} \
 #     : join.new algo 23 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -92,7 +92,7 @@ done
 #     : join.new outlier_cap 500 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 23 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -106,7 +106,7 @@ done
 
 for m in $(SEQ 100 100 2000)
 do
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 23 \
     : join.new max_in_nodes $m \
     : join.new max_leaf_nodes 100 \
@@ -116,7 +116,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 23 \
     : join.new max_in_nodes 100 \
     : join.new max_leaf_nodes $m \

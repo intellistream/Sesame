@@ -2,7 +2,7 @@
 
 . "`cd $(dirname ${BASH_SOURCE[0]}) && pwd`/part.sh"
 
-ticat ${meta} : mark-time bench.begin : ${cover} \
+ticat ${meta} : ${cover} \
     : join.new algo 3 \
     : join.new buf_size 500,1000,1500,2000 \
     : join.new min_points 30 \
@@ -13,7 +13,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new beta 0.2,0.4,0.6,0.8 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 3 \
     : join.new buf_size 500,1000,1500,2000 \
     : join.new min_points 30 \
@@ -24,7 +24,7 @@ ticat ${meta} : mark-time bench.begin : ${kdd99} \
     : join.new beta 0.2,0.4,0.6,0.8 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 3 \
     : join.new buf_size 500,1000,1500,2000 \
     : join.new min_points 5 \
@@ -35,7 +35,7 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new beta 0.2,0.4,0.6,0.8 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 3 \
     : join.new buf_size 500,1000,1500,2000 \
     : join.new min_points 30 \
@@ -46,7 +46,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new beta 0.2,0.4,0.6,0.8 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${edso} \
+ticat ${meta} : ${edso} \
     : join.new algo 3 \
     : join.new buf_size 500,1000,1500,2000 \
     : join.new min_points 30 \

@@ -2,7 +2,7 @@
 
 . "`cd $(dirname ${BASH_SOURCE[0]}) && pwd`/all.sh"
 
-ticat ${meta} : mark-time bench.begin : ${cover} \
+ticat ${meta} : ${cover} \
     : join.new algo 30 \
     : join.new radius 100 \
     : join.new delta 1500 \
@@ -13,7 +13,7 @@ ticat ${meta} : mark-time bench.begin : ${cover} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 30 \
     : join.new radius 100 \
     : join.new delta 1500 \
@@ -24,7 +24,7 @@ ticat ${meta} : mark-time bench.begin : ${kdd99} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 30 \
     : join.new radius 1.6 \
     : join.new delta 300 \
@@ -35,7 +35,7 @@ ticat ${meta} : mark-time bench.begin : ${sensor} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 30 \
     : join.new radius 0.04 \
     : join.new delta 1500 \
@@ -46,7 +46,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${eds} \
+ticat ${meta} : ${eds} \
     : join.new algo 30 \
     : join.new radius 30 \
     : join.new delta 300 \
@@ -56,7 +56,7 @@ ticat ${meta} : mark-time bench.begin : ${eds} \
     : join.new lambda 1 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 30 \
 #     : join.new radius 20 \
 #     : join.new delta 300 \

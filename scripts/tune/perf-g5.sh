@@ -46,7 +46,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new alpha 1.1 \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${eds} \
+# ticat ${meta} : ${eds} \
 #     : join.new algo 25 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \
@@ -57,7 +57,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
 #     : join.new alpha 1.1,1.5,2 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench.begin : ${edso} \
+# ticat ${meta} : ${edso} \
 #     : join.new algo 25 \
 #     : join.new max_in_nodes 100 \
 #     : join.new max_leaf_nodes 100 \

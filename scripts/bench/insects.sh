@@ -2,21 +2,21 @@
 
 export insects="join.new input_file $HOME/Sesame/build/benchmark/datasets/INSECTS.txt : join.new num_points 905145 : join.new dim 33 : join.new num_clusters 24 : join.new run_cmm false : join.new arr_rate 0"
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 0 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 0.5 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 1 \
     : join.new seed 1 \
     : join.new coreset_size 24 \
     : join.new k 102 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 350 \
@@ -25,7 +25,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new buf_size 1500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 3 \
     : join.new buf_size 500 \
     : join.new min_points 30 \
@@ -36,7 +36,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new beta 0.2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 4 \
     : join.new lambda 0.001 \
     : join.new radius 0.1 \
@@ -46,7 +46,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new base 2 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 5 \
     : join.new radius 0.4 \
     : join.new delta 1500 \
@@ -56,7 +56,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new lambda 1 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
     : join.new beta 0.001 \
@@ -65,7 +65,7 @@ ticat ${meta} : mark-time bench.begin : ${insects} \
     : join.new grid_width 0.008 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 7 \
     : join.new delta_grid 0.2 \
     : join.new num_samples 100 \
@@ -164,7 +164,7 @@ ticat ${meta} : mark-time bench_begin : ${insects} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench.begin : ${insects} \
+ticat ${meta} : ${insects} \
     : join.new algo 30 \
     : join.new radius 0.4 \
     : join.new delta 1500 \
