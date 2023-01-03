@@ -58,7 +58,7 @@ struct param_t
     AlgoType algo;
     int dataset_option;
 
-    int num_last_arr, time_window = 50;  // also used in timer outlier detection
+    int num_last_arr, time_window = 5000;  // also used in timer outlier detection
     size_t time_interval = 50;
     int num_online_clusters;
 
@@ -92,7 +92,8 @@ struct param_t
     bool run_offline = false;  // determine whether to run the offline refinement
     bool run_eval    = true;
     bool run_cmm = true, run_pur = true, run_nmi = true;
-    int landmark = 1000;          // this is the index of landmark point[start from 0](determine
+    bool run_group = true;
+    int landmark   = 1000;        // this is the index of landmark point[start from 0](determine
                                   // to process the algorithm from which algorithm)
     int sliding = 10;             // since we test the count-based sliding window, this is
                                   // the count number

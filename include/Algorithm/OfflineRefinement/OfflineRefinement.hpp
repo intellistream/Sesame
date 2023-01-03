@@ -13,27 +13,28 @@
 
 #include <vector>
 
-namespace SESAME {
-
-class OfflineRefinement {
+namespace SESAME
+{
+class OfflineRefinement
+{
 public:
-  void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input,
-           DataSinkPtr sinkPtr) {}
-};
-
-class NoRefinement : public OfflineRefinement {
-public:
-  NoRefinement(const StreamClusteringParam &param) {}
-  void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input,
-           DataSinkPtr sinkPtr) {
-    int i = 0;
-    for (auto p : input) {
-      p->setClusteringCenter(i);
-      i++;
-      sinkPtr->put(p->copy());
+    void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input, DataSinkPtr sinkPtr)
+    {
+        int i = 0;
+        for (auto p : input)
+        {
+            p->setClusteringCenter(i);
+            i++;
+            sinkPtr->put(p->copy());
+        }
     }
-  }
 };
 
-} // namespace SESAME
-#endif // SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_
+class NoRefinement : public OfflineRefinement
+{
+public:
+    NoRefinement(const StreamClusteringParam &param) {}
+};
+
+}  // namespace SESAME
+#endif  // SESAME_SRC_ALGORITHM_OFFLINE_CLUSTERING_HPP_

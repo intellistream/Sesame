@@ -143,6 +143,11 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
             cmd_params);
     }
     case (BirchType):
+    {
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                                 NoDetection<false, false>, NoRefinement>>(
+            cmd_params);
+    }
     case (G6Stream):
     {
         return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,

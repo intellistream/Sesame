@@ -67,6 +67,14 @@ void BenchmarkUtils::defaultParam(param_t &param)
         param.algo == DBStreamType || param.algo == DStreamType)
         param.run_offline = true;
     param.detect_outlier = false;
+    if (param.algo == G2Stream)
+    {
+        param.run_group = false;
+    }
+    if (param.algo == BirchType)
+    {
+        param.outlier_cap = numeric_limits<int>::min();
+    }
 }
 
 /**
@@ -109,75 +117,6 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
                                                 SESAME::DataSinkPtr sinkPtr,
                                                 SESAME::AlgorithmPtr algoPtr)
 {
-#ifndef NDEBUG
-    std::cerr << "data number: " << param.num_points << std::endl;
-    switch (param.algo)
-    {
-    case SESAME::CluStreamType:
-        std::cerr << "Algorithm: CluStream "
-                  << "num_last_arr: " << param.num_last_arr
-                  << "   time_window: " << param.time_window
-                  << "   num_offline_clusters: " << param.num_clusters
-                  << "   ClusterNumber: " << param.num_online_clusters
-                  << "   radius: " << param.radius << "   buf_size: " << param.buf_size << "\n";
-        break;
-    case SESAME::DenStreamType:
-        std::cerr << "Algorithm: DenStream "
-                  << "buf_size: " << param.buf_size << "   min_points: " << param.min_points
-                  << "   epsilon: " << param.epsilon << "   lambda: " << param.lambda
-                  << "   mu: " << param.mu << "   beta: " << param.beta << "\n";
-        break;
-    case SESAME::DBStreamType:
-        std::cerr << "Algorithm: DBStream "
-                  << "lambda: " << param.lambda << "   radius: " << param.radius
-                  << "   clean_interval: " << param.clean_interval
-                  << "   min_weight: " << param.min_weight << "   alpha: " << param.alpha << "\n";
-        break;
-    case SESAME::DStreamType:
-        std::cerr << "Algorithm: DStream "
-                  << "lambda: " << param.lambda << "   beta: " << param.beta
-                  << "   cm: " << param.cm << "   cl: " << param.cl << "\n";
-        break;
-    case SESAME::StreamKMeansType:
-        std::cerr << "Algorithm: StreamKMeans "
-                  << "Seed: " << param.seed << "   ClusterNumber: " << param.num_clusters
-                  << "   CoresetSize: " << param.coreset_size << "\n";
-        break;
-    case SESAME::BirchType:
-        std::cerr << "Algorithm: Birch "
-                  << "maxLeafNode: " << param.max_leaf_nodes
-                  << "   maxInnerNodes: " << param.max_in_nodes
-                  << "   distance_threshold: " << param.distance_threshold << "\n";
-        break;
-    case SESAME::V1Stream:
-        std::cerr << "Algorithm: BirchV1 "
-                  << "maxLeafNode: " << param.max_leaf_nodes
-                  << "   maxInnerNodes: " << param.max_in_nodes
-                  << "   distance_threshold: " << param.distance_threshold
-                  << "   ClusterNumber: " << param.num_clusters << "\n";
-        break;
-    case SESAME::V2Stream:
-        std::cerr << "Algorithm: BirchV2 "
-                  << "maxLeafNode: " << param.max_leaf_nodes
-                  << "   maxInnerNodes: " << param.max_in_nodes
-                  << "   distance_threshold: " << param.distance_threshold << "\n";
-        break;
-    case SESAME::V3Stream:
-        std::cerr << "Algorithm: BirchV3 "
-                  << "maxLeafNode: " << param.max_leaf_nodes
-                  << "   maxInnerNodes: " << param.max_in_nodes
-                  << "   distance_threshold: " << param.distance_threshold << "\n";
-        break;
-    case SESAME::EDMStreamType:
-        std::cerr << "Algorithm: EDMStream "
-                  << "CacheNum: " << param.num_cache << "   Radius: " << param.radius
-                  << "   MinDelta: " << param.delta << "\n";
-    case SESAME::Generic:
-        std::cerr << "Algorithm: Generic "
-                  << "\n";
-    default: break;
-    }
-#endif
     SESAME::SimpleEngine engine(sourcePtr, sinkPtr,
                                 algoPtr);  // TODO: create multithread engine in future.
 
@@ -192,20 +131,14 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     // the output clusterID start from 0
     if (param.run_eval)
     {
-        //    if (param.run_offline)
-        //    {
-        //      SESAME::UtilityFunctions::groupByCentersWithOffline(
-        //          inputs, results, predicts, param.dim);
-        //      // 使用offline的算法不管是否detect
-        //      // outlier输出都是一样，如果detect则clusteringIndex = 0代表outlier
-        //      // clustering center
-        //    }
-        //    else
-        //    {
-        // the output is the clustering center so we need to help every input data
-        // find its nearest center
-        SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
-        //    }
+        if (param.run_group)
+        {
+            SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
+        }
+        else
+        {
+            predicts = results;
+        }
     }
 
     param.num_res = results.size();
