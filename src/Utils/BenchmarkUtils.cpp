@@ -67,10 +67,6 @@ void BenchmarkUtils::defaultParam(param_t &param)
         param.algo == DBStreamType || param.algo == DStreamType)
         param.run_offline = true;
     param.detect_outlier = false;
-    if (param.algo == G2Stream)
-    {
-        param.run_group = false;
-    }
     if (param.algo == BirchType)
     {
         param.outlier_cap = numeric_limits<int>::min();
@@ -131,14 +127,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     // the output clusterID start from 0
     if (param.run_eval)
     {
-        if (param.run_group)
-        {
-            SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
-        }
-        else
-        {
-            predicts = results;
-        }
+      SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
     }
 
     param.num_res = results.size();

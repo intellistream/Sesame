@@ -20,7 +20,9 @@ SESAME::DBSCAN::DBSCAN() {
 
 SESAME::DBSCAN::~DBSCAN() = default;
 void SESAME::DBSCAN::run(std::vector<PointPtr> &input) {
-
+  for(auto & i : input){
+    i->setClusteringCenter(UNCLASSIFIED);
+  }
   for (int i = 0; i < input.size(); i++) {
     if (input[i]->getClusteringCenter() == UNCLASSIFIED) {
       if (expandCluster(input, input[i], clusterID) != FAILURE) {
@@ -120,7 +122,10 @@ bool SESAME::DBSCAN::judgeCorePoint(PointPtr &point, PointPtr &other) {
 
 void SESAME::DBSCAN::produceResult(std::vector<PointPtr> &input,
                                    SESAME::DataSinkPtr sinkPtr) {
-  for (auto iter = 0; iter < input.size(); iter++) {
-    sinkPtr->put(input[iter]->copy()); // point index start from 0
+  int i = 0;
+  for (auto el : input) {
+    if(el->getClusteringCenter() > -1){ // not noise or unclassified
+      sinkPtr->put(el); // point index start from 0
+    }
   }
 }
