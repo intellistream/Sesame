@@ -50,7 +50,7 @@ BenchmarkResultPtr Evaluation::Evaluate(const param_t &param, const std::vector<
     cmm_timer.Tock();
     std::cerr << "\033[1;34mCMM: " << round(cmm * 10000) / 10000
               << "\033[0m et_s: " << cmm_timer.sum / 1e9 << std::endl;
-    return GenericFactory::New<BenchmarkResult>(cmm, purity);
+    return GenericFactory::New<BenchmarkResult>(cmm, purity, nmi);
 }
 
 }  // namespace SESAME

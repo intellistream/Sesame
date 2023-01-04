@@ -122,7 +122,6 @@ bool SESAME::DBSCAN::judgeCorePoint(PointPtr &point, PointPtr &other) {
 
 void SESAME::DBSCAN::produceResult(std::vector<PointPtr> &input,
                                    SESAME::DataSinkPtr sinkPtr) {
-  int i = 0;
   for (auto el : input) {
     if(el->getClusteringCenter() > -1){ // not noise or unclassified
       sinkPtr->put(el); // point index start from 0

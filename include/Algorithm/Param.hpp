@@ -92,8 +92,8 @@ struct param_t
     bool run_offline = false;  // determine whether to run the offline refinement
     bool run_eval    = true;
     bool run_cmm = true, run_pur = true, run_nmi = true;
-//    bool run_group = true;
-    int landmark   = 1000;        // this is the index of landmark point[start from 0](determine
+    //    bool run_group = true;
+    int landmark = 1000;          // this is the index of landmark point[start from 0](determine
                                   // to process the algorithm from which algorithm)
     int sliding = 10;             // since we test the count-based sliding window, this is
                                   // the count number
@@ -104,9 +104,9 @@ struct param_t
                                         // treated as an outlier
     double neighbor_distance;           // the distance value of the point to judge
                                         // neighborhoods
-    int outlier_cap;                    // transfer outlier cluster and true cluster
-    bool kmeanspp = true;               // whether use kmeans++ to initialize the centroids
-    int k         = 0;                  // number of k in kmeans / kmeanspp
+    int outlier_cap = 5;                // transfer outlier cluster and true cluster
+    bool kmeanspp   = true;             // whether use kmeans++ to initialize the centroids
+    int k           = 0;                // number of k in kmeans / kmeanspp
 
     double delta_grid = 0.2;  // The delta parameter used int the grid for guessing the optimum.
     int num_samples   = 100;  // The number of samples used in the grid for guessing
