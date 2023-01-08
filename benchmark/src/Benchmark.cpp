@@ -73,6 +73,8 @@ DEFINE_bool(run_eval, true, "Whether run evaluation");
 DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
 DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 
+#ifdef NDEBUG
+
 int main(int argc, char **argv)
 {
     // Parse parameters.
@@ -151,3 +153,14 @@ int main(int argc, char **argv)
 
     res->Print();
 }
+
+#else
+
+int main()
+{
+    fprintf(stderr,
+            "DON'T run benchmark in debug mode. Try with `cmake -DCMAKE_BUILD_TYPE=Release ..`\n");
+    return 0;
+}
+
+#endif
