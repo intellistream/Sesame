@@ -39,7 +39,7 @@ TEST(SystemTest, V10Test)
     cmd_params.input_file =
         std::filesystem::current_path().generic_string() + "/datasets/sensor.txt";
     cmd_params.output_file = "results.txt";
-    cmd_params.algo        = SESAME::V10Stream;
+    cmd_params.algo        = SESAME::G10Stream;
 
     std::vector<SESAME::PointPtr> input;
     std::vector<SESAME::PointPtr> results;

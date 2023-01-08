@@ -166,7 +166,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
                                                  DistanceDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
-    case (V10Stream):
+    case (G10Stream):
     {
         return std::make_shared<V10>(cmd_params);
     }

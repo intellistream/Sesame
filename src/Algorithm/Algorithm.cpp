@@ -29,7 +29,7 @@ char const *algo_names[64] = {[BirchType]        = "Birch",
                               [V7Stream]         = "V7",
                               [V8Stream]         = "V8",
                               [V9Stream]         = "V9",
-                              [Generic]          = "Generic",
+                              [Generic]          = "ERRORG",
                               [G1Stream]         = "G1",
                               [G2Stream]         = "G2",
                               [G3Stream]         = "G3",
@@ -39,10 +39,11 @@ char const *algo_names[64] = {[BirchType]        = "Birch",
                               [G7Stream]         = "G7",
                               [G8Stream]         = "G8",
                               [G9Stream]         = "G9",
-                              [V10Stream]        = "G10",
+                              [G10Stream]        = "G10",
                               [G11Stream]        = "G11",
                               [G12Stream]        = "G12",
-                              [G13Stream]        = "G13"};
+                              [G13Stream]        = "G13",
+                              [G14Stream]        = "G14"};
 
 void Algorithm::Store(std::string output_file, int dim, std::vector<PointPtr> result)
 {
