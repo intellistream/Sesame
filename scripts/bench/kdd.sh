@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export kdd99="join.new input_file $HOME/Sesame/build/benchmark/datasets/KDD99.txt : join.new num_points 494021 : join.new dim 41 : join.new num_clusters 23 : join.new run_cmm false"
+export kdd99="join.new input_file $HOME/Sesame/build/benchmark/datasets/KDD99_F.txt : join.new num_points 4898431 : join.new dim 41 : join.new num_clusters 23 : join.new run_cmm false"
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 0 \
