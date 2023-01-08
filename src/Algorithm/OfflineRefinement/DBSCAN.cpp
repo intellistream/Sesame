@@ -38,6 +38,9 @@ void SESAME::DBSCAN::Run(StreamClusteringParam &param,
   this->min_points = param.min_points;
   this->epsilon = param.epsilon;
   // this->pointSize = size;
+  for(auto & i : input){
+    i->setClusteringCenter(UNCLASSIFIED);
+  }
   this->clusterID = 0;
   for (int i = 0; i < input.size(); i++) {
     if (input[i]->getClusteringCenter() == UNCLASSIFIED) {
@@ -120,11 +123,13 @@ bool SESAME::DBSCAN::judgeCorePoint(PointPtr &point, PointPtr &other) {
   return corePoint;
 }
 
+// TODO: whether to output the noise data? In our implementation, we output the noise data since it is still a cluster
 void SESAME::DBSCAN::produceResult(std::vector<PointPtr> &input,
                                    SESAME::DataSinkPtr sinkPtr) {
   for (auto el : input) {
-    if(el->getClusteringCenter() > -1){ // not noise or unclassified
-      sinkPtr->put(el); // point index start from 0
+    if(el->getClusteringCenter() == UNCLASSIFIED or NOISE){ // not noise or unclassified
+      el->setClusteringCenter(clusterID++);
     }
+    sinkPtr->put(el); // point index start from 0
   }
 }
