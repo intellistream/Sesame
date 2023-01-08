@@ -20,12 +20,10 @@ class OfflineRefinement
 public:
     void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input, DataSinkPtr sinkPtr)
     {
-        int i = 0;
-        for (auto p : input)
+        for (size_t i = 0; i < input.size(); ++i)
         {
-            p->setClusteringCenter(i);
-            i++;
-            sinkPtr->put(p->copy());
+            input[i]->setClusteringCenter(i);
+            sinkPtr->put(input[i]);
         }
     }
 };
