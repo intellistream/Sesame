@@ -288,15 +288,15 @@ void StreamClustering<W, D, O, R>::OutputOnline()
         }
         online_centers.push_back(centroid);
     }
-    // for (int i = 0; i < outliers_.size(); ++i)
-    // {
-    //     auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
-    //     for (int j = 0; j < param.dim; j++)
-    //     {
-    //         centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
-    //     }
-    //     online_centers.push_back(centroid);
-    // }
+    for (int i = 0; i < outliers_.size(); ++i)
+    {
+        auto centroid = GenericFactory::New<Point>(param.dim, clusters.size() + i, 1, 0);
+        for (int j = 0; j < param.dim; j++)
+        {
+            centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+        }
+        online_centers.push_back(centroid);
+    }
 }
 
 }  // namespace SESAME

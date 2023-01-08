@@ -348,12 +348,13 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
     // store the result input output
     // this->kmeans->produceResult(oldGroups,sinkPtr);
     // timerMeter.printTime(true, true,true,false);
-    // for(auto out = this->delMicroClusters.begin(); out != this->delMicroClusters.end(); ++ out) {
-    //   PointPtr center = out->get()->getCenter();
-    //   center->setClusteringCenter(-1);
-    //   center->setOutlier(true);
-    //   sinkPtr->put(center);
-    // }
+    for (auto out = this->delMicroClusters.begin(); out != this->delMicroClusters.end(); ++out)
+    {
+        PointPtr center = out->get()->getCenter();
+        center->setClusteringCenter(-1);
+        center->setOutlier(true);
+        sinkPtr->put(center);
+    }
     ref_timer.Tock();
     sum_timer.Tock();
 }
