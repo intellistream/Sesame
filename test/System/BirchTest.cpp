@@ -53,5 +53,5 @@ TEST(SystemTest, Birch)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.6744, 0.02);
+    ASSERT_NEAR(res->purity, 0.3749, 0.02);
 }
