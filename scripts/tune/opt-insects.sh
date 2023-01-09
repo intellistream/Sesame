@@ -2,7 +2,7 @@
 
 export insects="join.new input_file $HOME/Sesame/benchmark/datasets/INSECTS.txt : join.new num_points 100000 : join.new dim 33 : join.new num_clusters 24"
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 0 \
 #     : join.new max_in_nodes [10,40,10] \
 #     : join.new max_leaf_nodes [10,40,10] \
@@ -70,7 +70,7 @@ ticat ${meta} : ${insects} \
     : join.new coreset_size [1000,10000,1000] \
     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 21 \
 #     : join.new max_in_nodes 400 \
 #     : join.new max_leaf_nodes 100 \
@@ -80,7 +80,7 @@ ticat ${meta} : ${insects} \
 #     : join.new outlier_cap 100 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 24 \
 #     : join.new max_in_nodes 400 \
 #     : join.new max_leaf_nodes 100 \
@@ -90,7 +90,7 @@ ticat ${meta} : ${insects} \
 #     : join.new outlier_cap 100,300,500 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 25 \
 #     : join.new max_in_nodes 400 \
 #     : join.new max_leaf_nodes 100 \
@@ -101,7 +101,7 @@ ticat ${meta} : ${insects} \
 #     : join.new alpha 1.1,1.5,2 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 27 \
 #     : join.new max_in_nodes 400 \
 #     : join.new max_leaf_nodes 100 \
@@ -112,7 +112,7 @@ ticat ${meta} : ${insects} \
 #     : join.new outlier_cap 100,300,500 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 28 \
 #     : join.new distance_threshold 100 \
 #     : join.new landmark 1000,10000,20000 \
@@ -120,7 +120,7 @@ ticat ${meta} : ${insects} \
 #     : join.new outlier_cap 100,300,500 \
 #     : join.run run.sesame
 
-# ticat ${meta} : mark-time bench_begin : ${insects} \
+# ticat ${meta} : ${insects} \
 #     : join.new algo 29 \
 #     : join.new beta 0.001,0.3 \
 #     : join.new cm 1.001,3 \

@@ -72,7 +72,7 @@ ticat ${meta} : ${kdd99} \
     : join.new sliding 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 21 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -83,7 +83,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new k 454 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 22 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -95,7 +95,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new epsilon 25 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 23 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -105,7 +105,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 24 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -115,7 +115,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 25 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -127,7 +127,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new alpha 1.1 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 26 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -135,7 +135,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new landmark 20000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 27 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -146,7 +146,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 28 \
     : join.new distance_threshold 600 \
     : join.new landmark 37000 \
@@ -154,7 +154,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new outlier_cap 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 29 \
     : join.new beta 0.001 \
     : join.new cm 3 \
@@ -175,7 +175,7 @@ ticat ${meta} : ${kdd99} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 31,32,33 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \

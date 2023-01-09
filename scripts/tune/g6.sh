@@ -2,7 +2,7 @@
 
 . "`cd $(dirname ${BASH_SOURCE[0]}) && pwd`/part.sh"
 
-ticat ${meta} : mark-time bench_begin : ${cover} \
+ticat ${meta} : ${cover} \
     : join.new algo 26 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -10,7 +10,7 @@ ticat ${meta} : mark-time bench_begin : ${cover} \
     : join.new landmark 1000,10000,20000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${kdd99} \
+ticat ${meta} : ${kdd99} \
     : join.new algo 26 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
@@ -18,7 +18,7 @@ ticat ${meta} : mark-time bench_begin : ${kdd99} \
     : join.new landmark 1000,10000,20000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 26 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \

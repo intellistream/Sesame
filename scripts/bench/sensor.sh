@@ -72,7 +72,7 @@ ticat ${meta} : ${sensor} \
     : join.new sliding 100 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 21 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -83,7 +83,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new k 1399 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 22 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -95,7 +95,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new epsilon 0.8 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 23 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -105,7 +105,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 24 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -115,7 +115,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 25 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -127,7 +127,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new buf_size 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 26 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -135,7 +135,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new landmark 10000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 27 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
@@ -146,7 +146,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 28 \
     : join.new distance_threshold 100 \
     : join.new landmark 100000 \
@@ -154,7 +154,7 @@ ticat ${meta} : mark-time bench_begin : ${sensor} \
     : join.new outlier_cap 1000 \
     : join.run run.sesame
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 29 \
     : join.new beta 0.001 \
     : join.new cm 4 \
@@ -178,7 +178,7 @@ ticat ${meta} : ${sensor} \
 # radius: larger faster
 # buf_size: larger slower
 
-ticat ${meta} : mark-time bench_begin : ${sensor} \
+ticat ${meta} : ${sensor} \
     : join.new algo 31,32,33 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
