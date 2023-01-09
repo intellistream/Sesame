@@ -151,7 +151,7 @@ ticat ${meta} : ${cover} \
     : join.new distance_threshold 600 \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 300 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
