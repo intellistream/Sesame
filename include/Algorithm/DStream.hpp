@@ -1,7 +1,3 @@
-//
-// Created by 1124a on 2021/10/27.
-//
-
 #ifndef SESAME_INCLUDE_ALGORITHM_DSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DSTREAM_HPP_
 
@@ -13,35 +9,35 @@
 
 #include <omp.h>
 
+/* Used Parameter in DStream:
+double lambda: user defined parameter lambda in damped window
+double beta: control the time interval of deleting the same sporadic grid
+double cm: controls the threshold for dense grids
+double cl: controls the threshold for sparse grid, require cm > cl
+double grid_width: width of grid (default with the same width in every dimension)
+double gap: self-updated based on cm and cl according to eq 26 in the paper
+Note:
+1.Since it is unrealistic to set the number of grids in the total feature space with a fixed value ahead of time,
+  in this implementation, we timely adjust N during the clustering procedure: pi_(maxVals - minVals) / grid_width.
+2.For simplicity, we directly use the data index as the its arriving timestamp.
+**/
+
 namespace SESAME{
 class DStream;
-class DStreamParams : public AlgorithmParameters {
- public:
-  // User defined parameter lambda in damped window
-  double lambda;
-  /* User defined parameter: Adjusts the window of protection for
-  * renaming previously deleted grids as being sporadic
-  * */
-  double beta;
-  double cm; // User defined parameter: Controls the threshold for dense grids
-  double cl; // User defined parameter: Controls the threshold for sparse grids
-  double grid_width; //width of grid
-};
-
 typedef std::unordered_map<DensityGrid, CharacteristicVector,GridKeyHash,EqualGrid> HashMap;
 class DStream : public Algorithm
     {
      public:
-      DStreamParams dStreamParams;
       DampedWindowPtr dampedWindow;
       double startTime = 0.0;
-      int pointArrivingTime;
+      int currentTimeStamp;
       int gap;// Time gap between calls to the offline component
       double dm;// Density threshold for dense grids; controlled by cm
       double dl; //  Density threshold for sparse grids; controlled by cl
       int NGrids;//The number of density grids ,with an initial value 0
       HashMap gridList;
       std::unordered_map<DensityGrid, int,GridKeyHash,EqualGrid> deletedGrids;
+      // Store the deleted sporadic grids: <coordinate, deleteTime>
       std::vector<GridCluster> clusterList; // A list of all Grid Clusters
       std::vector<GridCluster> newClusterList; //A list of grid clusters used when re-clustering an existing cluster.
       std::vector<double> minVals; //The minimum value seen for a numerical dim; used to calculate N
@@ -54,13 +50,11 @@ class DStream : public Algorithm
       void RunOffline(DataSinkPtr sinkPtr) override;
 
      private:
-      bool clusterInitial = false;
-      bool isInitial  = false;
       bool recalculateN =false; // flag indicating whether N needs to be recalculated after this instance
       std::vector<double> tempCoord;
       std::vector<double> Coord;
-      void ifReCalculateN(PointPtr point);
-      void reCalculateN();
+      void ifReCalculate(PointPtr point);
+      void reCalculateParameter();
       void GridListUpdate(std::vector<double> coordinate);
       void initialClustering();
       void adjustClustering();
@@ -80,7 +74,6 @@ class DStream : public Algorithm
       bool checkIfSporadic(CharacteristicVector characteristicVec);
       void updateGridListDensity();
       static void mergeGridList(HashMap gridList, const HashMap &otherList);
-      double seconds() { return omp_get_wtime() - startTime; }
     };
 
 }
