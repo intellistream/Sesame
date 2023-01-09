@@ -57,5 +57,6 @@ TEST(SystemTest, SLKMeans)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.45, 0.05);
+    ASSERT_NEAR(res->purity, 0.4703, 0.03);
+    ASSERT_NEAR(res->cmm, 0.8247, 0.03);
 }

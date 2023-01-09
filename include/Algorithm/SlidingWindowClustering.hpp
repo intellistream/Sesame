@@ -573,20 +573,20 @@ public:
             // ++ITEMS_STORED;
             centers_.push_back(point);
             multiplicities_.push_back(ApproxTimeCountKeeper(epsilon_multiplicities_));
-            multiplicities_.back().increase_total(point->getTimeStamp(), 1);
+            multiplicities_.back().increase_total(point->index, 1);
             costs_sum_dist_.push_back(ApproxTimeCountKeeper(epsilon_multiplicities_));
-            costs_sum_dist_.back().increase_total(point->getTimeStamp(), 0.0);
+            costs_sum_dist_.back().increase_total(point->index, 0.0);
             costs_sum_sq_dist_.push_back(ApproxTimeCountKeeper(epsilon_multiplicities_));
-            costs_sum_sq_dist_.back().increase_total(point->getTimeStamp(), 0.0);
+            costs_sum_sq_dist_.back().increase_total(point->index, 0.0);
         }
 
         // Assign a point to a center.
         void add_point_to_center(const PointPtr &point, const int32_t center_position,
                                  const double distance)
         {
-            multiplicities_[center_position].increase_total(point->getTimeStamp(), 1);
-            costs_sum_dist_[center_position].increase_total(point->getTimeStamp(), distance);
-            costs_sum_sq_dist_[center_position].increase_total(point->getTimeStamp(),
+            multiplicities_[center_position].increase_total(point->index, 1);
+            costs_sum_dist_[center_position].increase_total(point->index, distance);
+            costs_sum_sq_dist_[center_position].increase_total(point->index,
                                                                ::std::pow(distance, 2));
 
             if (precomputed_cost.has_value())
