@@ -6,7 +6,7 @@ export sensor="join.new input_file $HOME/Sesame/build/benchmark/datasets/sensor.
 export insects="join.new input_file $HOME/Sesame/build/benchmark/datasets/INSECTS.txt : join.new num_points 905145 : join.new dim 33 : join.new num_clusters 24 : join.new run_cmm false : join.new arr_rate 0"
 export eds="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363 : join.new run_cmm false"
 
-meta="$ori_meta {bench.tag=extra.outlier_cap}"
+meta="$ori_meta : {bench.tag=extra.outlier_cap}"
 
 ticat ${meta} : ${eds}\
     : join.new algo 23 \
@@ -29,7 +29,7 @@ ticat ${meta} : ${eds}\
     : join.new outlier_cap 100,200,500,1000,2000,5000,10000,20000,40000,60000,80000,100000 \
     : join.run run.sesame
 
-meta="$ori_meta {bench.tag=extra.landmark}"
+meta="$ori_meta : {bench.tag=extra.landmark}"
 
 ticat ${meta} : ${cover} \
     : join.new algo 23 \
@@ -41,7 +41,7 @@ ticat ${meta} : ${cover} \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-meta="$ori_meta {bench.tag=extra.sliding}"
+meta="$ori_meta : {bench.tag=extra.sliding}"
 
 ticat ${meta} : ${eds}\
     : join.new algo 24 \
@@ -53,7 +53,7 @@ ticat ${meta} : ${eds}\
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
-meta="$ori_meta {bench.tag=extra.damped}"
+meta="$ori_meta : {bench.tag=extra.damped}"
 
 ticat ${meta} : ${eds}\
     : join.new algo 25 \
@@ -81,7 +81,7 @@ ticat ${meta} : ${eds}\
     : join.new buf_size 10000 \
     : join.run run.sesame
 
-meta="$ori_meta {bench.tag=extra.offline} join.new run_offline false,true"
+meta="$ori_meta : {bench.tag=extra.offline} join.new run_offline false,true"
 
 ticat ${meta} : ${cover} \
     : join.new algo 1 \
