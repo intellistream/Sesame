@@ -67,8 +67,8 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 7 \
-    : join.new delta_grid 0.2 \
-    : join.new num_samples 10 \
+    : join.new delta_grid 1 \
+    : join.new num_samples 100 \
     : join.new sliding 100 \
     : join.run run.sesame
 
@@ -149,9 +149,9 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 28 \
-    : join.new distance_threshold 100 \
+    : join.new distance_threshold 500 \
     : join.new landmark 100000 \
-    : join.new outlier_distance_threshold 20 \
+    : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 

@@ -67,7 +67,7 @@ ticat ${meta} : ${insects} \
 
 ticat ${meta} : ${insects} \
     : join.new algo 7 \
-    : join.new delta_grid 0.2 \
+    : join.new delta_grid 1 \
     : join.new num_samples 100 \
     : join.new sliding 100 \
     : join.run run.sesame
