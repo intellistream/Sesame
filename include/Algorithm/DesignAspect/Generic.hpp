@@ -32,31 +32,28 @@ concept StreamClusteringConcept = requires
     {
         {
             w.Add(p)
-        }
-        ->std::same_as<bool>;
+            } -> std::same_as<bool>;
     };
     requires requires(D d, PointPtr p)
     {
         {
             d.Insert(p)
-        }
-        ->std::same_as<typename D::NodePtr>;
+            } -> std::same_as<typename D::NodePtr>;
     };
     requires requires(O o, PointPtr p, typename D::NodePtr n, std::vector<typename D::NodePtr> & vn)
     {
         {
             o.Check(p, vn)
-        }
-        ->std::same_as<bool>;
+            } -> std::same_as<bool>;
         {
             o.Check(n)
-        }
-        ->std::same_as<bool>;
+            } -> std::same_as<bool>;
     };
 };
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R> class StreamClustering : public Algorithm
+requires StreamClusteringConcept<W, D, O, R>
+class StreamClustering : public Algorithm
 {
 public:
     StreamClustering(const param_t &param);
@@ -153,8 +150,8 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
         else
         {
             ds_timer.Tick();
-            node            = d->Insert(input);
-            node->timestamp = input->index;
+            node = d->Insert(input);
+            if (node) node->timestamp = input->index;
             ds_timer.Tock();
         }
         if constexpr (has_delete)

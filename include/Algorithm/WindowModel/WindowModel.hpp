@@ -8,6 +8,7 @@
 #ifndef SESAME_SRC_ALGORITHM_WINDOWMODEL_WINDOW_HPP_
 #define SESAME_SRC_ALGORITHM_WINDOWMODEL_WINDOW_HPP_
 
+#include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"

@@ -73,10 +73,18 @@ DEFINE_bool(run_eval, true, "Whether run evaluation");
 DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
 DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 
-#ifdef NDEBUG
-
 int main(int argc, char **argv)
 {
+#ifndef NDEBUG
+    std::cerr << "\033[1;31m#####################################################"
+                 "#######\n"
+              << "#                                                          #\n"
+              << "#           DON'T run benchmark in debug mode.             #\n"
+              << "#                                                          #\n"
+              << "############################################################"
+                 "\033[0m\n";
+    sleep(2);
+#endif
     // Parse parameters.
     param_t param;
     gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -153,14 +161,3 @@ int main(int argc, char **argv)
 
     res->Print();
 }
-
-#else
-
-int main()
-{
-    fprintf(stderr,
-            "DON'T run benchmark in debug mode. Try with `cmake -DCMAKE_BUILD_TYPE=Release ..`\n");
-    return 0;
-}
-
-#endif

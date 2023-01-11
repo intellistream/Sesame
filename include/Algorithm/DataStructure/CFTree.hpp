@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
-#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
 
@@ -92,68 +91,6 @@ public:
             Prefix(d) + std::to_string(index) + ":" + std::to_string(curCF->getN()) + "\n";
         return str;
     }
-};
-
-template <NodeConcept T>
-std::vector<std::vector<double>> CalcAdjMatrix(const std::vector<T> &nodes)
-{
-    const int n = nodes.size();
-    std::vector<std::vector<double>> adjMatrix(n, std::vector<double>(n, 0.0));
-    std::vector<PointPtr> centroids(n);
-    for (int i = 0; i < n; ++i)
-    {
-        centroids[i] = nodes[i]->Centroid();
-    }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = i + 1; j < n; j++)
-        {
-            auto distance   = centroids[i]->L1Dist(centroids[j]);
-            adjMatrix[i][j] = distance, adjMatrix[j][i] = distance;
-        }
-    }
-    return adjMatrix;
-}
-
-template <NodeConcept T>
-auto CalcClosestNode(const std::vector<T> &nodes, PointPtr point)
-{
-    double minDist = std::numeric_limits<double>::max();
-    T node         = nullptr;
-    for (auto child : nodes)
-    {
-        auto centroid = child->Centroid();
-        auto distance = centroid->L2Dist(point);
-        if (distance < minDist)
-        {
-            minDist = distance;
-            node    = child;
-        }
-    }
-    return std::make_pair(node, minDist);
-}
-
-template <NodeConcept T>
-double CalcClusterL1Dist(T a, T b)
-{
-    auto ca = a->Centroid(), cb = b->Centroid();
-    return ca->L1Dist(cb);
-}
-
-template <NodeConcept T>
-double CalcClusterL2Dist(T a, T b)
-{
-    auto ca = a->Centroid(), cb = b->Centroid();
-    return ca->L2Dist(cb);
-}
-
-struct ClusteringFeatures
-{
-    // 原CF结构体，num是子类中节点的数目，LS是N个节点的线性和，SS是N个节点的平方和
-    int num = 0;
-    std::vector<double> ls, ss;
-    ClusteringFeatures(int d = 0) : ls(std::vector<double>(d, 0.0)), ss(std::vector<double>(d, 0.0))
-    {}
 };
 
 class ClusteringFeaturesTree : public enable_shared_from_this<ClusteringFeaturesTree>

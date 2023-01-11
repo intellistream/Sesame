@@ -12,23 +12,19 @@
 
 #include <memory>
 
-namespace SESAME {
+namespace SESAME
+{
 
-namespace GenericFactory {
+namespace GenericFactory
+{
 
-template <class T, class... Ts> std::shared_ptr<T> New(Ts &&... ts) {
-  return std::make_shared<T>(std::forward<Ts>(ts)...);
+template <class T, class... Ts>
+std::shared_ptr<T> New(Ts &&...ts)
+{
+    return std::make_shared<T>(std::forward<Ts>(ts)...);
 }
 
-} // namespace GenericFactory
+}  // namespace GenericFactory
 
-template <typename T> concept NodeConcept = requires(T t) {
-  t->Centroid();
-  t->cf.num;
-  t->index;
-  t->Update(GenericFactory::New<Point>(0));
-  t->Scale(1.0);
-};
-
-} // namespace SESAME
+}  // namespace SESAME
 #endif
