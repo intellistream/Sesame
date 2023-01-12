@@ -196,7 +196,8 @@ void CoresetTree::Remove(NodePtr node)
 
 vector<CoresetTree::NodePtr> &CoresetTree::clusters()
 {
-    Points points;
+    if (!clusters_.empty()) return clusters_;
+    Points points = nullptr;
     if (buckets[num_buckets - 1].base->size() == param.coreset_size)
     {
         points = buckets[num_buckets - 1].base;
@@ -229,7 +230,6 @@ vector<CoresetTree::NodePtr> CoresetTree::Points2Nodes(CoresetTree::Points point
     vector<CoresetTree::NodePtr> nodes;
     if (points == nullptr)
     {
-        cerr << "points is null" << endl;
         return nodes;
     }
     for (auto &p : *points.get())

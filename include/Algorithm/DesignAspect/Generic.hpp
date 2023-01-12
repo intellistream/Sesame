@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
@@ -111,6 +112,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
     constexpr bool timer_enabled  = O::timer_enabled;
     constexpr bool no_outlier_detection =
         std::is_same<O, NoDetection<buffer_enabled, timer_enabled>>::value;
+    constexpr bool is_coreset_tree = std::is_same<D, CoresetTree>::value;
     if (w->Add(input))
     {
         NodePtr node;
@@ -166,7 +168,30 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
             node_map_[node].insert(input);
             point_map_[input] = node;
         }
-        if (input->index % param.time_window == 0)
+        if constexpr (!is_coreset_tree)
+        {
+            if (input->index % param.time_window == 0)
+            {
+                out_timer.Tick();
+                auto &cls = d->clusters();
+                for (auto &node : cls)
+                {
+                    if (o->TimerCheck(input, node))
+                    {
+                        if constexpr (buffer_enabled)
+                        {
+                            outliers_.push_back(node);
+                        }
+                        d->Remove(node);
+                    }
+                }
+                out_timer.Tock();
+            }
+        }
+    }
+    else
+    {
+        if constexpr (is_coreset_tree)
         {
             out_timer.Tick();
             auto &cls = d->clusters();
@@ -183,9 +208,6 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
             }
             out_timer.Tock();
         }
-    }
-    else
-    {
         win_timer.Tick();
         OutputOnline();
         d = GenericFactory::New<D>(param);
