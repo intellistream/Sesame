@@ -12,11 +12,16 @@
 using namespace std;
 using namespace SESAME;
 
-CoresetTree::CoresetTree(const param_t &param) : param(param), r(param.seed) {}
+CoresetTree::CoresetTree(const param_t &param)
+    : param(param),
+      r(param.seed),
+      num_buckets(log((double)param.num_points / param.coreset_size) / log(2.0) + 2),
+      buckets(log((double)param.num_points / param.coreset_size) / log(2.0) + 2)
+{}
 
 void CoresetTree::Init() {}
 
-vector<PointPtr> CoresetTree::Union(const std::vector<PointPtr> &a, const std::vector<PointPtr> &b)
+vector<PointPtr> CoresetTree::Union(const vector<PointPtr> &a, const vector<PointPtr> &b)
 {
     auto n = a.size() + b.size();
     vector<PointPtr> c(n, GenericFactory::New<Point>(param.dim));
@@ -31,8 +36,8 @@ vector<PointPtr> CoresetTree::Union(const std::vector<PointPtr> &a, const std::v
         j          = j - a.size();
         c[choosen] = b[j];
     }
-    root      = GenericFactory::New<Node>(c[choosen++]);
-    clusters_ = {root};
+    root = GenericFactory::New<Node>(c[choosen++]);
+    // clusters_ = {root};
     for (auto &i : a)
     {
         root->Update(i);
@@ -120,7 +125,7 @@ PointPtr CoresetTree::ChooseCenter(CoresetTree::NodePtr node)
 void CoresetTree::Split(CoresetTree::NodePtr parent, PointPtr center, int index)
 {
     NodePtr lc = GenericFactory::New<Node>(center), rc = GenericFactory::New<Node>(center);
-    clusters_.push_back(lc), clusters_.push_back(rc);
+    // clusters_.push_back(lc), clusters_.push_back(rc);
     lc->center = parent->center;
     lc->parent = parent;
     rc->center = parent->center;
@@ -148,7 +153,29 @@ void CoresetTree::Split(CoresetTree::NodePtr parent, PointPtr center, int index)
 
 CoresetTree::NodePtr CoresetTree::Insert(PointPtr input)
 {
-    centers = Union({input}, centers);
+    buckets[0].base->push_back(input);
+    if (buckets[0].base->size() == param.coreset_size)
+    {
+        int cur = 0, next = 1;
+        if (buckets[next].base->size() == 0)
+        {
+            buckets[next].base = buckets[cur].base;
+            buckets[cur].base  = GenericFactory::New<vector<PointPtr>>();
+        }
+        else
+        {
+            buckets[next].spill = buckets[cur].base;
+            buckets[cur].base   = GenericFactory::New<vector<PointPtr>>();
+            ++cur, ++next;
+            while (buckets[next].base->size() == param.coreset_size)
+            {
+                *buckets[next].spill.get() =
+                    Union(*buckets[cur].base.get(), *buckets[cur].spill.get());
+                ++cur, ++next;
+            }
+            *buckets[next].spill.get() = Union(*buckets[cur].base.get(), *buckets[cur].spill.get());
+        }
+    }
     return root;
 }
 
@@ -160,11 +187,56 @@ CoresetTree::NodePtr CoresetTree::Insert(NodePtr node)
 
 void CoresetTree::Remove(NodePtr node)
 {
-    auto it = std::find(clusters_.begin(), clusters_.end(), node);
+    auto it = find(clusters_.begin(), clusters_.end(), node);
     if (it != clusters_.end())
     {
         clusters_.erase(it);
     }
 }
 
-std::vector<CoresetTree::NodePtr> &CoresetTree::clusters() { return clusters_; }
+vector<CoresetTree::NodePtr> &CoresetTree::clusters()
+{
+    Points points;
+    if (buckets[num_buckets - 1].base->size() == param.coreset_size)
+    {
+        points = buckets[num_buckets - 1].base;
+    }
+    else
+    {
+        int i = 0;
+        for (; i < num_buckets; ++i)
+        {
+            if (buckets[i].base->size() == param.coreset_size)
+            {
+                points = buckets[i].base;
+                break;
+            }
+        }
+        for (int j = i + 1; j < num_buckets; ++j)
+        {
+            if (buckets[j].base->size() != 0)
+            {
+                *buckets[j].spill.get() = Union(*buckets[j].base.get(), *points.get());
+                points                  = buckets[j].spill;
+            }
+        }
+    }
+    return clusters_ = Points2Nodes(points);
+}
+
+vector<CoresetTree::NodePtr> CoresetTree::Points2Nodes(CoresetTree::Points points)
+{
+    vector<CoresetTree::NodePtr> nodes;
+    if (points == nullptr)
+    {
+        cerr << "points is null" << endl;
+        return nodes;
+    }
+    for (auto &p : *points.get())
+    {
+        auto node = GenericFactory::New<Node>(p);
+        node->Update(p);
+        nodes.push_back(node);
+    }
+    return nodes;
+}

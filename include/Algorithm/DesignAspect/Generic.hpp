@@ -20,6 +20,7 @@
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
 
@@ -107,12 +108,18 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
     constexpr bool has_delete     = requires(W & w) { w.Delete(); };
     constexpr bool has_update     = requires(W & w, NodePtr node) { w.Update(node); };
     constexpr bool buffer_enabled = O::buffer_enabled;
-    // constexpr bool timer_enabled  = O::timer_enabled;
+    constexpr bool timer_enabled  = O::timer_enabled;
+    constexpr bool no_outlier_detection =
+        std::is_same<O, NoDetection<buffer_enabled, timer_enabled>>::value;
     if (w->Add(input))
     {
         NodePtr node;
         out_timer.Tick();
-        auto out = o->Check(input, d->clusters());
+        bool out = false;
+        if constexpr (!no_outlier_detection)
+        {
+            out = o->Check(input, d->clusters());
+        }
         out_timer.Tock();
         if (out)
         {  // outlier

@@ -23,8 +23,10 @@ class CoresetTree : public enable_shared_from_this<CoresetTree>
 {
 public:
     struct Node;
+    struct Bucket;
     using NodePtr = std::shared_ptr<Node>;
     using TreePtr = std::shared_ptr<CoresetTree>;
+    using Points  = std::shared_ptr<std::vector<PointPtr>>;
 
 private:
     const StreamClusteringParam &param;
@@ -32,12 +34,15 @@ private:
     bool has_sampled = false;
     Random r;
     NodePtr root = nullptr;
+    std::vector<Bucket> buckets;
+    size_t num_buckets = 0;
     std::vector<PointPtr> centers;
     std::vector<NodePtr> clusters_;
     std::vector<PointPtr> Union(const std::vector<PointPtr> &a, const std::vector<PointPtr> &b);
     NodePtr Select(NodePtr);
     PointPtr ChooseCenter(NodePtr);
     void Split(NodePtr, PointPtr, int);
+    std::vector<NodePtr> Points2Nodes(Points);
 
 public:
     CoresetTree(const StreamClusteringParam &param);
@@ -48,6 +53,14 @@ public:
     std::vector<NodePtr> &clusters();
 
 public:
+    struct Bucket
+    {
+        Points base, spill;
+        Bucket()
+            : base(std::make_shared<std::vector<PointPtr>>()),
+              spill(std::make_shared<std::vector<PointPtr>>())
+        {}
+    };
     struct Node : std::enable_shared_from_this<Node>
     {
         size_t timestamp = 0;

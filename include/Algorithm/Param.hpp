@@ -50,10 +50,11 @@ struct param_t
 {
     int num_points, dim, num_clusters;
     int arr_rate;
-    bool time_decay = false;
-    int coreset_size, seed = 10;
-    bool fast_source = false;
-    bool store       = true;
+    bool time_decay     = false;
+    size_t coreset_size = 100;
+    int seed            = 10;
+    bool fast_source    = false;
+    bool store          = true;
 
     std::string input_file, output_file;
     std::string bin_dir;
