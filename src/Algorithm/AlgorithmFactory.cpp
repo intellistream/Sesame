@@ -11,6 +11,7 @@
 #include "Algorithm/CluStream.hpp"
 #include "Algorithm/DBStream.hpp"
 #include "Algorithm/DStream.hpp"
+#include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/MeyersonSketch.hpp"
 #include "Algorithm/DenStream.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
@@ -193,6 +194,12 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     {
         return std::make_shared<
             StreamClustering<Landmark, MeyersonSketch, NoDetection<true, false>, NoRefinement>>(
+            cmd_params);
+    }
+    case (G15Stream):
+    {
+        return std::make_shared<
+            StreamClustering<Landmark, CoresetTree, NoDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
     default: throw std::invalid_argument("Unsupported algorithm");

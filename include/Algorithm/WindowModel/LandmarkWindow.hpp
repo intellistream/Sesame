@@ -8,9 +8,9 @@
 #ifndef SESAME_SRC_ALGORITHM_WINDOWMODEL_LANDMARKWINDOW_HPP_
 #define SESAME_SRC_ALGORITHM_WINDOWMODEL_LANDMARKWINDOW_HPP_
 
-#include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/DataStructure/Snapshot.hpp"
+#include "Algorithm/DataStructure/TreeNode.hpp"
 #include "Algorithm/WindowModel/WindowModel.hpp"
 #include "Timer/TimeMeter.hpp"
 
