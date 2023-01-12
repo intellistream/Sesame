@@ -9,15 +9,15 @@ namespace SESAME
 {
 enum AlgoType
 {
-    BirchType,
-    StreamKMeansType,
-    CluStreamType,
-    DenStreamType,
-    DBStreamType,
-    EDMStreamType,
-    DStreamType,
-    SLKMeansType,
-    V1Stream = 11,
+    BirchType        = 0,
+    StreamKMeansType = 1,
+    CluStreamType    = 2,
+    DenStreamType    = 3,
+    DBStreamType     = 4,
+    EDMStreamType    = 5,
+    DStreamType      = 6,
+    SLKMeansType     = 7,
+    V1Stream         = 11,
     V2Stream,
     V3Stream,
     V4Stream,
@@ -40,7 +40,8 @@ enum AlgoType
     G11Stream,
     G12Stream,
     G13Stream,
-    G14Stream
+    G14Stream,
+    G15Stream
 };
 
 extern char const *algo_names[64];

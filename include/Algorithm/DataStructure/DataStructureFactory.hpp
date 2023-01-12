@@ -23,46 +23,41 @@
 
 #include <memory>
 
-namespace SESAME {
+namespace SESAME
+{
 
-class DataStructureFactory {
+class DataStructureFactory
+{
 public:
-  static PointPtr createPoint(int dim);
-  static PointPtr createPoint(int index, double weight, int dim,
-                              double cost, int timestamp);
-  static PointPtr createPoint(int index, double weight, int dim,
-                              double cost);
-  static void clearPoint(PointPtr point);
+    static PointPtr createPoint(int dim);
+    static PointPtr createPoint(int index, double weight, int dim, double cost, int timestamp);
+    static PointPtr createPoint(int index, double weight, int dim, double cost);
+    static void clearPoint(PointPtr point);
 
-  static TreeNodePtr createTreeNode();
-  static void clearTreeNode(TreeNodePtr treeNode);
-  static CoresetTreePtr createCoresetTree();
-  static void clearCoresetTree(CoresetTreePtr tree);
-  static MicroClusterPtr createMicroCluster(int dim, int id);
-  static MicroClusterPtr createMicroCluster(int dim, int id,
-                                            PointPtr dataPoint, double radius);
-  static void clearMicroCluster(MicroClusterPtr microCluster);
-  static SnapshotPtr createSnapshot(MicroClusters &otherMicroClusters,
-                                    int elapsedTime);
-  static void clearSnapshot(SnapshotPtr snapshot);
-  static CFTreePtr createCFTree();
-  static NodePtr createNode();
-  // EDMStream
-  static DPTreePtr createDPTree(int num, double r);
-  static DPNodePtr createDPNode();
-  static DPNodePtr createDPNode(SESAME::PointPtr p, double time);
-  static CachePtr creatCache();
-  static CachePtr creatCache(int num, double a, double lamd, double r);
-  static OutPtr createOutlierReservoir();
-  static OutPtr createOutlierReservoir(double r, double a, double lamd);
+    static TreeNodePtr createTreeNode();
+    static void clearTreeNode(TreeNodePtr treeNode);
+    static MicroClusterPtr createMicroCluster(int dim, int id);
+    static MicroClusterPtr createMicroCluster(int dim, int id, PointPtr dataPoint, double radius);
+    static void clearMicroCluster(MicroClusterPtr microCluster);
+    static SnapshotPtr createSnapshot(MicroClusters &otherMicroClusters, int elapsedTime);
+    static void clearSnapshot(SnapshotPtr snapshot);
+    static CFTreePtr createCFTree();
+    static NodePtr createNode();
+    // EDMStream
+    static DPTreePtr createDPTree(int num, double r);
+    static DPNodePtr createDPNode();
+    static DPNodePtr createDPNode(SESAME::PointPtr p, double time);
+    static CachePtr creatCache();
+    static CachePtr creatCache(int num, double a, double lamd, double r);
+    static OutPtr createOutlierReservoir();
+    static OutPtr createOutlierReservoir(double r, double a, double lamd);
 
-  static MicroClusterPairPtr
-  createMicroClusterPair(MicroClusterPtr microCluster1,
-                         MicroClusterPtr microCluster2);
-  static void clearMicroClusterPair(MicroClusterPairPtr microClusterPair);
-  static AdjustedWeightPtr createAdjustedWeight(double weight, int pointTime,
-                                                timespec pointTime0);
-  static void clearAdjustedWeight(AdjustedWeightPtr adjustedWeight);
+    static MicroClusterPairPtr createMicroClusterPair(MicroClusterPtr microCluster1,
+                                                      MicroClusterPtr microCluster2);
+    static void clearMicroClusterPair(MicroClusterPairPtr microClusterPair);
+    static AdjustedWeightPtr createAdjustedWeight(double weight, int pointTime,
+                                                  timespec pointTime0);
+    static void clearAdjustedWeight(AdjustedWeightPtr adjustedWeight);
 };
-} // namespace SESAME
-#endif // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_DATASTRUCTUREFACTORY_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_DATASTRUCTUREFACTORY_HPP_
