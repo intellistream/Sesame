@@ -184,6 +184,7 @@ ticat ${meta} : ${eds} \
     : join.new buf_size 10000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
+    : join.new landmark 1000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
@@ -195,6 +196,22 @@ ticat ${meta} : ${eds}\
     : join.new outlier_distance_threshold 50 \
     : join.new outlier_cap 200 \
     : join.run run.sesame
+
+ticat ${meta} : ${eds} \
+    : join.new algo 34 \
+    : join.new delta_grid 1 \
+    : join.new num_samples 100 \
+    : join.new sliding 10 \
+    : join.new k 8000 \
+    : join.run run.sesame
+
+ticat ${meta} : ${eds} \
+    : join.new algo 35 \
+    : join.new seed 1 \
+    : join.new landmark 363 \
+    : join.new coreset_size 363 \
+    : join.run run.sesame
+
 }
 
 for i in $(seq 1 5)
