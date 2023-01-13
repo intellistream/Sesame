@@ -206,6 +206,21 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
                     d->Remove(node);
                 }
             }
+            if constexpr (timer_enabled && buffer_enabled)
+            {
+                std::vector<NodePtr> del;
+                for (auto &out : outliers_)
+                {
+                    if (o->TimerCheck(input, out))
+                    {
+                        del.push_back(out);
+                    }
+                }
+                for (auto &out : del)
+                {
+                    std::ranges::remove_if(outliers_, [&](const NodePtr &n) { return n == out; });
+                }
+            }
             out_timer.Tock();
         }
         win_timer.Tick();
