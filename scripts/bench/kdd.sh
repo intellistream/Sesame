@@ -39,8 +39,8 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 4 \
     : join.new lambda 0.01 \
-    : join.new radius 100 \
-    : join.new clean_interval 500 \
+    : join.new radius 1000 \
+    : join.new clean_interval 5000 \
     : join.new min_weight 0.5 \
     : join.new alpha 0.4 \
     : join.new base 2 \
@@ -167,13 +167,13 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 30 \
-    : join.new radius 100 \
-    : join.new delta 1500 \
+    : join.new radius 40000 \
+    : join.new delta 600000 \
     : join.new beta 0.7 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 2000000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 1000 \
+    : join.new landmark 100 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \

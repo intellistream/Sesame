@@ -62,7 +62,7 @@ ticat ${meta} : ${insects} \
     : join.new beta 0.001 \
     : join.new cm 3 \
     : join.new cl 0.01 \
-    : join.new grid_width 0.008 \
+    : join.new grid_width 0.08 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
