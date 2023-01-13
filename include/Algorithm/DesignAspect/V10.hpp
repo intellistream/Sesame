@@ -26,6 +26,7 @@ class V10Parameter : public AlgorithmParameters {
   double radius;
   int landmark;
   double minDelta;
+  int deltaT;
   int opt;
 };
 
@@ -41,6 +42,7 @@ class V10 : public Algorithm {
   DPTreePtr dpTree;
   OutPtr outres;
   CachePtr cache;
+  std::vector<PointPtr> onlineCenters;
   std::unordered_set<ClusterPtr> clusters;
 
   V10(param_t &cmd_params);

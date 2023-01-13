@@ -7,21 +7,22 @@ SESAME::CharacteristicVector::CharacteristicVector(){
 
 }
 SESAME::CharacteristicVector::CharacteristicVector(int updateTime, int removeTime, double Density,
-                                                   int label, bool status, double dl, double dm)
+                                                   int label, bool isSporadic, double dl, double dm)
 {
-  this->updateTime=updateTime;
-  this->removeTime=removeTime;
-  this->gridDensity=Density;
-  this->densityUpdateTime=updateTime;
-  this->label=label;
-  this->isSporadic=status;
+  this->updateTime        = updateTime;
+  this->densityUpdateTime = updateTime;
+  this->removeTime        = removeTime;
+  this->gridDensity       = Density;
+  this->densityUpdateTime = updateTime;
+  this->label             = label;
+  this->isSporadic        = isSporadic;
   if (this->isSparse(dl))
-    this->attribute = SPARSE;
+    this->attribute       = SPARSE;
   else if (this->isDense(dm))
-    this->attribute = DENSE;
+    this->attribute       = DENSE;
   else
-    this->attribute = TRANSITIONAL;
-  this->attChange=false;
+    this->attribute       = TRANSITIONAL;
+  this->attChange         = false;
 }
 
 

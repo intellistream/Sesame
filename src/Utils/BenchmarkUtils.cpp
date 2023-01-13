@@ -26,7 +26,7 @@ using namespace std::filesystem;
  */
 void BenchmarkUtils::defaultParam(param_t &param)
 {
-    param.num_points = 542;  // number of the data points in the dataset, use
+    param.num_points          = 542;  // number of the data points in the dataset, use
                              // the whole dataset to run benchmark
     param.seed                = 1;
     param.num_clusters        = 2;

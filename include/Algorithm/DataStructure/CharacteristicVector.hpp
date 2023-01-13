@@ -56,7 +56,7 @@ class CharacteristicVector {
   bool isVisited=false;
 
   CharacteristicVector();
-  CharacteristicVector(int updateTime, int removeTime, double Density, int label, bool status, double dl, double dm);
+  CharacteristicVector(int updateTime, int removeTime, double Density, int label, bool isSporadic, double dl, double dm);
   double getCurrGridDensity(int NowTime, double lambda);
   double getCurrGridDensity();
   bool isSparse(double dl);
