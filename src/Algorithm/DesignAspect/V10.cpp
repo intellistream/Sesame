@@ -3,6 +3,7 @@
 //
 
 #include <Algorithm/DesignAspect/V10.hpp>
+#include <cfloat>
 
 SESAME::V10::V10(param_t &cmd_params)
 {
@@ -16,7 +17,6 @@ SESAME::V10::V10(param_t &cmd_params)
   this->V10Param.radius     = cmd_params.radius;
   this->V10Param.minDelta   = cmd_params.delta;
   this->V10Param.opt        = cmd_params.opt;
-  this->V10Param.deltaT     = cmd_params.time_window;
   this->V10Param.landmark   = cmd_params.landmark;
 }
 
@@ -47,7 +47,7 @@ void SESAME::V10::InitDP(double time)
   cache->compDeltaRho(time);
   this->minRho = this->V10Param.beta;
 
-  outres->setTimeGap(this->V10Param.deltaT);
+  outres->setTimeGap(INT64_MAX);
   cache->getDPTree(this->minRho, this->V10Param.minDelta, dpTree, outres, clusters);
   dpTree->SetLastTime(time);
 }

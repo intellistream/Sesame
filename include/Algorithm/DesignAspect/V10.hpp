@@ -26,7 +26,6 @@ class V10Parameter : public AlgorithmParameters {
   double radius;
   int landmark;
   double minDelta;
-  int deltaT;
   int opt;
 };
 
