@@ -67,7 +67,7 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
 {
   bool inside;
   SESAME::HashGrids newCluster;
-  SESAME_INFO("Absorb cluster "<< gridCluster.clusterLabel <<" into cluster "<<this->clusterLabel<<".");
+  // SESAME_INFO("Absorb cluster "<< gridCluster.clusterLabel <<" into cluster "<<this->clusterLabel<<".");
 
   // Add each density grid from gridCluster into this->grids
   auto grid=gridCluster.grids.begin();
@@ -77,9 +77,9 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
     this->grids.insert(std::make_pair(grid->first, false));
     grid++;
   }
-  SESAME_INFO("...density grids added");
+  // SESAME_INFO("...density grids added");
   //Determine which density grids in this.grids are 'inside' and which are 'outside'
-  auto thisGrid=this->grids.begin();
+  auto thisGrid=this->grids.begin(); // mod
   while( thisGrid != this->grids.end())
   {
     inside = isInside(thisGrid->first);
@@ -94,7 +94,7 @@ void  SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
     thisGrid++;
   }
   this->grids = newCluster;
-  SESAME_INFO("...inside/outside determined");
+  // SESAME_INFO("...inside/outside determined");
 }
 
 

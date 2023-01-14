@@ -136,14 +136,12 @@ void SESAME::V10::CountNode(const SESAME::DPNodePtr &node, int &num)
 void SESAME::V10::RunOnline(SESAME::PointPtr input)
 {
   if(input->getIndex()!= 0 and input->getIndex() % V10Param.landmark == 0){
-    auto clu = 0;
     for (const auto & cluster : this->clusters)
     {
       std::unordered_set<DPNodePtr> cells = cluster->GetCells();
       for (const auto & cell : cells)
       {
         PointPtr center = cell->GetCenter();
-        center->setClusteringCenter(clu++);
         center->setOutlier(false);
         onlineCenters.push_back(center->copy());
       }
@@ -151,18 +149,13 @@ void SESAME::V10::RunOnline(SESAME::PointPtr input)
     for (const auto & out : this->outres->getOutliers())
     {
       PointPtr center = out->GetCenter();
-      center->setClusteringCenter(clu++);
       center->setOutlier(true);
       onlineCenters.push_back(center->copy());
     }
-    DPTreePtr new_dpTree;
-    OutPtr new_outres;
-    CachePtr new_cache;
-    std::unordered_set<ClusterPtr> new_clusters;
-    dpTree = new_dpTree;
-    outres = new_outres;
-    cache = new_cache;
-    clusters = new_clusters;
+    DPTreePtr().swap(dpTree);
+    OutPtr().swap(outres) ;
+    CachePtr().swap(cache);
+    std::unordered_set<ClusterPtr>().swap(clusters);
     Init();
     this->alpha = 0;
     this->minRho = 0;
@@ -187,6 +180,11 @@ void SESAME::V10::RunOffline(SESAME::DataSinkPtr sinkPtr)
   on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   auto clu = 0;
+  for (const auto & center : this->onlineCenters)
+  {
+    center->setClusteringCenter(clu++);
+    sinkPtr->put(center->copy());
+  }
   for (const auto & cluster : this->clusters)
   {
     std::unordered_set<DPNodePtr> cells = cluster->GetCells();
@@ -203,10 +201,6 @@ void SESAME::V10::RunOffline(SESAME::DataSinkPtr sinkPtr)
     PointPtr center = out->GetCenter();
     center->setClusteringCenter(clu++);
     center->setOutlier(true);
-    sinkPtr->put(center->copy());
-  }
-  for (const auto & center : this->onlineCenters)
-  {
     sinkPtr->put(center->copy());
   }
   ref_timer.Tock();

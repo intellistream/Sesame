@@ -25,7 +25,6 @@ class GridCluster{
 	 */
    void addGrid(DensityGrid grid);
 
-
    /**
     * @param dg the density grid to remove from the cluster
     */

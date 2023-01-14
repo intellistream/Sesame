@@ -56,11 +56,10 @@ public:
 private:
     bool recalculateN =
         false;  // flag indicating whether N needs to be recalculated after this instance
-    std::vector<double> tempCoord;
-    std::vector<double> Coord;
+    std::vector<int> Coord;
     void ifReCalculate(PointPtr point);
     void reCalculateParameter();
-    void GridListUpdate(std::vector<double> coordinate);
+    void GridListUpdate(std::vector<int> coordinate);
     void initialClustering();
     void adjustClustering();
     bool adjustLabels();

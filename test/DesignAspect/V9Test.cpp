@@ -20,17 +20,16 @@ TEST(DesignTest, V9Test)
 {
     // Parse parameters.
     param_t cmd_params;
-    cmd_params.num_points                 = 3000;
-    cmd_params.dim                        = 54;
-    cmd_params.num_clusters               = 7;
-    cmd_params.beta                       = 0.001;
-    cmd_params.cm                         = 15;
-    cmd_params.cl                         = 2;
-    cmd_params.outlier_distance_threshold = 30;
-    cmd_params.outlier_cap                = 5;
-    cmd_params.time_decay                 = false;
-    cmd_params.landmark                   = 1000;
-    cmd_params.run_offline                = false;
+    cmd_params.num_points   = 3000;
+    cmd_params.dim          = 54;
+    cmd_params.lambda       = 0.998;
+    cmd_params.beta         = 0.001;
+    cmd_params.cm           = 3;
+    cmd_params.cl           = 0.8;
+    cmd_params.grid_width   = 50;
+    cmd_params.num_clusters = 7;
+    cmd_params.time_decay   = false;
+    cmd_params.landmark     = 3000;
 
     cmd_params.input_file =
         std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";

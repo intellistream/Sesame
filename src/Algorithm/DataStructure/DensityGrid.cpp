@@ -5,7 +5,7 @@
 #include <Utils/Logger.hpp>
 
 SESAME::DensityGrid::DensityGrid() {}
-SESAME::DensityGrid::DensityGrid(const std::vector<double>& coordin)
+SESAME::DensityGrid::DensityGrid(const std::vector<int>& coordin)
     : dims(coordin.size()), coordinates(coordin), isVisited(false)
 {}
 
@@ -25,7 +25,7 @@ std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours() const
 {
     //  SESAME_INFO("Obtain neighbours");
     std::vector<DensityGrid> neighbours;
-    std::vector<double> hCoord = this->coordinates;
+    std::vector<int> hCoord = this->coordinates;
     for (int i = 0; i < this->dims; i++)
     {
         hCoord[i] = hCoord[i] - 1;

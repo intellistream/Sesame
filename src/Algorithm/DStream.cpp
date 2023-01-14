@@ -26,8 +26,7 @@ void SESAME::DStream::Init()
     NGrids       = 1;
     minVals      = std::vector<double>(param.dim, DBL_MAX);
     maxVals      = std::vector<double>(param.dim, DBL_MIN);
-    tempCoord    = std::vector<double>(param.dim, 0);
-    Coord        = std::vector<double>(param.dim, 0);
+    Coord        = std::vector<int>(param.dim, 0);
     ds_timer.Tock();
 }
 
@@ -60,7 +59,7 @@ void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     // SESAME_INFO(" cluster list size "<<clusterList.size());
-    std::vector<SESAME::PointPtr> points;
+    int cluID = 0;
     for (auto iter = 0; iter != this->clusterList.size(); iter++)
     {
         PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
@@ -81,12 +80,8 @@ void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
             point->setWeight(point->getWeight() + weight);
             count++;
         }
-        points.push_back(point);
-    }
-    for (auto i = 0; i < points.size(); i++)
-    {
-        points[i]->setClusteringCenter(i);
-        sinkPtr->put(points[i]);
+        point->setClusteringCenter(cluID++);
+        sinkPtr->put(point);
     }
     ref_timer.Tock();
     sum_timer.Tock();
@@ -97,15 +92,15 @@ void SESAME::DStream::ifReCalculate(PointPtr point)
     bool recalculateN = false;
     for (int i = 0; i < param.dim; i++)
     {
-        tempCoord[i] = point->getFeatureItem(i);
-        if (tempCoord[i] > maxVals[i])
+        auto feature = point->getFeatureItem(i);
+        if (feature > maxVals[i])
         {
-            maxVals[i]   = tempCoord[i];
+            maxVals[i]   = feature;
             recalculateN = true;
         }
-        else if (tempCoord[i] < minVals[i])
+        else if (feature < minVals[i])
         {
-            minVals[i]   = tempCoord[i];
+            minVals[i]   = feature;
             recalculateN = true;
         }
         Coord[i] = point->getFeatureItem(i) / param.grid_width;
@@ -149,7 +144,7 @@ void SESAME::DStream::reCalculateParameter()
 
 /* Update the grid list of DStream when data inserting into the grid
  * */
-void SESAME::DStream::GridListUpdate(std::vector<double> coordinate)
+void SESAME::DStream::GridListUpdate(std::vector<int> coordinate)
 {
     CharacteristicVector characteristicVec;
     DensityGrid grid(coordinate);

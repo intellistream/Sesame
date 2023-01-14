@@ -25,7 +25,7 @@ public:
      * A density grid g that is composed of S1,j1 ×S2,j2 ···×Sd,jd , ji =1, ...,pi,
      * has coordinates (j1,j2, ··· ,jd).
      */
-    std::vector<double> coordinates;
+    std::vector<int> coordinates;
     /**
      * The value of 'd' for the d-dimal space S considered by D-Stream.
      */
@@ -42,7 +42,7 @@ public:
      * @param c the coordinates of the density grid
      */
     DensityGrid();
-    DensityGrid(const std::vector<double> &coordin);
+    DensityGrid(const std::vector<int> &coordin);
 
     /**
      * A constructor method for a density grid
