@@ -110,8 +110,8 @@ ticat ${meta} : ${eds}\
     : join.new max_leaf_nodes 10 \
     : join.new distance_threshold 10 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 50 \
-    : join.new outlier_cap 200 \
+    : join.new outlier_distance_threshold 500 \
+    : join.new outlier_cap 2000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
@@ -130,8 +130,8 @@ ticat ${meta} : ${eds}\
     : join.new max_leaf_nodes 10 \
     : join.new distance_threshold 10 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 15 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_distance_threshold 500 \
+    : join.new outlier_cap 2000 \
     : join.new lambda 0.5 \
     : join.new alpha 1.1 \
     : join.new buf_size 10000 \
@@ -153,8 +153,8 @@ ticat ${meta} : ${eds}\
     : join.new max_leaf_nodes 10 \
     : join.new distance_threshold 10 \
     : join.new landmark 1000 \
-    : join.new outlier_density_threshold 100 \
-    : join.new neighbor_distance 500 \
+    : join.new outlier_density_threshold 500 \
+    : join.new neighbor_distance 2000 \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
@@ -193,8 +193,8 @@ ticat ${meta} : ${eds}\
     : join.new max_leaf_nodes 10 \
     : join.new distance_threshold 10 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 50 \
-    : join.new outlier_cap 200 \
+    : join.new outlier_distance_threshold 500 \
+    : join.new outlier_cap 2000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \
