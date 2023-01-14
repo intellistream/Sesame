@@ -69,7 +69,7 @@ ticat ${meta} : ${kdd99} \
     : join.new algo 7 \
     : join.new delta_grid 100 \
     : join.new num_samples 100 \
-    : join.new sliding 100 \
+    : join.new sliding 10 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
