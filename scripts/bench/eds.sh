@@ -169,12 +169,12 @@ ticat ${meta} : ${eds}\
 ticat ${meta} : ${eds}\
     : join.new algo 29 \
     : join.new beta 0.1 \
-    : join.new cm 3 \
+    : join.new cm 100 \
     : join.new cl 0.2 \
-    : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 2 \
+    : join.new outlier_distance_threshold 0.15 \
     : join.new outlier_cap 5 \
     : join.new grid_width 0.5 \
+    : join.new landmark 1000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \

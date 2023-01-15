@@ -62,7 +62,7 @@ ticat ${meta} : ${kdd99} \
     : join.new beta 0.001 \
     : join.new cm 1 \
     : join.new cl 0.7 \
-    : join.new grid_width 0.001 \
+    : join.new grid_width 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
@@ -80,7 +80,7 @@ ticat ${meta} : ${kdd99} \
     : join.new landmark 20000 \
     : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
-    : join.new k 454 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
@@ -158,11 +158,12 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 29 \
     : join.new beta 0.001 \
-    : join.new cm 3 \
+    : join.new cm 1 \
     : join.new cl 0.7 \
     : join.new landmark 20000 \
-    : join.new outlier_distance_threshold 80000 \
+    : join.new outlier_distance_threshold 800 \
     : join.new outlier_cap 5 \
+    : join.new grid_width 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \

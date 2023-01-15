@@ -80,7 +80,7 @@ ticat ${meta} : ${insects} \
     : join.new landmark 20000 \
     : join.new outlier_distance_threshold 0.12 \
     : join.new outlier_cap 5 \
-    : join.new k 102 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \

@@ -48,10 +48,10 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 5 \
-    : join.new radius 100 \
+    : join.new radius 250 \
     : join.new delta 1500 \
     : join.new beta 1 \
-    : join.new buf_size 4000 \
+    : join.new buf_size 1000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.run run.sesame
@@ -62,7 +62,7 @@ ticat ${meta} : ${cover} \
     : join.new beta 0.001 \
     : join.new cm 5 \
     : join.new cl 0.8 \
-    : join.new grid_width 0.12 \
+    : join.new grid_width 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -80,7 +80,7 @@ ticat ${meta} : ${cover} \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 500 \
-    : join.new k 70 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -157,19 +157,21 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 29 \
     : join.new beta 0.001 \
-    : join.new cm 15 \
-    : join.new cl 0.001 \
-    : join.new landmark 10000 \
+    : join.new cm 5 \
+    : join.new cl 0.8 \
+    : join.new grid_width 50 \
+    : join.new lambda 0.998 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
+    : join.new landmark 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
     : join.new algo 30 \
-    : join.new radius 200 \
+    : join.new radius 250 \
     : join.new delta 1500 \
     : join.new beta 1 \
-    : join.new buf_size 4000 \
+    : join.new buf_size 1000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 1000 \

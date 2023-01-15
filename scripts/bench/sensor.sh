@@ -80,7 +80,7 @@ ticat ${meta} : ${sensor} \
     : join.new landmark 10000 \
     : join.new outlier_distance_threshold 20 \
     : join.new outlier_cap 5 \
-    : join.new k 1399 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
