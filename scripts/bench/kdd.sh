@@ -150,7 +150,7 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 28 \
     : join.new distance_threshold 60000 \
-    : join.new landmark 20000 \
+    : join.new landmark 1000 \
     : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
