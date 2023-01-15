@@ -112,7 +112,7 @@ ticat ${meta} : ${cover} \
     : join.new distance_threshold 600 \
     : join.new sliding 10000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
