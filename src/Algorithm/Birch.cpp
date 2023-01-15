@@ -95,7 +95,7 @@ void SESAME::Birch::calculateCentroid(SESAME::CFPtr &cf, SESAME::PointPtr &centr
     centroid->setIndex(-1);
     centroid->setClusteringCenter(-1);
     auto &ls     = cf->LS;
-    const auto n = ls.size();
+    const auto n = cf->getN();
     for (int i = 0; i < n; ++i) centroid->feature[i] = ls[i] / n;
 }
 
@@ -256,6 +256,10 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point)
                 if (calculateRadius(point, centroid) <= this->cfTree->getT())
                 {  // concept drift detection
                     // whether the new radius is lower than threshold T
+                  auto a = calculateRadius(point, centroid);
+                  if(point->getIndex() % 100 == 0){
+                    std::cout <<a;
+                  }
                     updateNLS(curNode, point, true);
 
                     // means this point could get included in this cluster
@@ -266,6 +270,10 @@ void SESAME::Birch::forwardInsert(SESAME::PointPtr point)
                 }
                 else
                 {
+                  auto a = calculateRadius(point, centroid);
+                  if(point->getIndex() % 100 == 0){
+                    std::cout <<a;
+                  }
                     // concept drift adaption
                     // SESAME_DEBUG("Concept drift occurs(t > T), the current leaf node capacity
                     // reaches the threshold T");
