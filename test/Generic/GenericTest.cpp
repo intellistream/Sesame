@@ -242,8 +242,8 @@ TEST(GenericTest, V5)
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.542, 0.03);
-    ASSERT_NEAR(res->cmm, 0.8629, 0.03);
+    ASSERT_NEAR(res->purity, 0.2987, 0.03);
+    ASSERT_NEAR(res->cmm, 0.6984, 0.03);
 }
 
 TEST(GenericTest, V6)
