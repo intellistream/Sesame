@@ -12,22 +12,23 @@
 
 using namespace std;
 
-SESAME::V9::V9(param_t &cmd_params) { this->param = cmd_params; }
-
-SESAME::V9::~V9() = default;
-
-void SESAME::V9::Init()
+SESAME::V9::V9(param_t &cmd_params)
 {
+    this->param  = cmd_params;
     param.lambda = 1;
     sum_timer.Tick();
     ds_timer.Tick();
-    gap     = max(1.0, param.cm - param.cl);
-    dm      = param.cm;
-    dl      = param.cl;
+    gap     = 1;
+    dm      = -1.0;
+    dl      = -1.0;
     minVals = std::vector<double>(param.dim, DBL_MAX);
     maxVals = std::vector<double>(param.dim, DBL_MIN);
     Coord   = std::vector<int>(param.dim, 0);
 }
+
+SESAME::V9::~V9() = default;
+
+void SESAME::V9::Init() {}
 
 void SESAME::V9::calculateGridCoord(PointPtr point)
 {
@@ -48,8 +49,10 @@ void SESAME::V9::calculateGridCoord(PointPtr point)
 
 void SESAME::V9::RunOnline(PointPtr input)
 {
+    this->currentTimeStamp = input->index;
     if (input->getIndex() != 0 and input->getIndex() % param.landmark == 0)
     {
+        lastLandmark = input->getIndex();
         for (auto iter = 0; iter != this->clusterList.size(); iter++)
         {
             PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
@@ -74,25 +77,23 @@ void SESAME::V9::RunOnline(PointPtr input)
             onlineCenters.push_back(point);
         }
         // clean the old clustering information and reinitial every middle variable
-        std::vector<double>(param.dim, DBL_MAX).swap(minVals);
-        std::vector<double>(param.dim, DBL_MIN).swap(maxVals);
-        std::vector<GridCluster>().swap(clusterList);
-        std::vector<GridCluster>().swap(newClusterList);
-        std::vector<int>(param.dim, 0).swap(Coord);
-        std::unordered_map<DensityGrid, int, GridKeyHash, EqualGrid>().swap(deletedGrids);
-        gap = 1;
-        HashMap().swap(gridList);
-        init = false;
+        minVals        = std::vector<double>(param.dim, DBL_MAX);
+        maxVals        = std::vector<double>(param.dim, DBL_MIN);
+        clusterList    = std::vector<GridCluster>();
+        newClusterList = std::vector<GridCluster>();
+        Coord          = std::vector<int>(param.dim, 0);
+        gap            = max(1.0, param.cm - param.cl);
+        gridList       = HashMap();
+        init           = false;
     }
-    this->currentTimeStamp = input->getIndex();
     calculateGridCoord(input);
     GridListUpdate(Coord);  // tempCoord
-    if (!init && currentTimeStamp == gap)
+    if (!init && (currentTimeStamp - lastLandmark) == gap)
     {
         initialClustering();
         init = true;
     }
-    if (currentTimeStamp != 0 and currentTimeStamp % gap == 0)
+    if (currentTimeStamp != lastLandmark and (currentTimeStamp - lastLandmark) % gap == 0)
     {
         adjustClustering();
     }
@@ -105,7 +106,6 @@ void SESAME::V9::RunOffline(DataSinkPtr sinkPtr)
 {
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
-    // SESAME_INFO(" cluster list size "<<clusterList.size());
     int cluID = 0;
     for (const auto &point : onlineCenters)
     {
@@ -294,7 +294,6 @@ bool SESAME::V9::adjustLabels()
  */
 void SESAME::V9::updateGridListDensity()
 {
-    // // SESAME_INFO("grid list size is "<<this->gridList.size());
     for (auto &iter : this->gridList)
     {
         iter.second.isVisited = false;

@@ -38,14 +38,12 @@ typedef std::unordered_map<DensityGrid, CharacteristicVector, GridKeyHash, Equal
 class V9 : public Algorithm
 {
 public:
-    DampedWindowPtr dampedWindow;
-    double startTime = 0.0;
-    int currentTimeStamp;
+    int currentTimeStamp = 0;
+    int lastLandmark     = 0;
     int gap;    // Time gap between calls to the offline component
     double dm;  // Density threshold for dense grids; controlled by cm
     double dl;  //  Density threshold for sparse grids; controlled by cl
     HashMap gridList;
-    std::unordered_map<DensityGrid, int, GridKeyHash, EqualGrid> deletedGrids;
     // Store the deleted sporadic grids: <coordinate, deleteTime>
     std::vector<GridCluster> clusterList;  // A list of all Grid Clusters
     std::vector<GridCluster>
@@ -59,7 +57,7 @@ public:
 
     V9(param_t &cmd_params);
     ~V9();
-    void Init() override;
+    void Init();
     void RunOnline(PointPtr input) override;
     void RunOffline(DataSinkPtr sinkPtr) override;
 
