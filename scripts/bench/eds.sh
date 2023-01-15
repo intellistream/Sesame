@@ -57,10 +57,10 @@ ticat ${meta} : ${eds}\
 
 ticat ${meta} : ${eds}\
     : join.new algo 5 \
-    : join.new radius 30 \
-    : join.new delta 300 \
+    : join.new radius 0.5 \
+    : join.new delta 2500 \
     : join.new beta 1 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 5000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.run run.sesame
@@ -68,10 +68,10 @@ ticat ${meta} : ${eds}\
 ticat ${meta} : ${eds}\
     : join.new algo 6 \
     : join.new lambda 0.998 \
-    : join.new beta 0.001 \
-    : join.new cm 4 \
-    : join.new cl 2 \
-    : join.new grid_width 4 \
+    : join.new beta 0.1 \
+    : join.new cm 3 \
+    : join.new cl 0.2 \
+    : join.new grid_width 0.5 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
@@ -89,7 +89,7 @@ ticat ${meta} : ${eds}\
     : join.new landmark 1000 \
     : join.new outlier_distance_threshold 500 \
     : join.new outlier_cap 2000 \
-    : join.new k 588 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
@@ -155,7 +155,7 @@ ticat ${meta} : ${eds}\
     : join.new landmark 1000 \
     : join.new outlier_density_threshold 500 \
     : join.new neighbor_distance 2000 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_cap 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
@@ -168,20 +168,21 @@ ticat ${meta} : ${eds}\
 
 ticat ${meta} : ${eds}\
     : join.new algo 29 \
-    : join.new beta 0.001 \
-    : join.new cm 0.001 \
-    : join.new cl 0.001 \
+    : join.new beta 0.1 \
+    : join.new cm 3 \
+    : join.new cl 0.2 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 0.002 \
-    : join.new outlier_cap 100 \
+    : join.new outlier_distance_threshold 2 \
+    : join.new outlier_cap 5 \
+    : join.new grid_width 0.5 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \
     : join.new algo 30 \
-    : join.new radius 30 \
-    : join.new delta 300 \
+    : join.new radius 0.5 \
+    : join.new delta 2500 \
     : join.new beta 1 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 5000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 1000 \

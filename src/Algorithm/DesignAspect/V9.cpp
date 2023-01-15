@@ -6,6 +6,7 @@
 #include "Algorithm/DataStructure/DataStructureFactory.hpp"
 #include "Algorithm/WindowModel/WindowFactory.hpp"
 
+#include <algorithm>
 #include <cfloat>
 #include <cmath>
 
@@ -20,7 +21,7 @@ void SESAME::V9::Init()
     param.lambda = 1;
     sum_timer.Tick();
     ds_timer.Tick();
-    gap     = param.cm - param.cl;
+    gap     = max(1.0, param.cm - param.cl);
     dm      = param.cm;
     dl      = param.cl;
     minVals = std::vector<double>(param.dim, DBL_MAX);
