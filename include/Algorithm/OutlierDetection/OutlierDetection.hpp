@@ -12,14 +12,46 @@
 
 namespace SESAME
 {
-class OutlierDetection;
-typedef std::shared_ptr<OutlierDetection> OutlierDetectionPtr;
-
-class OutlierDetection
-{};
 
 template <bool B, bool T>
-class DistanceDetection : public OutlierDetection
+class OutlierDetection
+{
+    const int outlier_cap_;
+    const size_t interval_;
+
+public:
+    static constexpr bool buffer_enabled = B;
+    static constexpr bool timer_enabled  = T;
+
+    OutlierDetection(const StreamClusteringParam &param)
+        : outlier_cap_(param.outlier_cap), interval_(param.clean_interval)
+    {}
+    template <NodeConcept N>
+    bool Check(PointPtr point, std::vector<N> &nodes)
+    {
+        return false;
+    }
+    template <NodeConcept N>
+    bool Check(N node)
+    {
+        if (node != nullptr) return node->cf.num < outlier_cap_;
+        return false;
+    }
+    template <NodeConcept N>
+    bool TimerCheck(PointPtr input, N node)
+    {
+        if (node == nullptr) return false;
+        bool is_outlier = node->cf.num < outlier_cap_;
+        if constexpr (timer_enabled)
+        {
+            if (input->index - node->timestamp < interval_) is_outlier = false;
+        }
+        return is_outlier;
+    }
+};
+
+template <bool B, bool T>
+class DistanceDetection
 {
 private:
     const double outlier_distance_threshold_;
@@ -63,7 +95,7 @@ public:
 };
 
 template <bool B, bool T>
-class DensityDetection : public OutlierDetection
+class DensityDetection
 {
     const double neighbor_distance_, outlier_density_threshold_;
     const int outlier_cap_;
@@ -128,19 +160,12 @@ public:
     }
 };
 
-template <bool B, bool T>
-class NoDetection : public OutlierDetection
+class NoDetection
 {
-    const int outlier_cap_;
-    const size_t interval_;
-
 public:
-    static constexpr bool buffer_enabled = B;
-    static constexpr bool timer_enabled  = T;
-
-    NoDetection(const StreamClusteringParam &param)
-        : outlier_cap_(param.outlier_cap), interval_(param.clean_interval)
-    {}
+    static constexpr bool buffer_enabled = false;
+    static constexpr bool timer_enabled  = false;
+    NoDetection(const StreamClusteringParam &param) {}
     template <NodeConcept N>
     bool Check(PointPtr point, std::vector<N> &nodes)
     {
@@ -149,19 +174,12 @@ public:
     template <NodeConcept N>
     bool Check(N node)
     {
-        if (node != nullptr) return node->cf.num < outlier_cap_;
         return false;
     }
     template <NodeConcept N>
     bool TimerCheck(PointPtr input, N node)
     {
-        if (node == nullptr) return false;
-        bool is_outlier = node->cf.num < outlier_cap_;
-        if constexpr (timer_enabled)
-        {
-            if (input->index - node->timestamp < interval_) is_outlier = false;
-        }
-        return is_outlier;
+        return false;
     }
 };
 

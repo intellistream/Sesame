@@ -278,8 +278,7 @@ TEST(GenericTest, V6)
 
     // Create Algorithm.
     AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection<true, false>, NoRefinement>>(
-        param);
+        StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
@@ -406,9 +405,9 @@ TEST(GenericTest, V11)
     SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
 
     // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection<false, true>, NoRefinement>>(
-        param);
+    AlgorithmPtr algoPtr =
+        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             OutlierDetection<false, true>, NoRefinement>>(param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
@@ -449,7 +448,7 @@ TEST(GenericTest, V12)
     // Create Algorithm.
     AlgorithmPtr algoPtr =
         GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             NoDetection<false, false>, NoRefinement>>(param);
+                                             OutlierDetection<false, false>, NoRefinement>>(param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
@@ -490,9 +489,9 @@ TEST(GenericTest, V13)
     SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
 
     // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection<true, true>, NoRefinement>>(
-        param);
+    AlgorithmPtr algoPtr =
+        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                             OutlierDetection<true, true>, NoRefinement>>(param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
@@ -531,7 +530,8 @@ TEST(GenericTest, V14)
 
     // Create Algorithm.
     AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, MeyersonSketch, NoDetection<true, false>, NoRefinement>>(param);
+        StreamClustering<Landmark, MeyersonSketch, OutlierDetection<true, false>, NoRefinement>>(
+        param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);

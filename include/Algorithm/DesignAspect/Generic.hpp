@@ -106,13 +106,12 @@ void StreamClustering<W, D, O, R>::Init()
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 {
-    constexpr bool has_delete     = requires(W & w) { w.Delete(); };
-    constexpr bool has_update     = requires(W & w, NodePtr node) { w.Update(node); };
-    constexpr bool buffer_enabled = O::buffer_enabled;
-    constexpr bool timer_enabled  = O::timer_enabled;
-    constexpr bool no_outlier_detection =
-        std::is_same<O, NoDetection<buffer_enabled, timer_enabled>>::value;
-    constexpr bool is_coreset_tree = std::is_same<D, CoresetTree>::value;
+    constexpr bool has_delete           = requires(W & w) { w.Delete(); };
+    constexpr bool has_update           = requires(W & w, NodePtr node) { w.Update(node); };
+    constexpr bool buffer_enabled       = O::buffer_enabled;
+    constexpr bool timer_enabled        = O::timer_enabled;
+    constexpr bool no_outlier_detection = std::is_same<O, NoDetection>::value;
+    constexpr bool is_coreset_tree      = std::is_same<D, CoresetTree>::value;
     if (w->Add(input))
     {
         NodePtr node;

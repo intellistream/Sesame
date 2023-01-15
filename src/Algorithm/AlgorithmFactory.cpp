@@ -146,14 +146,14 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     }
     case (BirchType):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 NoDetection<false, false>, NoRefinement>>(
+        return std::make_shared<
+            StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(
             cmd_params);
     }
     case (G6Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 NoDetection<true, false>, NoRefinement>>(
+        return std::make_shared<
+            StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(
             cmd_params);
     }
     case (G7Stream):
@@ -192,14 +192,14 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     }
     case (G14Stream):
     {
-        return std::make_shared<
-            StreamClustering<Landmark, MeyersonSketch, NoDetection<true, false>, NoRefinement>>(
+        return std::make_shared<StreamClustering<Landmark, MeyersonSketch,
+                                                 OutlierDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
     case (G15Stream):
     {
         return std::make_shared<
-            StreamClustering<Landmark, CoresetTree, NoDetection<true, false>, NoRefinement>>(
+            StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
     default: throw std::invalid_argument("Unsupported algorithm");
