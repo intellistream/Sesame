@@ -18,9 +18,9 @@ SESAME::V9::V9(param_t &cmd_params)
     param.lambda = 1;
     sum_timer.Tick();
     ds_timer.Tick();
-    gap     = 1;
-    dm      = -1.0;
-    dl      = -1.0;
+    gap     = (int)(param.cm - param.cl);
+    dm      = param.cm;
+    dl      = param.cl;
     minVals = std::vector<double>(param.dim, DBL_MAX);
     maxVals = std::vector<double>(param.dim, DBL_MIN);
     Coord   = std::vector<int>(param.dim, 0);
@@ -467,7 +467,7 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
                 {
                     if (newGridList.find(neighbourGrid) != newGridList.end())
                     {
-                        CharacteristicVector characteristicVec1 = newGridList.find(grid)->second;
+                        CharacteristicVector characteristicVec1 = newGridList.find(neighbourGrid)->second;
                         CharacteristicVector characteristicVec2 =
                             newGridList.find(neighbourGrid)->second;
                         int class1 = characteristicVec1.label;
@@ -814,11 +814,17 @@ SESAME::HashMap SESAME::V9::cleanNewClusters(SESAME::HashMap newGridList)
         auto clusterIter     = std::find(newClusterList.begin(), newClusterList.end(), cluster);
         int index            = (int)std::distance(newClusterList.begin(), clusterIter);
         cluster.clusterLabel = index;
+        unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-            CharacteristicVector characteristicVec = newGridList.find(gridOfCluster.first)->second;
-            characteristicVec.label                = index;
-            newGridList.insert(std::make_pair(gridOfCluster.first, characteristicVec));
+          DensityGrid grid                       = gridOfCluster.first;;
+          if(newGridList.find(grid) != newGridList.end())
+            newGridList.find(grid)->second.label = index;
+          else
+            removeGrids.insert(gridOfCluster);
+        }
+        for (auto &grid : removeGrids){
+          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
         }
     }
     // SESAME_INFO("Clean finish!");
@@ -849,9 +855,9 @@ void SESAME::V9::cleanClusters()
         for (auto &RemoveCluster : toRemove)
         {
             auto removeCIter =
-                std::find(newClusterList.begin(), newClusterList.end(), RemoveCluster);
-            if (std::find(newClusterList.begin(), newClusterList.end(), RemoveCluster) !=
-                newClusterList.end())
+                std::find(clusterList.begin(), clusterList.end(), RemoveCluster);
+            if (std::find(clusterList.begin(), clusterList.end(), RemoveCluster) !=
+                clusterList.end())
                 this->clusterList.erase(removeCIter);
         }
     }
@@ -861,16 +867,17 @@ void SESAME::V9::cleanClusters()
         auto clusterIter     = std::find(clusterList.begin(), clusterList.end(), cluster);
         int index            = (int)std::distance(clusterList.begin(), clusterIter);
         cluster.clusterLabel = index;
+        unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-            DensityGrid grid                       = gridOfCluster.first;
-            CharacteristicVector characteristicVec = gridList.find(grid)->second;
-
-            characteristicVec.label = index;
-            if (gridList.find(grid) != gridList.end())
-                gridList.find(grid)->second = characteristicVec;
-            else
-                gridList.insert(std::make_pair(grid, characteristicVec));
+          DensityGrid grid  = gridOfCluster.first;
+          if (gridList.find(grid) != gridList.end())
+            gridList.find(grid)->second.label = index;
+          else
+            removeGrids.insert(gridOfCluster);
+        }
+        for (auto &grid : removeGrids){
+          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
         }
         this->clusterList.at(index) = cluster;
     }
