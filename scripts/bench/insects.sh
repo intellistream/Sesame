@@ -7,6 +7,7 @@ ticat ${meta} : ${insects} \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 5 \
+    : join.new landmark 10000000 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
@@ -117,9 +118,9 @@ ticat ${meta} : ${insects} \
     : join.new algo 25 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 5 \
-    : join.new outlier_distance_threshold 0.12 \
-    : join.new outlier_cap 5 \
+    : join.new distance_threshold 1 \
+    : join.new outlier_distance_threshold 1.2 \
+    : join.new outlier_cap 20 \
     : join.new lambda 0.5 \
     : join.new alpha 1.1 \
     : join.new buf_size 10000 \
@@ -188,14 +189,16 @@ ticat ${meta} : ${insects} \
 ticat ${meta} : ${insects} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 100 \
+    : join.new num_samples 1000 \
     : join.new sliding 10 \
     : join.new k 20 \
+    : join.new landmark 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
     : join.new algo 35 \
     : join.new seed 1 \
-    : join.new landmark 100 \
+    : join.new landmark 10000 \
     : join.new coreset_size 100 \
+    : join.new outlier_cap 50 \
     : join.run run.sesame
