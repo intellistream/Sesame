@@ -17,7 +17,6 @@ SESAME::V9::V9(param_t &cmd_params)
     this->param  = cmd_params;
     param.lambda = 1;
     sum_timer.Tick();
-    ds_timer.Tick();
     gap     = (int)(param.cm - param.cl);
     dm      = param.cm;
     dl      = param.cl;
@@ -49,6 +48,7 @@ void SESAME::V9::calculateGridCoord(PointPtr point)
 
 void SESAME::V9::RunOnline(PointPtr input)
 {
+    win_timer.Tick();
     this->currentTimeStamp = input->index;
     if (input->getIndex() != 0 and input->getIndex() % param.landmark == 0)
     {
@@ -86,6 +86,8 @@ void SESAME::V9::RunOnline(PointPtr input)
         gridList       = HashMap();
         init           = false;
     }
+    win_timer.Tock();
+    ds_timer.Tick();
     calculateGridCoord(input);
     GridListUpdate(Coord);  // tempCoord
     if (!init && (currentTimeStamp - lastLandmark) == gap)
@@ -98,7 +100,6 @@ void SESAME::V9::RunOnline(PointPtr input)
         adjustClustering();
     }
     ds_timer.Tock();
-
     lat_timer.Add(input->toa);
 }
 
@@ -156,12 +157,8 @@ void SESAME::V9::GridListUpdate(const std::vector<int> &coordinate)
     // 4. Update the characteristic vector of dg
     else
     {
-        ds_timer.Tock();
-        win_timer.Tick();
         it->second.densityWithNew(currentTimeStamp, param.lambda);
         it->second.updateTime = currentTimeStamp;
-        win_timer.Tock();
-        ds_timer.Tick();
     }
 }
 
@@ -382,16 +379,16 @@ SESAME::HashMap SESAME::V9::adjustForSparseGrid(const DensityGrid &grid,
     if (gridClass != NO_CLASS)
     {
         //// SESAME_INFO("It is removed from cluster "<<gridClass<<".");
-        for(auto gridCluster : clusterList)
+        for (auto gridCluster : clusterList)
         {
-          if(gridCluster.clusterLabel == gridClass)
-          {
-            gridCluster.removeGrid(grid);
-            characteristicVec.label = NO_CLASS;
-            newGridList.insert(std::make_pair(grid, characteristicVec));
-            if (!gridCluster.grids.empty() && !gridCluster.isConnected())
-              mergeGridList(newGridList, reCluster(gridCluster));
-          }
+            if (gridCluster.clusterLabel == gridClass)
+            {
+                gridCluster.removeGrid(grid);
+                characteristicVec.label = NO_CLASS;
+                newGridList.insert(std::make_pair(grid, characteristicVec));
+                if (!gridCluster.grids.empty() && !gridCluster.isConnected())
+                    mergeGridList(newGridList, reCluster(gridCluster));
+            }
         }
     }
     return newGridList;
@@ -472,7 +469,8 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
                 {
                     if (newGridList.find(neighbourGrid) != newGridList.end())
                     {
-                        CharacteristicVector characteristicVec1 = newGridList.find(neighbourGrid)->second;
+                        CharacteristicVector characteristicVec1 =
+                            newGridList.find(neighbourGrid)->second;
                         CharacteristicVector characteristicVec2 =
                             newGridList.find(neighbourGrid)->second;
                         int class1 = characteristicVec1.label;
@@ -547,18 +545,18 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
             hClass = this->gridList.find(neighbourGrid)->second.label;
             if (hClass != NO_CLASS)
             {
-              for(auto gridCluster : clusterList)
-              {
-                if(gridCluster.clusterLabel == hClass)
+                for (auto gridCluster : clusterList)
                 {
-                  if (gridCluster.grids.size() > ChosenGridSize)
-                  {
-                    ChosenGridSize = gridCluster.grids.size();
-                    hChosenClass   = hClass;
-                    gridChosen     = DensityGrid(neighbourGrid);
-                  }
+                    if (gridCluster.clusterLabel == hClass)
+                    {
+                        if (gridCluster.grids.size() > ChosenGridSize)
+                        {
+                            ChosenGridSize = gridCluster.grids.size();
+                            hChosenClass   = hClass;
+                            gridChosen     = DensityGrid(neighbourGrid);
+                        }
+                    }
                 }
-              }
             }
         }
     }
@@ -699,15 +697,16 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
             ;
             if (hClass != NO_CLASS)
             {
-                for(auto gridCluster : clusterList)
+                for (auto gridCluster : clusterList)
                 {
-                    if(gridCluster.clusterLabel == hClass)
+                    if (gridCluster.clusterLabel == hClass)
                     {
-                      if ((gridCluster.grids.size() > hChosenSize) && !gridCluster.isInside(grid, grid))
-                      {
-                        hChosenSize  = gridCluster.grids.size();
-                        hChosenClass = hClass;
-                      }
+                        if ((gridCluster.grids.size() > hChosenSize) &&
+                            !gridCluster.isInside(grid, grid))
+                        {
+                            hChosenSize  = gridCluster.grids.size();
+                            hChosenClass = hClass;
+                        }
                     }
                 }
             }
@@ -716,10 +715,11 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
 
     if (hChosenClass != NO_CLASS && hChosenClass != gridClass)
     {
-        for(auto gridCluster : clusterList)
+        for (auto gridCluster : clusterList)
         {
-          if(gridCluster.clusterLabel == hChosenClass) gridCluster.addGrid(grid);
-          if(gridCluster.clusterLabel == gridClass and gridClass != NO_CLASS) gridCluster.removeGrid(grid);
+            if (gridCluster.clusterLabel == hChosenClass) gridCluster.addGrid(grid);
+            if (gridCluster.clusterLabel == gridClass and gridClass != NO_CLASS)
+                gridCluster.removeGrid(grid);
         }
         gridCluster = this->clusterList.at(hChosenClass);
         gridCluster.addGrid(grid);
@@ -828,14 +828,17 @@ SESAME::HashMap SESAME::V9::cleanNewClusters(SESAME::HashMap newGridList)
         unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-          DensityGrid grid                       = gridOfCluster.first;;
-          if(newGridList.find(grid) != newGridList.end())
-            newGridList.find(grid)->second.label = index;
-          else
-            removeGrids.insert(gridOfCluster);
+            DensityGrid grid = gridOfCluster.first;
+            ;
+            if (newGridList.find(grid) != newGridList.end())
+                newGridList.find(grid)->second.label = index;
+            else
+                removeGrids.insert(gridOfCluster);
         }
-        for (auto &grid : removeGrids){
-          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
+        for (auto &grid : removeGrids)
+        {
+            if (cluster.grids.find(grid.first) != cluster.grids.end())
+                cluster.grids.erase(grid.first);
         }
     }
     // SESAME_INFO("Clean finish!");
@@ -865,8 +868,7 @@ void SESAME::V9::cleanClusters()
     {
         for (auto &RemoveCluster : toRemove)
         {
-            auto removeCIter =
-                std::find(clusterList.begin(), clusterList.end(), RemoveCluster);
+            auto removeCIter = std::find(clusterList.begin(), clusterList.end(), RemoveCluster);
             if (std::find(clusterList.begin(), clusterList.end(), RemoveCluster) !=
                 clusterList.end())
                 this->clusterList.erase(removeCIter);
@@ -881,14 +883,16 @@ void SESAME::V9::cleanClusters()
         unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-          DensityGrid grid  = gridOfCluster.first;
-          if (gridList.find(grid) != gridList.end())
-            gridList.find(grid)->second.label = index;
-          else
-            removeGrids.insert(gridOfCluster);
+            DensityGrid grid = gridOfCluster.first;
+            if (gridList.find(grid) != gridList.end())
+                gridList.find(grid)->second.label = index;
+            else
+                removeGrids.insert(gridOfCluster);
         }
-        for (auto &grid : removeGrids){
-          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
+        for (auto &grid : removeGrids)
+        {
+            if (cluster.grids.find(grid.first) != cluster.grids.end())
+                cluster.grids.erase(grid.first);
         }
         this->clusterList.at(index) = cluster;
     }

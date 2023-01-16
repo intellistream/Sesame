@@ -169,23 +169,23 @@ ticat ${meta} : ${eds}\
 ticat ${meta} : ${eds}\
     : join.new algo 29 \
     : join.new beta 0.1 \
-    : join.new cm 100 \
+    : join.new cm 10 \
     : join.new cl 0.2 \
-    : join.new outlier_distance_threshold 0.15 \
+    : join.new outlier_distance_threshold 15 \
     : join.new outlier_cap 5 \
-    : join.new grid_width 0.5 \
+    : join.new grid_width 50 \
     : join.new landmark 1000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \
     : join.new algo 30 \
-    : join.new radius 0.5 \
-    : join.new delta 2500 \
+    : join.new radius 250 \
+    : join.new delta 1500 \
     : join.new beta 1 \
-    : join.new buf_size 5000 \
+    : join.new buf_size 1000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 1000 \
+    : join.new landmark 20000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
