@@ -158,9 +158,9 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 29 \
     : join.new beta 0.001 \
-    : join.new cm 1 \
+    : join.new cm 100 \
     : join.new cl 0.7 \
-    : join.new landmark 20000 \
+    : join.new landmark 1000 \
     : join.new outlier_distance_threshold 800 \
     : join.new outlier_cap 5 \
     : join.new grid_width 50 \
@@ -168,13 +168,13 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 30 \
-    : join.new radius 40000 \
-    : join.new delta 600000 \
+    : join.new radius 250 \
+    : join.new delta 1500 \
     : join.new beta 0.7 \
-    : join.new buf_size 2000000 \
+    : join.new buf_size 5000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 100 \
+    : join.new landmark 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \

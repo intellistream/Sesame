@@ -157,10 +157,10 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 29 \
-    : join.new beta 0.001 \
-    : join.new cm 4 \
+    : join.new beta 0.1 \
+    : join.new cm 10 \
     : join.new cl 2 \
-    : join.new landmark 1000 \
+    : join.new landmark 3000 \
     : join.new outlier_distance_threshold 100 \
     : join.new outlier_cap 5 \
     : join.run run.sesame

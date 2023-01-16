@@ -163,7 +163,7 @@ ticat ${meta} : ${cover} \
     : join.new lambda 0.998 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 100 \
-    : join.new landmark 10000 \
+    : join.new landmark 1000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
