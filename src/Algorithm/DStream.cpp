@@ -283,7 +283,7 @@ bool SESAME::DStream::adjustLabels()
                                 {
                                     characteristicVec2.label = class1;
                                     gridCluster.addGrid(gridNeighbourhood);
-                                    this->clusterList.at(class1) = gridCluster;
+
                                     if (it1 != gridList.end())
                                         it1->second = characteristicVec2;
                                     else
@@ -740,16 +740,14 @@ SESAME::HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid,
 
     if (hChosenClass != NO_CLASS && hChosenClass != gridClass)
     {
+        for(auto gridCluster : clusterList)
+        {
+          if(gridCluster.clusterLabel == hChosenClass) gridCluster.addGrid(grid);
+          if(gridCluster.clusterLabel == gridClass and gridClass != NO_CLASS) gridCluster.removeGrid(grid);
+        }
         gridCluster = this->clusterList.at(hChosenClass);
         gridCluster.addGrid(grid);
         this->clusterList.at(hChosenClass) = gridCluster;
-
-        if (gridClass != NO_CLASS)
-        {
-            GridCluster c = this->clusterList.at(gridClass);
-            c.removeGrid(grid);
-            this->clusterList.at(gridClass) = c;
-        }
 
         characteristicVec.label = hChosenClass;
         newGridList.insert(std::make_pair(grid, characteristicVec));
@@ -990,7 +988,16 @@ void SESAME::DStream::removeSporadic()
             {
                 int gridClass = characteristicVec.label;
 
-                if (gridClass != -1) this->clusterList.at(gridClass).removeGrid(grid);
+                if (gridClass != -1)
+                {
+                    for(auto gridCluster: clusterList)
+                    {
+                        if(gridCluster.clusterLabel == gridClass)
+                        {
+                          gridCluster.removeGrid(grid);
+                        }
+                    }
+                }
                 removeGridList.push_back(grid);
             }
             // Else if (S1 && S2), mark as sporadic - Else mark as normal

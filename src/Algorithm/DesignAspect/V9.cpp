@@ -716,16 +716,14 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
 
     if (hChosenClass != NO_CLASS && hChosenClass != gridClass)
     {
+        for(auto gridCluster : clusterList)
+        {
+          if(gridCluster.clusterLabel == hChosenClass) gridCluster.addGrid(grid);
+          if(gridCluster.clusterLabel == gridClass and gridClass != NO_CLASS) gridCluster.removeGrid(grid);
+        }
         gridCluster = this->clusterList.at(hChosenClass);
         gridCluster.addGrid(grid);
         this->clusterList.at(hChosenClass) = gridCluster;
-
-        if (gridClass != NO_CLASS)
-        {
-            GridCluster c = this->clusterList.at(gridClass);
-            c.removeGrid(grid);
-            this->clusterList.at(gridClass) = c;
-        }
 
         characteristicVec.label = hChosenClass;
         newGridList.insert(std::make_pair(grid, characteristicVec));
