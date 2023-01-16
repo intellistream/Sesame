@@ -490,7 +490,7 @@ SESAME::HashMap SESAME::DStream::adjustNewLabels(SESAME::HashMap newGridList)
                 {
                     if (newGridList.find(neighbourGrid) != newGridList.end())
                     {
-                        CharacteristicVector characteristicVec1 = newGridList.find(grid)->second;
+                        CharacteristicVector characteristicVec1 = newGridList.find(neighbourGrid)->second;
                         CharacteristicVector characteristicVec2 =
                             newGridList.find(neighbourGrid)->second;
                         int class1 = characteristicVec1.label;
@@ -880,12 +880,17 @@ SESAME::HashMap SESAME::DStream::cleanNewClusters(SESAME::HashMap newGridList)
         auto clusterIter     = std::find(newClusterList.begin(), newClusterList.end(), cluster);
         int index            = (int)std::distance(newClusterList.begin(), clusterIter);
         cluster.clusterLabel = index;
+        unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-            DensityGrid grid                       = gridOfCluster.first;
-            CharacteristicVector characteristicVec = newGridList.find(grid)->second;
-            characteristicVec.label                = index;
-            newGridList.insert(std::make_pair(grid, characteristicVec));
+            DensityGrid grid                       = gridOfCluster.first;;
+            if(newGridList.find(grid) != newGridList.end())
+              newGridList.find(grid)->second.label = index;
+            else
+              removeGrids.insert(gridOfCluster);
+        }
+        for (auto &grid : removeGrids){
+          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
         }
     }
     // SESAME_INFO("Clean finish!");
@@ -916,9 +921,9 @@ void SESAME::DStream::cleanClusters()
         for (auto &RemoveCluster : toRemove)
         {
             auto removeCIter =
-                std::find(newClusterList.begin(), newClusterList.end(), RemoveCluster);
-            if (std::find(newClusterList.begin(), newClusterList.end(), RemoveCluster) !=
-                newClusterList.end())
+                std::find(clusterList.begin(), clusterList.end(), RemoveCluster);
+            if (std::find(clusterList.begin(), clusterList.end(), RemoveCluster) !=
+                clusterList.end())
                 this->clusterList.erase(removeCIter);
         }
     }
@@ -928,16 +933,17 @@ void SESAME::DStream::cleanClusters()
         auto clusterIter     = std::find(clusterList.begin(), clusterList.end(), cluster);
         int index            = (int)std::distance(clusterList.begin(), clusterIter);
         cluster.clusterLabel = index;
+        unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
-            DensityGrid grid                       = gridOfCluster.first;
-            CharacteristicVector characteristicVec = gridList.find(grid)->second;
-
-            characteristicVec.label = index;
+            DensityGrid grid  = gridOfCluster.first;
             if (gridList.find(grid) != gridList.end())
-                gridList.find(grid)->second = characteristicVec;
+                gridList.find(grid)->second.label = index;
             else
-                gridList.insert(std::make_pair(grid, characteristicVec));
+              removeGrids.insert(gridOfCluster);
+        }
+        for (auto &grid : removeGrids){
+          if(cluster.grids.find(grid.first) != cluster.grids.end())  cluster.grids.erase(grid.first);
         }
         this->clusterList.at(index) = cluster;
     }
@@ -996,5 +1002,17 @@ void SESAME::DStream::removeSporadic()
     {
         this->deletedGrids.insert(std::make_pair(sporadicGrid, currentTimeStamp));
         this->gridList.erase(sporadicGrid);
+        for (auto &cluster : this->clusterList)
+        {
+            if(cluster.grids.find(sporadicGrid) != cluster.grids.end()){
+              cluster.grids.erase(sporadicGrid);
+            }
+        }
+        for (auto &cluster : this->newClusterList)
+        {
+          if(cluster.grids.find(sporadicGrid) != cluster.grids.end()){
+            cluster.grids.erase(sporadicGrid);break;
+          }
+        }
     }
 }
