@@ -381,13 +381,18 @@ SESAME::HashMap SESAME::V9::adjustForSparseGrid(const DensityGrid &grid,
     HashMap newGridList;
     if (gridClass != NO_CLASS)
     {
-        GridCluster gridCluster = this->clusterList.at(gridClass);
-        gridCluster.removeGrid(grid);
-        characteristicVec.label = NO_CLASS;
-        newGridList.insert(std::make_pair(grid, characteristicVec));
-        this->clusterList.at(gridClass) = gridCluster;
-        if (!gridCluster.grids.empty() && !gridCluster.isConnected())
-            mergeGridList(newGridList, reCluster(gridCluster));
+        //// SESAME_INFO("It is removed from cluster "<<gridClass<<".");
+        for(auto gridCluster : clusterList)
+        {
+          if(gridCluster.clusterLabel == gridClass)
+          {
+            gridCluster.removeGrid(grid);
+            characteristicVec.label = NO_CLASS;
+            newGridList.insert(std::make_pair(grid, characteristicVec));
+            if (!gridCluster.grids.empty() && !gridCluster.isConnected())
+              mergeGridList(newGridList, reCluster(gridCluster));
+          }
+        }
     }
     return newGridList;
 }
@@ -542,14 +547,18 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
             hClass = this->gridList.find(neighbourGrid)->second.label;
             if (hClass != NO_CLASS)
             {
-                gridCluster = this->clusterList.at(hClass);
-
-                if (gridCluster.grids.size() > ChosenGridSize)
+              for(auto gridCluster : clusterList)
+              {
+                if(gridCluster.clusterLabel == hClass)
                 {
+                  if (gridCluster.grids.size() > ChosenGridSize)
+                  {
                     ChosenGridSize = gridCluster.grids.size();
                     hChosenClass   = hClass;
                     gridChosen     = DensityGrid(neighbourGrid);
+                  }
                 }
+              }
             }
         }
     }
@@ -690,12 +699,16 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
             ;
             if (hClass != NO_CLASS)
             {
-                gridCluster = this->clusterList.at(hClass);
-
-                if ((gridCluster.grids.size() > hChosenSize) && !gridCluster.isInside(grid, grid))
+                for(auto gridCluster : clusterList)
                 {
-                    hChosenSize  = gridCluster.grids.size();
-                    hChosenClass = hClass;
+                    if(gridCluster.clusterLabel == hClass)
+                    {
+                      if ((gridCluster.grids.size() > hChosenSize) && !gridCluster.isInside(grid, grid))
+                      {
+                        hChosenSize  = gridCluster.grids.size();
+                        hChosenClass = hClass;
+                      }
+                    }
                 }
             }
         }
