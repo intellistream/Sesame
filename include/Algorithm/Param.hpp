@@ -89,7 +89,7 @@ struct param_t
 
     // used in DStream
     double cm, cl;
-    double grid_width;
+    double grid_width = 50.0;
 
     // used in design aspect
     bool run_offline = false;  // determine whether to run the offline refinement

@@ -110,3 +110,18 @@ ticat ${meta} : ${insects} \
     : join.new coreset_size 24 \
     : join.new k 102 \
     : join.run run.sesame
+
+meta="{bench.tag=extra.dstream} $ori_meta"
+
+ticat ${meta} \
+    : join.new input_file $HOME/Sesame/build/benchmark/datasets/CoverType.txt \
+    : join.new num_points [5000,100000,5000] \
+    : join.new dim 54 \
+    : join.new num_clusters 7 \
+    : join.new run_cmm false \
+    : join.new algo 26 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 600 \
+    : join.new landmark 10000 \
+    : join.run run.sesame
