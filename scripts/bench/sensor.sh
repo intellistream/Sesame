@@ -152,7 +152,7 @@ ticat ${meta} : ${sensor} \
     : join.new algo 28 \
     : join.new distance_threshold 50 \
     : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 100 \
+    : join.new outlier_distance_threshold 30 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -194,10 +194,10 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${sensor} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 1000 \
+    : join.new num_samples 20000 \
     : join.new sliding 10 \
-    : join.new k 5000 \
-    : join.new landmark 10000 \
+    : join.new k 20000 \
+    : join.new landmark 200000 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \

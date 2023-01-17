@@ -191,11 +191,11 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 5000 \
-    : join.new landmark 50000 \
-    : join.new sliding 10 \
+    : join.new num_samples 800 \
+    : join.new landmark 80000 \
+    : join.new sliding 100 \
     : join.new k 10000 \
-    : join.new outlier_cap 50 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \

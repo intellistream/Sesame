@@ -201,10 +201,10 @@ ticat ${meta} : ${eds}\
 ticat ${meta} : ${eds} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 1000 \
+    : join.new num_samples 2000 \
     : join.new sliding 10 \
-    : join.new k 10000 \
-    : join.new landmark 10000 \
+    : join.new k 5000 \
+    : join.new landmark 20000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \
