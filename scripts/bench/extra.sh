@@ -119,9 +119,10 @@ ticat ${meta} \
     : join.new dim 54 \
     : join.new num_clusters 7 \
     : join.new run_cmm false \
-    : join.new algo 26 \
-    : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 600 \
-    : join.new landmark 10000 \
+    : join.new algo 6 \
+    : join.new lambda 0.998 \
+    : join.new beta 0.1 \
+    : join.new cm 5 \
+    : join.new cl 0.8 \
+    : join.new grid_width 50 \
     : join.run run.sesame
