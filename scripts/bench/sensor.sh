@@ -60,10 +60,10 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${sensor} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
-    : join.new beta 0.001 \
-    : join.new cm 4 \
-    : join.new cl 2 \
-    : join.new grid_width 0.15 \
+    : join.new beta 0.1 \
+    : join.new cm 3 \
+    : join.new cl 1 \
+    : join.new grid_width 200 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
@@ -164,6 +164,7 @@ ticat ${meta} : ${sensor} \
     : join.new landmark 3000 \
     : join.new outlier_distance_threshold 100 \
     : join.new outlier_cap 5 \
+    : join.new grid_width 20 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \

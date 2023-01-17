@@ -71,8 +71,8 @@ ticat ${meta} : ${eds}\
     : join.new lambda 0.998 \
     : join.new beta 0.1 \
     : join.new cm 3 \
-    : join.new cl 0.2 \
-    : join.new grid_width 0.5 \
+    : join.new cl 1 \
+    : join.new grid_width 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
