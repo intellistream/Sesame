@@ -21,9 +21,9 @@ ticat ${meta} : ${kdd99} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 350 \
-    : join.new num_online_clusters 60 \
-    : join.new radius 8 \
-    : join.new buf_size 1500 \
+    : join.new num_online_clusters 7 \
+    : join.new radius 50 \
+    : join.new buf_size 3000 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
@@ -69,7 +69,7 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 7 \
     : join.new delta_grid 100 \
-    : join.new num_samples 100 \
+    : join.new num_samples 10 \
     : join.new sliding 10 \
     : join.run run.sesame
 
@@ -169,9 +169,9 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 30 \
-    : join.new radius 250 \
-    : join.new delta 1500 \
-    : join.new beta 0.7 \
+    : join.new radius 4000 \
+    : join.new delta 5000 \
+    : join.new beta 0.1 \
     : join.new buf_size 5000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
@@ -201,7 +201,7 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 35 \
     : join.new seed 1 \
-    : join.new landmark 10000 \
-    : join.new coreset_size 50 \
+    : join.new landmark 100000 \
+    : join.new coreset_size 23 \
     : join.new outlier_cap 10 \
     : join.run run.sesame

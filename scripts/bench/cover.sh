@@ -21,7 +21,7 @@ ticat ${meta} : ${cover} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 350 \
-    : join.new num_online_clusters 110 \
+    : join.new num_online_clusters 7 \
     : join.new radius 14 \
     : join.new buf_size 1500 \
     : join.run run.sesame
@@ -169,7 +169,7 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 30 \
-    : join.new radius 250 \
+    : join.new radius 2500 \
     : join.new delta 1500 \
     : join.new beta 1 \
     : join.new buf_size 1000 \
@@ -200,7 +200,7 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 35 \
     : join.new seed 1 \
-    : join.new landmark 100 \
+    : join.new landmark 100000 \
     : join.new coreset_size 7 \
     : join.new outlier_cap 10 \
     : join.run run.sesame

@@ -21,9 +21,9 @@ ticat ${meta} : ${sensor} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 1000 \
-    : join.new num_online_clusters 200 \
+    : join.new num_online_clusters 20 \
     : join.new radius 15 \
-    : join.new buf_size 500 \
+    : join.new buf_size 1500 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
@@ -151,8 +151,8 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${sensor} \
     : join.new algo 28 \
     : join.new distance_threshold 50 \
-    : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 30 \
+    : join.new landmark 100000 \
+    : join.new outlier_distance_threshold 80 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -161,10 +161,10 @@ ticat ${meta} : ${sensor} \
     : join.new beta 0.1 \
     : join.new cm 10 \
     : join.new cl 2 \
-    : join.new landmark 3000 \
+    : join.new landmark 100000 \
     : join.new outlier_distance_threshold 100 \
     : join.new outlier_cap 5 \
-    : join.new grid_width 20 \
+    : join.new grid_width 200 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
@@ -204,6 +204,6 @@ ticat ${meta} : ${sensor} \
     : join.new algo 35 \
     : join.new seed 10 \
     : join.new landmark 10000 \
-    : join.new coreset_size 50 \
+    : join.new coreset_size 20 \
     : join.new outlier_cap 5 \
     : join.run run.sesame

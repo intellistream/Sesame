@@ -19,11 +19,11 @@ ticat ${meta} : ${insects} \
 
 ticat ${meta} : ${insects} \
     : join.new algo 2 \
-    : join.new num_last_arr 2 \
+    : join.new num_last_arr 20 \
     : join.new time_window 350 \
-    : join.new num_online_clusters 60 \
-    : join.new radius 8 \
-    : join.new buf_size 1500 \
+    : join.new num_online_clusters 24 \
+    : join.new radius 30 \
+    : join.new buf_size 500 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
@@ -167,10 +167,10 @@ ticat ${meta} : ${insects} \
 
 ticat ${meta} : ${insects} \
     : join.new algo 30 \
-    : join.new radius 0.4 \
+    : join.new radius 250 \
     : join.new delta 1500 \
     : join.new beta 0.4 \
-    : join.new buf_size 10000 \
+    : join.new buf_size 5000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
     : join.new landmark 10000 \
@@ -199,6 +199,6 @@ ticat ${meta} : ${insects} \
     : join.new algo 35 \
     : join.new seed 1 \
     : join.new landmark 10000 \
-    : join.new coreset_size 100 \
+    : join.new coreset_size 24 \
     : join.new outlier_cap 50 \
     : join.run run.sesame
