@@ -1,0 +1,1 @@
+SELECT algo, num_points, num_res, qps FROM extra WHERE tag="extra.step" ORDER BY algo, num_points;

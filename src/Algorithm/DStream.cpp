@@ -6,6 +6,7 @@
 #include "Algorithm/DataStructure/DataStructureFactory.hpp"
 #include "Algorithm/WindowModel/WindowFactory.hpp"
 
+#include <iostream>
 #include <cfloat>
 #include <cmath>
 
@@ -56,6 +57,8 @@ void SESAME::DStream::RunOnline(PointPtr input)
 
 void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
+    cout << "num_grids: " << NGrids << endl;
+    cout << "gap: " << gap << endl;
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     // SESAME_INFO(" cluster list size "<<clusterList.size());

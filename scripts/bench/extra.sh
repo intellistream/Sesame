@@ -36,21 +36,21 @@ ticat ${meta} : ${cover} \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 600 \
-    : join.new landmark 58101,116202,174303,232404,290506,348607,406708,464810,522911,581012 \
+    : join.new landmark [50000,500000,50000] \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 500 \
     : join.run run.sesame
 
 meta="{bench.tag=extra.sliding} $ori_meta"
 
-ticat ${meta} : ${eds}\
+ticat ${meta} : ${cover} \
     : join.new algo 24 \
-    : join.new max_in_nodes 100 \
+    : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 100 \
-    : join.new sliding 1000,2000,4000,8000,16000,20000,24000,32000,64000,128000 \
-    : join.new outlier_distance_threshold 15 \
-    : join.new outlier_cap 500 \
+    : join.new distance_threshold 600 \
+    : join.new sliding [50000,500000,50000]  \
+    : join.new outlier_distance_threshold 1000 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
 
 meta="{bench.tag=extra.damped} $ori_meta"
@@ -115,7 +115,7 @@ meta="{bench.tag=extra.dstream} $ori_meta"
 
 ticat ${meta} \
     : join.new input_file $HOME/Sesame/build/benchmark/datasets/CoverType.txt \
-    : join.new num_points [5000,100000,5000] \
+    : join.new num_points [50000,500000,50000] \
     : join.new dim 54 \
     : join.new num_clusters 7 \
     : join.new run_cmm false \
@@ -125,4 +125,39 @@ ticat ${meta} \
     : join.new cm 5 \
     : join.new cl 0.8 \
     : join.new grid_width 50 \
+    : join.run run.sesame
+
+meta="{bench.tag=extra.step} $ori_meta"
+eds="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points [20000,240000,20000] : join.new dim 2 : join.new num_clusters 363 : join.new run_eval false"
+
+ticat ${meta} : ${eds}\
+    : join.new algo 23 \
+    : join.new max_in_nodes 500 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 100 \
+    : join.new landmark 10000 \
+    : join.new outlier_distance_threshold 500 \
+    : join.new outlier_cap 5 \
+    : join.run run.sesame
+
+ticat ${meta} : ${eds}\
+    : join.new algo 24 \
+    : join.new max_in_nodes 50 \
+    : join.new max_leaf_nodes 10 \
+    : join.new distance_threshold 10 \
+    : join.new sliding 20000 \
+    : join.new outlier_distance_threshold 15 \
+    : join.new outlier_cap 500 \
+    : join.run run.sesame
+
+ticat ${meta} : ${eds}\
+    : join.new algo 25 \
+    : join.new max_in_nodes 50 \
+    : join.new max_leaf_nodes 50 \
+    : join.new distance_threshold 40 \
+    : join.new outlier_distance_threshold 60 \
+    : join.new outlier_cap 5 \
+    : join.new lambda 0.5 \
+    : join.new alpha 1.1 \
+    : join.new buf_size 10000 \
     : join.run run.sesame
