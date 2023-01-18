@@ -181,7 +181,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     case (G12Stream):
     {
         return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                                 DistanceDetection<false, false>, NoRefinement>>(
+                                                 DistanceDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
     case (G13Stream):

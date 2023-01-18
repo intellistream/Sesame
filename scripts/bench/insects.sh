@@ -167,13 +167,13 @@ ticat ${meta} : ${insects} \
 
 ticat ${meta} : ${insects} \
     : join.new algo 30 \
-    : join.new radius 250 \
+    : join.new radius 5000 \
     : join.new delta 1500 \
-    : join.new beta 0.4 \
-    : join.new buf_size 5000 \
+    : join.new beta 0.1 \
+    : join.new buf_size 10000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 10000 \
+    : join.new landmark 40000 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
@@ -189,16 +189,16 @@ ticat ${meta} : ${insects} \
 ticat ${meta} : ${insects} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 2000 \
-    : join.new sliding 10 \
+    : join.new num_samples 1 \
+    : join.new sliding 24 \
     : join.new k 10000 \
-    : join.new landmark 20000 \
+    : join.new landmark 24 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
     : join.new algo 35 \
     : join.new seed 1 \
-    : join.new landmark 10000 \
-    : join.new coreset_size 24 \
-    : join.new outlier_cap 50 \
+    : join.new landmark 200000 \
+    : join.new coreset_size 10 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame

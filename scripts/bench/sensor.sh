@@ -169,13 +169,13 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 30 \
-    : join.new radius 100 \
+    : join.new radius 10000 \
     : join.new delta 300 \
     : join.new beta 0.7 \
     : join.new buf_size 500 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 10000 \
+    : join.new landmark 40000 \
     : join.run run.sesame
 
 # radius: larger faster
@@ -194,16 +194,16 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${sensor} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 20000 \
-    : join.new sliding 10 \
-    : join.new k 20000 \
-    : join.new landmark 200000 \
+    : join.new num_samples 6 \
+    : join.new sliding 44 \
+    : join.new landmark 264 \
+    : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
     : join.new algo 35 \
     : join.new seed 10 \
-    : join.new landmark 10000 \
-    : join.new coreset_size 20 \
+    : join.new landmark 100000 \
+    : join.new coreset_size 5 \
     : join.new outlier_cap 5 \
     : join.run run.sesame

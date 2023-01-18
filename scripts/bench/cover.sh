@@ -169,13 +169,13 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 30 \
-    : join.new radius 2500 \
+    : join.new radius 50000 \
     : join.new delta 1500 \
-    : join.new beta 1 \
-    : join.new buf_size 1000 \
+    : join.new beta 0.1 \
+    : join.new buf_size 3000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 1000 \
+    : join.new landmark 80000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -191,16 +191,16 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 800 \
-    : join.new sliding 10 \
+    : join.new num_samples 1 \
+    : join.new sliding 7 \
     : join.new k 5000 \
-    : join.new landmark 8000 \
+    : join.new landmark 7 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
     : join.new algo 35 \
     : join.new seed 1 \
-    : join.new landmark 100000 \
+    : join.new landmark 300000 \
     : join.new coreset_size 7 \
-    : join.new outlier_cap 10 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
