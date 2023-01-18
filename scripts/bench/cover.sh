@@ -150,9 +150,9 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 28 \
     : join.new distance_threshold 600 \
-    : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 100 \
-    : join.new outlier_cap 5 \
+    : join.new landmark 100000 \
+    : join.new outlier_distance_threshold 1000 \
+    : join.new outlier_cap 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -169,13 +169,13 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 30 \
-    : join.new radius 50000 \
-    : join.new delta 1500 \
+    : join.new radius 5 \
+    : join.new delta 3 \
     : join.new beta 0.1 \
     : join.new buf_size 3000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 80000 \
+    : join.new landmark 300000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \

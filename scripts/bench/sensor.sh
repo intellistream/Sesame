@@ -153,7 +153,7 @@ ticat ${meta} : ${sensor} \
     : join.new distance_threshold 50 \
     : join.new landmark 100000 \
     : join.new outlier_distance_threshold 80 \
-    : join.new outlier_cap 5 \
+    : join.new outlier_cap 50 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
@@ -169,13 +169,13 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 30 \
-    : join.new radius 10000 \
-    : join.new delta 300 \
-    : join.new beta 0.7 \
+    : join.new radius 5 \
+    : join.new delta 3 \
+    : join.new beta 0.07 \
     : join.new buf_size 500 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 40000 \
+    : join.new landmark 1000000 \
     : join.run run.sesame
 
 # radius: larger faster
