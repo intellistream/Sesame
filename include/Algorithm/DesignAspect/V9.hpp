@@ -82,6 +82,8 @@ private:
     HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
     void updateGridListDensity();
     static void mergeGridList(HashMap &gridList, const HashMap &otherList);
+    bool checkIfSporadic(CharacteristicVector characteristicVec);
+    void removeSporadic();
 };
 }  // namespace SESAME
 #endif  // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
