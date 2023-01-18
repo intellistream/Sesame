@@ -116,31 +116,31 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     }
     case (G1Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<false, false>, KMeans>>(
             cmd_params);
     }
     case (G2Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<false, false>, DBSCAN>>(
             cmd_params);
     }
     case (G3Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<false, false>, NoRefinement>>(
             cmd_params);
     }
     case (G4Stream):
     {
-        return std::make_shared<StreamClustering<Sliding, ClusteringFeaturesTree,
-                                                 DistanceDetection<true, false>, NoRefinement>>(
+        return std::make_shared<StreamClustering<Sliding, ClusteringFeaturesList,
+                                                 DistanceDetection<false, false>, NoRefinement>>(
             cmd_params);
     }
     case (G5Stream):
     {
-        return std::make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Damped, ClusteringFeaturesList,
                                                  DistanceDetection<false, false>, NoRefinement>>(
             cmd_params);
     }
@@ -153,7 +153,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     case (G6Stream):
     {
         return std::make_shared<
-            StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(
+            StreamClustering<Landmark, ClusteringFeaturesList, NoDetection, NoRefinement>>(
             cmd_params);
     }
     case (G7Stream):
@@ -164,7 +164,7 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     }
     case (G8Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
                                                  DistanceDetection<false, false>, NoRefinement>>(
             cmd_params);
     }
@@ -174,19 +174,19 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     }
     case (G11Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<false, true>, NoRefinement>>(
             cmd_params);
     }
     case (G12Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<true, false>, NoRefinement>>(
             cmd_params);
     }
     case (G13Stream):
     {
-        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+        return std::make_shared<StreamClustering<Landmark, ClusteringFeaturesList,
                                                  DistanceDetection<true, true>, NoRefinement>>(
             cmd_params);
     }

@@ -173,6 +173,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
             {
                 out_timer.Tick();
                 auto &cls = d->clusters();
+                std::vector<NodePtr> del;
                 for (auto &node : cls)
                 {
                     if (o->TimerCheck(input, node))
@@ -181,8 +182,20 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
                         {
                             outliers_.push_back(node);
                         }
-                        d->Remove(node);
+                        else if constexpr (has_delete)
+                        {
+                            for (auto &p : node_map_[node])
+                            {
+                                point_map_.erase(p);
+                            }
+                            node_map_.erase(node);
+                        }
+                        del.push_back(node);
                     }
+                }
+                for (auto &node : del)
+                {
+                    d->Remove(node);
                 }
                 out_timer.Tock();
             }
@@ -250,17 +263,20 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
         {
             assert(point_map_.contains(point));
             auto node = point_map_[point];
-            node->Update(point->Reverse(), true);
-            point_map_.erase(point);
-            node_map_[node].erase(point);
-            if constexpr (buffer_enabled)
+            if (node != nullptr)
             {
-                if (node->cf.num == 0)
+                node->Update(point->Reverse(), true);
+                point_map_.erase(point);
+                node_map_[node].erase(point);
+                if constexpr (buffer_enabled)
                 {
-                    // TODO
-                    const auto [first, last] = std::ranges::remove_if(
-                        outliers_, [&](const NodePtr &n) { return n->cf.num == 0; });
-                    outliers_.erase(first, last);
+                    if (node->cf.num == 0)
+                    {
+                        // TODO
+                        const auto [first, last] = std::ranges::remove_if(
+                            outliers_, [&](const NodePtr &n) { return n->cf.num == 0; });
+                        outliers_.erase(first, last);
+                    }
                 }
             }
         }
