@@ -57,12 +57,12 @@ meta="{bench.tag=extra.damped} $ori_meta"
 
 ticat ${meta} : ${eds}\
     : join.new algo 25 \
-    : join.new max_in_nodes 100 \
+    : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 100 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 15 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_distance_threshold 150 \
+    : join.new outlier_cap 5 \
     : join.new lambda [0.2,2,0.2] \
     : join.new alpha 1.1 \
     : join.new buf_size 10000 \
@@ -74,8 +74,8 @@ ticat ${meta} : ${eds}\
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 100 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 15 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_distance_threshold 150 \
+    : join.new outlier_cap 5 \
     : join.new lambda 0.5 \
     : join.new alpha [1.1,2.9,0.2] \
     : join.new buf_size 10000 \
