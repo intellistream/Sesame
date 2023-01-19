@@ -98,9 +98,9 @@ ticat ${meta} : ${insects} \
     : join.new algo 23 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 5 \
-    : join.new landmark 20000 \
-    : join.new outlier_distance_threshold 0.12 \
+    : join.new distance_threshold 1 \
+    : join.new landmark 80000 \
+    : join.new outlier_distance_threshold 12 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -108,9 +108,9 @@ ticat ${meta} : ${insects} \
     : join.new algo 24 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 1 \
-    : join.new sliding 200000 \
-    : join.new outlier_distance_threshold 1.2 \
+    : join.new distance_threshold 10 \
+    : join.new sliding 100 \
+    : join.new outlier_distance_threshold 12 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
