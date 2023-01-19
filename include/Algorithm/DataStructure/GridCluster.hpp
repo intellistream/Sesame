@@ -59,6 +59,13 @@ public:
      */
     bool isInside(DensityGrid grid, DensityGrid other);
 
+
+    /**
+     * add a grid into grids, if exists, update value, if not, insert
+     */
+    void putHashGrid(HashGrids grids1, const DensityGrid& g, bool inside);
+
+
     /**
      * Tests a grid cluster for connectedness according to Definition 3.4, Grid Group, from
      * Chen and Tu 2007.
