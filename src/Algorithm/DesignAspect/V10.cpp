@@ -61,15 +61,15 @@ SESAME::DPNodePtr SESAME::V10::streamProcess(SESAME::PointPtr p, int opt, double
     auto nn = dpTree->findNN(p, coef, opt, time);
     ds_timer.Tock();
     out_timer.Tick();
-    if (nn == nullptr || nn->GetDis() > dpTree->GetCluR())
-    {
-        nn = outres->insert(p, time);
-        if (nn->GetRho() > this->minRho)
-        {
-            outres->remove(nn);
-            dpTree->insert(nn, opt);
-        }
-    }
+//    if (nn == nullptr || nn->GetDis() > dpTree->GetCluR())
+//    {
+//        nn = outres->insert(p, time);
+//        if (nn->GetRho() > this->minRho)
+//        {
+//            outres->remove(nn);
+//            dpTree->insert(nn, opt);
+//        }
+//    }
     dpTree->deleteInact(outres, this->minRho, time);
     out_timer.Tock();
     return nn;
@@ -146,12 +146,12 @@ void SESAME::V10::RunOnline(SESAME::PointPtr input)
                 onlineCenters.push_back(center->copy());
             }
         }
-        for (const auto &out : this->outres->getOutliers())
-        {
-            PointPtr center = out->GetCenter();
-            center->setOutlier(true);
-            onlineCenters.push_back(center->copy());
-        }
+//        for (const auto &out : this->outres->getOutliers())
+//        {
+//            PointPtr center = out->GetCenter();
+//            center->setOutlier(true);
+//            onlineCenters.push_back(center->copy());
+//        }
         DPTreePtr().swap(dpTree);
         OutPtr().swap(outres);
         CachePtr().swap(cache);
@@ -196,13 +196,13 @@ void SESAME::V10::RunOffline(SESAME::DataSinkPtr sinkPtr)
             sinkPtr->put(center->copy());
         }
     }
-    for (const auto &out : this->outres->getOutliers())
-    {
-        PointPtr center = out->GetCenter();
-        center->setClusteringCenter(clu++);
-        center->setOutlier(true);
-        sinkPtr->put(center->copy());
-    }
+//    for (const auto &out : this->outres->getOutliers())
+//    {
+//        PointPtr center = out->GetCenter();
+//        center->setClusteringCenter(clu++);
+//        center->setOutlier(true);
+//        sinkPtr->put(center->copy());
+//    }
     ref_timer.Tock();
     sum_timer.Tock();
 }
