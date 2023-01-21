@@ -1159,6 +1159,8 @@ void SESAME::DStream::removeSporadic()
         }
     }
 }
+
+/*
 HashMap SESAME::DStream::putHashMap(HashMap gList, const DensityGrid& g, CharacteristicVector cv)
 {
     auto it1 = gList.find(g);
@@ -1167,4 +1169,4 @@ HashMap SESAME::DStream::putHashMap(HashMap gList, const DensityGrid& g, Charact
     else
      gList.insert(std::make_pair(g, cv));
     return gList;
-}
+}*/
