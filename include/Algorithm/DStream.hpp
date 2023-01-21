@@ -81,7 +81,7 @@ private:
     bool checkIfSporadic(CharacteristicVector characteristicVec);
     void updateGridListDensity();
     static void mergeGridList(HashMap &gridList, const HashMap &otherList);
-    void putHashMap(HashMap gList, const DensityGrid& g, CharacteristicVector cv);
+   // HashMap putHashMap(HashMap gList, const DensityGrid& g, CharacteristicVector cv);
 };
 
 }  // namespace SESAME
