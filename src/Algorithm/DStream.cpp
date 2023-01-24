@@ -567,11 +567,13 @@ SESAME::HashMap SESAME::DStream::adjustNewLabels(SESAME::HashMap newGridList)
                                 else
                                   //  gridListAdjusted.insert(std::make_pair(neighbourGrid, characteristicVec2));
                                     //gridListAdjusted=putHashMap(gridListAdjusted,neighbourGrid, characteristicVec2);
-                                auto it1 = gridListAdjusted.find(neighbourGrid);
-                                if (it1 != gridListAdjusted.end())
-                                    it1->second = characteristicVec2;
-                                else
-                                    gridListAdjusted.insert(std::make_pair(neighbourGrid, characteristicVec2));
+                                {
+                                    auto it1 = gridListAdjusted.find(neighbourGrid);
+                                    if (it1 != gridListAdjusted.end())
+                                        it1->second = characteristicVec2;
+                                    else
+                                        gridListAdjusted.insert(std::make_pair(neighbourGrid, characteristicVec2));
+                                }
                                 return gridListAdjusted;
                             }
                         }
