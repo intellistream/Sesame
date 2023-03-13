@@ -98,12 +98,12 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 23 \
-    : join.new max_in_nodes 800 \
-    : join.new max_leaf_nodes 800 \
-    : join.new distance_threshold 800 \
-    : join.new landmark 150000 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 600 \
+    : join.new landmark 10000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 5 \
+    : join.new outlier_cap 300 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -111,7 +111,7 @@ ticat ${meta} : ${cover} \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 400 \
     : join.new distance_threshold 600 \
-    : join.new sliding 100 \
+    : join.new sliding 10 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
