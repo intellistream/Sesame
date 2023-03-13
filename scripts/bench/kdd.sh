@@ -98,21 +98,21 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 23 \
-    : join.new max_in_nodes 70000 \
-    : join.new max_leaf_nodes 70000 \
-    : join.new distance_threshold 70000 \
-    : join.new landmark 300000 \
+    : join.new max_in_nodes 4000 \
+    : join.new max_leaf_nodes 4000 \
+    : join.new distance_threshold 6000 \
+    : join.new landmark 30000 \
     : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 24 \
-    : join.new max_in_nodes 40000 \
-    : join.new max_leaf_nodes 40000 \
+    : join.new max_in_nodes 400 \
+    : join.new max_leaf_nodes 4000 \
     : join.new distance_threshold 40000 \
     : join.new sliding 200 \
-    : join.new outlier_distance_threshold 80000 \
+    : join.new outlier_distance_threshold 800 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 

@@ -102,7 +102,7 @@ ticat ${meta} : ${sensor} \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 500 \
     : join.new landmark 10000 \
-    : join.new outlier_distance_threshold 20 \
+    : join.new outlier_distance_threshold 2000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -111,7 +111,7 @@ ticat ${meta} : ${sensor} \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 500 \
-    : join.new sliding 1000 \
+    : join.new sliding 10000 \
     : join.new outlier_distance_threshold 20 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
