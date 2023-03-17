@@ -72,7 +72,7 @@ void SESAME::DenStream::Init()
     this->dampedWindow =
         WindowFactory::createDampedWindow(denStreamParams.base, denStreamParams.lambda);
     this->dbscan    = std::make_shared<DBSCAN>(denStreamParams.min_points, denStreamParams.epsilon);
-    this->startTime = clock();
+    this->startTime = 0;
     this->lastUpdateTime    = 0;
     this->pointArrivingTime = 0;
     this->minWeight         = denStreamParams.beta * denStreamParams.mu;

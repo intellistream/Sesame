@@ -38,7 +38,7 @@ public:
   DampedWindowPtr dampedWindow;
   std::vector<MicroClusterPtr> pMicroClusters;
   std::vector<MicroClusterPtr> oMicroClusters;
-  clock_t startTime;
+  int startTime;
   int pointArrivingTime; // clock_t
   int lastPointTime;
   int lastUpdateTime; // for calculating time interval
