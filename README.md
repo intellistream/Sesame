@@ -37,7 +37,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 | Insects   | 905145                                | 33        | 24             |
 | Sensor    | 2219803                               | 5         | 55             |
 | EDS       | 45690, 100270, 150645, 200060, 245270 | 2         | 75, 145, 218, 289, 363 |
-| EDS_O     | 94720,97360,100000                    | 2         | 90, 90, 90 |
+| ODS     | 94720,97360,100000                    | 2         | 90, 90, 90 |
 
 ## 2. Flags
 

@@ -130,10 +130,10 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 26 \
-    : join.new max_in_nodes 80000 \
-    : join.new max_leaf_nodes 80000 \
-    : join.new distance_threshold 70000 \
-    : join.new landmark 450000 \
+    : join.new max_in_nodes 40000 \
+    : join.new max_leaf_nodes 40000 \
+    : join.new distance_threshold 60000 \
+    : join.new landmark 1000000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -211,10 +211,10 @@ ticat ${meta} : ${kdd99} \
 ticat ${meta} : ${kdd99} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 200 \
-    : join.new sliding 5000 \
-    : join.new landmark 1000000 \
-    : join.new k 5 \
+    : join.new num_samples 100 \
+    : join.new sliding 2000 \
+    : join.new landmark 200000 \
+    : join.new k 50 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 

@@ -75,35 +75,35 @@ export cover="join.new input_file $HOME/Sesame/build/benchmark/datasets/CoverTyp
 
 ticat ${meta} : ${cover} \
     : join.new algo 21 \
-    : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 600 \
-    : join.new landmark 10000 \
+    : join.new max_in_nodes 800 \
+    : join.new max_leaf_nodes 800 \
+    : join.new distance_threshold 800 \
+    : join.new landmark 150000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_cap 5 \
     : join.new k 10000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
     : join.new algo 22 \
-    : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 600 \
-    : join.new landmark 10000 \
+    : join.new max_in_nodes 800 \
+    : join.new max_leaf_nodes 800 \
+    : join.new distance_threshold 800 \
+    : join.new landmark 150000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 500 \
+    : join.new outlier_cap 5 \
     : join.new min_points 10 \
     : join.new epsilon 25 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
     : join.new algo 23 \
-    : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 600 \
-    : join.new landmark 10000 \
+    : join.new max_in_nodes 800 \
+    : join.new max_leaf_nodes 800 \
+    : join.new distance_threshold 800 \
+    : join.new landmark 150000 \
     : join.new outlier_distance_threshold 1000 \
-    : join.new outlier_cap 300 \
+    : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
@@ -214,8 +214,8 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 20 \
-    : join.new sliding 5000 \
+    : join.new num_samples 100 \
+    : join.new sliding 1000 \
     : join.new k 7 \
     : join.new landmark 100000 \
     : join.run run.sesame

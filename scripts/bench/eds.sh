@@ -6,9 +6,9 @@ export eds3="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt :
 export eds4="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 200060 : join.new dim 2 : join.new num_clusters 289"
 export eds5="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363"
 
-export edso1="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 94270 : join.new dim 2 : join.new num_clusters 90"
-export edso2="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 97360 : join.new dim 2 : join.new num_clusters 90"
-export edso3="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
+export edso1="join.new input_file $HOME/Sesame/build/benchmark/datasets/ODS.txt : join.new num_points 94270 : join.new dim 2 : join.new num_clusters 90"
+export edso2="join.new input_file $HOME/Sesame/build/benchmark/datasets/ODS.txt : join.new num_points 97360 : join.new dim 2 : join.new num_clusters 90"
+export edso3="join.new input_file $HOME/Sesame/build/benchmark/datasets/ODS.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
 
 function run(){
 # ticat ${meta} : ${eds} \
