@@ -107,11 +107,11 @@ ticat ${meta} : ${eds}\
 
 ticat ${meta} : ${eds}\
     : join.new algo 23 \
-    : join.new max_in_nodes 40 \
-    : join.new max_leaf_nodes 10 \
-    : join.new distance_threshold 40 \
+    : join.new max_in_nodes 500 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 100 \
     : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 100 \
+    : join.new outlier_distance_threshold 500 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
@@ -179,13 +179,13 @@ ticat ${meta} : ${eds}\
 
 ticat ${meta} : ${eds} \
     : join.new algo 30 \
-    : join.new radius 250 \
+    : join.new radius 5 \
     : join.new delta 1500 \
     : join.new beta 1 \
     : join.new buf_size 1000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 20000 \
+    : join.new landmark 5000 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
