@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export eds="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS.txt : join.new num_points 245270 : join.new dim 2 : join.new num_clusters 363"
-export edso="join.new input_file $HOME/Sesame/build/benchmark/datasets/ODS.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
+export edso="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
 
 function SEQ()
 {

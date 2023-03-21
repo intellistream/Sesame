@@ -6,5 +6,5 @@ LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="KDD99_F" AND algo
 LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="sensor" AND algo_id>=20) as sensor ON t.algo=sensor.algo
 LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="INSECTS" AND algo_id>=20) as insects ON t.algo=insects.algo
 LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="EDS" AND num_points=245270 AND arr_rate=0 AND algo_id>=20) as eds ON t.algo=eds.algo
-LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="ODS" AND num_points=100000 AND arr_rate=0 AND algo_id>=20) as ods ON t.algo=ods.algo
+LEFT JOIN (SELECT algo, outlier_size FROM main WHERE workload="EDS_O" AND num_points=100000 AND arr_rate=0 AND algo_id>=20) as ods ON t.algo=ods.algo
 WHERE t.algo_id>=20;
