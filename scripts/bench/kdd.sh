@@ -180,31 +180,31 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 31 \
-    : join.new max_in_nodes 60000 \
-    : join.new max_leaf_nodes 60000 \
-    : join.new distance_threshold 60000 \
-    : join.new landmark 300000 \
-    : join.new outlier_distance_threshold 100000 \
+    : join.new max_in_nodes 4000 \
+    : join.new max_leaf_nodes 4000 \
+    : join.new distance_threshold 6000 \
+    : join.new landmark 30000 \
+    : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 32 \
-    : join.new max_in_nodes 60000 \
-    : join.new max_leaf_nodes 60000 \
-    : join.new distance_threshold 60000 \
-    : join.new landmark 400000 \
-    : join.new outlier_distance_threshold 100000 \
+    : join.new max_in_nodes 4000 \
+    : join.new max_leaf_nodes 4000 \
+    : join.new distance_threshold 6000 \
+    : join.new landmark 30000 \
+    : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 33 \
-    : join.new max_in_nodes 60000 \
-    : join.new max_leaf_nodes 60000 \
-    : join.new distance_threshold 60000 \
-    : join.new landmark 200000 \
-    : join.new outlier_distance_threshold 100000 \
+    : join.new max_in_nodes 4000 \
+    : join.new max_leaf_nodes 4000 \
+    : join.new distance_threshold 6000 \
+    : join.new landmark 30000 \
+    : join.new outlier_distance_threshold 80000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 

@@ -120,7 +120,7 @@ ticat ${meta} : ${sensor} \
     : join.new algo 25 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 50 \
+    : join.new distance_threshold 150 \
     : join.new outlier_distance_threshold 200 \
     : join.new outlier_cap 5 \
     : join.new lambda 1 \
@@ -169,13 +169,13 @@ ticat ${meta} : ${sensor} \
 
 ticat ${meta} : ${sensor} \
     : join.new algo 30 \
-    : join.new radius 50 \
+    : join.new radius 30 \
     : join.new delta 3 \
     : join.new beta 0.07 \
     : join.new buf_size 500 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 500000 \
+    : join.new landmark 900000 \
     : join.run run.sesame
 
 # radius: larger faster

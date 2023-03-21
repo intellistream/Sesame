@@ -109,9 +109,9 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 24 \
     : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 400 \
+    : join.new max_leaf_nodes 100 \
     : join.new distance_threshold 600 \
-    : join.new sliding 10 \
+    : join.new sliding 1000 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
