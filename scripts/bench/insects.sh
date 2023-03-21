@@ -181,10 +181,10 @@ ticat ${meta} : ${insects} \
 ticat ${meta} : ${insects} \
     : join.new algo 31 \
     : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 5 \
-    : join.new landmark 1000 \
-    : join.new outlier_distance_threshold 0.7 \
+    : join.new max_leaf_nodes 400 \
+    : join.new distance_threshold 0.5 \
+    : join.new landmark 20000 \
+    : join.new outlier_distance_threshold 1.2 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
