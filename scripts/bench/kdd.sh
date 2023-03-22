@@ -130,10 +130,10 @@ ticat ${meta} : ${kdd99} \
 
 ticat ${meta} : ${kdd99} \
     : join.new algo 26 \
-    : join.new max_in_nodes 40000 \
-    : join.new max_leaf_nodes 40000 \
-    : join.new distance_threshold 60000 \
-    : join.new landmark 1000000 \
+    : join.new max_in_nodes 80000 \
+    : join.new max_leaf_nodes 80000 \
+    : join.new distance_threshold 80000 \
+    : join.new landmark 500000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
