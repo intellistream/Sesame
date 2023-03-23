@@ -179,7 +179,7 @@ ticat ${meta} : ${eds}\
 
 ticat ${meta} : ${eds} \
     : join.new algo 30 \
-    : join.new radius 5 \
+    : join.new radius 36 \
     : join.new delta 1500 \
     : join.new beta 1 \
     : join.new buf_size 1000 \

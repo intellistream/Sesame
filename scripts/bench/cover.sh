@@ -169,13 +169,13 @@ ticat ${meta} : ${cover} \
 
 ticat ${meta} : ${cover} \
     : join.new algo 30 \
-    : join.new radius 5 \
-    : join.new delta 3 \
-    : join.new beta 0.1 \
-    : join.new buf_size 3000 \
+    : join.new radius 190 \
+    : join.new delta 1500 \
+    : join.new beta 1 \
+    : join.new buf_size 10000 \
     : join.new alpha 0.998 \
     : join.new lambda 1 \
-    : join.new landmark 300000 \
+    : join.new landmark 200000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
