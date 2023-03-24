@@ -21,9 +21,9 @@ ticat ${meta} : ${kdd99} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 350 \
-    : join.new num_online_clusters 7 \
-    : join.new radius 50 \
-    : join.new buf_size 3000 \
+    : join.new num_online_clusters 200 \
+    : join.new radius 8 \
+    : join.new buf_size 1500 \
     : join.run run.sesame
 
 ticat ${meta} : ${kdd99} \

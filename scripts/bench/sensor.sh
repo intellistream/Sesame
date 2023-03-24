@@ -21,9 +21,9 @@ ticat ${meta} : ${sensor} \
     : join.new algo 2 \
     : join.new num_last_arr 2 \
     : join.new time_window 1000 \
-    : join.new num_online_clusters 20 \
+    : join.new num_online_clusters 150 \
     : join.new radius 15 \
-    : join.new buf_size 1500 \
+    : join.new buf_size 500 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
