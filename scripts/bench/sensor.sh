@@ -185,18 +185,28 @@ ticat ${meta} : ${sensor} \
     : join.new algo 31 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 300 \
-    : join.new landmark 500000 \
+    : join.new distance_threshold 400 \
+    : join.new landmark 50000 \
     : join.new outlier_distance_threshold 2000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
 ticat ${meta} : ${sensor} \
-    : join.new algo 32,33 \
+    : join.new algo 32 \
     : join.new max_in_nodes 1000 \
     : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 500 \
-    : join.new landmark 10000 \
+    : join.new distance_threshold 300 \
+    : join.new landmark 50000 \
+    : join.new outlier_distance_threshold 2000 \
+    : join.new outlier_cap 5 \
+    : join.run run.sesame
+
+ticat ${meta} : ${sensor} \
+    : join.new algo 33 \
+    : join.new max_in_nodes 1000 \
+    : join.new max_leaf_nodes 100 \
+    : join.new distance_threshold 270 \
+    : join.new landmark 50000 \
     : join.new outlier_distance_threshold 2000 \
     : join.new outlier_cap 5 \
     : join.run run.sesame

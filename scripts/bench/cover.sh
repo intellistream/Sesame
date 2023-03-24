@@ -214,8 +214,8 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 34 \
     : join.new delta_grid 1 \
-    : join.new num_samples 100 \
-    : join.new sliding 1000 \
+    : join.new num_samples 500 \
+    : join.new sliding 200 \
     : join.new k 7 \
     : join.new landmark 100000 \
     : join.run run.sesame

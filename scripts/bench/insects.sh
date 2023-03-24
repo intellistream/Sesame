@@ -28,13 +28,13 @@ ticat ${meta} : ${insects} \
 
 ticat ${meta} : ${insects} \
     : join.new algo 3 \
-    : join.new buf_size 500 \
+    : join.new buf_size 1000 \
     : join.new min_points 30 \
-    : join.new epsilon 35 \
+    : join.new epsilon 0.1 \
     : join.new base 2 \
     : join.new lambda 0.25 \
     : join.new mu 6 \
-    : join.new beta 0.2 \
+    : join.new beta 0.6 \
     : join.run run.sesame
 
 ticat ${meta} : ${insects} \
@@ -182,9 +182,9 @@ ticat ${meta} : ${insects} \
     : join.new algo 31 \
     : join.new max_in_nodes 400 \
     : join.new max_leaf_nodes 400 \
-    : join.new distance_threshold 0.5 \
+    : join.new distance_threshold 0.75 \
     : join.new landmark 20000 \
-    : join.new outlier_distance_threshold 1.2 \
+    : join.new outlier_distance_threshold 1.8 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
 
