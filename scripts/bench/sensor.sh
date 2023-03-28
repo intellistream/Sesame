@@ -151,7 +151,7 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${sensor} \
     : join.new algo 28 \
     : join.new distance_threshold 500 \
-    : join.new landmark 1000000 \
+    : join.new landmark 700000 \
     : join.new outlier_distance_threshold 800 \
     : join.new outlier_cap 5 \
     : join.run run.sesame
