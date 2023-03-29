@@ -437,6 +437,7 @@ SESAME::HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
                     newGridList.insert(std::make_pair(grid, characteristicVec));
                 if (!gridCluster.grids.empty() && !gridCluster.isConnected())
                     mergeGridList(newGridList, reCluster(gridCluster));
+                break;
             }
         }
     }
