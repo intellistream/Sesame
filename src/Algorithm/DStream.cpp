@@ -40,8 +40,9 @@ void SESAME::DStream::RunOnline(PointPtr input)
     // and
     // 6. If tc mod gap == 0, then:
     // Detect and remove sporadic grids from grid_list then adjust clustering
-    if (!init && currentTimeStamp == gap)
+    if (!init && currentTimeStamp >= gap)
     {
+        //SESAME_INFO("Initial clustering! gap is "<<gap);
         initialClustering();
         init = true;
     }
@@ -166,7 +167,7 @@ void SESAME::DStream::GridListUpdate(std::vector<int> coordinate)
         }
 
         else
-            characteristicVec = CharacteristicVector(currentTimeStamp, 0, 1.0, -1, false, dl, dm);
+            characteristicVec = CharacteristicVector(currentTimeStamp, -1, 1.0, -1, false, dl, dm);
         // this->gridList.insert(std::make_pair(grid, characteristicVec));
         this->gridList.insert(std::make_pair(grid, characteristicVec));
     }
@@ -209,8 +210,7 @@ void SESAME::DStream::initialClustering()
             GridCluster gridCluster    = GridCluster(gridClass);
             gridCluster.addGrid(grid);
             this->clusterList.push_back(gridCluster);
-            //  // SESAME_INFO(" was dense (class "<<gridClass<<")" <<"Position is "<<
-            //  this->clusterList.size());
+           // SESAME_INFO(" was dense (class "<<gridClass<<")" <<"Position is "<<this->clusterList.size());
         }
         else
             characteristicVecOfG.label = NO_CLASS;
@@ -250,6 +250,7 @@ bool SESAME::DStream::adjustLabels()
 {
     // bool adjust=false;
     // a. For each cluster c
+
     for (GridCluster &gridCluster : this->clusterList)
     {
         // // SESAME_INFO("Adjusting from cluster "<<gridCluster.clusterLabel<<", standby...");
@@ -297,6 +298,7 @@ bool SESAME::DStream::adjustLabels()
                             // cluster, assign it to cluster
                             else if (characteristicVec2.isTransitional(dm, dl))
                             {
+                                ////TODO CHECK HERE
                                 characteristicVec2.label = class1;
                                 gridCluster.addGrid(gridNeighbourhood);
                                 this->clusterList.at(class1) = gridCluster;  // Testing
@@ -370,8 +372,8 @@ bool SESAME::DStream::inspectChangedGrids()
         if (characteristicVec.attChange && !characteristicVec.isVisited)  // grid.isVisited
         {                                                                 // grid.isVisited=true;
             gridIter->second.isVisited = true;
-            //   // SESAME_INFO(a<<"th visit!"<<gridIter->second.isVisited);
-            // newGridList.insert(std::make_pair(grid, characteristicVec));
+            //SESAME_INFO(a<<"th visit! Whether visited "<<gridIter->second.isVisited);
+            newGridList.insert(std::make_pair(grid, characteristicVec));
             auto it1 = gridList.find(grid);
             if (it1 != gridList.end())
                 it1->second = characteristicVec;
@@ -388,14 +390,14 @@ bool SESAME::DStream::inspectChangedGrids()
         gridIter++;
         a++;
     }
-    // SESAME_INFO("Inspect changes in grids "<<gridList.size());
+    //SESAME_INFO("Inspect changes in grids "<<gridList.size());
     // If there are grids in new grid list, update the corresponding grids in grid_list and clean up
     // the cluster list
     if (!newGridList.empty())
     {
-        // SESAME_INFO("There are "<<newGridList.size()<<" entries to update from new Grid List to
-        // grid_list.");
+        //SESAME_INFO("There are "<<newGridList.size()<<" entries to update from new Grid List to grid_list.");
         mergeGridList(this->gridList, newGridList);
+       // SESAME_INFO("Now grid size is  "<<gridList.size());
         cleanClusters();
         return true;
     }
@@ -417,6 +419,13 @@ SESAME::HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
                                                      CharacteristicVector characteristicVec,
                                                      int gridClass)
 {
+    if (gridClass!=-1&&gridClass>clusterList.size())
+    {
+          SESAME_INFO("Current grids size and cluster size is "
+                    <<  gridList.size()<<" and "<<clusterList.size()<<
+                   " adjust For Sparse Grid "<<gridClass<<".");
+    }
+
     HashMap newGridList;
     // System.out.print("Density grid "+dg.toString()+" is adjusted as a sparse grid at time
     // "+this.getCurrTime()+". ");
@@ -425,7 +434,7 @@ SESAME::HashMap SESAME::DStream::adjustForSparseGrid(DensityGrid grid,
         for (auto gridCluster : clusterList)
         {
             if (gridCluster.clusterLabel == gridClass)
-            {
+            {   ////TODO CHECK HERE
                 gridCluster.removeGrid(grid);
                 characteristicVec.label = NO_CLASS;
                 // newGridList.insert(std::make_pair(grid, characteristicVec));
@@ -459,8 +468,8 @@ SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
 {
     HashMap newGridList;
     auto gcIter = gridCluster.grids.begin();
-    //  newClusterList = std::vector<GridCluster>();
-    // // SESAME_INFO("ReCluster called for cluster "<<gridCluster.clusterLabel);
+    newClusterList =  std::vector<GridCluster>();
+    //SESAME_INFO("ReCluster called for cluster "<<gridCluster.clusterLabel);
     // Assign every dense grid in gc to its own cluster, assign all other grids to NO_CLASS
     while (gcIter != gridCluster.grids.end())
     {
@@ -469,6 +478,8 @@ SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
         if (characteristicVecOfGrid.attribute == DENSE)
         {
             int gridClass                 = (int)newClusterList.size();
+            SESAME_INFO("grid class for the new cluster list size! "<<gridClass);
+            ////TODO CHECK HERE
             characteristicVecOfGrid.label = gridClass;
             GridCluster newCluster(gridClass);
             newCluster.addGrid(grid);
@@ -494,7 +505,7 @@ SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
         HashMap gridListAdjusted = adjustNewLabels(newGridList);
         if (!gridListAdjusted.empty())
         {
-            // SESAME_INFO("grid list is adjusted for sparse!");
+            SESAME_INFO("grid list is adjusted for sparse!");
             mergeGridList(newGridList, gridListAdjusted);
             changesMade = true;
         }
@@ -504,6 +515,7 @@ SESAME::HashMap SESAME::DStream::reCluster(GridCluster gridCluster)
     gridCluster.grids.clear();
     this->clusterList.at(gridCluster.clusterLabel) = gridCluster;
     for (GridCluster &cluster : newClusterList) this->clusterList.push_back(cluster);
+    
     return newGridList;
 }
 
@@ -557,26 +569,18 @@ SESAME::HashMap SESAME::DStream::adjustNewLabels(SESAME::HashMap newGridList)
                             // cluster
                             else if (characteristicVec2.isTransitional(dm, dl))
                             {
+                                ////TODO CHECK HERE
                                 characteristicVec2.label = class1;
                                 cluster1.addGrid(neighbourGrid);
                                 this->newClusterList.at(class1) = cluster1;
                                 // Change for detecting repeated grids
+
                                 auto it1 = gridListAdjusted.find(neighbourGrid);
                                 if (it1 != gridListAdjusted.end())
-                                    it1->second = characteristicVec2;
-                                else
-                                //  gridListAdjusted.insert(std::make_pair(neighbourGrid,
-                                //  characteristicVec2));
-                                // gridListAdjusted=putHashMap(gridListAdjusted,neighbourGrid,
-                                // characteristicVec2);
-                                {
-                                    auto it1 = gridListAdjusted.find(neighbourGrid);
-                                    if (it1 != gridListAdjusted.end())
                                         it1->second = characteristicVec2;
-                                    else
+                                else
                                         gridListAdjusted.insert(
                                             std::make_pair(neighbourGrid, characteristicVec2));
-                                }
                                 return gridListAdjusted;
                             }
                         }
@@ -602,6 +606,13 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
                                                     CharacteristicVector characteristicVec,
                                                     int gridClass)
 {
+    if (gridClass!=-1&&gridClass>clusterList.size())
+    {  SESAME_INFO("Current grids size and cluster size is "
+                       <<  gridList.size()<<" and "<<clusterList.size()<<
+                   " adjust For Dense Grid class is "<<gridClass<<".");}
+  //  SESAME_INFO("Current grids size and cluster size is "
+     //               <<  gridList.size()<<" and "<<clusterList.size()<<
+    //            " adjust For Dense Grid class is "<<gridClass<<".");
     // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
     GridCluster gridCluster;           // The cluster, ch, of h
     DensityGrid gridChosen(grid);      // The chosen grid h, whose cluster ch has the largest size
@@ -618,16 +629,17 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
             hClass = this->gridList.find(neighbourGrid)->second.label;
             if (hClass != NO_CLASS)
             {
-                for (auto gridCluster : clusterList)
+                for (auto gridC : clusterList)
                 {
-                    if (gridCluster.clusterLabel == hClass)
+                    if (gridC.clusterLabel == hClass)
                     {
-                        if (gridCluster.grids.size() > ChosenGridSize)
+                        if (gridC.grids.size() > ChosenGridSize)
                         {
-                            ChosenGridSize = gridCluster.grids.size();
+                            ChosenGridSize = gridC.grids.size();
                             hChosenClass   = hClass;
                             gridChosen     = DensityGrid(neighbourGrid);
                         }
+                        break;
                     }
                 }
             }
@@ -660,23 +672,32 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
             // Else if dg belongs to cluster c and h belongs to c'
             else
             {
-                // // SESAME_INFO("g was labelled "<<gridClass);
-                double gSize = this->clusterList.at(gridClass).grids.size();
+                //SESAME_INFO("grid was labelled "<<gridClass<<", the total size for  cluster is "<<this->clusterList.size());
+                for (auto gridCluster : clusterList)
+                {
+                    if (gridCluster.clusterLabel == gridClass)
+                    {
+                        double gSize = this->clusterList.at(gridClass).grids.size();
 
-                if (gSize <= ChosenGridSize)
-                    mergeClusters(gridClass, hChosenClass);
-                else
-                    mergeClusters(hChosenClass, gridClass);
+                        if (gSize <= ChosenGridSize)
+                            mergeClusters(gridClass, hChosenClass);
+                        else
+                            mergeClusters(hChosenClass, gridClass);
+                        break;
+                    }
+                }
+
             }
         }
 
         // Else if h is a transitional grid
-        else if (this->gridList.at(gridChosen).attribute == TRANSITIONAL)
+         else if (this->gridList.find(gridChosen)->second.attribute == TRANSITIONAL)
         {
-            //  // SESAME_INFO("h is transitional.");
+          //  SESAME_INFO("h is transitional.");
             // If dg is labelled as no class and if h is an outside grid if dg is added to ch
             if (gridClass == NO_CLASS && !gridCluster.isInside(gridChosen, grid))
             {
+                ////TODO CHECK HERE
                 characteristicVec.label = hChosenClass;
                 // newGridList.insert(std::make_pair(grid, characteristicVec));
                 //  newGridList=putHashMap(newGridList,grid, characteristicVec);
@@ -687,35 +708,43 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
                     newGridList.insert(std::make_pair(grid, characteristicVec));
                 gridCluster.addGrid(grid);
                 this->clusterList.at(hChosenClass) = gridCluster;
-                // // SESAME_INFO(" dg is added to cluster "<<hChosenClass<<".");
+               // SESAME_INFO(" dg is added to cluster "<<hChosenClass<<".");
             }
             // Else if dg is in cluster c and |c| >= |ch|
             else if (gridClass != NO_CLASS)
             {
-                GridCluster c = this->clusterList.at(gridClass);
-                double gSize  = c.grids.size();
-
-                if (gSize >= ChosenGridSize)
+              //  SESAME_INFO("Finding this cluster......");
+                for (auto c : clusterList)
                 {
-                    // Move h from cluster ch to cluster c
-                    gridCluster.removeGrid(gridChosen);
-                    c.addGrid(gridChosen);
-                    CharacteristicVector cvhChosen = this->gridList.find(gridChosen)->second;
-                    cvhChosen.label                = gridClass;
-                    // newGridList.insert(std::make_pair(gridChosen, cvhChosen));
-                    //  newGridList=putHashMap(newGridList,gridChosen, cvhChosen);
+                    if (c.clusterLabel == gridClass)
+                    {
+                        //GridCluster c = this->clusterList.at(gridClass);
+                        int gSize  = c.grids.size();
+                        if (gSize >= ChosenGridSize)
+                        {
+                            // Move h from cluster ch to cluster c
+                            gridCluster.removeGrid(gridChosen);
+                            c.addGrid(gridChosen);
+                            CharacteristicVector cvhChosen = this->gridList.find(gridChosen)->second;
+                            ////TODO CHECK HERE
+                            cvhChosen.label                = gridClass;
+                            // newGridList.insert(std::make_pair(gridChosen, cvhChosen));
+                            //  newGridList=putHashMap(newGridList,gridChosen, cvhChosen);
 
-                    auto it1 = newGridList.find(gridChosen);
-                    if (it1 != newGridList.end())
-                        it1->second = cvhChosen;
-                    else
-                        newGridList.insert(std::make_pair(gridChosen, cvhChosen));
-                    // // SESAME_INFO("dgClass is "<<gridClass<<", hChosenClass is
-                    // "<<hChosenClass<<", gSize is "<<gSize<< " and hChosenSize is
-                    // "<<ChosenGridSize<<" h is added to cluster "<<gridClass<<".");
-                    this->clusterList.at(hChosenClass) = gridCluster;
-                    this->clusterList.at(gridClass)    = c;
-                }
+                            auto it1 = newGridList.find(gridChosen);
+                            if (it1 != newGridList.end())
+                                it1->second = cvhChosen;
+                            else
+                                newGridList.insert(std::make_pair(gridChosen, cvhChosen));
+                            // SESAME_INFO("dgClass is "<<gridClass<<", hChosenClass is"<<hChosenClass<<", gSize is "<<gSize<<
+                            //     " and hChosenSize is"<<ChosenGridSize<<" h is added to cluster "<<gridClass<<".");
+                            this->clusterList.at(hChosenClass) = gridCluster;
+                            this->clusterList.at(gridClass)    = c;
+                        }
+                    }
+
+                    }
+
             }
         }
     }
@@ -729,6 +758,7 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
         c.addGrid(grid);
         // System.out.println("Added "+dg.toString()+" to cluster "+newClass+".");
         this->clusterList.push_back(c);
+        ////TODO CHECK HERE
         characteristicVec.label = newClass;
         // newGridList= putHashMap(newGridList,grid, characteristicVec);
         auto it1 = newGridList.find(gridChosen);
@@ -747,6 +777,7 @@ SESAME::HashMap SESAME::DStream::adjustForDenseGrid(DensityGrid grid,
                 if (cvhprime.attribute == TRANSITIONAL)
                 {
                     c.addGrid(dghprime);
+                    ////TODO CHECK HERE
                     cvhprime.label = newClass;
                     // newGridList.insert(std::make_pair(dghprime, cvhprime));
                     // newGridList=putHashMap(newGridList,dghprime, cvhprime);
@@ -787,7 +818,13 @@ SESAME::HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid,
     int hClass       = NO_CLASS;  // The class label of h
     int hChosenClass = NO_CLASS;  // The class label of ch
     HashMap newGridList;
-    //// SESAME_INFO("adjust For Transitional Grid "<<gridClass<<".");
+    if (gridClass!=-1&&gridClass>clusterList.size())
+    {
+         SESAME_INFO("Current grids size and cluster size is "
+                   <<  gridList.size()<<" and "<<clusterList.size()<<
+               " adjust For Transitional Grid "<<gridClass<<".");
+    }
+
     for (DensityGrid &neighbourGrid : grid.getNeighbours())
     {
         if (this->gridList.find(neighbourGrid) != gridList.end())
@@ -832,7 +869,7 @@ SESAME::HashMap SESAME::DStream::adjustForTransitionalGrid(DensityGrid grid,
             cluster.removeGrid(grid);
             this->clusterList.at(gridClass) = cluster;
         }
-
+        ////TODO CHECK HERE
         characteristicVec.label = hChosenClass;
         auto it1                = newGridList.find(grid);
         if (it1 != newGridList.end())
@@ -865,6 +902,7 @@ SESAME::HashMap SESAME::DStream::mergeNewClusters(SESAME::HashMap newGridList, i
         // Assign density grids in small Cluster to bigCluster
         if (characteristicVec.label == smallCluster)
         {
+            ////TODO CHECK HERE
             characteristicVec.label = bigCluster;
             auto it1                = newGridList.find(grid);
             if (it1 != newGridList.end())
@@ -872,13 +910,7 @@ SESAME::HashMap SESAME::DStream::mergeNewClusters(SESAME::HashMap newGridList, i
             else
             // newGridList.insert(std::make_pair(grid, characteristicVec));
             //  newGridList=   putHashMap(newGridList,grid, characteristicVec);
-            {
-                auto it1 = newGridList.find(grid);
-                if (it1 != newGridList.end())
-                    it1->second = characteristicVec;
-                else
-                    newGridList.insert(std::make_pair(grid, characteristicVec));
-            }
+                newGridList.insert(std::make_pair(grid, characteristicVec));
         }
     }
     // SESAME_INFO("Density grids assigned to cluster "<<bigCluster<<".");
@@ -940,7 +972,7 @@ double SESAME::DStream::outlier_density_thresholdFunction(int tg, double cl, dou
  */
 void SESAME::DStream::mergeClusters(int smallCluster, int bigCluster)
 {
-    // SESAME_INFO("Merge clusters "<<smallCluster<<" and "<<bigCluster<<".");
+  //  SESAME_INFO("Merge clusters "<<smallCluster<<" and "<<bigCluster<<".");
     // Iterate through the density grids in grid_list to find those which are in highClass
     for (auto gridIter = gridList.begin(); gridIter != gridList.end(); gridIter++)
     {
@@ -950,6 +982,7 @@ void SESAME::DStream::mergeClusters(int smallCluster, int bigCluster)
         // Assign density grids in smallCluster to bigCluster
         if (characteristicVec.label == smallCluster)
         {
+            ////TODO CHECK HERE
             characteristicVec.label = bigCluster;
             gridIter->second        = characteristicVec;
         }
@@ -960,7 +993,7 @@ void SESAME::DStream::mergeClusters(int smallCluster, int bigCluster)
     bigGridCluster.absorbCluster(this->clusterList.at(smallCluster));
     this->clusterList.at(bigCluster) = bigGridCluster;
     this->clusterList.erase(clusterList.begin() + smallCluster);
-    // SESAME_INFO("Cluster "<<smallCluster<<" removed from list.");
+    //SESAME_INFO("Cluster "<<smallCluster<<" removed from list.");
     cleanClusters();
 }
 
@@ -1004,6 +1037,7 @@ SESAME::HashMap SESAME::DStream::cleanNewClusters(SESAME::HashMap newGridList)
     {
         auto clusterIter     = std::find(newClusterList.begin(), newClusterList.end(), cluster);
         int index            = (int)std::distance(newClusterList.begin(), clusterIter);
+        ////TODO CHECK HERE
         cluster.clusterLabel = index;
         unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
@@ -1034,7 +1068,7 @@ SESAME::HashMap SESAME::DStream::cleanNewClusters(SESAME::HashMap newGridList)
 
 void SESAME::DStream::cleanClusters()
 {
-    //// SESAME_INFO("Clean Clusters");
+    //SESAME_INFO("Clean Clusters");
 
     std::vector<GridCluster> toRemove;
 
@@ -1059,12 +1093,14 @@ void SESAME::DStream::cleanClusters()
     {
         auto clusterIter     = std::find(clusterList.begin(), clusterList.end(), cluster);
         int index            = (int)std::distance(clusterList.begin(), clusterIter);
+        ////TODO CHECK HERE
         cluster.clusterLabel = index;
         unordered_map<DensityGrid, bool, GridKeyHash, EqualGrid> removeGrids;
         for (auto &gridOfCluster : cluster.grids)
         {
             DensityGrid grid = gridOfCluster.first;
             if (gridList.find(grid) != gridList.end())
+                ////TODO CHECK HERE
                 gridList.find(grid)->second.label = index;
             else
                 removeGrids.insert(gridOfCluster);
