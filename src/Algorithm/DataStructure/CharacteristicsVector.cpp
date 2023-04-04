@@ -49,7 +49,7 @@ bool SESAME::CharacteristicVector::isTransitional(double dm, double dl){
 }
 double SESAME::CharacteristicVector::getCurrGridDensity(int NowTime, double lambda)
 {
-  return pow(lambda, (double)(NowTime-this->updateTime)) * this->gridDensity;
+  return pow(lambda, (NowTime-this->updateTime)) * this->gridDensity;
 }
 //Landmark window
 double SESAME::CharacteristicVector::getCurrGridDensity()

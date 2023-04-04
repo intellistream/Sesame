@@ -28,15 +28,19 @@ SESAME::GridCluster::GridCluster(HashGrids hashMap, int label)
 void SESAME::GridCluster::addGrid(const DensityGrid& grid)
 {
     bool inside = isInside(grid);
-    grids[grid] = inside;
+    auto it1 = grids.find(grid);
+    if (it1 != grids.end())
+        grids[grid] = inside;
+    else
+        grids.insert(std::make_pair(grid,inside));
     // Iterate on grids and judge whether they are inside grids or not
-    for (auto iterW = this->grids.begin(); iterW != this->grids.end(); ++iterW)
+    for(auto & grid_iter : this->grids)
     {
-        bool inside2U = iterW->second;
+        bool inside2U = grid_iter.second;
         if (!inside2U)
         {
-            DensityGrid dg2U = iterW->first;
-            iterW->second    = isInside(dg2U);
+            DensityGrid dg2U = grid_iter.first;
+            grid_iter.second    = isInside(dg2U);
         }
     }
 }
