@@ -60,8 +60,8 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${cover} \
     : join.new algo 6 \
     : join.new lambda 0.998 \
-    : join.new beta 0.1 \
-    : join.new cm 5 \
+    : join.new beta 1 \
+    : join.new cm 1 \
     : join.new cl 0.8 \
     : join.new grid_width 50 \
     : join.run run.sesame
