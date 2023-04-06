@@ -225,8 +225,6 @@ def configer(config, purity, throughput, measurement, id):
     plt.tick_params(axis='y', size=36)
     if id == 1:
         plt.yticks(np.arange(32000, 187000, 31000), size=36)
-    elif id == 2:
-        plt.yticks(np.arange(100000 , 700000, 100000), size=36)
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
@@ -244,8 +242,8 @@ def configer(config, purity, throughput, measurement, id):
 @click.command()
 @click.option('--purity', default='raw/purity.csv', show_default=True)
 @click.option('--throughput', default='raw/throughput.csv', show_default=True)
-@click.option('--config-landmark', default='mock/landmark.csv', show_default=True)
-@click.option('--config-sliding', default='mock/sliding.csv', show_default=True)
+@click.option('--config-landmark', default='raw/landmark.csv', show_default=True)
+@click.option('--config-sliding', default='raw/sliding.csv', show_default=True)
 @click.option('--config-lamda', default='raw/damped.csv', show_default=True)
 @click.option('--config-alpha', default='raw/damped.csv', show_default=True)
 @click.option('--cmm', default='raw/cmm-eds.csv', show_default=True)
@@ -254,23 +252,8 @@ def configer(config, purity, throughput, measurement, id):
 @click.option('--throughput-ods', default='raw/throughput-ods.csv', show_default=True)
 @click.option('--offline', default='mock/offline.csv', show_default=True)
 # below are unnecessary currently
-@click.option('--dimension', default='mock/dim.csv', show_default=True)
-@click.option('--cluster-size-fct', default='mock/window_cluster_size_fct.csv', show_default=True)
-@click.option('--prog-fct', default='raw/prog-fct.csv', show_default=True)
-@click.option('--prog-kdd', default='raw/prog-kdd.csv', show_default=True)
-@click.option('--prog-sensor', default='raw/prog-sensor.csv', show_default=True)
-@click.option('--prog-insects', default='raw/prog-insects.csv', show_default=True)
-@click.option('--etb-fct', default='raw/etb-fct.csv', show_default=True)
-@click.option('--etb-kdd', default='raw/etb-kdd.csv', show_default=True)
-@click.option('--etb-sensor', default='raw/etb-sensor.csv', show_default=True)
-@click.option('--etb-insects', default='raw/etb-insects.csv', show_default=True)
-@click.option('--arr-rate', default='raw/arr-rate.csv', show_default=True)
-@click.option('--cluster-size-eds', default='mock/window_cluster_size_eds.csv', show_default=True)
-@click.option('--outlier-size-eds', default='mock/window_outlier_size_eds.csv', show_default=True)
-def draw_all_pictures(purity, throughput, cmm, dimension, offline,
-                      cluster_size_fct, cluster_size_eds, outlier_size_eds,
-                      prog_fct, prog_kdd, prog_sensor, prog_insects,
-                      etb_fct, etb_kdd, etb_sensor, etb_insects, arr_rate, throughput_eds, purity_ods, throughput_ods,
+def draw_all_pictures(purity, throughput, cmm, offline,
+                      throughput_eds, purity_ods, throughput_ods,
                       config_landmark, config_sliding, config_lamda, config_alpha):
     compare_order = [[8, 3, 15, 9, 10, 14], [3, 4, 5], [6, 12, 11, 3, 13], [3, 1, 2]]
     # compare_order = [[3, 8, 11, 9, 10, 12], [3, 4, 5], [6, 3, 13, 7, 14], [3, 1, 2]]
