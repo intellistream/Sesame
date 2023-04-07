@@ -1,0 +1,17 @@
+algo,workload,run_offline,purity,qps
+DenStream,CoverType,0,0.548178,9336.66
+DenStream,CoverType,1,0.548178,9316.22
+DenStream,INSECTS,0,0.51571,144911
+DenStream,INSECTS,1,0.51571,149499
+DenStream,KDD99_F,0,0.969101,16454.5
+DenStream,KDD99_F,1,0.969101,16442
+DenStream,sensor,0,0.0638467,43940.3
+DenStream,sensor,1,0.0638467,43940.8
+StreamKMeans,CoverType,0,0.489109,23601.1
+StreamKMeans,CoverType,1,0.489109,23601.2
+StreamKMeans,INSECTS,0,0.488874,20323.8
+StreamKMeans,INSECTS,1,0.488874,20327.4
+StreamKMeans,KDD99_F,0,0.581972,30530.3
+StreamKMeans,KDD99_F,1,0.581972,30233.6
+StreamKMeans,sensor,0,0.0693233,76913.9
+StreamKMeans,sensor,1,0.0693233,76480.8
