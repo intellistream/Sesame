@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import click
-import os
 import matplotlib.ticker as mtick
+import os
+import click
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
 
 show_legend = False
 real_world_workloads = ["FCT", "KDD99", "Sensor", "Insects"]
