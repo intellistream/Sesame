@@ -4,10 +4,10 @@ export cover="join.new input_file $HOME/Sesame/build/benchmark/datasets/CoverTyp
 
 ticat ${meta} : ${cover} \
     : join.new algo 0 \
-    : join.new max_in_nodes 400 \
-    : join.new max_leaf_nodes 100 \
-    : join.new distance_threshold 600 \
-    : join.new landmark 10000000 \
+    : join.new max_in_nodes 800 \
+    : join.new max_leaf_nodes 800 \
+    : join.new distance_threshold 800 \
+    : join.new landmark 30000 \
     : join.run run.sesame
 
 ticat ${meta} : ${cover} \
