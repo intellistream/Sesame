@@ -25,3 +25,6 @@
 /benchmark/release/
 /cmake-*
 /debug
+.vscode/
+
+*.log

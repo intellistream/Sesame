@@ -15,4 +15,5 @@ add_source_sesame(
         CharacteristicsVector.cpp
         DensityGrid.cpp
         GridCluster.cpp
+        MeyersonSketch.cpp
 )

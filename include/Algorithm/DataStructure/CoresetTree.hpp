@@ -6,72 +6,108 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <Algorithm/DataStructure/Point.hpp>
-#include <Algorithm/DataStructure/TreeNode.hpp>
+
+#include "Algorithm/DataStructure/FeatureVector.hpp"
+#include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
+#include "Utils/Random.hpp"
+
+#include <memory>
 #include <vector>
 
-namespace SESAME {
-class CoresetTree;
-typedef std::shared_ptr<CoresetTree> CoresetTreePtr;
+namespace SESAME
+{
 
-class CoresetTree {
+class CoresetTree : public enable_shared_from_this<CoresetTree>
+{
+public:
+    struct Node;
+    struct Bucket;
+    using NodePtr = std::shared_ptr<Node>;
+    using TreePtr = std::shared_ptr<CoresetTree>;
+    using Points  = std::shared_ptr<std::vector<PointPtr>>;
 
- public:
+private:
+    const StreamClusteringParam &param;
+    std::vector<PointPtr> samples;
+    bool has_sampled = false;
+    Random r;
+    NodePtr root = nullptr;
+    std::vector<Bucket> buckets;
+    size_t num_buckets = 0;
+    std::vector<PointPtr> centers;
+    std::vector<NodePtr> clusters_;
+    std::vector<PointPtr> Union(const std::vector<PointPtr> &a, const std::vector<PointPtr> &b);
+    NodePtr Select(NodePtr);
+    PointPtr ChooseCenter(NodePtr);
+    void Split(NodePtr, PointPtr, int);
+    std::vector<NodePtr> Points2Nodes(Points);
 
-  /**
- * initalizes root as a treenode with the union of setA and setB as pointset and centre as centre
- * @param root
- * @param setA
- * @param setB
- * @param n_1
- * @param n_2
- * @param centre
- * @param centreIndex
- */
-  void constructRoot(TreeNodePtr root,
-                     std::vector<PointPtr> &setA,
-                     std::vector<PointPtr> &setB,
-                     int n_1,
-                     int n_2,
-                     PointPtr centre,
-                     int centreIndex);
+public:
+    CoresetTree(const StreamClusteringParam &param);
+    void Init();
+    NodePtr Insert(PointPtr input);
+    NodePtr Insert(NodePtr node);
+    void Remove(NodePtr node);
+    std::vector<NodePtr> &clusters();
 
-/**
-Constructs a coreset of size k from the union of setA and setB
-**/
-  void unionTreeCoreset(int k,
-                        int n_1,
-                        int n_2,
-                        std::vector<PointPtr> &setA,
-                        std::vector<PointPtr> &setB,
-                        std::vector<PointPtr> &centres);
-  void freeTree(TreeNodePtr root);
-  bool treeFinished(TreeNodePtr root);
-  bool isLeaf(TreeNodePtr node);
-
-  /**
-   * Computes the target function value of the n points of the treenode. Differs from the function "targetFunctionValue" in three things:
-   * 1. only the centre of the treenode is used as a centre
-   * 2. works on arrays of pointers instead on arrays of points
-   * 3. stores the cost in the treenode
-   * @param node
-   */
-  void treeNodeTargetFunctionValue(TreeNodePtr node);
-
-  /**
-  selects a leaf node (using the kMeans++ distribution)
-  **/
-  TreeNodePtr selectNode(TreeNodePtr root);
-  PointPtr chooseCentre(TreeNodePtr node);
-  double treeNodeCostOfPoint(TreeNodePtr node, PointPtr p);
-  double treeNodeSplitCost(TreeNodePtr node, PointPtr CenterA, PointPtr CenterB);
-  void split(TreeNodePtr parent, PointPtr newCentre, int newCentreIndex);
-  PointPtr determineClosestCentre(PointPtr point, PointPtr centreA, PointPtr centreB);
+public:
+    struct Bucket
+    {
+        Points base, spill;
+        Bucket()
+            : base(std::make_shared<std::vector<PointPtr>>()),
+              spill(std::make_shared<std::vector<PointPtr>>())
+        {}
+    };
+    struct Node : std::enable_shared_from_this<Node>
+    {
+        size_t timestamp = 0;
+        int index        = 0;
+        const int dim;
+        ClusteringFeatures cf;
+        double costs_sum_dist = 0.0, costs_sum_sq_dist = 0.0;
+        NodePtr lc = nullptr, rc = nullptr, parent = nullptr;
+        PointPtr center;
+        std::vector<PointPtr> points;
+        Node(TreePtr s, PointPtr p) : dim(p->getDimension()), cf(p->getDimension()) { Update(p); }
+        Node(PointPtr p) : dim(p->getDimension()), cf(p->dim), center(p) {}
+        PointPtr Centroid()
+        {
+            auto c = GenericFactory::New<Point>(dim);
+            for (int i = 0; i < dim; ++i) c->setFeatureItem(cf.ls[i] / cf.num, i);
+            return c;
+        }
+        PointPtr Center() { return center; }
+        void Update(PointPtr point)
+        {
+            cf.num += point->sgn;
+            double d = point->L2Dist(Centroid());
+            costs_sum_dist += d * point->sgn;
+            costs_sum_sq_dist += d * d * point->sgn;
+            for (int i = 0; i < dim; ++i)
+            {
+                auto val = point->getFeatureItem(i);
+                cf.ls[i] += val * point->sgn;
+                cf.ss[i] += (val * val) * point->sgn;
+            }
+            points.push_back(point);
+        }
+        void Scale(double scale)
+        {
+            costs_sum_dist *= scale;
+            costs_sum_sq_dist *= scale * scale;
+            for (int i = 0; i < dim; ++i)
+            {
+                cf.ls[i] *= scale;
+                cf.ss[i] *= scale * scale;
+            }
+        }
+        bool IsLeaf() { return lc == nullptr && rc == nullptr; }
+    };
 };
 
-}
+}  // namespace SESAME
 
-#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_
+#endif  // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CORESETTREE_HPP_

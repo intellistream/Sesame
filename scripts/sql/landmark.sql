@@ -1,0 +1,1 @@
+SELECT algo, landmark, purity, qps FROM extra WHERE tag="extra.landmark" ORDER BY algo, landmark;

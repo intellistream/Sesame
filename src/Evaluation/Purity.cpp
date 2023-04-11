@@ -1,102 +1,124 @@
 //
 // Created by tuidan on 2021/10/11.
 //
-#include <Utils/UtilityFunctions.hpp>
-#include <Evaluation/Purity.hpp>
-#include <Utils/Logger.hpp>
+#include "Evaluation/Purity.hpp"
+#include "Utils/Logger.hpp"
+#include "Utils/UtilityFunctions.hpp"
+
+#include <omp.h>
+#include <atomic>
 #include <cmath>
+#include <unordered_map>
+#include <unordered_set>
+
 /**
- * @Description: Please note that the order of the cluster index has to be consecutive
+ * @Description: Please note that the order of the cluster index has to be
+ * consecutive
  */
 void SESAME::Purity::pointToGroup(const std::vector<SESAME::PointPtr> &input,
-                                  std::vector<std::vector<PointPtr>> &group, int number) {
-  int count = 0, k = 1; // TODO: cluster ID starting from 1 ?
-  bool stop = false;
-  while(!stop) {
-    std::vector<SESAME::PointPtr> cluster;
-    for(const auto & i : input) {
-      if(i->getClusteringCenter() == k) {
-        cluster.push_back(i->copy());
-        count++;
-      }
+                                  std::vector<std::vector<PointPtr>> &group)
+{
+    std::unordered_map<int, std::vector<PointPtr>> centerMap;
+    for (auto el : input)
+    {
+        centerMap[el->getClusteringCenter()].push_back(el);
     }
-    if(k == number + 1) stop = true;
-    else {
-      group.push_back(cluster);
-      k++;
+    for (auto it : centerMap)
+    {
+        group.push_back(it.second);
     }
-  }
 }
 
 /**
- * @Description: count the number of the elements in clusterA contained in clusterB?
+ * @Description: count the number of the elements in clusterA contained in
+ * clusterB?
  */
 double SESAME::Purity::calculateBelongsFromTwo(std::vector<SESAME::PointPtr> &groupA,
-                                            std::vector<SESAME::PointPtr> &groupB) {
-  double count = 0;
-  for(const auto& elA:groupA) {
-    for(const auto& elB:groupB) {
-      if(elA->getIndex() == elB->getIndex()) {
-        count += elA->getWeight();
-        break;
-      }
+                                               std::vector<SESAME::PointPtr> &groupB)
+{
+    double count = 0;
+    std::unordered_set<int> setB;
+    for (auto &el : groupB)
+    {
+        setB.insert(el->getIndex());
     }
-  }
-  return count;
+    for (auto &el : groupA)
+    {
+        if (setB.contains(el->getIndex()))
+        {
+            count += el->getWeight();
+        }
+    }
+    return count;
 }
 
 /**
  * @Description: return the max count of the cluster
  */
-double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample, std::vector<std::vector<PointPtr>> &GT) {
-  double max = 0;
-  for(auto& re:GT) {
-    double temp = calculateBelongsFromTwo(singleSample, re);
-    if(max <= temp) max = temp;
-  }
-  return max;
+double SESAME::Purity::getMaxBelongs(std::vector<SESAME::PointPtr> &singleSample,
+                                     std::vector<std::vector<PointPtr>> &GT)
+{
+    double max = 0;
+    for (auto &re : GT)
+    {
+        double temp = calculateBelongsFromTwo(singleSample, re);
+        if (max <= temp) max = temp;
+    }
+    return max;
 }
 
-double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &center,
-                               const std::vector<SESAME::PointPtr> &result,
-                               int dimension, int GTclusterNumber, bool decay) {
-  double purity;
-  double size = 0;
-  std::vector<PointPtr> input;
-  UtilityFunctions::groupByCenters(result, center, input, dimension);
-  for(int i = 0; i < input.size(); i++){
-    double w = 1;
-    if(decay){ // 分段函数来设置weight
-      if(input.size() - input[i]->getIndex() <= 101) {
-        w = 1;
-      } else if(input[i]->getIndex() < input.size() / 100) {
-        w = 0;
-      } else {
-        w = double (input[i]->getIndex() - input.size() / 100) / double (input.size() - 100 -input.size() / 100);
-      }
-    } else {
-      w = 1;
+double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &inputs,
+                                  const std::vector<SESAME::PointPtr> &predicts, int dim,
+                                  bool decay)
+{
+    double purity;
+    double size = 0;
+    for (int i = 0; i < predicts.size(); i++)
+    {
+        double w = 1;
+        if (decay)
+        {  // 分段函数来设置weight
+            if (predicts.size() - predicts[i]->getIndex() <= 101)
+            {
+                w = 1;
+            }
+            else if (predicts[i]->getIndex() < predicts.size() / 100)
+            {
+                w = 0;
+            }
+            else
+            {
+                w = double(predicts[i]->getIndex() - predicts.size() / 100) /
+                    double(predicts.size() - 100 - predicts.size() / 100);
+            }
+        }
+        else
+        {
+            w = 1;
+        }
+        predicts[i]->setWeight(w);
+        size += w;
     }
-    input[i]->setWeight(w);
-    size += w;
-  }
 
-  std::vector<std::vector<PointPtr>> GT;
-  std::vector<std::vector<PointPtr>> sample;
+    std::vector<std::vector<PointPtr>> GT;
+    std::vector<std::vector<PointPtr>> sample;
 
-  pointToGroup(result, GT, GTclusterNumber);
-  pointToGroup(input, sample, (int)center.size());
+    pointToGroup(inputs, GT);
+    pointToGroup(predicts, sample);
 
-  double sum = 0;
-  for(auto& el: sample) {
-    sum += getMaxBelongs(el, GT);
-  }
-  if(!result.empty()) {
-    SESAME_DEBUG("Purity:" << sum / size);
-    purity=sum / size;
-  } else{
-    SESAME_DEBUG("Purity: 0");
-    purity=0;
-  }
-  return purity;
+    std::atomic<double> sum = 0;
+#pragma omp parallel for
+    for (auto &el : sample)
+    {
+        sum += getMaxBelongs(el, GT);
+    }
+    if (!inputs.empty())
+    {
+        purity = sum / size;
+    }
+    else
+    {
+        purity = 0;
+    }
+    return purity;
 }
