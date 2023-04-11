@@ -240,7 +240,7 @@ def configer(config, purity, throughput, measurement, id):
     elif id == 3:
         plt.xticks(np.arange(1.1, 2.9, 0.2), size=25)
     elif id == 4:
-        plt.xticks(np.arange(0.2, 3.0, 0.2), size=25)
+        plt.xticks(np.arange(0.2, 3.0, 0.4), size=25)
     if show_legend:
         plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
                    edgecolor='black')
@@ -254,10 +254,10 @@ def configer(config, purity, throughput, measurement, id):
     y_magnitude = math.floor(math.log10(max(throughput)))
     y_magnitude = math.pow(10, y_magnitude)
     interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
-    if id == 2:
-        interval += 250
-    if id == 4:
-        interval += 5000
+    # if id == 2:
+    #     interval += 250
+    # if id == 4:
+    #     interval += 5000
     y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
                        np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
     plt.yticks(y_tick, size=35)
