@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import math
 
 import matplotlib.ticker as mtick
 import os
@@ -7,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
+
 mpl.use('Agg')
 
 show_legend = False
@@ -144,12 +146,15 @@ def draw_line(legend_name, data, colors, ods, throughput, purity, window, id):
         file_name = "Throughput_"
         plt.ylabel('Throughput', fontsize=36)
         ax = plt.gca()
-        ax.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
+        if window == False:
+            ax.ticklabel_format(style='sci', scilimits=(-1, 1), axis='y')
+        else:
+            ax.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
         legend_position = (0.45, 1.26)
     elif purity and window == False:
         file_name = "Purity_"
         plt.ylabel('Purity', fontsize=36)
-        plt.ylim(0.75, 0.9)
+        plt.ylim(0.75, 0.95)
         legend_position = (0.45, 1.25)
     elif purity and window == True:
         file_name = "Purity_"
@@ -231,11 +236,11 @@ def configer(config, purity, throughput, measurement, id):
     plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
                size=35)
     if id <= 2:
-        plt.xticks(np.arange(5000, 25000, 5000), size=35)
+        plt.xticks(np.arange(50000, 500000, 100000), size=25)
     elif id == 3:
-        plt.xticks(np.arange(1.0, 3.0, 0.2), size=35)
+        plt.xticks(np.arange(1.1, 2.9, 0.2), size=25)
     elif id == 4:
-        plt.xticks(np.arange(0.2, 2.2, 0.2), size=35)
+        plt.xticks(np.arange(0.2, 3.0, 0.2), size=25)
     if show_legend:
         plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
                    edgecolor='black')
@@ -246,8 +251,16 @@ def configer(config, purity, throughput, measurement, id):
     # ax2.set_xlim([0, np.e])
     ax2.set_ylabel('Throughput', fontsize=36)
     plt.tick_params(axis='y', size=36)
-    if id == 1:
-        plt.yticks(np.arange(32000, 187000, 31000), size=36)
+    y_magnitude = math.floor(math.log10(max(throughput)))
+    y_magnitude = math.pow(10, y_magnitude)
+    interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
+    if id == 2:
+        interval += 250
+    if id == 4:
+        interval += 5000
+    y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
+                       np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
+    plt.yticks(y_tick, size=35)
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
@@ -286,7 +299,7 @@ def draw_all_pictures(purity, throughput, cmm, offline,
     compare_name = [["CFT", "MCs", "CoreT", "Grids", "DPT", "AMS"],
                     ["LandmarkWM", "SlidingWM", "DampedWM"],
                     ["NoOutlierD", "OutlierD-B", "OutlierD-T",
-                        "OutlierD", "OutlierD-BT"],
+                     "OutlierD", "OutlierD-BT"],
                     ["NoRefine", "Refine [Distance-based]", "Refine [Density-based]"]]
     colors = [[0, 1, 2, 3, 4, 5], [8, 9, 10],
               [11, 12, 13, 14, 18], [15, 6, 17]]
@@ -308,7 +321,7 @@ def draw_all_pictures(purity, throughput, cmm, offline,
             general_and_benne_on_real_data.append(
                 purity_reader.iloc[i].to_list()[1:5])
         general_and_benne_on_real_data.append(
-            purity_reader.iloc[15].to_list()[1:5])
+            purity_reader.iloc[20].to_list()[1:5])
         general_and_benne_on_real_data.append(
             purity_reader.iloc[16].to_list()[1:5])
         purity_and_throughput(general_algo_name, general_and_benne_on_real_data, np.arange(
@@ -331,7 +344,7 @@ def draw_all_pictures(purity, throughput, cmm, offline,
             general_and_benne_on_real_data.append(
                 throughput_reader.iloc[i].to_list()[1:5])
         general_and_benne_on_real_data.append(
-            throughput_reader.iloc[15].to_list()[1:5])
+            throughput_reader.iloc[20].to_list()[1:5])
         general_and_benne_on_real_data.append(
             throughput_reader.iloc[16].to_list()[1:5])
         purity_and_throughput(general_algo_name, general_and_benne_on_real_data, np.arange(
@@ -382,24 +395,24 @@ def draw_all_pictures(purity, throughput, cmm, offline,
         draw_line(compare_name[0], cmm_summarizing_data_structure,
                   colors[0], False, False, False, False, 0)
 
-        print('---------CMM Comparison of Outlier Detection on EDS---------')
-        # CMM of Outlier Detection on EDS
-        cmm_outlier_detection = []
-        for i in range(len(compare_order[2])):
-            cmm_outlier_detection.append(
-                cmm_reader.iloc[compare_order[2][i] + 7].to_list()[1:])
-        draw_line(compare_name[2], cmm_outlier_detection,
-                  colors[2], False, False, False, False, 0)
+        # print('---------CMM Comparison of Outlier Detection on EDS---------')
+        # # CMM of Outlier Detection on EDS
+        # cmm_outlier_detection = []
+        # for i in range(len(compare_order[2])):
+        #     cmm_outlier_detection.append(
+        #         cmm_reader.iloc[compare_order[2][i] + 7].to_list()[1:])
+        # draw_line(compare_name[2], cmm_outlier_detection,
+        #           colors[2], False, False, False, False, 0)
 
     if throughput_eds != '':
         throughput_reader_EDS = pd.read_csv(throughput_eds)
         throughput_reader_ODS = pd.read_csv(throughput_ods)
-        # print('---------Throughput of Window Model on EDS---------')
-        # # Throughput of Window Model on EDS
-        # throughput_window_eds = []
-        # for i in range(len(compare_order[1])):
-        #     throughput_window_eds.append(throughput_reader_EDS.iloc[compare_order[1][i] + 7].to_list()[1:])
-        # draw_line(compare_name[1], throughput_window_eds, colors[1], False, True, False, False, 0)
+        print('---------Throughput of Window Model on EDS---------')
+        # Throughput of Window Model on EDS
+        throughput_window_eds = []
+        for i in range(len(compare_order[1])):
+            throughput_window_eds.append(throughput_reader_EDS.iloc[compare_order[1][i] + 7].to_list()[1:])
+        draw_line(compare_name[1], throughput_window_eds, colors[1], False, True, False, False, 0)
         #
         # print('---------Throughput of Data Structure on EDS---------')
         # throughput_ds_eds = []
@@ -417,12 +430,12 @@ def draw_all_pictures(purity, throughput, cmm, offline,
         draw_line(compare_name[1], purity_window_ods,
                   colors[1], True, False, True, True, 0)
 
-        # print('---------Throughput of Outlier Detection on ODS---------')
-        # throughput_outlier_eds = []
-        # # Throughput of Outlier Detection on EDS
-        # for i in range(len(compare_order[2])):
-        #     throughput_outlier_eds.append(throughput_reader_ODS.iloc[compare_order[2][i] + 7].to_list()[1:])
-        # draw_line(compare_name[2], throughput_outlier_eds, colors[2], True, True, False, False, 0)
+        print('---------Throughput of Outlier Detection on ODS---------')
+        throughput_outlier_eds = []
+        # Throughput of Outlier Detection on EDS
+        for i in range(len(compare_order[2])):
+            throughput_outlier_eds.append(throughput_reader_ODS.iloc[compare_order[2][i] + 7].to_list()[1:])
+        draw_line(compare_name[2], throughput_outlier_eds, colors[2], True, True, False, False, 0)
 
         print('---------Purity of Outlier Detection on ODS---------')
         purity_outlier_ods = []
@@ -450,15 +463,15 @@ def draw_all_pictures(purity, throughput, cmm, offline,
         configer(config, purity, throughput, 'Sliding', 2)
 
         lamda = pd.read_csv(config_lamda)
-        config = lamda['lambda'].to_list()[0:10]
-        purity = lamda['purity'].to_list()[0:10]
-        throughput = lamda['qps'].to_list()[0:10]
+        config = lamda['lambda'].to_list()[0:14]
+        purity = lamda['purity'].to_list()[0:14]
+        throughput = lamda['qps'].to_list()[0:14]
         configer(config, purity, throughput, 'lambda', 4)
 
         alpha = pd.read_csv(config_alpha)
-        config = alpha['alpha'].to_list()[10:18]
-        purity = alpha['purity'].to_list()[10:18]
-        throughput = alpha['qps'].to_list()[10:18]
+        config = alpha['alpha'].to_list()[15:23]
+        purity = alpha['purity'].to_list()[15:23]
+        throughput = alpha['qps'].to_list()[15:23]
         configer(config, purity, throughput, 'alpha', 3)
 
 
