@@ -23,7 +23,7 @@ jobs:
     - name: Install gcc-11
       run: |
         sudo apt update
-        sudo apt install -y build-essential manpages-dev software-properties-common gcc g++ libboost-all-dev gflags
+        sudo apt install -y build-essential manpages-dev software-properties-common gcc g++ libboost-all-dev libgflags-dev
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
