@@ -69,8 +69,6 @@ endforeach ()
 # Add Source Code
 add_subdirectory(src)
 
-add_subdirectory(third_party/gflags)
-
 # Add Library
 get_source_sesame(sesame_SOURCE_FILES)
 get_header_sesame(sesame_HEADER_FILES)

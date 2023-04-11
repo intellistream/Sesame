@@ -10,9 +10,7 @@ add_source_sesame(
         Algorithm.cpp
         AlgorithmFactory.cpp
 )
-add_subdirectory(ConceptDrift)
 add_subdirectory(DataStructure)
 add_subdirectory(OfflineRefinement)
-add_subdirectory(OutlierDetection)
 add_subdirectory(WindowModel)
 add_subdirectory(DesignAspect)
