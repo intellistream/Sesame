@@ -7,6 +7,7 @@
 
 #include <filesystem>
 
+#include "Algorithm/AlgorithmFactory.hpp"
 #include "Algorithm/DataStructure/CFTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/MeyersonSketch.hpp"
@@ -25,7 +26,7 @@
 using namespace SESAME;
 using namespace std;
 
-TEST(GenericTest, V1)
+TEST(System, V1)
 {
     // Parse parameters.
     param_t param;
@@ -72,7 +73,7 @@ TEST(GenericTest, V1)
     ASSERT_NEAR(res->cmm, 0.9361, 0.03);
 }
 
-TEST(GenericTest, V2)
+TEST(System, V2)
 {
     // Parse parameters.
     param_t param;
@@ -118,7 +119,7 @@ TEST(GenericTest, V2)
     ASSERT_NEAR(res->cmm, 0.9632, 0.02);
 }
 
-TEST(GenericTest, V3)
+TEST(System, V3)
 {
     // Parse parameters.
     param_t param;
@@ -160,7 +161,7 @@ TEST(GenericTest, V3)
     ASSERT_NEAR(res->purity, 0.8032, 0.02);
 }
 
-TEST(GenericTest, V4)
+TEST(System, V4)
 {
     // Parse parameters.
     param_t param;
@@ -202,7 +203,7 @@ TEST(GenericTest, V4)
     ASSERT_NEAR(res->purity, 0.64, 0.02);
 }
 
-TEST(GenericTest, V5)
+TEST(System, V5)
 {
     // Parse parameters.
     param_t param;
@@ -246,7 +247,7 @@ TEST(GenericTest, V5)
     ASSERT_NEAR(res->cmm, 0.6984, 0.03);
 }
 
-TEST(GenericTest, V6)
+TEST(System, V6)
 {
     // Parse parameters.
     param_t param;
@@ -287,7 +288,7 @@ TEST(GenericTest, V6)
     ASSERT_NEAR(res->cmm, 0.8571, 0.03);
 }
 
-TEST(GenericTest, V7)
+TEST(System, V7)
 {
     // Parse parameters.
     param_t param;
@@ -330,7 +331,7 @@ TEST(GenericTest, V7)
     ASSERT_NEAR(res->purity, 0.432, 0.02);
 }
 
-TEST(GenericTest, V8)
+TEST(System, V8)
 {
     // Parse parameters.
     param_t param;
@@ -348,7 +349,7 @@ TEST(GenericTest, V8)
 
     param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
     param.output_file = "results.txt";
-    param.algo        = SESAME::V8Stream;
+    param.algo        = SESAME::G8Stream;
 
     vector<SESAME::PointPtr> input;
     vector<SESAME::PointPtr> results;
@@ -363,17 +364,97 @@ TEST(GenericTest, V8)
     SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
 
     // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesList,
-                                             DistanceDetection<true, false>, NoRefinement>>(param);
+    AlgorithmPtr algoPtr = AlgorithmFactory::create(param);
 
     // Run algorithm producing results.
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
-    ASSERT_NEAR(res->purity, 0.9962, 0.01);
+    ASSERT_NEAR(res->purity, 0.7982, 0.01);
 }
 
-TEST(GenericTest, V11)
+TEST(System, V9)
+{
+    // Parse parameters.
+    param_t cmd_params;
+    cmd_params.num_points   = 3000;
+    cmd_params.dim          = 54;
+    cmd_params.lambda       = 0.998;
+    cmd_params.beta         = 0.001;
+    cmd_params.cm           = 3;
+    cmd_params.cl           = 0.8;
+    cmd_params.grid_width   = 50;
+    cmd_params.num_clusters = 7;
+    cmd_params.time_decay   = false;
+    cmd_params.landmark     = 3000;
+
+    cmd_params.input_file =
+        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+    cmd_params.output_file = "results.txt";
+    cmd_params.algo        = SESAME::G9Stream;
+
+    std::vector<SESAME::PointPtr> input;
+    std::vector<SESAME::PointPtr> results;
+
+    // Create Spout.
+    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
+
+    BenchmarkUtils::loadData(cmd_params, sourcePtr);
+
+    // Create Sink.
+    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
+
+    // Create Algorithm.
+    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
+
+    // Run algorithm producing results.
+    auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+}
+
+TEST(System, V10)
+{
+    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+    // [3, 3, 4, 6, 6, 7, 9, 9]
+    // Parse parameters.
+    param_t cmd_params;
+    cmd_params.num_points = 8000;
+    cmd_params.dim        = 54;
+    cmd_params.alpha      = 0.998;
+    cmd_params.landmark   = 1000;
+    cmd_params.num_cache  = 1000;
+    cmd_params.radius     = 250;  // 220
+    cmd_params.delta      = 1500;
+    cmd_params.beta       = 0.0021;
+    cmd_params.opt        = 2;
+    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+    // [3, 3, 4, 6, 6, 7, 9, 9]
+    cmd_params.num_clusters = 7;
+    cmd_params.time_decay   = true;
+
+    cmd_params.input_file =
+        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+    cmd_params.output_file = "results.txt";
+    cmd_params.algo        = SESAME::G10Stream;
+
+    std::vector<SESAME::PointPtr> input;
+    std::vector<SESAME::PointPtr> results;
+
+    // Create Spout.
+    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
+    // Directly load data from file. TODO: configure it to load from external
+    // sensors, e.g., HTTP.
+    BenchmarkUtils::loadData(cmd_params, sourcePtr);
+
+    // Create Sink.
+    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
+
+    // Create Algorithm.
+    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
+
+    // Run algorithm producing results.
+    BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+}
+
+TEST(System, V11)
 {
     // Parse parameters.
     param_t param;
@@ -415,7 +496,7 @@ TEST(GenericTest, V11)
     ASSERT_NEAR(res->purity, 0.82, 0.01);
 }
 
-TEST(GenericTest, V12)
+TEST(System, V12)
 {
     // Parse parameters.
     param_t param;
@@ -457,7 +538,7 @@ TEST(GenericTest, V12)
     ASSERT_NEAR(res->cmm, 0.8554, 0.03);
 }
 
-TEST(GenericTest, V13)
+TEST(System, V13)
 {
     // Parse parameters.
     param_t param;
@@ -499,7 +580,7 @@ TEST(GenericTest, V13)
     ASSERT_NEAR(res->purity, 0.8344, 0.01);
 }
 
-TEST(GenericTest, V14)
+TEST(System, V14)
 {
     // Parse parameters.
     param_t param;

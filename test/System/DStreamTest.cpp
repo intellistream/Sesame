@@ -13,7 +13,7 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
-TEST(SystemTest, DStream)
+TEST(System, DStream)
 {
     // Parse parameters.
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]

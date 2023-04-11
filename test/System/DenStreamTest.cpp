@@ -16,7 +16,7 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
-TEST(SystemTest, DenStream)
+TEST(System, DenStream)
 {
     // Parse parameters.
 

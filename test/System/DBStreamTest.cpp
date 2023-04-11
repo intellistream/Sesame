@@ -16,7 +16,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(SystemTest, DBStream)
+TEST(System, DBStream)
 {
     // Parse parameters.
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]

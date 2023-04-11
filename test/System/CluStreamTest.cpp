@@ -16,7 +16,7 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
-TEST(SystemTest, CluStream)
+TEST(System, CluStream)
 {
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
     // [3, 3, 4, 6, 6, 7, 9, 9]

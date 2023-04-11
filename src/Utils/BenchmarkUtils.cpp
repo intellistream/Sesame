@@ -61,10 +61,9 @@ void BenchmarkUtils::defaultParam(param_t &param)
     param.dataset_option = 0;
     param.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
     param.output_file = "results.txt";
-    if (param.algo == V1Stream || param.algo == V2Stream || param.algo == G1Stream ||
-        param.algo == G2Stream || param.algo == DenStreamType || param.algo == CluStreamType ||
-        param.algo == StreamKMeansType || param.algo == SLKMeansType ||
-        param.algo == DBStreamType || param.algo == DStreamType)
+    if (param.algo == G1Stream || param.algo == G2Stream || param.algo == DenStreamType ||
+        param.algo == CluStreamType || param.algo == StreamKMeansType ||
+        param.algo == SLKMeansType || param.algo == DBStreamType || param.algo == DStreamType)
         param.run_offline = true;
     param.detect_outlier = false;
     if (param.algo == BirchType)

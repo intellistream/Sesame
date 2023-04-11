@@ -18,7 +18,7 @@
 
 using namespace SESAME;
 
-TEST(SystemTest, SLKMeans)
+TEST(System, SLKMeans)
 {
     // Parse parameters.
     param_t cmd_params;
@@ -37,7 +37,7 @@ TEST(SystemTest, SLKMeans)
     cmd_params.input_file =
         std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
-    cmd_params.algo        = SESAME::Generic;
+    cmd_params.algo        = SESAME::SLKMeansType;
     cmd_params.run_offline = true;
     std::vector<SESAME::PointPtr> input;
     std::vector<SESAME::PointPtr> results;

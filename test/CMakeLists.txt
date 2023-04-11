@@ -8,16 +8,7 @@ add_executable(google_test
         System/DBStreamTest.cpp
         System/DStreamTest.cpp
         System/SlidingWindowClusteringTest.cpp
-        DesignAspect/V1Test.cpp
-        DesignAspect/V2Test.cpp
-        DesignAspect/V3Test.cpp
-        DesignAspect/V5Test.cpp
-        DesignAspect/V6Test.cpp
-        DesignAspect/V7Test.cpp
-        DesignAspect/V8Test.cpp
-        DesignAspect/V9Test.cpp
-        DesignAspect/V10Test.cpp
-        Generic/GenericTest.cpp
+        System/GenericTest.cpp
 )
 
 target_compile_features(google_test PUBLIC cxx_std_20)

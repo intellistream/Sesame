@@ -1,12 +1,4 @@
 add_source_sesame(
-        V1.cpp
-        V2.cpp
-        V3.cpp
-        V4.cpp
-        V5.cpp
-        V6.cpp
-        V7.cpp
-        V8.cpp
         V9.cpp
         V10.cpp
 )

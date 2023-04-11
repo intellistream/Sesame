@@ -15,15 +15,7 @@
 #include "Algorithm/DataStructure/MeyersonSketch.hpp"
 #include "Algorithm/DenStream.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
-#include "Algorithm/DesignAspect/V1.hpp"
 #include "Algorithm/DesignAspect/V10.hpp"
-#include "Algorithm/DesignAspect/V2.hpp"
-#include "Algorithm/DesignAspect/V3.hpp"
-#include "Algorithm/DesignAspect/V4.hpp"
-#include "Algorithm/DesignAspect/V5.hpp"
-#include "Algorithm/DesignAspect/V6.hpp"
-#include "Algorithm/DesignAspect/V7.hpp"
-#include "Algorithm/DesignAspect/V8.hpp"
 #include "Algorithm/DesignAspect/V9.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
@@ -44,9 +36,6 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     {
         return std::make_shared<CluStream>(cmd_params);
     }
-    // case (BirchType): {
-    //   return std::make_shared<Birch>(cmd_params);
-    // }
     case (DenStreamType):
     {
         return std::make_shared<DenStream>(cmd_params);
@@ -67,52 +56,9 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
     {
         return std::make_shared<SlidingWindowClustering>(cmd_params);
     }
-    case (V1Stream):
-    {
-        return std::make_shared<V1>(cmd_params);
-    }
-    case (V2Stream):
-    {
-        return std::make_shared<V2>(cmd_params);
-    }
-    case (V3Stream):
-    {
-        return std::make_shared<V3>(cmd_params);
-    }
-    case (V4Stream):
-    {
-        return std::make_shared<V4>(cmd_params);
-    }
-    case (V5Stream):
-    {
-        return std::make_shared<V5>(cmd_params);
-    }
-    case (V6Stream):
-    {
-        return std::make_shared<V6>(cmd_params);
-    }
-    case (V7Stream):
-    {
-        return std::make_shared<V7>(cmd_params);
-    }
-    case (V8Stream):
-    {
-        return std::make_shared<V8>(cmd_params);
-    }
-    case (V9Stream):
     case (G9Stream):
     {
         return std::make_shared<V9>(cmd_params);
-    }
-    case (Generic):
-    {
-        using W = Landmark;
-        using D = ClusteringFeaturesTree;
-        using O = DistanceDetection<true, false>;
-        using R = KMeans;
-        shared_ptr<StreamClustering<W, D, O, R>> generic =
-            std::make_shared<StreamClustering<W, D, O, R>>(cmd_params);
-        return (AlgorithmPtr)generic;
     }
     case (G1Stream):
     {
