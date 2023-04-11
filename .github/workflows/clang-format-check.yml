@@ -9,7 +9,7 @@ jobs:
         path:
           - 'include'
           - 'src'
-          - 'benchmark'
+          - 'benchmark/src'
           - 'test'
     steps:
     - uses: actions/checkout@v3
