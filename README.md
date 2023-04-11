@@ -51,5 +51,24 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 ## How to Cite Sesame
 
-* **[SIGMOD 2023]** We have an accepted paper to publish. Stay tuned.
+* **[SIGMOD 2023] **Xin Wang and Zhengru Wang and Zhenyu Wu and Shuhao Zhang and Xuanhua Shi and Li Lu. Data Stream Clustering: An In-depth Empirical Study, SIGMOD, 2023
+
+```
+@inproceedings{wang2023sesame,
+	title        = {Data Stream Clustering: An In-depth Empirical Study},
+	author       = {Xin Wang and Zhengru Wang and Zhenyu Wu and Shuhao Zhang and Xuanhua Shi and Li Lu},
+	year         = 2023,
+	booktitle    = {Proceedings of the 2023 International Conference on Management of Data (SIGMOD)},
+	location     = {Seattle, WA, USA},
+	publisher    = {Association for Computing Machinery},
+	address      = {New York, NY, USA},
+	series       = {SIGMOD '23},
+	abbr         = {SIGMOD},
+	bibtex_show  = {true},
+	selected     = {true},
+	pdf          = {papers/Sesame.pdf},
+	code         = {https://github.com/intellistream/Sesame},
+	tag          = {full paper}
+}
+```
 
