@@ -7,66 +7,71 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 #define SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
 
-#include <cmath>
-#include <cassert>
-#include <limits>
-#include <ctime>
-#include <cstdio>
-#include <Algorithm/Algorithm.hpp>
-#include<Algorithm/DataStructure/MicroCluster.hpp>
-#include <Algorithm/OfflineClustering/KMeans.hpp>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Algorithm/DataStructure/Snapshot.hpp>
-#include <Utils/BenchmarkUtils.hpp>
-#include <Timer/TimeMeter.hpp>
-namespace SESAME {
+#include "Algorithm/Algorithm.hpp"
+#include "Algorithm/DataStructure/MicroCluster.hpp"
+#include "Algorithm/DataStructure/Snapshot.hpp"
+#include "Algorithm/OfflineRefinement/KMeans.hpp"
+#include "Algorithm/WindowModel/LandmarkWindow.hpp"
+#include "Timer/Timer.hpp"
+#include "Utils/BenchmarkUtils.hpp"
 
-class CluStreamParameter : public AlgorithmParameters {
- public:
-  int lastArrivingNum;
-  int timeWindow;
-  unsigned int timeInterval;
-  int clusterNumber; //total number of micro clusters online
-  int offlineClusterNumber; //total number of micro clusters online
-  double radiusFactor;//radius factor
-  int initBuffer;
-  int offlineTimeWindow;
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <ctime>
+#include <limits>
+
+namespace SESAME
+{
+
+class CluStreamParameter : public AlgorithmParameters
+{
+public:
+    int num_last_arr;
+    int time_window;
+    unsigned int time_interval;
+    int num_clusters;          // total number of micro clusters online
+    int num_offline_clusters;  // total number of micro clusters online
+    double radius;             // radius factor
+    int buf_size;
+    int offline_time_window;
+    int seed;
 };
 
 const double doubleMax = std::numeric_limits<double>::max();
-class CluStream : public Algorithm {
- public:
-  CluStreamParameter CluStreamParam;
-  std::shared_ptr<KMeans> kmeans; //used for offline initialization
-  LandmarkWindowPtr window;
-  MicroClusters microClusters; //Defined in Snapshot, std::vector <MicroclusterPtr>
-  int pointsFitted;
-  int pointsForgot;
-  int pointsMerged;
-  clock_t startTime;
-  int lastUpdateTime;
-  CluStream(param_t &cmd_params);
-  ~CluStream();
-  TimeMeter timerMeter;
-  //bool insert;
+class CluStream : public Algorithm
+{
+public:
+    CluStreamParameter CluStreamParam;
+    std::shared_ptr<KMeans> kmeans;  // used for offline initialization
+    LandmarkWindowPtr window;
+    MicroClusters microClusters;  // Defined in Snapshot, std::vector <MicroclusterPtr>
+    MicroClusters delMicroClusters;
+    int pointsFitted;
+    int pointsForgot;
+    int pointsMerged;
+    int startTime;
+    int lastUpdateTime;
+    CluStream(param_t &cmd_params);
+    ~CluStream();
 
-  void Initilize() override;
-  void runOnlineClustering(PointPtr input) override;
-  void runOfflineClustering(DataSinkPtr sinkPtr) override;
+    void Init() override;
+    void RunOnline(PointPtr input) override;
+    void RunOffline(DataSinkPtr sinkPtr) override;
 
- private:
-  void initOffline(vector <PointPtr> &initData, vector <PointPtr> &initialData);
-  void incrementalCluster(PointPtr data);
-  double calRadius(MicroClusterPtr closestCluster);
-  void insertIntoCluster(PointPtr data, MicroClusterPtr closestCluster);
-  bool deleteCreateCluster(PointPtr data);
-  void MergeCreateCluster(PointPtr data);
-  void microClusterToPoint(MicroClusters &microClusters, vector <PointPtr> &points) const;
-  static double distance(dataPoint a, dataPoint b, int dim);
+private:
+    void initOffline(vector<PointPtr> &initData, vector<PointPtr> &initialData);
+    void incrementalCluster(PointPtr data);
+    double calRadius(MicroClusterPtr closestCluster);
+    void insertIntoCluster(PointPtr data, MicroClusterPtr closestCluster);
+    bool deleteCreateCluster(PointPtr data);
+    void MergeCreateCluster(PointPtr data);
+    void microClusterToPoint(MicroClusters &microClusters, vector<PointPtr> &points) const;
+    static double distance(dataPoint a, dataPoint b, int dim);
 
-  bool initilized = false;
-  vector <PointPtr> initialInputs;
+    bool initilized = false;
+    vector<PointPtr> initialInputs;
 };
 
-}
-#endif //SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_CLUSTREAM_HPP_

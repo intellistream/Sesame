@@ -5,17 +5,11 @@
 //
 
 #include <Engine/SingleThread.hpp>
-void SESAME::SingleThread::construct(std::function<void(void)> fun, int id) {
-  this->ThreadPtr = std::make_shared<std::thread>(fun);
-  this->setID(id);
+void SESAME::SingleThread::construct(std::function<void(void)> fun, int id)
+{
+    this->ThreadPtr = std::make_shared<std::thread>(fun);
+    this->setID(id);
 }
-int SESAME::SingleThread::setID(int id) {
-  return this->id = id;
-}
-int SESAME::SingleThread::getID() {
-  return this->id;
-}
-void SESAME::SingleThread::join() {
-  this->ThreadPtr->join();
-}
-
+int SESAME::SingleThread::setID(int id) { return this->id = id; }
+int SESAME::SingleThread::getID() { return this->id; }
+void SESAME::SingleThread::join() { this->ThreadPtr->join(); }

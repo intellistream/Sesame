@@ -7,12 +7,13 @@
 #ifndef SESAME_SRC_SINKS_DATASINKFACTORY_HPP_
 #define SESAME_SRC_SINKS_DATASINKFACTORY_HPP_
 #include <Sinks/DataSink.hpp>
-namespace SESAME {
-class DataSinkFactory {
-
- public:
-  static SESAME::DataSinkPtr create();
+namespace SESAME
+{
+class DataSinkFactory
+{
+public:
+    static SESAME::DataSinkPtr create();
 };
-}
+}  // namespace SESAME
 
-#endif //SESAME_SRC_SINKS_DATASINKFACTORY_HPP_
+#endif  // SESAME_SRC_SINKS_DATASINKFACTORY_HPP_

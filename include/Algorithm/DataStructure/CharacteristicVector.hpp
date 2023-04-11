@@ -4,83 +4,93 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CHARACTERISTICVECTOR_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CHARACTERISTICVECTOR_HPP_
-#include <ctime>
-#include <cmath>
 #include <Algorithm/WindowModel/DampedWindow.hpp>
-namespace SESAME{
-enum Status{
-  NO_CLASS= -1,SPARSE,TRANSITIONAL ,DENSE
+#include <cmath>
+#include <ctime>
+namespace SESAME
+{
+enum Status
+{
+    NO_CLASS = -1,
+    SPARSE,
+    TRANSITIONAL,
+    DENSE
 };
-class CharacteristicVector {
- public:
-  /**
-    * t_g: The last time when g is updated
-    */
-   clock_t updateTime;
+class CharacteristicVector
+{
+public:
+    /**
+     * t_g: The last time when g is updated
+     */
+    int updateTime;
 
-  /**
-   * tm : last time when g is removed from grid_list as a sporadic grid (if ever).
-   */
-  clock_t removeTime;
+    /**
+     * tm : last time when g is removed from grid_list as a sporadic grid (if ever).
+     */
+    int removeTime;
 
-  /**
-   * D: the grid density at the last update
-   */
-  double gridDensity;
+    /**
+     * D: the grid density at the last update
+     */
+    double gridDensity;
 
-  /**
-   * label: the cluster label of the grid
-   */
-   int label;
+    /**
+     * label: the cluster label of the grid
+     */
+    int label;
 
-  /**
-   * status: status = {SPORADIC, NORMAL}
-   */
-  bool isSporadic;
+    /**
+     * status: status = {SPORADIC, NORMAL}
+     */
+    bool isSporadic;
 
-  /**
-   * attribute: attribute = {SPARSE, TRANSITIONAL, DENSE}
-   */
-   int attribute;
+    /**
+     * attribute: attribute = {SPARSE, TRANSITIONAL, DENSE}
+     */
+    int attribute;
 
-  /**
-   * time stamp at which the grid's density was last updated (including initial and adjust clustering)
-   */
-  clock_t densityUpdateTime;
+    /**
+     * time stamp at which the grid's density was last updated (including initial and adjust
+     * clustering)
+     */
+    int densityUpdateTime;
 
-  /**
-   * Flag marking whether there was a change in the attribute field
-   * the last time the grid density was updated.
-   */
-  bool attChange;
-  bool isVisited=false;
+    /**
+     * Flag marking whether there was a change in the attribute field
+     * the last time the grid density was updated.
+     */
+    bool attChange;
+    bool isVisited = false;
 
-  CharacteristicVector();
-  CharacteristicVector(clock_t updateTime, clock_t removeTime, double Density, int label, bool status, double dl, double dm);
-  double getCurrGridDensity(clock_t NowTime, double lambda);
-
-  bool isSparse(double dl);
-  bool isDense(double dm);
-  bool isTransitional(double dm, double dl);
-  /**
-	 * Implements the density update function given in
-	 * eq 5 (Proposition 3.1) of Chen and Tu 2007.
-	 *
-	 * @param currTime the data stream's current internal time
-	 * @param decayFactor the value of lambda
-   */
-  void densityWithNew(clock_t NowTime, double decayFactor);
-  /**
-	 * Implements the update the density of all grids step given at line 2 of
-	 * both Fig 3 and Fig 4 of Chen and Tu 2007.
-	 *
-	 * @param currTime the data stream's current internal time
-	 * @param decayFactor the value of lambda
-	 * @param dl the threshold for sparse grids
-	 * @param dm the threshold for dense grids
-	 */
-  void UpdateAllDensity(clock_t NowTime, double decayFactor, double dl, double dm);
-  void ChangeAttribute(double dl, double dm);
+    CharacteristicVector();
+    CharacteristicVector(int updateTime, int removeTime, double Density, int label, bool isSporadic,
+                         double dl, double dm);
+    double getCurrGridDensity(int NowTime, double lambda);
+    double getCurrGridDensity();
+    bool isSparse(double dl);
+    bool isDense(double dm);
+    bool isTransitional(double dm, double dl);
+    /**
+     * Implements the density update function given in
+     * eq 5 (Proposition 3.1) of Chen and Tu 2007.
+     *
+     * @param currTime the data stream's current internal time
+     * @param decayFactor the value of lambda
+     */
+    void densityWithNew(int NowTime, double decayFactor);
+    void densityWithNew(int NowTime);
+    /**
+     * Implements the update the density of all grids step given at line 2 of
+     * both Fig 3 and Fig 4 of Chen and Tu 2007.
+     *
+     * @param currTime the data stream's current internal time
+     * @param decayFactor the value of lambda
+     * @param dl the threshold for sparse grids
+     * @param dm the threshold for dense grids
+     */
+    void UpdateAllDensity(int NowTime, double decayFactor, double dl, double dm);
+    void UpdateAllDensity(int NowTime, double dl, double dm);
+    void ChangeAttribute(double dl, double dm);
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CHARACTERISTICVECTOR_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_CHARACTERISTICVECTOR_HPP_
