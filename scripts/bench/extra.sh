@@ -74,7 +74,7 @@ ticat ${meta} : ${cover} \
     : join.new distance_threshold 600 \
     : join.new outlier_distance_threshold 1000 \
     : join.new outlier_cap 5 \
-    : join.new lambda 2 \
+    : join.new lambda 0.2 \
     : join.new alpha [1.1,2.9,0.2] \
     : join.new buf_size 4000 \
     : join.run run.sesame
