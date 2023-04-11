@@ -26,8 +26,8 @@ TEST(SystemTest, V10Test)
     cmd_params.num_cache  = 1000;
     cmd_params.radius     = 250;  // 220
     cmd_params.delta      = 1500;
-    cmd_params.beta = 0.0021;
-    cmd_params.opt  = 2;
+    cmd_params.beta       = 0.0021;
+    cmd_params.opt        = 2;
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
     // [3, 3, 4, 6, 6, 7, 9, 9]
     cmd_params.num_clusters = 7;

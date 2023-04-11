@@ -9,11 +9,13 @@
 
 #include <Sources/DataSource.hpp>
 
-namespace SESAME {
-class DataSourceFactory {
- public:
-  static SESAME::DataSourcePtr create();
+namespace SESAME
+{
+class DataSourceFactory
+{
+public:
+    static SESAME::DataSourcePtr create();
 };
-}
+}  // namespace SESAME
 
-#endif //SESAME_DATASOURCEFACTORY_H
+#endif  // SESAME_DATASOURCEFACTORY_H

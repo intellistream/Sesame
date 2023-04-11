@@ -164,12 +164,12 @@ void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
     int num  = 0;
     int sum  = 0;
     auto clu = 0;
-    for (const auto & cluster : this->clusters)
+    for (const auto &cluster : this->clusters)
     {
         sum += num;
         num                                 = 0;
         std::unordered_set<DPNodePtr> cells = cluster->GetCells();
-        for (const auto & cell : cells)
+        for (const auto &cell : cells)
         {
             CountNode(cell->copy(), num);
             PointPtr center = cell->GetCenter();
@@ -178,7 +178,7 @@ void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
             sinkPtr->put(center->copy());
         }
     }
-    for (const auto & out : this->outres->getOutliers())
+    for (const auto &out : this->outres->getOutliers())
     {
         sum += num;
         num = 0;

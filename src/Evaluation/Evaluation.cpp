@@ -6,8 +6,8 @@
 #include "Algorithm/Param.hpp"
 #include "Evaluation/CMM.hpp"
 #include "Evaluation/Euclidean.hpp"
-#include "Evaluation/Purity.hpp"
 #include "Evaluation/NMI.hpp"
+#include "Evaluation/Purity.hpp"
 #include "Timer/Timer.hpp"
 #include "Utils/Logger.hpp"
 #include "Utils/UtilityFunctions.hpp"
@@ -34,8 +34,8 @@ BenchmarkResultPtr Evaluation::Evaluate(const param_t &param, const std::vector<
     nmi_timer.Tick();
     if (predicts.size() && param.run_nmi)
     {
-      std::cerr << "Evaluation::NMI begin" << std::endl;
-      nmi = NMI::Evaluate(inputs, predicts, param.num_clusters, param.num_res);
+        std::cerr << "Evaluation::NMI begin" << std::endl;
+        nmi = NMI::Evaluate(inputs, predicts, param.num_clusters, param.num_res);
     }
     nmi_timer.Tock();
     std::cerr << "\033[1;34mNMI: " << round(nmi * 10000) / 10000

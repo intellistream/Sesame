@@ -26,7 +26,7 @@ using namespace std::filesystem;
  */
 void BenchmarkUtils::defaultParam(param_t &param)
 {
-    param.num_points          = 542;  // number of the data points in the dataset, use
+    param.num_points = 542;  // number of the data points in the dataset, use
                              // the whole dataset to run benchmark
     param.seed                = 1;
     param.num_clusters        = 2;
@@ -127,7 +127,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     // the output clusterID start from 0
     if (param.run_eval)
     {
-      SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
+        SESAME::UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
     }
 
     param.num_res = results.size();

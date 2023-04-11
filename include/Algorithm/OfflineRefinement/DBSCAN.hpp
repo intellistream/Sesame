@@ -18,37 +18,36 @@
 #include <random>
 #include <vector>
 
-namespace SESAME {
+namespace SESAME
+{
 
 //#define BORDER_POINT 2
-class DBSCAN : public OfflineRefinement {
+class DBSCAN : public OfflineRefinement
+{
 public:
-  DBSCAN(const StreamClusteringParam &param) {}
-  DBSCAN(unsigned int minPts, float eps);
-  DBSCAN();
-  ~DBSCAN();
-  void Run(StreamClusteringParam &param, std::vector<PointPtr> &input,
-           DataSinkPtr sinkPtr);
+    DBSCAN(const StreamClusteringParam &param) {}
+    DBSCAN(unsigned int minPts, float eps);
+    DBSCAN();
+    ~DBSCAN();
+    void Run(StreamClusteringParam &param, std::vector<PointPtr> &input, DataSinkPtr sinkPtr);
 
-  void run(std::vector<PointPtr> &input);
-  void produceResult(std::vector<PointPtr> &input, DataSinkPtr sinkPtr);
+    void run(std::vector<PointPtr> &input);
+    void produceResult(std::vector<PointPtr> &input, DataSinkPtr sinkPtr);
 
 private:
-  std::vector<int> calculateCluster(std::vector<PointPtr> &input,
-                                    PointPtr &point) const;
-  int expandCluster(std::vector<PointPtr> &input, PointPtr &point,
-                    int clusterID) const;
-  static bool judgeCorePoint(PointPtr &point, PointPtr &other);
-  static double calculateEluDistance(PointPtr &point, PointPtr &other);
-  // Obtain private members
-  unsigned int getTotalPointSize() const { return pointSize; }
-  unsigned int getMinimumClusterSize() const { return min_points; }
-  double getEpsilonSize() const { return epsilon; }
-  int getClusterID() const { return clusterID; }
-  unsigned int pointSize;
-  unsigned int min_points;
-  int clusterID;
-  double epsilon;
+    std::vector<int> calculateCluster(std::vector<PointPtr> &input, PointPtr &point) const;
+    int expandCluster(std::vector<PointPtr> &input, PointPtr &point, int clusterID) const;
+    static bool judgeCorePoint(PointPtr &point, PointPtr &other);
+    static double calculateEluDistance(PointPtr &point, PointPtr &other);
+    // Obtain private members
+    unsigned int getTotalPointSize() const { return pointSize; }
+    unsigned int getMinimumClusterSize() const { return min_points; }
+    double getEpsilonSize() const { return epsilon; }
+    int getClusterID() const { return clusterID; }
+    unsigned int pointSize;
+    unsigned int min_points;
+    int clusterID;
+    double epsilon;
 };
-} // namespace SESAME
-#endif // SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_

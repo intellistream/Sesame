@@ -7,15 +7,16 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_WINDOWMODEL_WINDOWFACTORY_HPP_
 #define SESAME_INCLUDE_ALGORITHM_WINDOWMODEL_WINDOWFACTORY_HPP_
 
-#include <memory>
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Algorithm/WindowModel/DampedWindow.hpp>
-namespace SESAME {
-class WindowFactory {
-
- public:
-  static std::shared_ptr<LandmarkWindow> createLandmarkWindow();
-  static std::shared_ptr<DampedWindow> createDampedWindow(double base, double lambda);
+#include <Algorithm/WindowModel/LandmarkWindow.hpp>
+#include <memory>
+namespace SESAME
+{
+class WindowFactory
+{
+public:
+    static std::shared_ptr<LandmarkWindow> createLandmarkWindow();
+    static std::shared_ptr<DampedWindow> createDampedWindow(double base, double lambda);
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_WINDOWMODEL_WINDOWFACTORY_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_WINDOWMODEL_WINDOWFACTORY_HPP_

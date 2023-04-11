@@ -911,68 +911,71 @@ void SESAME::V9::cleanClusters()
  */
 void SESAME::V9::removeSporadic()
 {
-  // SESAME_INFO("REMOVE SPORADIC CALLED");
-  // For each grid g in grid_list
+    // SESAME_INFO("REMOVE SPORADIC CALLED");
+    // For each grid g in grid_list
 
-  HashMap newGridList;
-  std::vector<DensityGrid> removeGridList;
-  for (auto &gridIter : this->gridList)
-  {
-    const DensityGrid &grid                = gridIter.first;
-    CharacteristicVector characteristicVec = gridIter.second;
-    // If g is sporadic
-    if (characteristicVec.isSporadic)
+    HashMap newGridList;
+    std::vector<DensityGrid> removeGridList;
+    for (auto &gridIter : this->gridList)
     {
-      // If currTime - tg > gap, delete g from grid_list
-      if (currentTimeStamp - characteristicVec.updateTime >= gap)
-      {
-        int gridClass = characteristicVec.label;
-
-        if (gridClass != -1)
+        const DensityGrid &grid                = gridIter.first;
+        CharacteristicVector characteristicVec = gridIter.second;
+        // If g is sporadic
+        if (characteristicVec.isSporadic)
         {
-          for(auto gridCluster: clusterList)
-          {
-            if(gridCluster.clusterLabel == gridClass)
+            // If currTime - tg > gap, delete g from grid_list
+            if (currentTimeStamp - characteristicVec.updateTime >= gap)
             {
-              gridCluster.removeGrid(grid);
-            }
-          }
-        }
-        removeGridList.push_back(grid);
-      }
-        // Else if (S1 && S2), mark as sporadic - Else mark as normal
-      else
-      {
-        characteristicVec.isSporadic = checkIfSporadic(characteristicVec);
-        newGridList.insert(std::make_pair(grid, characteristicVec));
-      }
-    }
-      // Else if (S1 && S2), mark as sporadic
-    else
-    {
-      characteristicVec.isSporadic = checkIfSporadic(characteristicVec);
-      newGridList.insert(std::make_pair(grid, characteristicVec));
-    }
-  }
-  mergeGridList(gridList, newGridList);
+                int gridClass = characteristicVec.label;
 
-  // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from grid_list.");
-  for (DensityGrid &sporadicGrid : removeGridList)
-  {
-    this->gridList.erase(sporadicGrid);
-    for (auto &cluster : this->clusterList)
-    {
-      if(cluster.grids.find(sporadicGrid) != cluster.grids.end()){
-        cluster.grids.erase(sporadicGrid);
-      }
+                if (gridClass != -1)
+                {
+                    for (auto gridCluster : clusterList)
+                    {
+                        if (gridCluster.clusterLabel == gridClass)
+                        {
+                            gridCluster.removeGrid(grid);
+                        }
+                    }
+                }
+                removeGridList.push_back(grid);
+            }
+            // Else if (S1 && S2), mark as sporadic - Else mark as normal
+            else
+            {
+                characteristicVec.isSporadic = checkIfSporadic(characteristicVec);
+                newGridList.insert(std::make_pair(grid, characteristicVec));
+            }
+        }
+        // Else if (S1 && S2), mark as sporadic
+        else
+        {
+            characteristicVec.isSporadic = checkIfSporadic(characteristicVec);
+            newGridList.insert(std::make_pair(grid, characteristicVec));
+        }
     }
-    for (auto &cluster : this->newClusterList)
+    mergeGridList(gridList, newGridList);
+
+    // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from grid_list.");
+    for (DensityGrid &sporadicGrid : removeGridList)
     {
-      if(cluster.grids.find(sporadicGrid) != cluster.grids.end()){
-        cluster.grids.erase(sporadicGrid);break;
-      }
+        this->gridList.erase(sporadicGrid);
+        for (auto &cluster : this->clusterList)
+        {
+            if (cluster.grids.find(sporadicGrid) != cluster.grids.end())
+            {
+                cluster.grids.erase(sporadicGrid);
+            }
+        }
+        for (auto &cluster : this->newClusterList)
+        {
+            if (cluster.grids.find(sporadicGrid) != cluster.grids.end())
+            {
+                cluster.grids.erase(sporadicGrid);
+                break;
+            }
+        }
     }
-  }
 }
 
 /**
@@ -983,14 +986,14 @@ void SESAME::V9::removeSporadic()
  */
 bool SESAME::V9::checkIfSporadic(CharacteristicVector characteristicVec)
 {
-  // Check S1
-  if (characteristicVec.getCurrGridDensity(currentTimeStamp, param.lambda) < param.outlier_cap)
-  {
-    // Check S2 TODO CHANGE REMOVE TIME FROM 0 TO -1
-    if (characteristicVec.removeTime == 0 ||
-        (currentTimeStamp - ((1 + param.beta) * characteristicVec.removeTime)) >= 0)
-      return true;
-  }
+    // Check S1
+    if (characteristicVec.getCurrGridDensity(currentTimeStamp, param.lambda) < param.outlier_cap)
+    {
+        // Check S2 TODO CHANGE REMOVE TIME FROM 0 TO -1
+        if (characteristicVec.removeTime == 0 ||
+            (currentTimeStamp - ((1 + param.beta) * characteristicVec.removeTime)) >= 0)
+            return true;
+    }
 
-  return false;
+    return false;
 }

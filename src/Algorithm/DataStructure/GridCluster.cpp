@@ -15,8 +15,8 @@ SESAME::GridCluster::GridCluster(HashGrids hashMap, int label)
     {
         DensityGrid grid = iterW->first;
         bool inside      = iterW->second;
-        //this->grids.insert(std::make_pair(grid, inside));
-        putHashGrid(this->grids,grid,inside);
+        // this->grids.insert(std::make_pair(grid, inside));
+        putHashGrid(this->grids, grid, inside);
     }
     this->clusterLabel = label;
 }
@@ -28,19 +28,19 @@ SESAME::GridCluster::GridCluster(HashGrids hashMap, int label)
 void SESAME::GridCluster::addGrid(const DensityGrid& grid)
 {
     bool inside = isInside(grid);
-    auto it1 = grids.find(grid);
+    auto it1    = grids.find(grid);
     if (it1 != grids.end())
         grids[grid] = inside;
     else
-        grids.insert(std::make_pair(grid,inside));
+        grids.insert(std::make_pair(grid, inside));
     // Iterate on grids and judge whether they are inside grids or not
-    for(auto & grid_iter : this->grids)
+    for (auto& grid_iter : this->grids)
     {
         bool inside2U = grid_iter.second;
         if (!inside2U)
         {
             DensityGrid dg2U = grid_iter.first;
-            grid_iter.second    = isInside(dg2U);
+            grid_iter.second = isInside(dg2U);
         }
     }
 }
@@ -65,8 +65,8 @@ void SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
     while (grid != gridCluster.grids.end())
     {
         // TODO whether they have same grids?
-        //this->grids.insert(std::make_pair(grid->first, false));
-        putHashGrid(this->grids,grid->first,false);
+        // this->grids.insert(std::make_pair(grid->first, false));
+        putHashGrid(this->grids, grid->first, false);
         grid++;
     }
     // SESAME_INFO("...density grids added");
@@ -75,7 +75,7 @@ void SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
     while (thisGrid != this->grids.end())
     {
         inside = isInside(thisGrid->first);
-        putHashGrid(newCluster,thisGrid->first,inside);
+        putHashGrid(newCluster, thisGrid->first, inside);
         thisGrid++;
     }
     this->grids = newCluster;
@@ -143,7 +143,7 @@ bool SESAME::GridCluster::isConnected()
     if (!this->grids.empty())
     {
         DensityGrid grid = this->grids.begin()->first;
-        putHashGrid(this->visited,grid,this->grids.begin()->second);
+        putHashGrid(this->visited, grid, this->grids.begin()->second);
         bool changesMade;
 
         do
@@ -160,7 +160,8 @@ bool SESAME::GridCluster::isConnected()
                 {
                     if (this->grids.find(dg2VNeighbourhood) != this->grids.end() &&
                         this->visited.find(dg2VNeighbourhood) == this->visited.end())
-                        putHashGrid(toAdd,dg2VNeighbourhood,this->grids.find(dg2VNeighbourhood)->second);
+                        putHashGrid(toAdd, dg2VNeighbourhood,
+                                    this->grids.find(dg2VNeighbourhood)->second);
                 }
                 visIter++;
             }
@@ -170,7 +171,7 @@ bool SESAME::GridCluster::isConnected()
                 HashGrids::iterator gridToAdd;
                 for (gridToAdd = toAdd.begin(); gridToAdd != toAdd.end(); gridToAdd++)
                 {
-                    putHashGrid(this->visited,gridToAdd->first,gridToAdd->second);
+                    putHashGrid(this->visited, gridToAdd->first, gridToAdd->second);
                 }
                 changesMade = true;
             }
@@ -224,6 +225,5 @@ void SESAME::GridCluster::putHashGrid(HashGrids grids1, const DensityGrid& g, bo
     if (it1 != grids1.end())
         it1->second = inside;
     else
-        grids1.insert(
-            std::make_pair(g, inside));
+        grids1.insert(std::make_pair(g, inside));
 }

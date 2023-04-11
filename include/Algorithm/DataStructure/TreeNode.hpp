@@ -11,34 +11,36 @@
 #include <memory>
 #include <vector>
 
-namespace SESAME {
+namespace SESAME
+{
 
 class TreeNode;
 typedef std::shared_ptr<TreeNode> TreeNodePtr;
 
-class TreeNode {
- public:
-  //number of points in this node
-  int n;
+class TreeNode
+{
+public:
+    // number of points in this node
+    int n;
 
-  //array with pointers on points
-  std::vector<PointPtr> points;
+    // array with pointers on points
+    std::vector<PointPtr> points;
 
-  //pointer on the centre of the treenode
-  PointPtr centre;
+    // pointer on the centre of the treenode
+    PointPtr centre;
 
-  //pointer on the left childnode
-  TreeNodePtr lc;
+    // pointer on the left childnode
+    TreeNodePtr lc;
 
-  //pointer on the right childnode
-  TreeNodePtr rc;
+    // pointer on the right childnode
+    TreeNodePtr rc;
 
-  //pointer on the parent node
-  TreeNodePtr parent;
+    // pointer on the parent node
+    TreeNodePtr parent;
 
-  //cost of the treenode
-  double cost;
+    // cost of the treenode
+    double cost;
 };
-}
+}  // namespace SESAME
 
-#endif //SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_TREENODE_HPP_
+#endif  // SESAME_INCLUDE_ALGORITHM_DATASTRUCTURE_TREENODE_HPP_

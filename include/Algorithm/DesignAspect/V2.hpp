@@ -5,54 +5,55 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
 #define SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
 #include <Algorithm/Algorithm.hpp>
+#include <Algorithm/DataStructure/CFTree.hpp>
+#include <Algorithm/DesignAspect/Param.hpp>
+#include <Algorithm/OfflineRefinement/DBSCAN.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Sinks/DataSink.hpp>
-#include <Algorithm/DataStructure/CFTree.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-#include <Algorithm/OfflineRefinement/DBSCAN.hpp>
-#include <Algorithm/DesignAspect/Param.hpp>
 
-namespace SESAME {
+namespace SESAME
+{
 
-class V2 : public Algorithm {
+class V2 : public Algorithm
+{
+public:
+    StreamClusteringParam V2Param;
+    int leafMask = 0;
+    NodePtr root;
+    std::shared_ptr<DBSCAN> dbscan;  // used for initialization and offline re-clustering
+    vector<NodePtr> clusterNodes;
+    vector<NodePtr> outlierNodes;
+    CFTreePtr cfTree;
+    TimeMeter timerMeter;
+    V2(param_t &cmd_params);
 
- public:
-  StreamClusteringParam V2Param;
-  int leafMask = 0;
-  NodePtr root;
-  std::shared_ptr<DBSCAN> dbscan; //used for initialization and offline re-clustering
-  vector<NodePtr> clusterNodes;
-  vector<NodePtr> outlierNodes;
-  CFTreePtr cfTree;
-  TimeMeter timerMeter;
-  V2(param_t &cmd_params);
+    ~V2();
 
-  ~V2();
+    void Init() override;
 
-  void Init() override;
+    void RunOnline(PointPtr input) override;
 
-  void RunOnline(PointPtr input) override;
+    void RunOffline(DataSinkPtr sinkPtr) override;
 
-  void RunOffline(DataSinkPtr sinkPtr) override;
- private:
+private:
+    void forwardInsert(PointPtr point);
+    void backwardEvolution(NodePtr &curNode, PointPtr &point, SESAME::NodePtr &cluster);
+    void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
+    double calculateRadius(PointPtr &point, PointPtr &centroid);
+    void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
+    double clusterToClusterDist(NodePtr &nodeA, NodePtr &nodeB);
+    void pointToClusterDist(PointPtr &insertPoint, NodePtr &node, double &dist);
+    void calculateCentroid(CFPtr &cf, PointPtr &centroid);
+    void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
+    void initializeCF(CFPtr &cf, int dim);
+    void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
+    void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
+    void clearChildParents(vector<SESAME::NodePtr> &children);
 
-  void forwardInsert(PointPtr point);
-  void backwardEvolution(NodePtr &curNode, PointPtr &point, SESAME::NodePtr &cluster);
-  void calculateCorDistance(vector<vector<double>> &distance, vector<NodePtr> &nodes);
-  double calculateRadius(PointPtr &point, PointPtr &centroid);
-  void selectChild(vector<NodePtr> &children, PointPtr &insertPoint, NodePtr &node);
-  double clusterToClusterDist(NodePtr &nodeA, NodePtr &nodeB);
-  void pointToClusterDist(PointPtr &insertPoint, NodePtr &node, double &dist);
-  void calculateCentroid(CFPtr &cf, PointPtr &centroid);
-  void updateNLS(NodePtr &node, PointPtr &point, bool updateAll);
-  void initializeCF(CFPtr &cf, int dim);
-  void setCFToBlankNode(SESAME::NodePtr &curNode, SESAME::PointPtr &point);
-  void addNodeNLSToNode(SESAME::NodePtr &child, SESAME::NodePtr &parent, bool updateAll);
-  void clearChildParents(vector<SESAME::NodePtr> &children);
-
-  bool checkoutOutlier(SESAME::PointPtr &point);
-  void insertPointIntoOutliers(SESAME::PointPtr &point);
-  void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
+    bool checkoutOutlier(SESAME::PointPtr &point);
+    void insertPointIntoOutliers(SESAME::PointPtr &point);
+    void checkOutlierTransferCluster(SESAME::NodePtr &outCluster);
 };
-}
-#endif //SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V2_HPP_

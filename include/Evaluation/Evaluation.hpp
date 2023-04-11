@@ -13,30 +13,34 @@
 
 #include <vector>
 
-namespace SESAME {
+namespace SESAME
+{
 
-struct BenchmarkResult {
-  double cmm = 0.0, purity = 0.0, nmi = 0.0;
-  int num_res = 0;
-  BenchmarkResult(double cmm = 0, double purity = 0, double nmi = 0)
-      : cmm(cmm), purity(purity), nmi(nmi) {}
-  void Print() {
-    std::cout << "num_res: " << num_res << std::endl;
-    std::cout << "cmm: " << cmm << std::endl;
-    std::cout << "purity: " << purity << std::endl;
-    std::cout << "nmi: " << nmi << std::endl;
-  }
+struct BenchmarkResult
+{
+    double cmm = 0.0, purity = 0.0, nmi = 0.0;
+    int num_res = 0;
+    BenchmarkResult(double cmm = 0, double purity = 0, double nmi = 0)
+        : cmm(cmm), purity(purity), nmi(nmi)
+    {}
+    void Print()
+    {
+        std::cout << "num_res: " << num_res << std::endl;
+        std::cout << "cmm: " << cmm << std::endl;
+        std::cout << "purity: " << purity << std::endl;
+        std::cout << "nmi: " << nmi << std::endl;
+    }
 };
 using BenchmarkResultPtr = std::shared_ptr<BenchmarkResult>;
 
 // enum evaluateType { euclideanCostType, cmmType, purityType };
 
-class Evaluation {
+class Evaluation
+{
 public:
-  static BenchmarkResultPtr Evaluate(const param_t &param,
-                                     const std::vector<PointPtr> &inputs,
-                                     const std::vector<PointPtr> &results);
+    static BenchmarkResultPtr Evaluate(const param_t &param, const std::vector<PointPtr> &inputs,
+                                       const std::vector<PointPtr> &results);
 };
 
-} // namespace SESAME
-#endif // ONLINEMLBENCHMARK_EVALUATIONMETRICS_H
+}  // namespace SESAME
+#endif  // ONLINEMLBENCHMARK_EVALUATIONMETRICS_H

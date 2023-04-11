@@ -10,7 +10,8 @@
 
 #include "Utils/BenchmarkUtils.hpp"
 
-namespace SESAME {
+namespace SESAME
+{
 
 using StreamClusteringParam = param_t;
 
@@ -46,6 +47,6 @@ using StreamClusteringParam = param_t;
 //   double neighbor_distance, outlier_density_threshold;
 // };
 
-} // namespace SESAME
+}  // namespace SESAME
 
 #endif

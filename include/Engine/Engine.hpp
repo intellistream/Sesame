@@ -7,9 +7,9 @@
 #ifndef SESAME_INCLUDE_ENGINE_ENGINE_HPP_
 #define SESAME_INCLUDE_ENGINE_ENGINE_HPP_
 
-namespace SESAME {
-class Engine {
-
-};
-}
-#endif //SESAME_INCLUDE_ENGINE_ENGINE_HPP_
+namespace SESAME
+{
+class Engine
+{};
+}  // namespace SESAME
+#endif  // SESAME_INCLUDE_ENGINE_ENGINE_HPP_

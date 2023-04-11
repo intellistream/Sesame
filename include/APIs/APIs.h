@@ -8,11 +8,11 @@
 #define SESAME_INCLUDE_APIS_APIS_H_
 
 using namespace std;
-namespace SESAME {
+namespace SESAME
+{
 
-class APIs {
+class APIs
+{};
+}  // namespace SESAME
 
-};
-}
-
-#endif //SESAME_INCLUDE_APIS_APIS_H_
+#endif  // SESAME_INCLUDE_APIS_APIS_H_
