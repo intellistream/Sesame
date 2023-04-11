@@ -1,4 +1,4 @@
-name: CMake
+name: Tests
 
 on:
   push:
@@ -26,10 +26,7 @@ jobs:
       run: |
         sudo sudo apt install build-essential manpages-dev software-properties-common
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-        sudo apt update && sudo apt install gcc-11 g++-11
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
-        sudo apt install libboost-all-dev gflags
+        sudo apt update && sudo apt install gcc-11 g++-11 libboost-all-dev gflags
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
