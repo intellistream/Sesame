@@ -51,7 +51,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 ## How to Cite Sesame
 
-* **[SIGMOD 2023] **Xin Wang and Zhengru Wang and Zhenyu Wu and Shuhao Zhang and Xuanhua Shi and Li Lu. Data Stream Clustering: An In-depth Empirical Study, SIGMOD, 2023
+* **[SIGMOD 2023]** Xin Wang and Zhengru Wang and Zhenyu Wu and Shuhao Zhang and Xuanhua Shi and Li Lu. Data Stream Clustering: An In-depth Empirical Study, SIGMOD, 2023
 
 ```
 @inproceedings{wang2023sesame,
