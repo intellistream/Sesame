@@ -67,6 +67,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 	bibtex_show  = {true},
 	selected     = {true},
 	pdf          = {papers/Sesame.pdf},
+	doi	     = {10.1145/3589307},
 	code         = {https://github.com/intellistream/Sesame},
 	tag          = {full paper}
 }
