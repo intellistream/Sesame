@@ -21,6 +21,7 @@
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/StreamKM.hpp"
+#include "Algorithm/Benne.hpp"
 
 namespace SESAME
 {
@@ -28,6 +29,10 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
 {
     switch (cmd_params.algo)
     {
+    case (BenneType):
+    {
+        return std::make_shared<Benne>(cmd_params);
+    }
     case (StreamKMeansType):
     {
         return std::make_shared<StreamKM>(cmd_params);

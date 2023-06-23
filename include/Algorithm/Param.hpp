@@ -17,6 +17,7 @@ enum AlgoType
     EDMStreamType    = 5,
     DStreamType      = 6,
     SLKMeansType     = 7,
+    BenneType       = 8,
     G1Stream         = 21,
     G2Stream,
     G3Stream,
