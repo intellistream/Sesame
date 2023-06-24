@@ -54,15 +54,18 @@ void SESAME::Benne::RunOnline(const SESAME::PointPtr input)
     }
     else
     {
+        autoDetection(input);
         autoSelection(input);
         if(dynamicConfigure){
-            algo.storeCenters();
+            algo->OutputOnline();
+            // TODO: inherit the clustering centers of previous configuration
         }
+        // TODO: reconstruct the algorithm according to the selection
         std::queue<SESAME::PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
         queue_.empty();
     }
-    algo.RunOnline();
+    algo->RunOnline();
     ds_timer.Tock();
     lat_timer.Add(input->toa);
 }
@@ -123,7 +126,6 @@ void SESAME::Benne::autoDetection(const SESAME::PointPtr input)
 
 void SESAME::Benne::autoSelection(const SESAME::PointPtr input)
 {
-
     if(obj == accuracy)
     {
         if(chara.frequentDrift)
