@@ -64,6 +64,7 @@ public:
     void RunOnline(PointPtr input);
     void RunOffline(DataSinkPtr ptr);
     void store(std::string output_file, int dim, std::vector<PointPtr> results);
+    void ObtainOnlineCenters(std::vector<PointPtr> centers);
 
 private:
     using Node    = typename D::Node;
@@ -352,6 +353,31 @@ void StreamClustering<W, D, O, R>::OutputOnline()
             centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
         }
         online_centers.push_back(centroid);
+    }
+}
+
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::ObtainOnlineCenters(std::vector<PointPtr> centers){
+    auto clusters = d->clusters();
+    cluster_size_ += clusters.size();
+    outlier_size_ += outliers_.size();
+    for (int i = 0; i < clusters.size(); i++)
+    {
+        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+        for (int j = 0; j < param.dim; j++)
+        {
+            centroid->feature[j] = clusters[i]->cf.ls[j] / clusters[i]->cf.num;
+        }
+        centers.push_back(centroid);
+    }
+    for (int i = 0; i < outliers_.size(); ++i)
+    {
+        auto centroid = GenericFactory::New<Point>(param.dim, i, 1, 0);
+        for (int j = 0; j < param.dim; j++)
+        {
+            centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
+        }
+        centers.push_back(centroid);
     }
 }
 
