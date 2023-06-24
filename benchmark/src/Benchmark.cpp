@@ -73,7 +73,7 @@ DEFINE_bool(run_eval, true, "Whether run evaluation");
 DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
 DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 // Benne
-DEFINE_int32(obj, 0, "Objective");
+DEFINE_int32(obj, 0, "Objective: 0(balance), 1(accuracy), 2(efficiency)");
 DEFINE_int32(queue_size_threshold, 10000, "Benne queue size threshold");
 DEFINE_int32(dim_threshold, 30, "Benne dimension threshold");
 DEFINE_double(variance_threshold, 100.0, "Benne variance threshold");

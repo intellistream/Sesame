@@ -14,8 +14,14 @@ using namespace SESAME;
 
 double calculateDispersion(std::vector<SESAME::PointPtr> queue_, SESAME::PointPtr newCenter);
 
-Benne::Benne(param_t &cmd_params) { param = cmd_params; }
+Benne::Benne(param_t &cmd_params)
+{
+    param = cmd_params;
+    T     = param.benne_threshold;
+}
+
 Benne::~Benne() {}
+
 void Benne::Init()
 {
     obj = param.obj;
@@ -46,6 +52,7 @@ void Benne::Init()
         algo       = std::make_shared<
             StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(param);
     }
+    algo->Init();
     sum_timer.Tick();
 }
 
@@ -68,18 +75,13 @@ void Benne::RunOnline(const PointPtr input)
         // TODO: reconstruct the algorithm according to the selection
         std::vector<PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
-        queue_.empty();
     }
     algo->RunOnline(input);
     ds_timer.Tock();
     lat_timer.Add(input->toa);
 }
 
-void Benne::RunOffline(DataSinkPtr sinkPtr)
-{
-    // TODO
-    return;
-}
+void Benne::RunOffline(DataSinkPtr sinkPtr) { algo->RunOffline(sinkPtr); }
 
 void Benne::autoDetection(const PointPtr input)
 {

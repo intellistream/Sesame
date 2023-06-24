@@ -39,9 +39,9 @@ extern char const *algo_names[64];
 
 enum ObjType
 {
+    balance,
     accuracy,
-    efficiency,
-    balance
+    efficiency
 };
 
 struct BenneThreshold
