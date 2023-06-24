@@ -39,6 +39,7 @@ extern char const *algo_names[64];
 
 struct param_t
 {
+    objective obj;
     int num_points, dim, num_clusters;
     int arr_rate;
     bool time_decay     = false;

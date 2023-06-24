@@ -4,23 +4,46 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_BENNE_HPP_
 #define SESAME_INCLUDE_ALGORITHM_BENNE_HPP_
-#include <Algorithm/Algorithm.hpp>
-#include <Algorithm/DataStructure/CFTree.hpp>
-#include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Utils/BenchmarkUtils.hpp>
+#include <queue>
 #include "Algorithm/DesignAspect/Generic.hpp"
+#include "Algorithm/Algorithm.hpp"
 namespace SESAME
 {
+enum objective{accuracy, efficiency, balance};
+struct characteristics{
+    bool frequentDrift  = false;
+    bool manyOutliers   = false;
+    bool highDimension  = false;
+};
+struct threshold{
+    int queue_size      = 10000;   // queue size for auto detection
+    int dim             = 30;     // above is high dimension
+    double variance     = 100;    // above is high concept drift
+    int outlierNum      = 200;    // above is many outliers
+    double outlierDist  = 50;     // above is outlier   
+};
+enum windowSelection{landmark, sliding, damped};
+enum dataSelection{MCs, CFT, CoreT, DPT, Grids, AMS};
+enum outlierSelection{OD, NoOD, ODB, ODT, ODBT};
+enum refineSelection{Incre, OneShot, NoRefine};
 class Benne : public Algorithm
 {
 public:
-    std::shared_ptr<KMeans> kmeans;  // used for offline initialization
-    int leafMask = 0;
-    NodePtr root;
-    vector<NodePtr> leafNodes;
-    CFTreePtr cfTree;
+    std::queue<PointPtr> queue_;
+    std::vector<PointPtr> centers;
+    threshold T;
+    bool dynamicConfigure = false;
+    AlgorithmPtr algo;
+    objective obj;
+    characteristics chara;
+    windowSelection windowSel;
+    dataSelection dataSel;
+    outlierSelection outlierSel;
+    refineSelection refineSel;
+                                
     Benne(param_t &cmd_params);
 
     ~Benne();
@@ -33,8 +56,7 @@ public:
 
 private:
     void autoDetection(PointPtr point);
-    void autoSelection(NodePtr &curNode, PointPtr &point);
-    void reconfiguration(NodePtr &curNode, PointPtr &point);
+    void autoSelection(const SESAME::PointPtr input);
 };
 }  // namespace SESAME
 #endif  // SESAME_INCLUDE_ALGORITHM_BENNE_HPP_
