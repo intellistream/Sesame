@@ -7,7 +7,6 @@
 #include <Algorithm/WindowModel/LandmarkWindow.hpp>
 #include <Sinks/DataSink.hpp>
 #include <Utils/BenchmarkUtils.hpp>
-#include <queue>
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/Algorithm.hpp"
 namespace SESAME
@@ -32,7 +31,7 @@ enum refineSelection{Incre, OneShot, NoRefine};
 class Benne : public Algorithm
 {
 public:
-    std::queue<PointPtr> queue_;
+    std::vector<PointPtr> queue_;
     std::vector<PointPtr> centers;
     threshold T;
     bool dynamicConfigure = false;
