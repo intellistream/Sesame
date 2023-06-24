@@ -17,7 +17,7 @@ enum AlgoType
     EDMStreamType    = 5,
     DStreamType      = 6,
     SLKMeansType     = 7,
-    BenneType       = 8,
+    BenneType        = 8,
     G1Stream         = 21,
     G2Stream,
     G3Stream,
@@ -37,9 +37,24 @@ enum AlgoType
 
 extern char const *algo_names[64];
 
+enum ObjType
+{
+    accuracy,
+    efficiency,
+    balance
+};
+
+struct BenneThreshold
+{
+    int queue_size       = 10000;  // queue size for auto detection
+    int dim              = 30;     // above is high dimension
+    double variance      = 100;    // above is high concept drift
+    int outliers_num     = 200;    // above is many outliers
+    double outliers_dist = 50;     // above is outlier
+};
+
 struct param_t
 {
-    objective obj;
     int num_points, dim, num_clusters;
     int arr_rate;
     bool time_decay     = false;
@@ -107,6 +122,10 @@ struct param_t
     int num_samples   = 100;  // The number of samples used in the grid for guessing
                               // the optimum.
     int num_res;
+
+    ObjType obj;
+    BenneThreshold benne_threshold;
+
     void Print()
     {
         std::cout << "algo_id: " << algo << std::endl;

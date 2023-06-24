@@ -86,3 +86,11 @@ void MeyersonSketch::Remove(NodePtr node)
 }
 
 std::vector<MeyersonSketch::NodePtr> &MeyersonSketch::clusters() { return centers; }
+
+void MeyersonSketch::ForEach(std::function<void(MeyersonSketch::NodePtr)> func)
+{
+    for (auto node : centers)
+    {
+        func(node);
+    }
+}

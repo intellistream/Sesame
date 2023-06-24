@@ -37,6 +37,7 @@ public:
     NodePtr Insert(NodePtr node);
     void Remove(NodePtr node);
     std::vector<NodePtr> &clusters();
+    void ForEach(std::function<void(NodePtr)> func);
 
 public:
     struct Node : std::enable_shared_from_this<Node>
