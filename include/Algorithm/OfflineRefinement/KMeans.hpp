@@ -30,8 +30,11 @@ class KMeans : public OfflineRefinement
 public:
     KMeans() {}
     KMeans(const StreamClusteringParam &param) {}
+    // TODO: use template here
     void Run(StreamClusteringParam &param, std::vector<PointPtr> &online_centers,
              DataSinkPtr sinkPtr);
+    void Run(StreamClusteringParam &param, std::vector<PointPtr> &online_centers,
+             std::vector<PointPtr> &results);
     void produceResult(std::vector<std::vector<PointPtr>> &groups, DataSinkPtr sinkPtr);
     void runKMeans(int numberOfCenters, int numberOfInput, std::vector<PointPtr> &centers,
                    std::vector<PointPtr> &input, std::vector<std::vector<PointPtr>> &oldGroups,

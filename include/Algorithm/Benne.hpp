@@ -4,11 +4,14 @@
 
 #ifndef SESAME_INCLUDE_ALGORITHM_BENNE_HPP_
 #define SESAME_INCLUDE_ALGORITHM_BENNE_HPP_
-#include <Algorithm/WindowModel/LandmarkWindow.hpp>
-#include <Sinks/DataSink.hpp>
-#include <Utils/BenchmarkUtils.hpp>
+
 #include "Algorithm/Algorithm.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
+#include "Algorithm/OfflineRefinement/KMeans.hpp"
+#include "Algorithm/WindowModel/LandmarkWindow.hpp"
+#include "Sinks/DataSink.hpp"
+#include "Utils/BenchmarkUtils.hpp"
+
 namespace SESAME
 {
 struct characteristics
@@ -61,8 +64,10 @@ public:
     dataSelection dataSel;
     outlierSelection outlierSel;
     refineSelection refineSel;
+    KMeans kmeans;
 
-    using MicroClusters = ClusteringFeaturesList;
+    using MicroClusters                = ClusteringFeaturesList;
+    static constexpr int INCRE_REF_CNT = 50000;
 
     Benne(param_t &cmd_params);
 
@@ -75,8 +80,9 @@ public:
     void RunOffline(DataSinkPtr sinkPtr) override;
 
 private:
-    void autoDetection(PointPtr point);
-    void autoSelection(const SESAME::PointPtr input);
+    void Train(PointPtr point);
+    int Infer(const SESAME::PointPtr input);
+    void UpdateAlgo(int, int);
 };
 
 }  // namespace SESAME

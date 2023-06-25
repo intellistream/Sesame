@@ -58,15 +58,15 @@ DEFINE_int32(time_window, 50, "Time window");
 DEFINE_int32(num_online_clusters, 80, "Number of online clusters");
 // SL-KMeans
 DEFINE_double(delta_grid, 0.2, "The delta parameter used int the grid for guessing the optimum.");
-DEFINE_int32(num_samples, 100, "Number of samples");
+DEFINE_int32(num_samples, 10, "Number of samples");
 // Generic
-DEFINE_int32(landmark, 1000, "Landmark");
-DEFINE_int32(sliding, 1000, "Sliding");
+DEFINE_int32(landmark, 10000, "Landmark");
+DEFINE_int32(sliding, 500, "Sliding");
 DEFINE_double(outlier_distance_threshold, 1000, "Outlier distance threshold");
 DEFINE_int32(outlier_cap, 100, "Outlier cap");
 DEFINE_double(outlier_density_threshold, 100, "Outlier density threshold");
 DEFINE_double(neighbor_distance, 200, "Neighbor distance");
-DEFINE_int32(k, 0, "KMeans K");
+DEFINE_int32(k, 7, "KMeans K");
 DEFINE_int32(arr_rate, 0, "Arrival rate");
 DEFINE_bool(run_offline, true, "Whether run offline clustering");
 DEFINE_bool(run_eval, true, "Whether run evaluation");
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
               << "#                                                          #\n"
               << "############################################################"
                  "\033[0m\n";
-    sleep(2);
+    sleep(1);
 #endif
     // Parse parameters.
     param_t param;

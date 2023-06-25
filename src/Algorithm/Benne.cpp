@@ -15,7 +15,7 @@ using namespace std;
 
 double calculateDispersion(vector<SESAME::PointPtr> queue_, SESAME::PointPtr newCenter);
 
-Benne::Benne(param_t &cmd_params)
+Benne::Benne(param_t &cmd_params) : kmeans(cmd_params)
 {
     param = cmd_params, T = param.benne_threshold, obj = param.obj;
 }
@@ -56,6 +56,7 @@ void Benne::Init()
 
 void Benne::RunOnline(const PointPtr input)
 {
+    algo->RunOnline(input);
     ds_timer.Tick();
     if (queue_.size() < T.queue_size)
     {
@@ -63,25 +64,47 @@ void Benne::RunOnline(const PointPtr input)
     }
     else
     {
-        autoDetection(input);
-        autoSelection(input);
-        if (dynamicConfigure)
+        auto old_algo = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
+        Train(input);
+        auto new_algo = Infer(input);
+        if (old_algo != new_algo)
         {
-            algo->OutputOnline();
-            // TODO: inherit the clustering centers of previous configuration
+            cerr << "benne algo changes from " << hex << old_algo << " to " << new_algo << " when #"
+                 << input->index << oct << endl;
         }
-        // TODO: reconstruct the algorithm according to the selection
+        UpdateAlgo(old_algo, new_algo);
         vector<PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
     }
-    algo->RunOnline(input);
+
+    if (refineSel == Incre && (input->index > 0 && input->index % INCRE_REF_CNT == 0))
+    {
+        vector<PointPtr> temp_centers, new_centers;
+        algo->OutputOnline(temp_centers);
+        cerr << "temp_centers size: " << temp_centers.size() << endl;
+        auto newSink = make_shared<DataSink>(param);
+        kmeans.Run(param, temp_centers, new_centers);
+        algo->Init();
+        for (auto &center : new_centers)
+        {
+            algo->Insert(center);
+        }
+    }
+
     ds_timer.Tock();
     lat_timer.Add(input->toa);
 }
 
-void Benne::RunOffline(DataSinkPtr sinkPtr) { algo->RunOffline(sinkPtr); }
+void Benne::RunOffline(DataSinkPtr sinkPtr)
+{
+    for (auto &center : centers)
+    {
+        sinkPtr->put(center);
+    }
+    algo->RunOffline(sinkPtr);
+}
 
-void Benne::autoDetection(const PointPtr input)
+void Benne::Train(const PointPtr input)
 {
     int highDimData    = 0;
     int outlierNumber  = 0;
@@ -141,9 +164,8 @@ void Benne::autoDetection(const PointPtr input)
     }
 }
 
-void Benne::autoSelection(const PointPtr input)
+int Benne::Infer(const PointPtr input)
 {
-    int ori_combine = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
     if (obj == accuracy)
     {
         if (chara.frequentDrift)
@@ -222,42 +244,49 @@ void Benne::autoSelection(const PointPtr input)
             outlierSel != ODB ? dynamicConfigure = true : dynamicConfigure = false;
             outlierSel = ODB;
         }
-        (windowSel != landmark || refineSel != OneShot)
-            ? dynamicConfigure = true
-            : dynamicConfigure = false;
-        windowSel  = landmark;
-        refineSel  = OneShot;
+        (windowSel != landmark || refineSel != OneShot) ? dynamicConfigure = true
+                                                        : dynamicConfigure = false;
+        windowSel = landmark;
+        refineSel = OneShot;
     }
 
     int combine = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
-    if (ori_combine == combine) return;
-    cerr << "benne algo changes from " << hex << ori_combine << " to " << combine << endl;
-    switch (combine)
+    return combine;
+}
+
+void Benne::UpdateAlgo(int old_algo, int new_algo)
+{
+    if (old_algo == new_algo) return;
+    vector<PointPtr> temp_centers;
+    algo->OutputOnline(temp_centers);
+    switch (new_algo)
     {
     case 0x0040:
         algo = make_shared<
-            StreamClustering<Landmark, MicroClusters, OutlierDetection<true, true>, KMeans>>(param);
+            StreamClustering<Landmark, MicroClusters, OutlierDetection<true, true>, NoRefinement>>(
+            param);
         break;
     case 0x2020:
         algo = make_shared<
-            StreamClustering<Damped, MicroClusters, OutlierDetection<true, false>, KMeans>>(param);
+            StreamClustering<Damped, MicroClusters, OutlierDetection<true, false>, NoRefinement>>(
+            param);
         break;
     case 0x2040:
         algo = make_shared<
-            StreamClustering<Damped, MicroClusters, OutlierDetection<true, true>, KMeans>>(param);
+            StreamClustering<Damped, MicroClusters, OutlierDetection<true, true>, NoRefinement>>(
+            param);
         break;
     case 0x0140:
         algo = make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                            OutlierDetection<true, true>, KMeans>>(param);
+                                            OutlierDetection<true, true>, NoRefinement>>(param);
         break;
     case 0x2120:
         algo = make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
-                                            OutlierDetection<true, false>, KMeans>>(param);
+                                            OutlierDetection<true, false>, NoRefinement>>(param);
         break;
     case 0x2140:
-        algo = make_shared<
-            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, KMeans>>(
-            param);
+        algo = make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
+                                            OutlierDetection<true, true>, NoRefinement>>(param);
         break;
     case 0x0501:
         algo = make_shared<
@@ -277,9 +306,23 @@ void Benne::autoSelection(const PointPtr input)
         algo = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
         break;
-    default: cerr << "Error: no such algorithm: " << hex << combine << endl;
+    default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
     }
     algo->Init();
+    if (dynamicConfigure)
+    {
+        for (auto &center : temp_centers)
+        {
+            algo->Insert(center);
+        }
+    }
+    else
+    {
+        for (auto &center : centers)
+        {
+            centers.push_back(center);
+        }
+    }
 }
 
 double calculateDispersion(vector<PointPtr> queue_, PointPtr newCenter)
