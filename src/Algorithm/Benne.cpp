@@ -205,19 +205,28 @@ void Benne::autoSelection(const PointPtr input)
     {
         if (chara.frequentDrift)
         {
-            dataSel != CFT ? dynamicConfigure = true : dynamicConfigure = false;
-            dataSel = CFT;
+            dataSel != AMS ? dynamicConfigure = true : dynamicConfigure = false;
+            dataSel = AMS;
         }
         else
         {
             dataSel != CoreT ? dynamicConfigure = true : dynamicConfigure = false;
             dataSel = CoreT;
         }
-        (windowSel != landmark || outlierSel != ODT || refineSel != OneShot)
+        if (chara.highDimension)
+        {
+            outlierSel != OD ? dynamicConfigure = true : dynamicConfigure = false;
+            outlierSel = OD;
+        }
+        else
+        {
+            outlierSel != ODB ? dynamicConfigure = true : dynamicConfigure = false;
+            outlierSel = ODB;
+        }
+        (windowSel != landmark || refineSel != OneShot)
             ? dynamicConfigure = true
             : dynamicConfigure = false;
         windowSel  = landmark;
-        outlierSel = ODT;
         refineSel  = OneShot;
     }
 }
