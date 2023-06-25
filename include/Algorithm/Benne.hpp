@@ -20,32 +20,32 @@ struct characteristics
 
 enum windowSelection
 {
-    landmark,
-    sliding,
-    damped
+    landmark = 0,
+    sliding  = 1,
+    damped   = 2
 };
 enum dataSelection
 {
-    MCs,
-    CFT,
-    CoreT,
-    DPT,
-    Grids,
-    AMS
+    MCs   = 0,
+    CFT   = 1,
+    CoreT = 2,
+    DPT   = 3,
+    Grids = 4,
+    AMS   = 5
 };
 enum outlierSelection
 {
-    OD,
-    NoOD,
-    ODB,
-    ODT,
-    ODBT
+    OD   = 0,
+    NoOD = 1,
+    ODB  = 2,
+    ODT  = 3,
+    ODBT = 4
 };
 enum refineSelection
 {
-    Incre,
-    OneShot,
-    NoRefine
+    Incre    = 0,
+    OneShot  = 1,
+    NoRefine = 2
 };
 class Benne : public Algorithm
 {
@@ -61,6 +61,8 @@ public:
     dataSelection dataSel;
     outlierSelection outlierSel;
     refineSelection refineSel;
+
+    using MicroClusters = ClusteringFeaturesList;
 
     Benne(param_t &cmd_params);
 

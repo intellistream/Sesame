@@ -11,29 +11,27 @@
 #include "Sinks/DataSink.hpp"
 
 using namespace SESAME;
+using namespace std;
 
-double calculateDispersion(std::vector<SESAME::PointPtr> queue_, SESAME::PointPtr newCenter);
+double calculateDispersion(vector<SESAME::PointPtr> queue_, SESAME::PointPtr newCenter);
 
 Benne::Benne(param_t &cmd_params)
 {
-    param = cmd_params;
-    T     = param.benne_threshold;
+    param = cmd_params, T = param.benne_threshold, obj = param.obj;
 }
 
 Benne::~Benne() {}
 
 void Benne::Init()
 {
-    obj = param.obj;
     if (obj == accuracy)
     {
         windowSel  = damped;
         dataSel    = AMS;
         outlierSel = ODBT;
         refineSel  = Incre;
-        algo       = std::make_shared<
-            StreamClustering<Damped, MeyersonSketch, DistanceDetection<true, true>, NoRefinement>>(
-            param);
+        algo       = make_shared<
+            StreamClustering<Damped, MeyersonSketch, OutlierDetection<true, true>, KMeans>>(param);
     }
     else if (obj == efficiency)
     {
@@ -41,7 +39,7 @@ void Benne::Init()
         dataSel    = Grids;
         outlierSel = OD;
         refineSel  = NoRefine;
-        algo       = std::make_shared<V9>(param);  // problem
+        algo       = make_shared<V9>(param);  // problem
     }
     else
     {
@@ -49,7 +47,7 @@ void Benne::Init()
         dataSel    = CoreT;
         outlierSel = ODT;
         refineSel  = OneShot;
-        algo       = std::make_shared<
+        algo       = make_shared<
             StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(param);
     }
     algo->Init();
@@ -73,7 +71,7 @@ void Benne::RunOnline(const PointPtr input)
             // TODO: inherit the clustering centers of previous configuration
         }
         // TODO: reconstruct the algorithm according to the selection
-        std::vector<PointPtr> emptyQueue;
+        vector<PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
     }
     algo->RunOnline(input);
@@ -88,7 +86,7 @@ void Benne::autoDetection(const PointPtr input)
     int highDimData    = 0;
     int outlierNumber  = 0;
     double var         = 0;
-    PointPtr newCenter = std::make_shared<Point>(input->dim);
+    PointPtr newCenter = make_shared<Point>(input->dim);
     for (auto &frontElement : queue_)
     {
         // Obtain the center of the queue
@@ -145,6 +143,7 @@ void Benne::autoDetection(const PointPtr input)
 
 void Benne::autoSelection(const PointPtr input)
 {
+    int ori_combine = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
     if (obj == accuracy)
     {
         if (chara.frequentDrift)
@@ -220,12 +219,64 @@ void Benne::autoSelection(const PointPtr input)
         outlierSel = ODT;
         refineSel  = OneShot;
     }
+
+    int combine = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
+    if (ori_combine == combine) return;
+    cerr << "benne algo changes from " << hex << ori_combine << " to " << combine << endl;
+    switch (combine)
+    {
+    case 0x0040:
+        algo = make_shared<
+            StreamClustering<Landmark, MicroClusters, OutlierDetection<true, true>, KMeans>>(param);
+        break;
+    case 0x2020:
+        algo = make_shared<
+            StreamClustering<Damped, MicroClusters, OutlierDetection<true, false>, KMeans>>(param);
+        break;
+    case 0x2040:
+        algo = make_shared<
+            StreamClustering<Damped, MicroClusters, OutlierDetection<true, true>, KMeans>>(param);
+        break;
+    case 0x0140:
+        algo = make_shared<StreamClustering<Landmark, ClusteringFeaturesTree,
+                                            OutlierDetection<true, true>, KMeans>>(param);
+        break;
+    case 0x2120:
+        algo = make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
+                                            OutlierDetection<true, false>, KMeans>>(param);
+        break;
+    case 0x2140:
+        algo = make_shared<
+            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, KMeans>>(
+            param);
+        break;
+    case 0x0501:
+        algo = make_shared<
+            StreamClustering<Landmark, MeyersonSketch, OutlierDetection<false, false>, KMeans>>(
+            param);
+        break;
+    case 0x0201:
+        algo = make_shared<
+            StreamClustering<Landmark, CoresetTree, OutlierDetection<false, false>, KMeans>>(param);
+        break;
+    case 0x0521:
+        algo = make_shared<
+            StreamClustering<Landmark, MeyersonSketch, OutlierDetection<true, false>, KMeans>>(
+            param);
+        break;
+    case 0x0221:
+        algo = make_shared<
+            StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
+        break;
+    default: cerr << "Error: no such algorithm: " << hex << combine << endl;
+    }
+    algo->Init();
 }
 
-double calculateDispersion(std::vector<PointPtr> queue_, PointPtr newCenter)
+double calculateDispersion(vector<PointPtr> queue_, PointPtr newCenter)
 {
     // calculate dispersion
-    PointPtr variance = std::make_shared<Point>(newCenter->dim);
+    PointPtr variance = make_shared<Point>(newCenter->dim);
     for (auto &point : queue_)
     {
         for (int i = 0; i < newCenter->dim; i++)
