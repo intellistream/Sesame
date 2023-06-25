@@ -169,55 +169,52 @@ int Benne::Infer(const PointPtr input)
     {
         if (chara.frequentDrift)
         {
-            dataSel != MCs ? dynamicConfigure = true : dynamicConfigure = false;
+            dataSel != MCs ? ds_changed = true : ds_changed = false;
             dataSel = MCs;
         }
         else
         {
-            dataSel != AMS ? dynamicConfigure = true : dynamicConfigure = false;
+            dataSel != AMS ? ds_changed = true : ds_changed = false;
             dataSel = AMS;
         }
         if (chara.manyOutliers)
         {
-            windowSel != landmark ? dynamicConfigure = true : dynamicConfigure = false;
+            windowSel != landmark ? ds_changed = true : ds_changed = false;
             windowSel = landmark;
         }
         else
         {
-            windowSel != damped ? dynamicConfigure = true : dynamicConfigure = false;
+            windowSel != damped ? ds_changed = true : ds_changed = false;
             windowSel = damped;
             if (chara.highDimension)
             {
-                outlierSel != ODB ? dynamicConfigure = true : dynamicConfigure = false;
+                outlierSel != ODB ? ds_changed = true : ds_changed = false;
                 outlierSel = ODB;
             }
             else
             {
-                outlierSel != ODBT ? dynamicConfigure = true : dynamicConfigure = false;
+                outlierSel != ODBT ? ds_changed = true : ds_changed = false;
                 outlierSel = ODBT;
             }
         }
-        refineSel != Incre ? dynamicConfigure = true : dynamicConfigure = false;
+        refineSel != Incre ? ds_changed = true : ds_changed = false;
         refineSel = Incre;
     }
     else if (obj == efficiency)
     {
         if (chara.frequentDrift)
         {
-            (dataSel != AMS || windowSel != landmark) ? dynamicConfigure = true
-                                                      : dynamicConfigure = false;
+            (dataSel != AMS || windowSel != landmark) ? ds_changed = true : ds_changed = false;
             dataSel   = AMS;
             windowSel = landmark;
         }
         else
         {
-            (dataSel != Grids || windowSel != sliding) ? dynamicConfigure = true
-                                                       : dynamicConfigure = false;
+            (dataSel != Grids || windowSel != sliding) ? ds_changed = true : ds_changed = false;
             dataSel   = Grids;
             windowSel = sliding;
         }
-        (outlierSel != OD || refineSel != NoRefine) ? dynamicConfigure = true
-                                                    : dynamicConfigure = false;
+        (outlierSel != OD || refineSel != NoRefine) ? ds_changed = true : ds_changed = false;
         outlierSel = OD;
         refineSel  = NoRefine;
     }
@@ -225,26 +222,25 @@ int Benne::Infer(const PointPtr input)
     {
         if (chara.frequentDrift)
         {
-            dataSel != AMS ? dynamicConfigure = true : dynamicConfigure = false;
+            dataSel != AMS ? ds_changed = true : ds_changed = false;
             dataSel = AMS;
         }
         else
         {
-            dataSel != CoreT ? dynamicConfigure = true : dynamicConfigure = false;
+            dataSel != CoreT ? ds_changed = true : ds_changed = false;
             dataSel = CoreT;
         }
         if (chara.highDimension)
         {
-            outlierSel != OD ? dynamicConfigure = true : dynamicConfigure = false;
+            outlierSel != OD ? ds_changed = true : ds_changed = false;
             outlierSel = OD;
         }
         else
         {
-            outlierSel != ODB ? dynamicConfigure = true : dynamicConfigure = false;
+            outlierSel != ODB ? ds_changed = true : ds_changed = false;
             outlierSel = ODB;
         }
-        (windowSel != landmark || refineSel != OneShot) ? dynamicConfigure = true
-                                                        : dynamicConfigure = false;
+        (windowSel != landmark || refineSel != OneShot) ? ds_changed = true : ds_changed = false;
         windowSel = landmark;
         refineSel = OneShot;
     }
@@ -308,20 +304,20 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
     }
     algo->Init();
-    if (dynamicConfigure)
+    // if (ds_changed)
     {
         for (auto &center : temp_centers)
         {
             algo->Insert(center);
         }
     }
-    else
-    {
-        for (auto &center : centers)
-        {
-            centers.push_back(center);
-        }
-    }
+    // else
+    // {
+    //     for (auto &center : temp_centers)
+    //     {
+    //         centers.push_back(center);
+    //     }
+    // }
 }
 
 double calculateDispersion(vector<PointPtr> queue_, PointPtr newCenter)

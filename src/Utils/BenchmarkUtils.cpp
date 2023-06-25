@@ -139,7 +139,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     }
 
     BenchmarkResultPtr res;
-    if (param.run_eval && results.size())
+    if (param.run_eval && results.size() && results.size() <= 40000)
     {
         res = SESAME::Evaluation::Evaluate(param, inputs, predicts);
     }

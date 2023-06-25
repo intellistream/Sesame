@@ -11,8 +11,9 @@
 #include "Algorithm/Param.hpp"
 #include "Engine/SingleThread.hpp"
 #include "Utils/Logger.hpp"
-#include "Utils/SPSCQueue.hpp"
 #include "Utils/UtilityFunctions.hpp"
+
+#include <boost/lockfree/spsc_queue.hpp>
 
 #include <queue>
 #include <string>
@@ -27,7 +28,7 @@ class DataSink
 {
 private:
     std::vector<PointPtr> output;
-    std::shared_ptr<std::queue<PointPtr>> outputQueue;
+    std::shared_ptr<boost::lockfree::spsc_queue<PointPtr>> outputQueue;
     SingleThreadPtr threadPtr;
     std::atomic_bool sourceEnd;
     std::atomic_bool finished;

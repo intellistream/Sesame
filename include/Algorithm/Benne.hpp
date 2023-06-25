@@ -56,7 +56,7 @@ public:
     std::vector<PointPtr> queue_;
     std::vector<PointPtr> centers;
     BenneThreshold T;
-    bool dynamicConfigure = false;
+    bool ds_changed = false;
     AlgorithmPtr algo;
     ObjType obj;
     characteristics chara;
