@@ -82,7 +82,6 @@ void Benne::RunOnline(const PointPtr input)
         vector<PointPtr> temp_centers, new_centers;
         algo->OutputOnline(temp_centers);
         cerr << "temp_centers size: " << temp_centers.size() << endl;
-        auto newSink = make_shared<DataSink>(param);
         kmeans.Run(param, temp_centers, new_centers);
         algo->Init();
         for (auto &center : new_centers)
