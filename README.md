@@ -7,8 +7,8 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 ## Build Dependency
 - GCC-11 (In our paper, we use gcc-11.2.0)
-- Boost: 1.78.0 [Link]
-- GFLAGS: 2.2.0 [Link]
+- Boost: 1.78.0 [Link](https://github.com/boostorg/boost)
+- GFLAGS: 2.2.0 [Link](https://github.com/gflags/gflags/blob/master/INSTALL.md)
 
 ## Real-world algorithms
 
