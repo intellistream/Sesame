@@ -305,10 +305,10 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
         algo = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
         break;
-    case 0x1412:
+    case 0x1402:
         algo = std::make_shared<V16>(param);
         break;
-    case 0x0312:
+    case 0x0302:
         algo = std::make_shared<V10>(param);
         break;
     default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
