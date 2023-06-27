@@ -27,21 +27,20 @@ This project aims at building a scalable stream mining library on modern hardwar
 
 | Algorithm  | Window Model                 | Outlier Detection | Summarizing Data Structure | Offline Refinement |
 | ---------- | ---------------------------- | ----------------- | --------------------------| -------------------|
-| G1 | LandmarkWM           | OutlierD-B | MCs |   ✅   |
-| G2 | LandmarkWM   | OutlierD-B | MCs | ✅ |
-| G3 | LandmarkWM   | OutlierD-B | CFT |   ❌   |
-| G4 | SlidingWM | OutlierD-B | MCs |   ❌   |
+| G1 | LandmarkWM           | OutlierD | MCs |   ✅   |
+| G2 | LandmarkWM   | OutlierD | MCs | ✅ |
+| G3 | LandmarkWM   | OutlierD | CFT |   ❌   |
+| G4 | SlidingWM | OutlierD | MCs |   ❌   |
 | G5 | DampedWM             | OutlierD-B | MCs |   ❌   |
-| G6 | LandmarkWM | NoOutlierD |MCs  | ❌ |
-| G7 | LandmarkWM | OutlierD-B | MCs |  ❌  |
-| G8 | LandmarkWM | OutlierD-B | MCs | ❌ |
-| G9 | LandmarkWM   | OutlierD-T | Grids |   ❌   |
-| G10 | LandmarkWM       | OutlierD-B | DPT |   ❌      |
+| G6 | LandmarkWM | NoOutlierD | MCs  | ❌ |
+| G8 | LandmarkWM | OutlierD | MCs | ❌ |
+| G9 | LandmarkWM   | OutlierD | Grids |   ❌   |
+| G10 | LandmarkWM       | OutlierD | DPT |   ❌      |
 | G11 | LandmarkWM       | OutlierD-T | MCs |   ❌      |
-| G12 | LandmarkWM       | OutlierD | MCs |   ❌      |
+| G12 | LandmarkWM       | OutlierD-B | MCs |   ❌      |
 | G13 | LandmarkWM       | OutlierD-BT | MCs |   ❌      |
-| G14 | LandmarkWM | OutlierD-B | AMS |   ❌      |
-| G15 | LandmarkWM       | OutlierD-B | CoreT |   ❌      |
+| G14 | LandmarkWM | OutlierD | AMS |   ❌      |
+| G15 | LandmarkWM       | OutlierD | CoreT |   ❌      |
 
 ## Datasets
 
