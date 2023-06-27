@@ -41,6 +41,7 @@ void Benne::Init()
         dataSel    = Grids;
         outlierSel = OD;
         refineSel  = NoRefine;
+        eff_obj    = true;
         algo       = make_shared<V9>(param);  // problem
     }
     else
@@ -313,20 +314,20 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
     }
     algo->Init();
-    // if (ds_changed)
+    if (!eff_obj)
     {
         for (auto &center : temp_centers)
         {
             algo->Insert(center);
         }
+    } 
+    else
+    {
+        for (auto &center : temp_centers)
+        {
+            centers.push_back(center);
+        }
     }
-    // else
-    // {
-    //     for (auto &center : temp_centers)
-    //     {
-    //         centers.push_back(center);
-    //     }
-    // }
 }
 
 double calculateDispersion(vector<PointPtr> queue_, PointPtr newCenter)
