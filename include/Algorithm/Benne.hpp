@@ -57,6 +57,7 @@ public:
     std::vector<PointPtr> centers;
     BenneThreshold T;
     bool ds_changed = false;
+    bool eff_obj = false;
     AlgorithmPtr algo;
     ObjType obj;
     characteristics chara;
