@@ -61,6 +61,7 @@ public:
     void RunOnline(SESAME::PointPtr input) override;
 
     void RunOffline(DataSinkPtr sinkPtr) override;
+    void OutputOnline(std::vector<PointPtr> &onlineCenters);
 };
 }  // namespace SESAME
 #endif  // SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V10_HPP_

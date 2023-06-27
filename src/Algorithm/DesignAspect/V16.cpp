@@ -29,6 +29,40 @@ SESAME::V16::~V16() = default;
 
 void SESAME::V16::Init() {}
 
+void SESAME::V16::OutputOnline(std::vector<PointPtr> &output)
+{
+    int cluID = 0;
+    for (const auto &point : onlineCenters)
+    {
+        point->setClusteringCenter(cluID++);
+        output.push_back(point);
+    }
+    for (auto iter = 0; iter != this->clusterList.size(); iter++)
+    {
+        PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+        auto count     = 0;
+        for (auto &iterGrid : this->clusterList.at(iter).grids)
+        {
+            for (int iterDim = 0; iterDim < param.dim; iterDim++)
+            {
+                if (count == 0) point->setFeatureItem(0, iterDim);
+                point->setFeatureItem(
+                    point->getFeatureItem(iterDim) + iterGrid.first.coordinates[iterDim], iterDim);
+                if (count == this->clusterList.at(iter).grids.size() - 1)
+                {
+                    point->setFeatureItem(point->getFeatureItem(iterDim) / param.dim, iterDim);
+                }
+            }
+            double weight = gridList.find(iterGrid.first)->second.gridDensity;
+            point->setWeight(point->getWeight() + weight);
+            count++;
+        }
+        point->setClusteringCenter(cluID++);
+        output.push_back(point);
+    }
+    
+}
+
 void SESAME::V16::calculateGridCoord(PointPtr point)
 {
     for (int i = 0; i < param.dim; i++)

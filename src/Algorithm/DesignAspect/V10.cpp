@@ -35,6 +35,29 @@ void SESAME::V10::Init()
     this->dpTree->SetMinDelta(this->V10Param.minDelta);
 }
 
+void SESAME::V10::OutputOnline(std::vector<PointPtr> &output)
+{
+    ref_timer.Tick();
+    auto clu = 0;
+    for (const auto &center : this->onlineCenters)
+    {
+        center->setClusteringCenter(clu++);
+        output.push_back(center->copy());
+    }
+    for (const auto &cluster : this->clusters)
+    {
+        std::unordered_set<DPNodePtr> cells = cluster->GetCells();
+        for (const auto &cell : cells)
+        {
+            PointPtr center = cell->GetCenter();
+            center->setClusteringCenter(clu++);
+            center->setOutlier(false);
+            output.push_back(center->copy());        
+        }
+    }
+}
+
+
 void SESAME::V10::setMinDelta(double minDelta)
 {
     this->V10Param.minDelta = minDelta;

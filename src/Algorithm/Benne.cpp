@@ -9,6 +9,8 @@
 #include "Algorithm/OfflineRefinement/KMeans.hpp"
 #include "Algorithm/OfflineRefinement/OfflineRefinement.hpp"
 #include "Sinks/DataSink.hpp"
+#include "Algorithm/DesignAspect/V10.hpp"
+#include "Algorithm/DesignAspect/V16.hpp"
 
 using namespace SESAME;
 using namespace std;
@@ -174,13 +176,14 @@ int Benne::Infer(const PointPtr input)
         }
         else
         {
-            dataSel != AMS ? ds_changed = true : ds_changed = false;
-            dataSel = AMS;
+            dataSel != CFT ? ds_changed = true : ds_changed = false;
+            dataSel = CFT;
         }
         if (chara.manyOutliers)
         {
-            windowSel != landmark ? ds_changed = true : ds_changed = false;
+            (windowSel != landmark || outlierSel != ODBT)? ds_changed = true : ds_changed = false;
             windowSel = landmark;
+            outlierSel  = ODBT;
         }
         else
         {
@@ -204,8 +207,8 @@ int Benne::Infer(const PointPtr input)
     {
         if (chara.frequentDrift)
         {
-            (dataSel != AMS || windowSel != landmark) ? ds_changed = true : ds_changed = false;
-            dataSel   = AMS;
+            (dataSel != DPT || windowSel != landmark) ? ds_changed = true : ds_changed = false;
+            dataSel   = DPT;
             windowSel = landmark;
         }
         else
@@ -214,8 +217,8 @@ int Benne::Infer(const PointPtr input)
             dataSel   = Grids;
             windowSel = sliding;
         }
-        (outlierSel != OD || refineSel != NoRefine) ? ds_changed = true : ds_changed = false;
-        outlierSel = OD;
+        (outlierSel != NoOD || refineSel != NoRefine) ? ds_changed = true : ds_changed = false;
+        outlierSel = NoOD;
         refineSel  = NoRefine;
     }
     else
@@ -300,6 +303,12 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     case 0x0221:
         algo = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
+        break;
+    case 0x1412:
+        algo = std::make_shared<V16>(param);
+        break;
+    case 0x0312:
+        algo = std::make_shared<V10>(param);
         break;
     default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
     }
