@@ -44,7 +44,8 @@ char const *algo_names[64] = {[BirchType]        = "Birch",
                               [G12Stream]        = "G12",
                               [G13Stream]        = "G13",
                               [G14Stream]        = "G14",
-                              [G15Stream]        = "G15"};
+                              [G15Stream]        = "G15",
+                              [G16Stream]        = "G16"};
 
 void Algorithm::Store(std::string output_file, int dim, std::vector<PointPtr> result)
 {

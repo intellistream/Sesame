@@ -2,7 +2,7 @@
 // Created by 1124a on 2021/10/27.
 //
 
-#include "Algorithm/DesignAspect/V9.hpp"
+#include "Algorithm/DesignAspect/V16.hpp"
 #include "Algorithm/DataStructure/DataStructureFactory.hpp"
 #include "Algorithm/WindowModel/WindowFactory.hpp"
 
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-SESAME::V9::V9(param_t &cmd_params)
+SESAME::V16::V16(param_t &cmd_params)
 {
     this->param  = cmd_params;
     param.lambda = 1;
@@ -25,11 +25,11 @@ SESAME::V9::V9(param_t &cmd_params)
     Coord   = std::vector<int>(param.dim, 0);
 }
 
-SESAME::V9::~V9() = default;
+SESAME::V16::~V16() = default;
 
-void SESAME::V9::Init() {}
+void SESAME::V16::Init() {}
 
-void SESAME::V9::calculateGridCoord(PointPtr point)
+void SESAME::V16::calculateGridCoord(PointPtr point)
 {
     for (int i = 0; i < param.dim; i++)
     {
@@ -46,7 +46,7 @@ void SESAME::V9::calculateGridCoord(PointPtr point)
     }
 }
 
-void SESAME::V9::RunOnline(PointPtr input)
+void SESAME::V16::RunOnline(PointPtr input)
 {
     win_timer.Tick();
     currentTimeStamp = input->index;
@@ -64,17 +64,16 @@ void SESAME::V9::RunOnline(PointPtr input)
         removeSporadic();
         adjustClustering();
     }
-    if(insertGridIndex.size() == param.sliding999){
+    if(windowGrid.size() == param.sliding + 1)
+    {
         RemoveWindowPointFromGrid();
-        std::vector<int> emptyVec;
-        insertGridIndex.swap(emptyVec);
     }
     ds_timer.Tock();
     lat_timer.Add(input->toa);
 }
 
-void SESAME::V9::RunOffline(DataSinkPtr sinkPtr)
-{
+void SESAME::V16::RunOffline(DataSinkPtr sinkPtr)
+{ 
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     int cluID = 0;
@@ -110,15 +109,14 @@ void SESAME::V9::RunOffline(DataSinkPtr sinkPtr)
     sum_timer.Tock();
 }
 
-/* Update the grid list of V9 when data inserting into the grid
+/* Update the grid list of V16 when data inserting into the grid
  * */
-void SESAME::V9::GridListUpdate(const std::vector<int> &coordinate)
+void SESAME::V16::GridListUpdate(const std::vector<int> &coordinate)
 {
     CharacteristicVector characteristicVec;
     DensityGrid grid(coordinate);
     // 3. If (g not in grid_list) insert dg to grid_list
     auto it = this->gridList.find(grid);
-    q       = this->gridList.size();
     if (it == gridList.end())
     {
         characteristicVec = CharacteristicVector(currentTimeStamp, 0, 1.0, -1, false, dl, dm);
@@ -130,27 +128,18 @@ void SESAME::V9::GridListUpdate(const std::vector<int> &coordinate)
         it->second.densityWithNew(currentTimeStamp, param.lambda);
         it->second.updateTime = currentTimeStamp;
     }
+    windowGrid.push_back(grid);
 }
 
-/* Update the grid list of V9 when data inserting into the grid
+/* Update the grid list of V16 when data inserting into the grid
  * */
-void SESAME::V9::RemoveWindowPointFromGrid()
+void SESAME::V16::RemoveWindowPointFromGrid()
 {
-    CharacteristicVector characteristicVec;
-    DensityGrid grid(coordinate);
-    // 3. If (g not in grid_list) insert dg to grid_list
+    auto grid = windowGrid[0];
     auto it = this->gridList.find(grid);
-    q       = this->gridList.size();
-    if (it == gridList.end())
+    if (it != gridList.end())
     {
-        characteristicVec = CharacteristicVector(currentTimeStamp, 0, 1.0, -1, false, dl, dm);
-        this->gridList.insert(std::make_pair(grid, characteristicVec));
-    }
-    // 4. Update the characteristic vector of dg
-    else
-    {
-        it->second.densityWithNew(currentTimeStamp, param.lambda);
-        it->second.updateTime = currentTimeStamp;
+        it->second.gridDensity -= 1.0;
     }
 }
 
@@ -158,7 +147,7 @@ void SESAME::V9::RemoveWindowPointFromGrid()
 /**
  * Implements the procedure given in Figure 3 of Chen and Tu 2007
  */
-void SESAME::V9::initialClustering()
+void SESAME::V16::initialClustering()
 {
     // 1. Update the density of all grids in grid_list
     // Timer: online grid
@@ -208,7 +197,7 @@ void SESAME::V9::initialClustering()
  * Else if h is transitional, assign it to c
  * @return TRUE if a change was made to any cluster's labels, FALSE otherwise
  */
-bool SESAME::V9::adjustLabels()
+bool SESAME::V16::adjustLabels()
 {
     // bool adjust=false;
     // a. For each cluster c
@@ -282,7 +271,7 @@ bool SESAME::V9::adjustLabels()
  * Iterates through grid_list and updates the density for each density grid therein.
  * Also marks each density grid as unvisited for this call to adjustClustering.
  */
-void SESAME::V9::updateGridListDensity()
+void SESAME::V16::updateGridListDensity()
 {
     for (auto &iter : this->gridList)
     {
@@ -295,9 +284,9 @@ void SESAME::V9::updateGridListDensity()
  * Performs the periodic adjustment of clusters every 'gap' timesteps.
  * Implements the procedure given in Figure 4 of Chen and Tu 2007
  *
- * @see moa.clusterers.V9.V9#gap
+ * @see moa.clusterers.V16.V16#gap
  */
-void SESAME::V9::adjustClustering()
+void SESAME::V16::adjustClustering()
 {
     // SESAME_INFO("ADJUST CLUSTERING CALLED ");
     // 1. Update the density of all grids in grid_list
@@ -317,7 +306,7 @@ void SESAME::V9::adjustClustering()
  *
  * @return TRUE if any grids are updated; FALSE otherwise.
  */
-bool SESAME::V9::inspectChangedGrids()
+bool SESAME::V16::inspectChangedGrids()
 {
     HashMap newGridList;
     auto gridIter = this->gridList.begin();
@@ -364,7 +353,7 @@ bool SESAME::V9::inspectChangedGrids()
  *
  * @return a HashMap containing density grids for update after this iteration
  */
-SESAME::HashMap SESAME::V9::adjustForSparseGrid(const DensityGrid &grid,
+SESAME::HashMap SESAME::V16::adjustForSparseGrid(const DensityGrid &grid,
                                                 CharacteristicVector characteristicVec,
                                                 int gridClass)
 {
@@ -396,7 +385,7 @@ SESAME::HashMap SESAME::V9::adjustForSparseGrid(const DensityGrid &grid,
  * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after
  * this iteration
  */
-SESAME::HashMap SESAME::V9::reCluster(GridCluster &gridCluster)
+SESAME::HashMap SESAME::V16::reCluster(GridCluster &gridCluster)
 {
     // SESAME_INFO("Now re-cluster!");
     HashMap newGridList;
@@ -442,7 +431,7 @@ SESAME::HashMap SESAME::V9::reCluster(GridCluster &gridCluster)
     return newGridList;
 }
 
-SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
+SESAME::HashMap SESAME::V16::adjustNewLabels(const SESAME::HashMap &newGridList)
 {
     HashMap gridListAdjusted;
     // a. For each cluster c
@@ -518,7 +507,7 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
  *
  * @return a HashMapcontaining density grids for update after this iteration
  */
-SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
+SESAME::HashMap SESAME::V16::adjustForDenseGrid(const DensityGrid &grid,
                                                CharacteristicVector characteristicVec,
                                                int gridClass)
 {
@@ -668,7 +657,7 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
  * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after
  * this iteration
  */
-SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
+SESAME::HashMap SESAME::V16::adjustForTransitionalGrid(const DensityGrid &grid,
                                                       CharacteristicVector characteristicVec,
                                                       int gridClass)
 {
@@ -725,7 +714,7 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
     return newGridList;
 }
 
-SESAME::HashMap SESAME::V9::mergeNewClusters(SESAME::HashMap newGridList, int smallCluster,
+SESAME::HashMap SESAME::V16::mergeNewClusters(SESAME::HashMap newGridList, int smallCluster,
                                              int bigCluster)
 {
     // System.out.println("Merge new clusters "+smallCluster+" and "+bigCluster+".");
@@ -762,7 +751,7 @@ SESAME::HashMap SESAME::V9::mergeNewClusters(SESAME::HashMap newGridList, int sm
  * @param smallCluster - the index of the smaller cluster
  * @param bigCluster - the index of the bigger cluster
  */
-void SESAME::V9::mergeClusters(int smallCluster, int bigCluster)
+void SESAME::V16::mergeClusters(int smallCluster, int bigCluster)
 {
     // SESAME_INFO("Merge clusters "<<smallCluster<<" and "<<bigCluster<<".");
     // Iterate through the density grids in grid_list to find those which are in highClass
@@ -784,7 +773,7 @@ void SESAME::V9::mergeClusters(int smallCluster, int bigCluster)
     cleanClusters();
 }
 
-void SESAME::V9::mergeGridList(HashMap &thisGridList, const HashMap &otherList)
+void SESAME::V16::mergeGridList(HashMap &thisGridList, const HashMap &otherList)
 {
     for (auto &gridIter : otherList)
     {
@@ -792,7 +781,7 @@ void SESAME::V9::mergeGridList(HashMap &thisGridList, const HashMap &otherList)
     }
 }
 
-SESAME::HashMap SESAME::V9::cleanNewClusters(SESAME::HashMap newGridList)
+SESAME::HashMap SESAME::V16::cleanNewClusters(SESAME::HashMap newGridList)
 {
     std::vector<GridCluster> toRemove;
     // Check to see if there are any empty clusters
@@ -845,7 +834,7 @@ SESAME::HashMap SESAME::V9::cleanNewClusters(SESAME::HashMap newGridList)
  * that all cluster IDs match the cluster's index in cluster_list.
  */
 
-void SESAME::V9::cleanClusters()
+void SESAME::V16::cleanClusters()
 {
     //// SESAME_INFO("Clean Clusters");
 
@@ -901,7 +890,7 @@ void SESAME::V9::cleanClusters()
       b. Else
          i. If (S1 && S2), mark as sporadic
  */
-void SESAME::V9::removeSporadic()
+void SESAME::V16::removeSporadic()
 {
     // SESAME_INFO("REMOVE SPORADIC CALLED");
     // For each grid g in grid_list
@@ -976,7 +965,7 @@ void SESAME::V9::removeSporadic()
  * @param characteristicVec - the CharacteristicVector of the density grid being assessed for
  * sporadicity
  */
-bool SESAME::V9::checkIfSporadic(CharacteristicVector characteristicVec)
+bool SESAME::V16::checkIfSporadic(CharacteristicVector characteristicVec)
 {
     // Check S1
     if (characteristicVec.getCurrGridDensity(currentTimeStamp, param.lambda) < param.outlier_cap)

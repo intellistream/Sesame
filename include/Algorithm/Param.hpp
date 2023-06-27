@@ -32,7 +32,8 @@ enum AlgoType
     G12Stream,
     G13Stream,
     G14Stream,
-    G15Stream
+    G15Stream,
+    G16Stream
 };
 
 extern char const *algo_names[64];

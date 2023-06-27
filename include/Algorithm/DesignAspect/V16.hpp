@@ -2,8 +2,8 @@
 // Created by 1124a on 2022/4/10.
 //
 
-#ifndef COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
-#define COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
+#ifndef COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V16_HPP_
+#define COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V16_HPP_
 
 #include "Algorithm/Algorithm.hpp"
 #include "Algorithm/DataStructure/CharacteristicVector.hpp"
@@ -53,7 +53,7 @@ public:
     std::vector<int> Coord;
     std::vector<PointPtr> onlineCenters;
     int q = 0;
-    std::vector<int> insertGridIndex;
+    std::vector<DensityGrid> windowGrid;
 
     V16(param_t &cmd_params);
     ~V16();
@@ -87,4 +87,4 @@ private:
     void removeSporadic();
 };
 }  // namespace SESAME
-#endif  // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
+#endif  // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V16_HPP_

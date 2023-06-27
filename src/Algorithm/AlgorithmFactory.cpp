@@ -17,6 +17,7 @@
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/DesignAspect/V10.hpp"
 #include "Algorithm/DesignAspect/V9.hpp"
+#include "Algorithm/DesignAspect/V16.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/SlidingWindowClustering.hpp"
@@ -152,6 +153,10 @@ AlgorithmPtr AlgorithmFactory::create(param_t &cmd_params)
         return std::make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<false, false>, NoRefinement>>(
             cmd_params);
+    }
+    case (G16Stream):
+    {
+        return std::make_shared<V16>(cmd_params);
     }
     default: throw std::invalid_argument("Unsupported algorithm");
     }
