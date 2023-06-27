@@ -6,9 +6,9 @@ This project aims at building a scalable stream mining library on modern hardwar
 - We welcome your contributions, if you are interested to contribute to the project, please fork and submit a PR. If you have questions, feel free to log an issue or write an email to me: shuhao_zhang AT sutd.edu.sg
 
 ## Build Dependency
-GCC-11 (In our paper, we use gcc-11.2.0)
-Boost: 1.78.0 [Link]
-GFLAGS: 2.2.0 [Link]
+- GCC-11 (In our paper, we use gcc-11.2.0)
+- Boost: 1.78.0 [Link]
+- GFLAGS: 2.2.0 [Link]
 
 ## Real-world algorithms
 
