@@ -169,6 +169,12 @@ struct param_t
         std::cout << "neighbor_distance: " << neighbor_distance << std::endl;
         std::cout << "k: " << k << std::endl;
         std::cout << "run_offline: " << run_offline << std::endl;
+        std::cout << "obj: " << obj << std::endl;
+        std::cout << "queue_size_threshold: " << benne_threshold.queue_size << std::endl;
+        std::cout << "dim_threshold: " << benne_threshold.dim << std::endl;
+        std::cout << "variance_threshold: " << benne_threshold.variance << std::endl;
+        std::cout << "outliers_num_threshold: " << benne_threshold.outliers_num << std::endl;
+        std::cout << "outliers_dist_threshold: " << benne_threshold.outliers_dist << std::endl;
     }
     std::string Workload() { return std::filesystem::path(input_file).stem(); }
     std::string Name() { return algo_names[algo]; }
