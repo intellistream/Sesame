@@ -72,27 +72,27 @@ void Benne::RunOnline(const PointPtr input)
         if (old_algo != new_algo)
         {
             cerr << "benne algo changes from " << hex << old_algo << " to " << new_algo << " when #"
-                 << input->index << oct << endl;
+                 << dec << input->index << endl;
         }
         UpdateAlgo(old_algo, new_algo);
         vector<PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
     }
-
+    ds_timer.Tock();
     if (refineSel == Incre && (input->index > 0 && input->index % INCRE_REF_CNT == 0))
     {
+        ref_timer.Tick();
         vector<PointPtr> temp_centers, new_centers;
         algo->OutputOnline(temp_centers);
-        cerr << "temp_centers size: " << temp_centers.size() << endl;
+        if (temp_centers.size()) cerr << "temp_centers size: " << temp_centers.size() << endl;
         kmeans.Run(param, temp_centers, new_centers);
         algo->Init();
         for (auto &center : new_centers)
         {
             algo->Insert(center);
         }
+        ref_timer.Tock();
     }
-
-    ds_timer.Tock();
     lat_timer.Add(input->toa);
 }
 
@@ -306,9 +306,10 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
         algo = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
         break;
+    case 0x1412:
     case 0x1402: algo = std::make_shared<V16>(param); break;
     case 0x0312: algo = std::make_shared<V10>(param); break;
-    default: cerr << "Error: no such algorithm: " << hex << new_algo << oct << endl;
+    default: cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl;
     }
     algo->Init();
     if (!eff_obj)

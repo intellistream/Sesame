@@ -65,6 +65,7 @@ public:
     void RunOnline(PointPtr input);
     void RunOffline(DataSinkPtr ptr);
     void store(std::string output_file, int dim, std::vector<PointPtr> results);
+    void OutputOnline(std::vector<PointPtr> &centers) override;
 
 private:
     using Node    = typename D::Node;
@@ -80,7 +81,6 @@ private:
     std::vector<PointPtr> online_centers;
     size_t cluster_size_ = 0, outlier_size_ = 0;
     NodePtr InsertOutliers(PointPtr point);
-    void OutputOnline(std::vector<PointPtr> &centers);
 };
 
 template <typename W, typename D, typename O, typename R>
@@ -339,8 +339,8 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
 template <typename W, typename D, typename O, typename R>
 void StreamClustering<W, D, O, R>::OutputOnline(std::vector<PointPtr> &centers)
 {
+    // std::cerr << "Generic OutputOnline: " << d->clusters().size() << std::endl;
     auto clusters = d->clusters();
-    // cerr << "data structure's cluster size: " << clusters.size() << endl;
     cluster_size_ += clusters.size();
     outlier_size_ += outliers_.size();
     for (int i = 0; i < clusters.size(); i++)

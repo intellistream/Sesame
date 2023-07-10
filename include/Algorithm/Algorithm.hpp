@@ -36,7 +36,7 @@ public:
     virtual void RunOnline(SESAME::PointPtr input)   = 0;
     virtual void RunOffline(SESAME::DataSinkPtr ptr) = 0;
     void Insert(SESAME::PointPtr input){};
-    void OutputOnline(std::vector<PointPtr> &centers){};
+    virtual void OutputOnline(std::vector<PointPtr> &centers) {};
     void Store(std::string output_file, int dim, std::vector<PointPtr> results);
     Timer win_timer, ds_timer, out_timer, ref_timer, sum_timer, lat_timer, on_timer;
     param_t param;
