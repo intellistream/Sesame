@@ -25,7 +25,7 @@ public:
     ConnectedRegions();
     ConnectedRegions(double alpha, double min_weight);
     void connection(std::vector<MicroClusterPtr> &microClusters,
-                    SESAME::WeightedAdjacencyList weightedAdjacencyList);
+                    SESAME::WeightedAdjacencyList &weightedAdjacencyList);
     std::vector<PointPtr> ResultsToDataSink();
 
     /**
@@ -36,9 +36,9 @@ public:
      * @Param: connectivity graph, micro cluster 1 and 2
      * @Return: void
      */
-    void insertIntoGraph(std::vector<MicroClusterPtr> microClusters, int microClusterId,
+    void insertIntoGraph(const std::vector<MicroClusterPtr> &microClusters, int microClusterId,
                          int OtherId);
-    void insertIntoGraph(std::vector<MicroClusterPtr> microClusters, int microClusterId);
+    void insertIntoGraph(const std::vector<MicroClusterPtr> &microClusters, int microClusterId);
     /**
      * @Description:  findConnectedComponents function visit the existing
      * connectivity graph and find all connected strong MCs that will finally form
