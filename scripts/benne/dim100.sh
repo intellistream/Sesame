@@ -2,6 +2,10 @@
 
 export dim100="join.new input_file $HOME/Sesame/build/benchmark/datasets/Dim-100.txt : join.new num_points 500000 : join.new dim 100 : join.new num_clusters 50 : join.new run_cmm false : join.new arr_rate 0"
 
+export balance=0
+export accuracy=1
+export efficiency=2
+
 export OMP_NUM_THREADS=8
 
 ticat ${meta} : ${dim100} \
@@ -41,12 +45,12 @@ ticat ${meta} : ${dim100} \
 
 ticat ${meta} : ${dim100} \
     : join.new algo 4 \
-    : join.new lambda 0.125 \
-    : join.new radius 300 \
+    : join.new lambda 0.001 \
+    : join.new radius 4 \
     : join.new clean_interval 400 \
-    : join.new min_weight 0.5 \
+    : join.new min_weight 0.05 \
     : join.new alpha 0.5 \
-    : join.new base 2 \
+    : join.new base 1 \
     : join.run run.sesame &
 
 ticat ${meta} : ${dim100} \
@@ -61,18 +65,18 @@ ticat ${meta} : ${dim100} \
 
 ticat ${meta} : ${dim100} \
     : join.new algo 6 \
-    : join.new lambda 0.998 \
+    : join.new lambda 0.5 \
     : join.new beta 1 \
     : join.new cm 1 \
     : join.new cl 0.8 \
-    : join.new grid_width 50 \
+    : join.new grid_width 1 \
     : join.run run.sesame &
 
 ticat ${meta} : ${dim100} \
     : join.new algo 7 \
     : join.new delta_grid 1 \
     : join.new num_samples 100 \
-    : join.new sliding 100 \
+    : join.new sliding 10 \
     : join.run run.sesame &
 
 ticat ${meta} : ${dim100} \
@@ -89,10 +93,11 @@ ticat ${meta} : ${dim100} \
 ticat ${meta} : ${dim100} \
     : join.new algo 8 \
     : join.new obj $accuracy \
-    : join.new distance_threshold 500 \
-    : join.new queue_size_threshold 10000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
+    : join.new landmark 1000 \
+    : join.new distance_threshold 50 \
+    : join.new queue_size_threshold 1000 \
+    : join.new dim_threshold 50 \
+    : join.new variance_threshold 50.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
     : join.run run.sesame &

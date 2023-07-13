@@ -24,16 +24,6 @@ ticat ${meta} : ${cover} \
     : join.run run.sesame &
 
 # TODO
-ticat ${meta} : ${kdd99} \
-    : join.new algo 8 \
-    : join.new obj $balance \
-    : join.new landmark 200000 \
-    : join.new queue_size_threshold 70000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
 
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
@@ -63,17 +53,6 @@ ticat ${meta} : ${cover} \
     : join.new obj $accuracy \
     : join.new distance_threshold 500 \
     : join.new queue_size_threshold 10000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
-
-ticat ${meta} : ${kdd99} \
-    : join.new algo 8 \
-    : join.new obj $accuracy \
-    : join.new landmark 10000 \
-    : join.new queue_size_threshold 5000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
@@ -116,17 +95,6 @@ ticat ${meta} : ${cover} \
     : join.new outliers_dist_threshold 50.0 \
     : join.run run.sesame &
 
-ticat ${meta} : ${kdd99} \
-    : join.new algo 8 \
-    : join.new obj $efficiency \
-    : join.new sliding 1000 \
-    : join.new queue_size_threshold 3000000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
-
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $efficiency \
@@ -141,11 +109,12 @@ ticat ${meta} : ${sensor} \
 ticat ${meta} : ${insects} \
     : join.new algo 8 \
     : join.new obj $efficiency \
-    : join.new queue_size_threshold 10000 \
+    : join.new sliding 20000 \
+    : join.new queue_size_threshold 400000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
+    : join.new outliers_dist_threshold 5.0 \
     : join.run run.sesame &
 
 wait

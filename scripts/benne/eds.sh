@@ -59,8 +59,8 @@ do
     run
 done
 
-# for i in $(seq 1 3)
-# do
-#     export eds=`eval echo \$\{edso$i\}`
-#     run
-# done
+for i in $(seq 1 3)
+do
+    export eds=`eval echo \$\{edso$i\}`
+    run
+done
