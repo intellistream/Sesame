@@ -105,9 +105,10 @@ ticat ${meta} : ${dim100} \
 ticat ${meta} : ${dim100} \
     : join.new algo 8 \
     : join.new obj $efficiency \
-    : join.new landmark 20000 \
-    : join.new queue_size_threshold 300000 \
-    : join.new dim_threshold 30 \
+    : join.new landmark 500000 \
+    : join.new sliding 300 \
+    : join.new queue_size_threshold 500000 \
+    : join.new dim_threshold 50 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \

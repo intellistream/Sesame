@@ -22,8 +22,8 @@ ticat ${meta} : ${eds} \
 ticat ${meta} : ${eds}\
     : join.new algo 1 \
     : join.new seed 10 \
-    : join.new coreset_size 363 \
-    : join.new k 588 \
+    : join.new coreset_size 50 \
+    : join.new k 363 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds}\
