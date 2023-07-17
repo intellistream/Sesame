@@ -237,13 +237,13 @@ int Benne::Infer(const PointPtr input)
         }
         if (chara.highDimension)
         {
-            outlierSel != OD ? ds_changed = true : ds_changed = false;
-            outlierSel = OD;
+            outlierSel != ODT ? ds_changed = true : ds_changed = false;
+            outlierSel = ODT;
         }
         else
         {
-            outlierSel != ODB ? ds_changed = true : ds_changed = false;
-            outlierSel = ODB;
+            outlierSel != OD ? ds_changed = true : ds_changed = false;
+            outlierSel = OD;
         }
         (windowSel != landmark || refineSel != OneShot) ? ds_changed = true : ds_changed = false;
         windowSel = landmark;
