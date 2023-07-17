@@ -297,14 +297,14 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
         algo = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<false, false>, KMeans>>(param);
         break;
-    case 0x0521:
+    case 0x0531:
         algo = make_shared<
-            StreamClustering<Landmark, MeyersonSketch, OutlierDetection<true, false>, KMeans>>(
+            StreamClustering<Landmark, MeyersonSketch, OutlierDetection<false, true>, KMeans>>(
             param);
         break;
-    case 0x0221:
+    case 0x0231:
         algo = make_shared<
-            StreamClustering<Landmark, CoresetTree, OutlierDetection<true, false>, KMeans>>(param);
+            StreamClustering<Landmark, CoresetTree, OutlierDetection<false, true>, KMeans>>(param);
         break;
     case 0x1412:
     case 0x1402: algo = std::make_shared<V16>(param); break;
