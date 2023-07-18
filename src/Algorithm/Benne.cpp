@@ -32,7 +32,7 @@ void Benne::Init()
         outlierSel = ODBT;
         refineSel  = Incre;
         algo       = make_shared<
-            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, KMeans>>(param);
+            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, NoRefinement>>(param);
     }
     else if (obj == efficiency)
     {
