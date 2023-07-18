@@ -32,7 +32,7 @@ void Benne::Init()
         outlierSel = ODBT;
         refineSel  = Incre;
         algo       = make_shared<
-            StreamClustering<Damped, MeyersonSketch, OutlierDetection<true, true>, KMeans>>(param);
+            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, KMeans>>(param);
     }
     else if (obj == efficiency)
     {
@@ -50,7 +50,7 @@ void Benne::Init()
         outlierSel = ODT;
         refineSel  = OneShot;
         algo       = make_shared<
-            StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(param);
+            StreamClustering<Landmark, CoresetTree, OutlierDetection<false, true>, KMeans>>(param);
     }
     algo->Init();
     sum_timer.Tick();
