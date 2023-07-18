@@ -28,7 +28,7 @@ void Benne::Init()
     if (obj == accuracy)
     {
         windowSel  = landmark;
-        dataSel    = CFList;
+        dataSel    = MCs;
         outlierSel = ODBT;
         refineSel  = Incre;
         algo       = make_shared<
