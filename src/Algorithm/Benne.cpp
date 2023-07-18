@@ -27,8 +27,8 @@ void Benne::Init()
 {
     if (obj == accuracy)
     {
-        windowSel  = damped;
-        dataSel    = AMS;
+        windowSel  = landmark;
+        dataSel    = CFList;
         outlierSel = ODBT;
         refineSel  = Incre;
         algo       = make_shared<
@@ -38,7 +38,7 @@ void Benne::Init()
     {
         windowSel  = sliding;
         dataSel    = Grids;
-        outlierSel = OD;
+        outlierSel = NoOD;
         refineSel  = NoRefine;
         eff_obj    = true;
         algo       = make_shared<V9>(param);  // problem
