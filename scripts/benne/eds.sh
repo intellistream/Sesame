@@ -14,7 +14,7 @@ export balance=0
 export accuracy=1
 export efficiency=2
 
-export OMP_NUM_THREADS=32
+export OMP_NUM_THREADS=8
 
 function run(){
 
@@ -22,15 +22,15 @@ ticat ${meta} : ${eds} \
     : join.new algo 8 \
     : join.new obj $balance \
     : join.new distance_threshold 8 \
-    : join.new landmark 20000 \
+    : join.new landmark 2000 \
     : join.new queue_size_threshold 10000 \
     : join.new dim_threshold 10 \
-    : join.new variance_threshold 100.0 \
+    : join.new variance_threshold 1000.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.new coreset_size 30 \
-    : join.new k 500 \
-    : join.run run.sesame
+    : join.new coreset_size 10 \
+    : join.new k 1000 \
+    : join.run run.sesame &
 
 ticat ${meta} : ${eds} \
     : join.new algo 8 \
@@ -41,7 +41,7 @@ ticat ${meta} : ${eds} \
     : join.new variance_threshold 50.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame
+    : join.run run.sesame &
 
 ticat ${meta} : ${eds} \
     : join.new algo 8 \
@@ -52,7 +52,9 @@ ticat ${meta} : ${eds} \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame
+    : join.run run.sesame &
+
+wait
     
 }
 

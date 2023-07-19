@@ -88,7 +88,7 @@ ticat ${meta} : ${cover} \
     : join.new landmark 50000 \
     : join.new queue_size_threshold 100 \
     : join.new dim_threshold 30 \
-    : join.new variance_threshold [500,5000,500] \
+    : join.new variance_threshold [500,4000,500] \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
     : join.run run.sesame &

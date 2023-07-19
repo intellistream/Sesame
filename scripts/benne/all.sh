@@ -31,14 +31,15 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $balance \
-    : join.new landmark 300000 \
-    : join.new distance_threshold 4000 \
+    : join.new landmark 3000 \
+    : join.new distance_threshold 400 \
     : join.new queue_size_threshold 50000 \
     : join.new dim_threshold 3 \
-    : join.new variance_threshold 100.0 \
+    : join.new variance_threshold 10000.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.new k 200 \
+    : join.new k 2000 \
+    : join.new coreset_size 2 \
     : join.run run.sesame &
 
 ticat ${meta} : ${insects} \
@@ -68,13 +69,14 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $accuracy \
-    : join.new landmark 2000 \
-    : join.new distance_threshold 50 \
+    : join.new landmark 40000 \
+    : join.new distance_threshold 5 \
     : join.new queue_size_threshold 5000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 1000.0 \
     : join.new outliers_num_threshold 100 \
     : join.new outliers_dist_threshold 5.0 \
+    : join.new k 1000 \
     : join.run run.sesame &
 
 ticat ${meta} : ${insects} \
