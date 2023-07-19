@@ -66,6 +66,7 @@ public:
     outlierSelection outlierSel;
     refineSelection refineSel;
     KMeans kmeans;
+    size_t change_count = 0;
 
     using MicroClusters                = ClusteringFeaturesList;
     static constexpr int INCRE_REF_CNT = 50000;

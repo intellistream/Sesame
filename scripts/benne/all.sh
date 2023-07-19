@@ -11,16 +11,19 @@ export efficiency=2
 
 export OMP_NUM_THREADS=8
 
-# balance
+# balance 
+# var: (4363,4364)
 ticat ${meta} : ${cover} \
     : join.new algo 8 \
     : join.new obj $balance \
-    : join.new landmark 50000 \
-    : join.new queue_size_threshold 100 \
+    : join.new landmark 3000 \
+    : join.new queue_size_threshold 15000 \
     : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
+    : join.new variance_threshold 4363 \
+    : join.new outliers_num_threshold 20 \
+    : join.new outliers_dist_threshold 0.5 \
+    : join.new coreset_size 50 \
+    : join.new k 200 \
     : join.run run.sesame &
 
 # TODO
@@ -28,23 +31,26 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $balance \
-    : join.new distance_threshold 5000 \
-    : join.new queue_size_threshold 1000 \
-    : join.new dim_threshold 30 \
+    : join.new landmark 300000 \
+    : join.new distance_threshold 4000 \
+    : join.new queue_size_threshold 50000 \
+    : join.new dim_threshold 3 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
+    : join.new k 200 \
     : join.run run.sesame &
 
 ticat ${meta} : ${insects} \
     : join.new algo 8 \
     : join.new obj $balance \
-    : join.new landmark 5000 \
-    : join.new queue_size_threshold 10000 \
+    : join.new landmark 2000 \
+    : join.new queue_size_threshold 2000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 5000 \
-    : join.new outliers_dist_threshold 5 \
+    : join.new outliers_num_threshold 500 \
+    : join.new outliers_dist_threshold 50 \
+    : join.new coreset_size 2 \
     : join.run run.sesame &
 
 # accuracy
@@ -62,13 +68,13 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $accuracy \
-    : join.new landmark 1000 \
-    : join.new distance_threshold 500 \
-    : join.new queue_size_threshold 120000 \
+    : join.new landmark 2000 \
+    : join.new distance_threshold 50 \
+    : join.new queue_size_threshold 5000 \
     : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
+    : join.new variance_threshold 1000.0 \
+    : join.new outliers_num_threshold 100 \
+    : join.new outliers_dist_threshold 5.0 \
     : join.run run.sesame &
 
 ticat ${meta} : ${insects} \
@@ -87,7 +93,7 @@ ticat ${meta} : ${insects} \
 ticat ${meta} : ${cover} \
     : join.new algo 8 \
     : join.new obj $efficiency \
-    : join.new landmark 20000 \
+    : join.new landmark 150000 \
     : join.new queue_size_threshold 300000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
@@ -98,8 +104,8 @@ ticat ${meta} : ${cover} \
 ticat ${meta} : ${sensor} \
     : join.new algo 8 \
     : join.new obj $efficiency \
-    : join.new landmark 1000 \
-    : join.new queue_size_threshold 2000000 \
+    : join.new landmark 2000 \
+    : join.new queue_size_threshold 3000000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \

@@ -71,6 +71,7 @@ void Benne::RunOnline(const PointPtr input)
         auto new_algo = Infer(input);
         if (old_algo != new_algo)
         {
+            change_count++;
             cerr << "benne algo changes from " << hex << old_algo << " to " << new_algo << " when #"
                  << dec << input->index << endl;
         }
@@ -98,6 +99,8 @@ void Benne::RunOnline(const PointPtr input)
 
 void Benne::RunOffline(DataSinkPtr sinkPtr)
 {
+    cout << "change_count: " << change_count << endl;
+    cout << "final_algo: " << hex << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel) << dec << endl;
     assert(centers.size() <= 40000);
     for (auto &center : centers)
     {

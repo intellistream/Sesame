@@ -21,12 +21,15 @@ function run(){
 ticat ${meta} : ${eds} \
     : join.new algo 8 \
     : join.new obj $balance \
-    : join.new landmark 10000 \
-    : join.new queue_size_threshold 250000 \
-    : join.new dim_threshold 30 \
+    : join.new distance_threshold 8 \
+    : join.new landmark 20000 \
+    : join.new queue_size_threshold 10000 \
+    : join.new dim_threshold 10 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
+    : join.new coreset_size 30 \
+    : join.new k 500 \
     : join.run run.sesame
 
 ticat ${meta} : ${eds} \

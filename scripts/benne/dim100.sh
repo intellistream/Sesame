@@ -88,6 +88,7 @@ ticat ${meta} : ${dim100} \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
+    : join.new coreset_size 10 \
     : join.run run.sesame &
 
 ticat ${meta} : ${dim100} \
@@ -105,7 +106,7 @@ ticat ${meta} : ${dim100} \
 ticat ${meta} : ${dim100} \
     : join.new algo 8 \
     : join.new obj $efficiency \
-    : join.new landmark 500000 \
+    : join.new landmark 50000 \
     : join.new sliding 300 \
     : join.new queue_size_threshold 500000 \
     : join.new dim_threshold 50 \
