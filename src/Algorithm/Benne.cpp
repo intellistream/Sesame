@@ -123,7 +123,7 @@ void Benne::Train(const PointPtr input)
         {
             newCenter->feature[i] += frontElement->feature[i] / queue_.size();
         }
-        if (frontElement->dim > T.dim)
+        if (frontElement->dim > 30)
         {
             highDimData++;
         }
@@ -160,7 +160,7 @@ void Benne::Train(const PointPtr input)
     {
         chara.frequentDrift = false;
     }
-    if (outlierNumber > T.outliers_num)
+    if (outlierNumber > queue_.size() * 0.5)
     {
         chara.manyOutliers = true;
     }
