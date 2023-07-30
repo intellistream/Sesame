@@ -12,6 +12,8 @@
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
 
+#include <utility>
+
 namespace SESAME
 {
 struct characteristics
@@ -57,7 +59,7 @@ public:
     std::vector<PointPtr> centers;
     BenneThreshold T;
     bool ds_changed = false;
-    bool eff_obj = false;
+    bool eff_obj    = false;
     AlgorithmPtr algo;
     ObjType obj;
     characteristics chara;
@@ -66,7 +68,10 @@ public:
     outlierSelection outlierSel;
     refineSelection refineSel;
     KMeans kmeans;
+    int first_algo;
     size_t change_count = 0;
+    std::vector<std::pair<int, int>> change_log;
+    Timer mig_timer, det_timer;
 
     using MicroClusters                = ClusteringFeaturesList;
     static constexpr int INCRE_REF_CNT = 50000;

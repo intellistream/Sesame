@@ -31,8 +31,8 @@ void Benne::Init()
         dataSel    = CFT;
         outlierSel = ODBT;
         refineSel  = Incre;
-        algo       = make_shared<
-            StreamClustering<Damped, ClusteringFeaturesTree, OutlierDetection<true, true>, NoRefinement>>(param);
+        algo       = make_shared<StreamClustering<Damped, ClusteringFeaturesTree,
+                                            OutlierDetection<true, true>, NoRefinement>>(param);
     }
     else if (obj == efficiency)
     {
@@ -52,6 +52,8 @@ void Benne::Init()
         algo       = make_shared<
             StreamClustering<Landmark, CoresetTree, OutlierDetection<false, true>, KMeans>>(param);
     }
+    first_algo = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
+    change_log.push_back(make_pair(0, first_algo));
     algo->Init();
     sum_timer.Tick();
 }
@@ -59,27 +61,30 @@ void Benne::Init()
 void Benne::RunOnline(const PointPtr input)
 {
     algo->RunOnline(input);
-    ds_timer.Tick();
     if (queue_.size() < T.queue_size)
     {
         queue_.push_back(input);
     }
     else
     {
+        det_timer.Tick();
         auto old_algo = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
         Train(input);
         auto new_algo = Infer(input);
+        det_timer.Tock();
         if (old_algo != new_algo)
         {
             change_count++;
+            change_log.push_back(make_pair(input->index, new_algo));
             cerr << "benne algo changes from " << hex << old_algo << " to " << new_algo << " when #"
                  << dec << input->index << endl;
         }
+        mig_timer.Tick();
         UpdateAlgo(old_algo, new_algo);
         vector<PointPtr> emptyQueue;
         queue_.swap(emptyQueue);
+        mig_timer.Tock();
     }
-    ds_timer.Tock();
     if (refineSel == Incre && (input->index > 0 && input->index % INCRE_REF_CNT == 0))
     {
         ref_timer.Tick();
@@ -100,7 +105,17 @@ void Benne::RunOnline(const PointPtr input)
 void Benne::RunOffline(DataSinkPtr sinkPtr)
 {
     cout << "change_count: " << change_count << endl;
-    cout << "final_algo: " << hex << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel) << dec << endl;
+    cout << "change_log: '";
+    for (auto &p : change_log)
+    {
+        cout << p.second << "@" << p.first << ";";
+    }
+    cout << "'" << endl;
+    cout << "first_algo: " << hex << first_algo << dec << endl;
+    cout << "final_algo: " << hex << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel)
+         << dec << endl;
+    cout << "mig_us: " << mig_timer.sum / 1000 << endl;
+    cout << "det_us: " << det_timer.sum / 1000 << endl;
     assert(centers.size() <= 40000);
     for (auto &center : centers)
     {
