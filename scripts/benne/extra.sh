@@ -11,7 +11,7 @@ export balance=0
 export accuracy=1
 export efficiency=2
 
-export OMP_NUM_THREADS=4
+export OMP_NUM_THREADS=6
 
 meta="{bench.tag=extra.queue} $ori_meta"
 ticat ${meta} : ${cover} \
@@ -47,39 +47,39 @@ ticat ${meta} : ${cover} \
     : join.new outliers_dist_threshold 50.0 \
     : join.run run.sesame &
 
-meta="{bench.tag=extra.dim} $ori_meta"
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $balance \
-    : join.new landmark 50000 \
-    : join.new queue_size_threshold 100 \
-    : join.new dim_threshold 40,50,60 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
+# meta="{bench.tag=extra.dim} $ori_meta"
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $balance \
+#     : join.new landmark 50000 \
+#     : join.new queue_size_threshold 100 \
+#     : join.new dim_threshold 40,50,60 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold 50.0 \
+#     : join.run run.sesame &
 
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $accuracy \
-    : join.new distance_threshold 500 \
-    : join.new queue_size_threshold 70000 \
-    : join.new dim_threshold 40,50,60 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $accuracy \
+#     : join.new distance_threshold 500 \
+#     : join.new queue_size_threshold 70000 \
+#     : join.new dim_threshold 40,50,60 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold 50.0 \
+#     : join.run run.sesame &
 
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $efficiency \
-    : join.new landmark 20000 \
-    : join.new queue_size_threshold 1000 \
-    : join.new dim_threshold 40,50,60 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.run run.sesame &
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $efficiency \
+#     : join.new landmark 20000 \
+#     : join.new queue_size_threshold 1000 \
+#     : join.new dim_threshold 40,50,60 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold 50.0 \
+#     : join.run run.sesame &
 
 meta="{bench.tag=extra.var} $ori_meta"
 ticat ${meta} : ${cover} \
@@ -116,39 +116,39 @@ ticat ${meta} : ${cover} \
     : join.run run.sesame &
 
 
-meta="{bench.tag=extra.out_num} $ori_meta"
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $accuracy \
-    : join.new distance_threshold 500 \
-    : join.new queue_size_threshold 10000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold [10,100,10] \
-    : join.run run.sesame &
+# meta="{bench.tag=extra.out_num} $ori_meta"
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $accuracy \
+#     : join.new distance_threshold 500 \
+#     : join.new queue_size_threshold 10000 \
+#     : join.new dim_threshold 30 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold [10,100,10] \
+#     : join.run run.sesame &
 
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $balance \
-    : join.new landmark 50000 \
-    : join.new queue_size_threshold 100 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold [10,100,10] \
-    : join.run run.sesame &
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $balance \
+#     : join.new landmark 50000 \
+#     : join.new queue_size_threshold 100 \
+#     : join.new dim_threshold 30 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold [10,100,10] \
+#     : join.run run.sesame &
 
-ticat ${meta} : ${cover} \
-    : join.new algo 8 \
-    : join.new obj $efficiency \
-    : join.new landmark 20000 \
-    : join.new queue_size_threshold 300000 \
-    : join.new dim_threshold 30 \
-    : join.new variance_threshold 100.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold [10,100,10] \
-    : join.run run.sesame &
+# ticat ${meta} : ${cover} \
+#     : join.new algo 8 \
+#     : join.new obj $efficiency \
+#     : join.new landmark 20000 \
+#     : join.new queue_size_threshold 300000 \
+#     : join.new dim_threshold 30 \
+#     : join.new variance_threshold 100.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold [10,100,10] \
+#     : join.run run.sesame &
 
 meta="{bench.tag=extra.out_dist} $ori_meta"
 ticat ${meta} : ${cover} \

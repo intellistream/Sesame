@@ -10,6 +10,8 @@ export edso1="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.tx
 export edso2="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 97360 : join.new dim 2 : join.new num_clusters 90"
 export edso3="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.txt : join.new num_points 100000 : join.new dim 2 : join.new num_clusters 90"
 
+export eods="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_ODS.txt : join.new num_points 45690,100270,150645,200060,245270,339990,342630,345270 : join.new dim 2 : join.new num_clusters 454"
+
 export balance=0
 export accuracy=1
 export efficiency=2
@@ -69,3 +71,6 @@ do
     export eds=`eval echo \$\{edso$i\}`
     run
 done
+
+export eds=$eods
+run
