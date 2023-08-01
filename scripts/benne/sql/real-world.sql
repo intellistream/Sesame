@@ -1,0 +1,1 @@
+SELECT obj, workload, purity, qps FROM benne WHERE tag="" AND workload IN ("CoverType", "sensor", "INSECTS") ORDER BY workload, obj;

@@ -1,0 +1,1 @@
+SELECT obj, workload, num_points, purity, qps, sum_us, mig_us, det_us, first_algo, final_algo, change_count, change_log FROM benne WHERE workload LIKE "EDS%" ORDER BY obj, workload, num_points;
