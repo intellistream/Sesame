@@ -1,2 +1,0 @@
-benchmark/datasets/KDD99_F.txt filter=lfs diff=lfs merge=lfs -text
-benchmark/datasets/INSECTS.txt filter=lfs diff=lfs merge=lfs -text
