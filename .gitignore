@@ -30,3 +30,7 @@
 *.log
 
 datasets/
+
+*.egg-info/
+*.out
+results.txt
