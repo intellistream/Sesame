@@ -16,7 +16,7 @@
 
 namespace SESAME
 {
-void BenchRes::Evaluate(const param_t &param, const std::vector<PointPtr> &inputs,
+void AccuracyRes::Evaluate(const param_t &param, const std::vector<PointPtr> &inputs,
                         const std::vector<PointPtr> &predicts)
 {
     if (param.run_eval && predicts.size() && predicts.size() <= 40000)

@@ -14,7 +14,7 @@
 namespace SESAME
 {
 
-BenchRes RunBenchmark(param_t &param);
+std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param);
 
 }
 

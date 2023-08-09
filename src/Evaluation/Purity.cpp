@@ -114,7 +114,6 @@ double SESAME::Purity::purityCost(const std::vector<SESAME::PointPtr> &inputs,
     }
     if (!inputs.empty())
     {
-        std::cerr << "sum: " << sum << " size: " << size << std::endl;
         purity = sum / size;
     }
     else

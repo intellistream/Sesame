@@ -18,255 +18,255 @@ using namespace SESAME;
 namespace py = pybind11;
 
 // Define a global variable to hold the parameters
-param_t &GetGlobalParameters() {
+param_t &GetGlobalParam() {
     static param_t param;
     return param;
 }
 
 // Wrapper class for param_t
-class Parameters {
+class Param {
 public:
 
-    Parameters() {
-        GetGlobalParameters().algo = BirchType;
-        GetGlobalParameters().num_points = 542;
-        GetGlobalParameters().dim = 54;
-        GetGlobalParameters().num_clusters = 2;
-        GetGlobalParameters().max_in_nodes = 3; // Maximum number of internal nodes
-        GetGlobalParameters().max_leaf_nodes = 3; // Maximum number of leaf nodes
-        GetGlobalParameters().distance_threshold = 3550.0; // Distance threshold
-        GetGlobalParameters().seed = 1; // Seed for random number generator
-        GetGlobalParameters().coreset_size = 100; // Coreset size
-        GetGlobalParameters().radius = 0.1; // Radius
-        GetGlobalParameters().delta = 10.0; // Delta
-        GetGlobalParameters().beta = 0.0021; // Beta
-        GetGlobalParameters().buf_size = 500; // Buffer size
-        GetGlobalParameters().alpha = 0.998; // Alpha
-        GetGlobalParameters().lambda = 1.0; // Lambda
-        GetGlobalParameters().clean_interval = 2500; // Clean interval
-        GetGlobalParameters().min_weight = 0.5; // Minimum weight
-        GetGlobalParameters().base = 2; // Base
-        GetGlobalParameters().cm = 5.0; // Cm
-        GetGlobalParameters().cl = 0.8; // Cl
-        GetGlobalParameters().grid_width = 12.0; // Grid width
-        GetGlobalParameters().min_points = 10; // Minimum points
-        GetGlobalParameters().epsilon = 50.0; // Epsilon
-        GetGlobalParameters().mu = 7.0; // Mu
-        GetGlobalParameters().num_last_arr = 60; // Number of last arrive
-        GetGlobalParameters().time_window = 6; // Time window
-        GetGlobalParameters().num_online_clusters = 10; // Number of online clusters
-        GetGlobalParameters().delta_grid = 0.2; // The delta parameter used in the grid for guessing the optimum
-        GetGlobalParameters().num_samples = 100; // Number of samples
-        GetGlobalParameters().landmark = 1000; // Landmark
-        GetGlobalParameters().sliding = 1000; // Sliding
-        GetGlobalParameters().outlier_distance_threshold = 1000; // Outlier distance threshold
-        GetGlobalParameters().outlier_cap = 100; // Outlier cap
-        GetGlobalParameters().outlier_density_threshold = 100; // Outlier density threshold
-        GetGlobalParameters().neighbor_distance = 200; // Neighbor distance
-        GetGlobalParameters().k = 0; // KMeans K
-        GetGlobalParameters().arr_rate = 0; // Arrival rate
-        GetGlobalParameters().run_offline = true; // Whether to run offline clustering
-        GetGlobalParameters().run_eval = true; // Whether to run evaluation
-        GetGlobalParameters().run_cmm = true; // Whether to run CMM evaluation
-        GetGlobalParameters().run_pur = true; // Whether to run Purity evaluation
-        GetGlobalParameters().time_interval = 100;
-        GetGlobalParameters().offline_time_window = 0;
-        GetGlobalParameters().opt = 2;
-        GetGlobalParameters().input_file = "datasets/CoverType.txt";
-        GetGlobalParameters().output_file = "results.txt";
-        if (GetGlobalParameters().algo == BirchType) {
-            GetGlobalParameters().outlier_cap = std::numeric_limits<int>::min();
+    Param() {
+        GetGlobalParam().algo = BirchType;
+        GetGlobalParam().num_points = 542;
+        GetGlobalParam().dim = 54;
+        GetGlobalParam().num_clusters = 2;
+        GetGlobalParam().max_in_nodes = 3; // Maximum number of internal nodes
+        GetGlobalParam().max_leaf_nodes = 3; // Maximum number of leaf nodes
+        GetGlobalParam().distance_threshold = 3550.0; // Distance threshold
+        GetGlobalParam().seed = 1; // Seed for random number generator
+        GetGlobalParam().coreset_size = 100; // Coreset size
+        GetGlobalParam().radius = 0.1; // Radius
+        GetGlobalParam().delta = 10.0; // Delta
+        GetGlobalParam().beta = 0.0021; // Beta
+        GetGlobalParam().buf_size = 500; // Buffer size
+        GetGlobalParam().alpha = 0.998; // Alpha
+        GetGlobalParam().lambda = 1.0; // Lambda
+        GetGlobalParam().clean_interval = 2500; // Clean interval
+        GetGlobalParam().min_weight = 0.5; // Minimum weight
+        GetGlobalParam().base = 2; // Base
+        GetGlobalParam().cm = 5.0; // Cm
+        GetGlobalParam().cl = 0.8; // Cl
+        GetGlobalParam().grid_width = 12.0; // Grid width
+        GetGlobalParam().min_points = 10; // Minimum points
+        GetGlobalParam().epsilon = 50.0; // Epsilon
+        GetGlobalParam().mu = 7.0; // Mu
+        GetGlobalParam().num_last_arr = 60; // Number of last arrive
+        GetGlobalParam().time_window = 6; // Time window
+        GetGlobalParam().num_online_clusters = 10; // Number of online clusters
+        GetGlobalParam().delta_grid = 0.2; // The delta parameter used in the grid for guessing the optimum
+        GetGlobalParam().num_samples = 100; // Number of samples
+        GetGlobalParam().landmark = 1000; // Landmark
+        GetGlobalParam().sliding = 1000; // Sliding
+        GetGlobalParam().outlier_distance_threshold = 1000; // Outlier distance threshold
+        GetGlobalParam().outlier_cap = 100; // Outlier cap
+        GetGlobalParam().outlier_density_threshold = 100; // Outlier density threshold
+        GetGlobalParam().neighbor_distance = 200; // Neighbor distance
+        GetGlobalParam().k = 0; // KMeans K
+        GetGlobalParam().arr_rate = 0; // Arrival rate
+        GetGlobalParam().run_offline = true; // Whether to run offline clustering
+        GetGlobalParam().run_eval = true; // Whether to run evaluation
+        GetGlobalParam().run_cmm = true; // Whether to run CMM evaluation
+        GetGlobalParam().run_pur = true; // Whether to run Purity evaluation
+        GetGlobalParam().time_interval = 100;
+        GetGlobalParam().offline_time_window = 0;
+        GetGlobalParam().opt = 2;
+        GetGlobalParam().input_file = "datasets/CoverType.txt";
+        GetGlobalParam().output_file = "results.txt";
+        if (GetGlobalParam().algo == BirchType) {
+            GetGlobalParam().outlier_cap = std::numeric_limits<int>::min();
         }
     }
 
 
     // AlgoType
-    AlgoType algo() const { return GetGlobalParameters().algo; }
+    AlgoType algo() const { return GetGlobalParam().algo; }
 
-    void set_algo(AlgoType value) { GetGlobalParameters().algo = value; }
+    void set_algo(AlgoType value) { GetGlobalParam().algo = value; }
 
     // Dataset
-    std::string input_file() const { return GetGlobalParameters().input_file; }
+    std::string input_file() const { return GetGlobalParam().input_file; }
 
-    void set_input_file(const std::string &value) { GetGlobalParameters().input_file = value; }
+    void set_input_file(const std::string &value) { GetGlobalParam().input_file = value; }
 
-    int num_points() const { return GetGlobalParameters().num_points; }
+    int num_points() const { return GetGlobalParam().num_points; }
 
-    void set_num_points(int value) { GetGlobalParameters().num_points = value; }
+    void set_num_points(int value) { GetGlobalParam().num_points = value; }
 
-    int dim() const { return GetGlobalParameters().dim; }
+    int dim() const { return GetGlobalParam().dim; }
 
-    void set_dim(int value) { GetGlobalParameters().dim = value; }
+    void set_dim(int value) { GetGlobalParam().dim = value; }
 
-    int num_clusters() const { return GetGlobalParameters().num_clusters; }
+    int num_clusters() const { return GetGlobalParam().num_clusters; }
 
-    void set_num_clusters(int value) { GetGlobalParameters().num_clusters = value; }
+    void set_num_clusters(int value) { GetGlobalParam().num_clusters = value; }
 
     // BIRCH
-    int max_in_nodes() const { return GetGlobalParameters().max_in_nodes; }
+    int max_in_nodes() const { return GetGlobalParam().max_in_nodes; }
 
-    void set_max_in_nodes(int value) { GetGlobalParameters().max_in_nodes = value; }
+    void set_max_in_nodes(int value) { GetGlobalParam().max_in_nodes = value; }
 
-    int max_leaf_nodes() const { return GetGlobalParameters().max_leaf_nodes; }
+    int max_leaf_nodes() const { return GetGlobalParam().max_leaf_nodes; }
 
-    void set_max_leaf_nodes(int value) { GetGlobalParameters().max_leaf_nodes = value; }
+    void set_max_leaf_nodes(int value) { GetGlobalParam().max_leaf_nodes = value; }
 
-    double distance_threshold() const { return GetGlobalParameters().distance_threshold; }
+    double distance_threshold() const { return GetGlobalParam().distance_threshold; }
 
-    void set_distance_threshold(double value) { GetGlobalParameters().distance_threshold = value; }
+    void set_distance_threshold(double value) { GetGlobalParam().distance_threshold = value; }
 
     // StreamKM++
-    int seed() const { return GetGlobalParameters().seed; }
+    int seed() const { return GetGlobalParam().seed; }
 
-    void set_seed(int value) { GetGlobalParameters().seed = value; }
+    void set_seed(int value) { GetGlobalParam().seed = value; }
 
-    int coreset_size() const { return GetGlobalParameters().coreset_size; }
+    int coreset_size() const { return GetGlobalParam().coreset_size; }
 
-    void set_coreset_size(int value) { GetGlobalParameters().coreset_size = value; }
+    void set_coreset_size(int value) { GetGlobalParam().coreset_size = value; }
 
     // EDMStream
-    double radius() const { return GetGlobalParameters().radius; }
+    double radius() const { return GetGlobalParam().radius; }
 
-    void set_radius(double value) { GetGlobalParameters().radius = value; }
+    void set_radius(double value) { GetGlobalParam().radius = value; }
 
-    double delta() const { return GetGlobalParameters().delta; }
+    double delta() const { return GetGlobalParam().delta; }
 
-    void set_delta(double value) { GetGlobalParameters().delta = value; }
+    void set_delta(double value) { GetGlobalParam().delta = value; }
 
-    double beta() const { return GetGlobalParameters().beta; }
+    double beta() const { return GetGlobalParam().beta; }
 
-    void set_beta(double value) { GetGlobalParameters().beta = value; }
+    void set_beta(double value) { GetGlobalParam().beta = value; }
 
-    int buf_size() const { return GetGlobalParameters().buf_size; }
+    int buf_size() const { return GetGlobalParam().buf_size; }
 
-    void set_buf_size(int value) { GetGlobalParameters().buf_size = value; }
+    void set_buf_size(int value) { GetGlobalParam().buf_size = value; }
 
-    double alpha() const { return GetGlobalParameters().alpha; }
+    double alpha() const { return GetGlobalParam().alpha; }
 
-    void set_alpha(double value) { GetGlobalParameters().alpha = value; }
+    void set_alpha(double value) { GetGlobalParam().alpha = value; }
 
-    double lambda() const { return GetGlobalParameters().lambda; }
+    double lambda() const { return GetGlobalParam().lambda; }
 
-    void set_lambda(double value) { GetGlobalParameters().lambda = value; }
+    void set_lambda(double value) { GetGlobalParam().lambda = value; }
 
     // DBStream
-    int clean_interval() const { return GetGlobalParameters().clean_interval; }
+    int clean_interval() const { return GetGlobalParam().clean_interval; }
 
-    void set_clean_interval(int value) { GetGlobalParameters().clean_interval = value; }
+    void set_clean_interval(int value) { GetGlobalParam().clean_interval = value; }
 
-    double min_weight() const { return GetGlobalParameters().min_weight; }
+    double min_weight() const { return GetGlobalParam().min_weight; }
 
-    void set_min_weight(double value) { GetGlobalParameters().min_weight = value; }
+    void set_min_weight(double value) { GetGlobalParam().min_weight = value; }
 
-    double base() const { return GetGlobalParameters().base; }
+    double base() const { return GetGlobalParam().base; }
 
-    void set_base(double value) { GetGlobalParameters().base = value; }
+    void set_base(double value) { GetGlobalParam().base = value; }
 
     // DStream
-    double cm() const { return GetGlobalParameters().cm; }
+    double cm() const { return GetGlobalParam().cm; }
 
-    void set_cm(double value) { GetGlobalParameters().cm = value; }
+    void set_cm(double value) { GetGlobalParam().cm = value; }
 
-    double cl() const { return GetGlobalParameters().cl; }
+    double cl() const { return GetGlobalParam().cl; }
 
-    void set_cl(double value) { GetGlobalParameters().cl = value; }
+    void set_cl(double value) { GetGlobalParam().cl = value; }
 
-    double grid_width() const { return GetGlobalParameters().grid_width; }
+    double grid_width() const { return GetGlobalParam().grid_width; }
 
-    void set_grid_width(double value) { GetGlobalParameters().grid_width = value; }
+    void set_grid_width(double value) { GetGlobalParam().grid_width = value; }
 
     // DenStream
-    unsigned int min_points() const { return GetGlobalParameters().min_points; }
+    unsigned int min_points() const { return GetGlobalParam().min_points; }
 
-    void set_min_points(unsigned int value) { GetGlobalParameters().min_points = value; }
+    void set_min_points(unsigned int value) { GetGlobalParam().min_points = value; }
 
-    double epsilon() const { return GetGlobalParameters().epsilon; }
+    double epsilon() const { return GetGlobalParam().epsilon; }
 
-    void set_epsilon(double value) { GetGlobalParameters().epsilon = value; }
+    void set_epsilon(double value) { GetGlobalParam().epsilon = value; }
 
-    double mu() const { return GetGlobalParameters().mu; }
+    double mu() const { return GetGlobalParam().mu; }
 
-    void set_mu(double value) { GetGlobalParameters().mu = value; }
+    void set_mu(double value) { GetGlobalParam().mu = value; }
 
     // Clustream
-    int num_last_arr() const { return GetGlobalParameters().num_last_arr; }
+    int num_last_arr() const { return GetGlobalParam().num_last_arr; }
 
-    void set_num_last_arr(int value) { GetGlobalParameters().num_last_arr = value; }
+    void set_num_last_arr(int value) { GetGlobalParam().num_last_arr = value; }
 
-    int time_window() const { return GetGlobalParameters().time_window; }
+    int time_window() const { return GetGlobalParam().time_window; }
 
-    void set_time_window(int value) { GetGlobalParameters().time_window = value; }
+    void set_time_window(int value) { GetGlobalParam().time_window = value; }
 
-    int num_online_clusters() const { return GetGlobalParameters().num_online_clusters; }
+    int num_online_clusters() const { return GetGlobalParam().num_online_clusters; }
 
-    void set_num_online_clusters(int value) { GetGlobalParameters().num_online_clusters = value; }
+    void set_num_online_clusters(int value) { GetGlobalParam().num_online_clusters = value; }
 
     // SL-KMeans
-    double delta_grid() const { return GetGlobalParameters().delta_grid; }
+    double delta_grid() const { return GetGlobalParam().delta_grid; }
 
-    void set_delta_grid(double value) { GetGlobalParameters().delta_grid = value; }
+    void set_delta_grid(double value) { GetGlobalParam().delta_grid = value; }
 
-    int num_samples() const { return GetGlobalParameters().num_samples; }
+    int num_samples() const { return GetGlobalParam().num_samples; }
 
-    void set_num_samples(int value) { GetGlobalParameters().num_samples = value; }
+    void set_num_samples(int value) { GetGlobalParam().num_samples = value; }
 
     // Generic
-    int landmark() const { return GetGlobalParameters().landmark; }
+    int landmark() const { return GetGlobalParam().landmark; }
 
-    void set_landmark(int value) { GetGlobalParameters().landmark = value; }
+    void set_landmark(int value) { GetGlobalParam().landmark = value; }
 
-    int sliding() const { return GetGlobalParameters().sliding; }
+    int sliding() const { return GetGlobalParam().sliding; }
 
-    void set_sliding(int value) { GetGlobalParameters().sliding = value; }
+    void set_sliding(int value) { GetGlobalParam().sliding = value; }
 
-    double outlier_distance_threshold() const { return GetGlobalParameters().outlier_distance_threshold; }
+    double outlier_distance_threshold() const { return GetGlobalParam().outlier_distance_threshold; }
 
-    void set_outlier_distance_threshold(double value) { GetGlobalParameters().outlier_distance_threshold = value; }
+    void set_outlier_distance_threshold(double value) { GetGlobalParam().outlier_distance_threshold = value; }
 
-    int outlier_cap() const { return GetGlobalParameters().outlier_cap; }
+    int outlier_cap() const { return GetGlobalParam().outlier_cap; }
 
-    void set_outlier_cap(int value) { GetGlobalParameters().outlier_cap = value; }
+    void set_outlier_cap(int value) { GetGlobalParam().outlier_cap = value; }
 
-    double outlier_density_threshold() const { return GetGlobalParameters().outlier_density_threshold; }
+    double outlier_density_threshold() const { return GetGlobalParam().outlier_density_threshold; }
 
-    void set_outlier_density_threshold(double value) { GetGlobalParameters().outlier_density_threshold = value; }
+    void set_outlier_density_threshold(double value) { GetGlobalParam().outlier_density_threshold = value; }
 
-    double neighbor_distance() const { return GetGlobalParameters().neighbor_distance; }
+    double neighbor_distance() const { return GetGlobalParam().neighbor_distance; }
 
-    void set_neighbor_distance(double value) { GetGlobalParameters().neighbor_distance = value; }
+    void set_neighbor_distance(double value) { GetGlobalParam().neighbor_distance = value; }
 
-    int k() const { return GetGlobalParameters().k; }
+    int k() const { return GetGlobalParam().k; }
 
-    void set_k(int value) { GetGlobalParameters().k = value; }
+    void set_k(int value) { GetGlobalParam().k = value; }
 
-    int arr_rate() const { return GetGlobalParameters().arr_rate; }
+    int arr_rate() const { return GetGlobalParam().arr_rate; }
 
-    void set_arr_rate(int value) { GetGlobalParameters().arr_rate = value; }
+    void set_arr_rate(int value) { GetGlobalParam().arr_rate = value; }
 
-    bool run_offline() const { return GetGlobalParameters().run_offline; }
+    bool run_offline() const { return GetGlobalParam().run_offline; }
 
-    void set_run_offline(bool value) { GetGlobalParameters().run_offline = value; }
+    void set_run_offline(bool value) { GetGlobalParam().run_offline = value; }
 
-    bool run_eval() const { return GetGlobalParameters().run_eval; }
+    bool run_eval() const { return GetGlobalParam().run_eval; }
 
-    void set_run_eval(bool value) { GetGlobalParameters().run_eval = value; }
+    void set_run_eval(bool value) { GetGlobalParam().run_eval = value; }
 
-    bool run_cmm() const { return GetGlobalParameters().run_cmm; }
+    bool run_cmm() const { return GetGlobalParam().run_cmm; }
 
-    void set_run_cmm(bool value) { GetGlobalParameters().run_cmm = value; }
+    void set_run_cmm(bool value) { GetGlobalParam().run_cmm = value; }
 
-    bool run_pur() const { return GetGlobalParameters().run_pur; }
+    bool run_pur() const { return GetGlobalParam().run_pur; }
 
-    void set_run_pur(bool value) { GetGlobalParameters().run_pur = value; }
+    void set_run_pur(bool value) { GetGlobalParam().run_pur = value; }
 
-    void Print() { GetGlobalParameters().Print(); }
+    void Print() { GetGlobalParam().Print(); }
 
     // Add other properties for the member variables of param_t
 
     // num_res
-    int num_res() const { return GetGlobalParameters().num_res; }
+    int num_res() const { return GetGlobalParam().num_res; }
 
-    void set_num_res(int value) { GetGlobalParameters().num_res = value; }
+    void set_num_res(int value) { GetGlobalParam().num_res = value; }
 
     // Define docstrings for each parameter
     static constexpr const char *algo_doc = "Algorithm to use";
@@ -322,98 +322,98 @@ public:
     static constexpr const char *run_pur_doc = "Whether to run Purity evaluation";
 
 private:
-    param_t globalParameters;
+    param_t globalParam;
 };
 
 py::tuple run() {
     warning();
     // Access the parameters using the global `param` object
-    param_t &param = GetGlobalParameters();
+    param_t &param = GetGlobalParam();
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
-    res->Print();
-    return py::make_tuple(res.purity, res.cmm);
+    // return py::make_tuple(res.first, res.second);
+    return py::make_tuple();
 }
 
 // Initialize the module
 PYBIND11_MODULE(benne, m) {
     m.doc() = "Module documentation string";
 
-    py::class_<Parameters>(m,
-                           "Parameters")
+    py::class_<Param>(m,
+                           "Param")
             .def(py::init<>())
-            .def_property("algo", &Parameters::algo, &Parameters::set_algo, Parameters::algo_doc)
-            .def_property("input_file", &Parameters::input_file, &Parameters::set_input_file,
-                          Parameters::input_file_doc)
-            .def_property("num_points", &Parameters::num_points, &Parameters::set_num_points,
-                          Parameters::num_points_doc)
-            .def_property("dim", &Parameters::dim, &Parameters::set_dim, Parameters::dim_doc)
-            .def_property("num_clusters", &Parameters::num_clusters, &Parameters::set_num_clusters,
-                          Parameters::num_clusters_doc)
+            .def_property("algo", &Param::algo, &Param::set_algo, Param::algo_doc)
+            .def_property("input_file", &Param::input_file, &Param::set_input_file,
+                          Param::input_file_doc)
+            .def_property("num_points", &Param::num_points, &Param::set_num_points,
+                          Param::num_points_doc)
+            .def_property("dim", &Param::dim, &Param::set_dim, Param::dim_doc)
+            .def_property("num_clusters", &Param::num_clusters, &Param::set_num_clusters,
+                          Param::num_clusters_doc)
                     // BIRCH
-            .def_property("max_in_nodes", &Parameters::max_in_nodes, &Parameters::set_max_in_nodes,
-                          Parameters::max_in_nodes_doc)
-            .def_property("max_leaf_nodes", &Parameters::max_leaf_nodes, &Parameters::set_max_leaf_nodes,
-                          Parameters::max_leaf_nodes_doc)
-            .def_property("distance_threshold", &Parameters::distance_threshold, &Parameters::set_distance_threshold,
-                          Parameters::distance_threshold_doc)
+            .def_property("max_in_nodes", &Param::max_in_nodes, &Param::set_max_in_nodes,
+                          Param::max_in_nodes_doc)
+            .def_property("max_leaf_nodes", &Param::max_leaf_nodes, &Param::set_max_leaf_nodes,
+                          Param::max_leaf_nodes_doc)
+            .def_property("distance_threshold", &Param::distance_threshold, &Param::set_distance_threshold,
+                          Param::distance_threshold_doc)
                     // StreamKM++
-            .def_property("seed", &Parameters::seed, &Parameters::set_seed, Parameters::seed_doc)
-            .def_property("coreset_size", &Parameters::coreset_size, &Parameters::set_coreset_size,
-                          Parameters::coreset_size_doc)
+            .def_property("seed", &Param::seed, &Param::set_seed, Param::seed_doc)
+            .def_property("coreset_size", &Param::coreset_size, &Param::set_coreset_size,
+                          Param::coreset_size_doc)
                     // EDMStream
-            .def_property("radius", &Parameters::radius, &Parameters::set_radius, Parameters::radius_doc)
-            .def_property("delta", &Parameters::delta, &Parameters::set_delta, Parameters::delta_doc)
-            .def_property("beta", &Parameters::beta, &Parameters::set_beta, Parameters::beta_doc)
-            .def_property("buf_size", &Parameters::buf_size, &Parameters::set_buf_size, Parameters::buf_size_doc)
-            .def_property("alpha", &Parameters::alpha, &Parameters::set_alpha, Parameters::alpha_doc)
-            .def_property("lambda", &Parameters::lambda, &Parameters::set_lambda, Parameters::lambda_doc)
+            .def_property("radius", &Param::radius, &Param::set_radius, Param::radius_doc)
+            .def_property("delta", &Param::delta, &Param::set_delta, Param::delta_doc)
+            .def_property("beta", &Param::beta, &Param::set_beta, Param::beta_doc)
+            .def_property("buf_size", &Param::buf_size, &Param::set_buf_size, Param::buf_size_doc)
+            .def_property("alpha", &Param::alpha, &Param::set_alpha, Param::alpha_doc)
+            .def_property("lambda", &Param::lambda, &Param::set_lambda, Param::lambda_doc)
                     // DBStream
-            .def_property("clean_interval", &Parameters::clean_interval, &Parameters::set_clean_interval,
-                          Parameters::clean_interval_doc)
-            .def_property("min_weight", &Parameters::min_weight, &Parameters::set_min_weight,
-                          Parameters::min_weight_doc)
-            .def_property("base", &Parameters::base, &Parameters::set_base, Parameters::base_doc)
+            .def_property("clean_interval", &Param::clean_interval, &Param::set_clean_interval,
+                          Param::clean_interval_doc)
+            .def_property("min_weight", &Param::min_weight, &Param::set_min_weight,
+                          Param::min_weight_doc)
+            .def_property("base", &Param::base, &Param::set_base, Param::base_doc)
                     // DStream
-            .def_property("cm", &Parameters::cm, &Parameters::set_cm, Parameters::cm_doc)
-            .def_property("cl", &Parameters::cl, &Parameters::set_cl, Parameters::cl_doc)
-            .def_property("grid_width", &Parameters::grid_width, &Parameters::set_grid_width,
-                          Parameters::grid_width_doc)
+            .def_property("cm", &Param::cm, &Param::set_cm, Param::cm_doc)
+            .def_property("cl", &Param::cl, &Param::set_cl, Param::cl_doc)
+            .def_property("grid_width", &Param::grid_width, &Param::set_grid_width,
+                          Param::grid_width_doc)
                     // DenStream
-            .def_property("min_points", &Parameters::min_points, &Parameters::set_min_points,
-                          Parameters::min_points_doc)
-            .def_property("epsilon", &Parameters::epsilon, &Parameters::set_epsilon, Parameters::epsilon_doc)
-            .def_property("mu", &Parameters::mu, &Parameters::set_mu, Parameters::mu_doc)
+            .def_property("min_points", &Param::min_points, &Param::set_min_points,
+                          Param::min_points_doc)
+            .def_property("epsilon", &Param::epsilon, &Param::set_epsilon, Param::epsilon_doc)
+            .def_property("mu", &Param::mu, &Param::set_mu, Param::mu_doc)
                     // Clustream
-            .def_property("num_last_arr", &Parameters::num_last_arr, &Parameters::set_num_last_arr,
-                          Parameters::num_last_arr_doc)
-            .def_property("time_window", &Parameters::time_window, &Parameters::set_time_window,
-                          Parameters::time_window_doc)
-            .def_property("num_online_clusters", &Parameters::num_online_clusters, &Parameters::set_num_online_clusters,
-                          Parameters::num_online_clusters_doc)
+            .def_property("num_last_arr", &Param::num_last_arr, &Param::set_num_last_arr,
+                          Param::num_last_arr_doc)
+            .def_property("time_window", &Param::time_window, &Param::set_time_window,
+                          Param::time_window_doc)
+            .def_property("num_online_clusters", &Param::num_online_clusters, &Param::set_num_online_clusters,
+                          Param::num_online_clusters_doc)
                     // SL-KMeans
-            .def_property("delta_grid", &Parameters::delta_grid, &Parameters::set_delta_grid,
-                          Parameters::delta_grid_doc)
-            .def_property("num_samples", &Parameters::num_samples, &Parameters::set_num_samples,
-                          Parameters::num_samples_doc)
+            .def_property("delta_grid", &Param::delta_grid, &Param::set_delta_grid,
+                          Param::delta_grid_doc)
+            .def_property("num_samples", &Param::num_samples, &Param::set_num_samples,
+                          Param::num_samples_doc)
                     // Generic
-            .def_property("landmark", &Parameters::landmark, &Parameters::set_landmark, Parameters::landmark_doc)
-            .def_property("sliding", &Parameters::sliding, &Parameters::set_sliding, Parameters::sliding_doc)
-            .def_property("outlier_distance_threshold", &Parameters::outlier_distance_threshold,
-                          &Parameters::set_outlier_distance_threshold, Parameters::outlier_distance_threshold_doc)
-            .def_property("outlier_cap", &Parameters::outlier_cap, &Parameters::set_outlier_cap,
-                          Parameters::outlier_cap_doc)
-            .def_property("outlier_density_threshold", &Parameters::outlier_density_threshold,
-                          &Parameters::set_outlier_density_threshold, Parameters::outlier_density_threshold_doc)
-            .def_property("neighbor_distance", &Parameters::neighbor_distance, &Parameters::set_neighbor_distance,
-                          Parameters::neighbor_distance_doc)
-            .def_property("k", &Parameters::k, &Parameters::set_k, Parameters::k_doc)
-            .def_property("arr_rate", &Parameters::arr_rate, &Parameters::set_arr_rate, Parameters::arr_rate_doc)
-            .def_property("run_offline", &Parameters::run_offline, &Parameters::set_run_offline,
-                          Parameters::run_offline_doc)
-            .def_property("run_eval", &Parameters::run_eval, &Parameters::set_run_eval, Parameters::run_eval_doc)
-            .def_property("run_cmm", &Parameters::run_cmm, &Parameters::set_run_cmm, Parameters::run_cmm_doc)
-            .def_property("run_pur", &Parameters::run_pur, &Parameters::set_run_pur, Parameters::run_pur_doc);
+            .def_property("landmark", &Param::landmark, &Param::set_landmark, Param::landmark_doc)
+            .def_property("sliding", &Param::sliding, &Param::set_sliding, Param::sliding_doc)
+            .def_property("outlier_distance_threshold", &Param::outlier_distance_threshold,
+                          &Param::set_outlier_distance_threshold, Param::outlier_distance_threshold_doc)
+            .def_property("outlier_cap", &Param::outlier_cap, &Param::set_outlier_cap,
+                          Param::outlier_cap_doc)
+            .def_property("outlier_density_threshold", &Param::outlier_density_threshold,
+                          &Param::set_outlier_density_threshold, Param::outlier_density_threshold_doc)
+            .def_property("neighbor_distance", &Param::neighbor_distance, &Param::set_neighbor_distance,
+                          Param::neighbor_distance_doc)
+            .def_property("k", &Param::k, &Param::set_k, Param::k_doc)
+            .def_property("arr_rate", &Param::arr_rate, &Param::set_arr_rate, Param::arr_rate_doc)
+            .def_property("run_offline", &Param::run_offline, &Param::set_run_offline,
+                          Param::run_offline_doc)
+            .def_property("run_eval", &Param::run_eval, &Param::set_run_eval, Param::run_eval_doc)
+            .def_property("run_cmm", &Param::run_cmm, &Param::set_run_cmm, Param::run_cmm_doc)
+            .def_property("run_pur", &Param::run_pur, &Param::set_run_pur, Param::run_pur_doc);
 
     py::enum_<AlgoType>(m, "AlgoType")
             .value("BIRCH", BirchType)

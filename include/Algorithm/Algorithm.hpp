@@ -10,6 +10,7 @@
 
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/Param.hpp"
+#include "Evaluation/Evaluation.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Timer/Timer.hpp"
 
@@ -36,32 +37,32 @@ public:
     virtual void RunOnline(SESAME::PointPtr input)   = 0;
     virtual void RunOffline(SESAME::DataSinkPtr ptr) = 0;
     void Insert(SESAME::PointPtr input){};
-    virtual void OutputOnline(std::vector<PointPtr> &centers) {};
+    virtual void OutputOnline(std::vector<PointPtr> &centers){};
     void Store(std::string output_file, int dim, std::vector<PointPtr> results);
     Timer win_timer, ds_timer, out_timer, ref_timer, sum_timer, lat_timer, on_timer;
     param_t param;
     int cnt = 0;
     std::vector<int64> et;
-    void PrintPerf()
+    PerfRes GetPerf()
     {
-        cout << "win_us: " << win_timer.sum / 1000 << endl;
-        cout << "ds_us: " << ds_timer.sum / 1000 << endl;
-        cout << "out_us: " << out_timer.sum / 1000 << endl;
-        cout << "ref_us: " << ref_timer.sum / 1000 << endl;
-        auto sum = win_timer.sum + ds_timer.sum + out_timer.sum + ref_timer.sum;
-        cout << "sum_us: " << sum / 1000 << endl;
-        assert(param.num_points);
+        PerfRes res;
+        res.win_us = win_timer.sum / 1000;
+        res.ds_us  = ds_timer.sum / 1000;
+        res.out_us = out_timer.sum / 1000;
+        res.ref_us = ref_timer.sum / 1000;
+        res.sum_us = res.win_us + res.ds_us + res.out_us + res.ref_us;
         if (et.size() == 5)
         {
-            cout << "on_20: " << et[0] / 1e6 << endl;
-            cout << "on_40: " << et[1] / 1e6 << endl;
-            cout << "on_60: " << et[2] / 1e6 << endl;
-            cout << "on_80: " << et[3] / 1e6 << endl;
-            cout << "on_100: " << et[4] / 1e6 << endl;
+            res.on_20  = et[0] / 1e6;
+            res.on_40  = et[1] / 1e6;
+            res.on_60  = et[2] / 1e6;
+            res.on_80  = et[3] / 1e6;
+            res.on_100 = et[4] / 1e6;
         }
-        cout << "lat_us: " << lat_timer.sum / 1e3 / param.num_points << endl;
-        cout << "et_s: " << on_timer.sum / 1e9 << endl;
-        cout << "qps: " << param.num_points * 1e9 / sum_timer.sum << endl;
+        res.lat_us = lat_timer.sum / 1e3 / param.num_points;
+        res.et_s   = on_timer.sum / 1e9;
+        res.qps    = param.num_points * 1e9 / sum_timer.sum;
+        return res;
     }
     void Count()
     {

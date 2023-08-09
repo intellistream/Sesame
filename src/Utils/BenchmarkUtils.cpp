@@ -9,7 +9,7 @@ using namespace std;
 
 namespace SESAME{
 
-BenchRes RunBenchmark(param_t &param)
+std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
 {
     // Create Spout.
     DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
@@ -28,11 +28,11 @@ BenchRes RunBenchmark(param_t &param)
 
     SimpleEngine engine(sourcePtr, sinkPtr,
                                 algoPtr);  // TODO: create multithread engine in future.
-
     engine.run();
-
     while (!sinkPtr->isFinished()) usleep(100);
     // wait for sink to stop.
+
+    PerfRes perf = algoPtr->GetPerf();
 
     std::vector<PointPtr> inputs  = sourcePtr->getInputs();
     std::vector<PointPtr> results = sinkPtr->getResults();
@@ -52,14 +52,15 @@ BenchRes RunBenchmark(param_t &param)
         algoPtr->Store(param.output_file, param.dim, sinkPtr->getResults());
     }
 
-    BenchRes res;
-    res.Evaluate(param, inputs, predicts);
+    AccuracyRes acc;
+    acc.num_res = param.num_res;
+    acc.Evaluate(param, inputs, predicts);
 
     engine.stop();
-    res.num_res = param.num_res;
-    res.Print();
+    perf.Print();
+    acc.Print();
 
-    return res;
+    return make_pair(acc, perf);
 }
 
 }
