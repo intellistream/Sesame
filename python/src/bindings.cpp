@@ -72,7 +72,6 @@ public:
         GetGlobalParameters().time_interval = 100;
         GetGlobalParameters().offline_time_window = 0;
         GetGlobalParameters().opt = 2;
-        GetGlobalParameters().dataset_option = 0;
         GetGlobalParameters().input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
         GetGlobalParameters().output_file = "results.txt";
         GetGlobalParameters().detect_outlier = false;
@@ -327,7 +326,7 @@ private:
     param_t globalParameters;
 };
 
-void run() {
+py::tuple run() {
     warning();
 
     // Access the parameters using the global `param` object
@@ -354,6 +353,8 @@ void run() {
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
     res->Print();
+
+    return py::make_tuple(res.purity, res.cmm);
 }
 
 // Initialize the module
@@ -452,6 +453,6 @@ PYBIND11_MODULE(benne, m) {
     }
     m.attr("algo_names") = algoNames;
 
-    m.def("run", &run, "Run sesame");
+    m.def("run", &run, py::return_value_policy::reference);
 }
 

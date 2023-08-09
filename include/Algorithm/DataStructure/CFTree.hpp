@@ -18,7 +18,7 @@
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 
 namespace SESAME
 {
@@ -35,7 +35,7 @@ private:
     int max_leaf_nodes;         // max CF number of each leaf node
     double distance_threshold;  // threshold radius of each sub cluster in leaf nodes
 public:
-    CFTree(const StreamClusteringParam &param);
+    CFTree(const SesameParam &param);
     CFTree(int b, int l, double t);
     ~CFTree();
     int getB() const;
@@ -93,7 +93,7 @@ public:
     }
 };
 
-class ClusteringFeaturesTree : public enable_shared_from_this<ClusteringFeaturesTree>
+class ClusteringFeaturesTree : public std::enable_shared_from_this<ClusteringFeaturesTree>
 {
 private:
     const int max_in_nodes;           // max CF number of each internal node
@@ -106,7 +106,7 @@ public:
     struct Node;
     using NodePtr = std::shared_ptr<Node>;
     using TreePtr = std::shared_ptr<ClusteringFeaturesTree>;
-    ClusteringFeaturesTree(const StreamClusteringParam &param);
+    ClusteringFeaturesTree(const SesameParam &param);
     ~ClusteringFeaturesTree();
     void Init();
     NodePtr Insert(PointPtr point);
@@ -236,7 +236,7 @@ public:
     struct Node;
     using NodePtr = std::shared_ptr<Node>;
     using ListPtr = std::shared_ptr<ClusteringFeaturesList>;
-    ClusteringFeaturesList(const StreamClusteringParam &param);
+    ClusteringFeaturesList(const SesameParam &param);
     ~ClusteringFeaturesList();
     NodePtr Insert(PointPtr point);
     NodePtr Insert(NodePtr node);

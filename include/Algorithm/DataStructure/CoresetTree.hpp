@@ -9,7 +9,6 @@
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
 #include "Algorithm/Param.hpp"
 #include "Utils/Random.hpp"
 
@@ -19,7 +18,7 @@
 namespace SESAME
 {
 
-class CoresetTree : public enable_shared_from_this<CoresetTree>
+class CoresetTree : public std::enable_shared_from_this<CoresetTree>
 {
 public:
     struct Node;
@@ -29,7 +28,7 @@ public:
     using Points  = std::shared_ptr<std::vector<PointPtr>>;
 
 private:
-    const StreamClusteringParam &param;
+    const SesameParam &param;
     std::vector<PointPtr> samples;
     bool has_sampled = false;
     Random r;
@@ -45,7 +44,7 @@ private:
     std::vector<NodePtr> Points2Nodes(Points);
 
 public:
-    CoresetTree(const StreamClusteringParam &param);
+    CoresetTree(const SesameParam &param);
     void Init();
     NodePtr Insert(PointPtr input);
     NodePtr Insert(NodePtr node);

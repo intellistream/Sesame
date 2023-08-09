@@ -4,7 +4,7 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_
 #define SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Algorithm/OfflineRefinement/OfflineRefinement.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/UtilityFunctions.hpp"
@@ -25,11 +25,11 @@ namespace SESAME
 class DBSCAN : public OfflineRefinement
 {
 public:
-    DBSCAN(const StreamClusteringParam &param) {}
+    DBSCAN(const SesameParam &param) {}
     DBSCAN(unsigned int minPts, float eps);
     DBSCAN();
     ~DBSCAN();
-    void Run(StreamClusteringParam &param, std::vector<PointPtr> &input, DataSinkPtr sinkPtr);
+    void Run(SesameParam &param, std::vector<PointPtr> &input, DataSinkPtr sinkPtr);
 
     void run(std::vector<PointPtr> &input);
     void produceResult(std::vector<PointPtr> &input, DataSinkPtr sinkPtr);

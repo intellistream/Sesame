@@ -19,7 +19,7 @@
 namespace SESAME
 {
 #define noVisited (-1)
-class DenStreamParams : public AlgorithmParameters
+class DenStreamParams : public SesameParam
 {
 public:
     int buf_sizeSize;         // number of data point for Initialization

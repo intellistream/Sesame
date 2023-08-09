@@ -8,7 +8,7 @@
 #define SESAME_SRC_ALGORITHM_OFFLINE_REFINEMENT_HPP_
 
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Sinks/DataSink.hpp"
 
 #include <vector>
@@ -18,7 +18,7 @@ namespace SESAME
 class OfflineRefinement
 {
 public:
-    void Run(StreamClusteringParam &param, const std::vector<PointPtr> &input, DataSinkPtr sinkPtr)
+    void Run(SesameParam &param, const std::vector<PointPtr> &input, DataSinkPtr sinkPtr)
     {
         for (size_t i = 0; i < input.size(); ++i)
         {
@@ -31,7 +31,7 @@ public:
 class NoRefinement : public OfflineRefinement
 {
 public:
-    NoRefinement(const StreamClusteringParam &param) {}
+    NoRefinement(const SesameParam &param) {}
 };
 
 }  // namespace SESAME

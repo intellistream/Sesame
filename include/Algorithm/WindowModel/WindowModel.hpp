@@ -11,7 +11,7 @@
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 
 #include <cmath>
 #include <queue>
@@ -30,7 +30,7 @@ private:
     int landmark_;
 
 public:
-    Landmark(const StreamClusteringParam &param) : landmark_(param.landmark) {}
+    Landmark(const SesameParam &param) : landmark_(param.landmark) {}
     bool Add(PointPtr input) { return input->index == 0 || input->index % landmark_ != 0; }
 };
 
@@ -41,7 +41,7 @@ private:
     std::queue<PointPtr> queue_;
 
 public:
-    Sliding(const StreamClusteringParam &param) : sliding_(param.sliding) {}
+    Sliding(const SesameParam &param) : sliding_(param.sliding) {}
     bool Add(const PointPtr input)
     {
         queue_.push(input);
@@ -67,7 +67,7 @@ private:
     int cnt_ = 0;
 
 public:
-    Damped(const StreamClusteringParam &param)
+    Damped(const SesameParam &param)
         : alpha_(param.alpha), lambda_(param.lambda), buf_size_(param.buf_size)
     {}
     bool Add(const PointPtr input)

@@ -5,7 +5,7 @@
 //
 
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
-#include <Algorithm/DesignAspect/Param.hpp>
+#include <Algorithm/Param.hpp>
 #include <Algorithm/OfflineRefinement/KMeans.hpp>
 #include <Utils/Logger.hpp>
 
@@ -334,7 +334,7 @@ void SESAME::KMeans::runKMeans(int numberOfCenters, int numberOfInput,
     }
 }
 
-void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param, vector<PointPtr> &online_centers,
+void SESAME::KMeans::Run(SESAME::SesameParam &param, vector<PointPtr> &online_centers,
                          SESAME::DataSinkPtr sinkPtr)
 {
     srand(param.seed);
@@ -406,7 +406,7 @@ void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param, vector<PointPtr> 
     }
 }
 
-void SESAME::KMeans::Run(SESAME::StreamClusteringParam &param, vector<PointPtr> &online_centers,
+void SESAME::KMeans::Run(SESAME::SesameParam &param, vector<PointPtr> &online_centers,
                          vector<PointPtr> &results)
 {
     srand(param.seed);

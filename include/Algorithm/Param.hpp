@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <memory>
 
 namespace SESAME
 {
@@ -56,43 +57,42 @@ struct BenneThreshold
 
 struct param_t
 {
-    int num_points, dim, num_clusters;
+    int num_points = 500, dim = 2, num_clusters = 2;
     int arr_rate;
     bool time_decay     = false;
     size_t coreset_size = 100;
-    int seed            = 10;
+    int seed            = 1;
     bool fast_source    = false;
     bool store          = true;
 
     std::string input_file, output_file;
     std::string bin_dir;
     AlgoType algo;
-    int dataset_option;
 
-    int num_last_arr, time_window = 5000;  // also used in timer outlier detection
-    size_t time_interval = 50;
-    int num_online_clusters;
+    int num_last_arr = 60, time_window = 6;  // also used in timer outlier detection
+    size_t time_interval = 100;
+    int num_online_clusters = 10;
 
-    int buf_size, offline_time_window = 100;
+    int buf_size = 500, offline_time_window = 100;
 
     // CF Tree
-    int max_in_nodes, max_leaf_nodes;
-    double distance_threshold;
+    int max_in_nodes = 3, max_leaf_nodes = 3;
+    double distance_threshold = 3550;
 
     // used in DBSCAN
-    unsigned int min_points;
-    double epsilon;
+    unsigned int min_points = 10;
+    double epsilon = 50;
 
     // used in DenStream(unique)
-    double base, lambda, mu;
-    double beta;  // Also used in DStream, but different meaning
+    double base = 2, lambda = 1, mu = 7;
+    double beta = 0.0021;  // Also used in DStream, but different meaning
 
     // EDMStream
-    double delta;
-    int num_cache, opt;
+    double delta = 10;
+    int num_cache = 100, opt = 2;
 
     // used in DBStream
-    double radius, min_weight, alpha;
+    double radius = 0.1, min_weight, alpha = 0.998;
     size_t clean_interval = 2500;  // also used in timer outlier detection
 
     // used in DStream
@@ -122,10 +122,16 @@ struct param_t
     double delta_grid = 0.2;  // The delta parameter used int the grid for guessing the optimum.
     int num_samples   = 100;  // The number of samples used in the grid for guessing
                               // the optimum.
-    int num_res;
+
+    size_t num_res;
 
     ObjType obj;
     BenneThreshold benne_threshold;
+
+    void Init()
+    {
+
+    }
 
     void Print()
     {
@@ -180,7 +186,7 @@ struct param_t
     std::string Name() { return algo_names[algo]; }
 };
 
-using AlgorithmParameters = param_t;
+using SesameParam = param_t;
 
 }  // namespace SESAME
 

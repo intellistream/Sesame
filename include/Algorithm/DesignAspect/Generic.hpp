@@ -20,7 +20,7 @@
 #include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"

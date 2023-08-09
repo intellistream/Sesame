@@ -3,16 +3,16 @@
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
 #include "Algorithm/Param.hpp"
 #include "Utils/Random.hpp"
 
+#include <functional>
 #include <memory>
 #include <vector>
 
 namespace SESAME
 {
-class MeyersonSketch : public enable_shared_from_this<MeyersonSketch>
+class MeyersonSketch : public std::enable_shared_from_this<MeyersonSketch>
 {
 public:
     struct Node;
@@ -20,7 +20,7 @@ public:
     using SktchPtr = std::shared_ptr<MeyersonSketch>;
 
 private:
-    const StreamClusteringParam &param;
+    const SesameParam &param;
     std::vector<PointPtr> samples;
     bool has_sampled = false;
     Random r;
@@ -31,7 +31,7 @@ private:
     double distance_denominator_;
 
 public:
-    MeyersonSketch(const StreamClusteringParam &param);
+    MeyersonSketch(const SesameParam &param);
     void Init();
     NodePtr Insert(PointPtr input);
     NodePtr Insert(NodePtr node);

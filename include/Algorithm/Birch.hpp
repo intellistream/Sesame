@@ -13,7 +13,7 @@
 namespace SESAME
 {
 
-class BirchParameter : public AlgorithmParameters
+class BirchParameter : public SesameParam
 {
 public:
     int max_in_nodes;           // B

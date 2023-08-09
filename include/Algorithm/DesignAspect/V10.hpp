@@ -16,7 +16,7 @@
 
 namespace SESAME
 {
-class V10Parameter : public AlgorithmParameters
+class V10Parameter : public SesameParam
 {
 public:
     bool isInit = false;

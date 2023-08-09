@@ -16,7 +16,7 @@
 namespace SESAME
 {
 
-class StreamKMParameter : public AlgorithmParameters
+class StreamKMParameter : public SesameParam
 {
 public:
     int windowSize;

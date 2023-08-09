@@ -26,39 +26,6 @@ using namespace std::filesystem;
  */
 void BenchmarkUtils::defaultParam(param_t &param)
 {
-    param.num_points = 542;  // number of the data points in the dataset, use
-                             // the whole dataset to run benchmark
-    param.seed                = 1;
-    param.num_clusters        = 2;
-    param.dim                 = 54;
-    param.coreset_size        = 100;
-    param.num_last_arr        = 60;
-    param.time_window         = 6;
-    param.time_interval       = 100;
-    param.num_online_clusters = 10;
-    param.radius              = 2;
-    param.buf_size            = 500;
-    param.offline_time_window = 0;
-    param.max_leaf_nodes      = 3;
-    param.max_in_nodes        = 3;
-    param.distance_threshold  = 3550;
-    param.min_points          = 10;
-    param.epsilon             = 50;
-    param.base                = 2;
-    param.lambda              = 1.8;  // 1.8
-    param.mu                  = 7;
-    param.beta                = 5;  // 5
-
-    // EDMStream
-    param.alpha     = 0.998;
-    param.num_cache = 100;
-    param.radius    = 0.1;
-    param.lambda    = 1;
-    param.delta     = 10;
-    param.beta      = 0.0021;
-    param.opt       = 2;
-
-    param.dataset_option = 0;
     param.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
     param.output_file = "results.txt";
     if (param.algo == G1Stream || param.algo == G2Stream || param.algo == DenStreamType ||
@@ -145,7 +112,7 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     }
     else
     {
-        std::cerr << "no need to eval" << std::endl;
+        std::cerr << "skip evaluation" << std::endl;
         res = GenericFactory::New<BenchmarkResult>(0.0, 0.0);
     }
 

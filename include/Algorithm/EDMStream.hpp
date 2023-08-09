@@ -16,7 +16,7 @@
 
 namespace SESAME
 {
-class EDMParameter : public AlgorithmParameters
+class EDMParameter : public SesameParam
 {
 public:
     bool isInit = false;

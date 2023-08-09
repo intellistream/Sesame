@@ -17,9 +17,11 @@
 
 #include <filesystem>
 
-using namespace std::filesystem;
 using namespace std;
+using namespace std::filesystem;
 using namespace SESAME;
+
+BenchmarkResult RunBenchmark(SesameParam &param);
 
 DEFINE_int32(algo, 0, "Algorithm to use");
 DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");
@@ -150,6 +152,11 @@ int main(int argc, char **argv)
     param.fast_source = true;
     param.store       = false;
 
+    RunBenchmark(param);
+}
+
+BenchmarkResult RunBenchmark(SesameParam &param)
+{
     std::vector<SESAME::PointPtr> input;
     std::vector<SESAME::PointPtr> results;
 
@@ -172,4 +179,6 @@ int main(int argc, char **argv)
     auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
 
     res->Print();
+
+    return *res;
 }
