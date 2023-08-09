@@ -25,7 +25,8 @@ Benne::~Benne() {}
 
 void Benne::Init()
 {
-    if (obj == accuracy)
+    sum_timer.Tick();
+    if (obj == accuracy || obj == accuracy_no_migration)
     {
         windowSel  = damped;
         dataSel    = CFT;
@@ -40,7 +41,6 @@ void Benne::Init()
         dataSel    = Grids;
         outlierSel = NoOD;
         refineSel  = NoRefine;
-        eff_obj    = true;
         algo       = make_shared<V9>(param);  // problem
     }
     else
@@ -55,7 +55,6 @@ void Benne::Init()
     first_algo = windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel;
     change_log.push_back(make_pair(0, first_algo));
     algo->Init();
-    sum_timer.Tick();
 }
 
 void Benne::RunOnline(const PointPtr input)
@@ -108,11 +107,11 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
     cout << "change_log: '";
     for (auto &p : change_log)
     {
-        cout << p.second << "@" << p.first << ";";
+        cout << hex << p.second << dec << "@" << p.first << ";";
     }
     cout << "'" << endl;
-    cout << "first_algo: " << hex << first_algo << dec << endl;
-    cout << "final_algo: " << hex << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel)
+    cout << "first_algo: " << hex << first_algo << endl;
+    cout << "final_algo: " << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel)
          << dec << endl;
     cout << "mig_us: " << mig_timer.sum / 1000 << endl;
     cout << "det_us: " << det_timer.sum / 1000 << endl;
@@ -123,6 +122,10 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
     }
     algo->RunOffline(sinkPtr);
     sum_timer.Tock();
+    win_timer.sum += algo->win_timer.sum;
+    ds_timer.sum += algo->ds_timer.sum;
+    out_timer.sum += algo->out_timer.sum;
+    ref_timer.sum += algo->ref_timer.sum;
 }
 
 void Benne::Train(const PointPtr input)
@@ -187,7 +190,7 @@ void Benne::Train(const PointPtr input)
 
 int Benne::Infer(const PointPtr input)
 {
-    if (obj == accuracy)
+    if (obj == accuracy || obj == accuracy_no_migration)
     {
         if (chara.frequentDrift)
         {
@@ -277,6 +280,10 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     if (old_algo == new_algo) return;
     vector<PointPtr> temp_centers;
     algo->OutputOnline(temp_centers);
+    win_timer.sum += algo->win_timer.sum;
+    ds_timer.sum += algo->ds_timer.sum;
+    out_timer.sum += algo->out_timer.sum;
+    ref_timer.sum += algo->ref_timer.sum;
     switch (new_algo)
     {
     case 0x0040:
@@ -330,18 +337,18 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     default: cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl;
     }
     algo->Init();
-    if (!eff_obj)
+    if (obj == efficiency || obj == accuracy_no_migration)
     {
         for (auto &center : temp_centers)
         {
-            algo->Insert(center);
+            centers.push_back(center);
         }
     }
     else
     {
         for (auto &center : temp_centers)
         {
-            centers.push_back(center);
+            algo->Insert(center);
         }
     }
 }

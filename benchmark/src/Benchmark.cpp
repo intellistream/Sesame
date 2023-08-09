@@ -70,7 +70,7 @@ DEFINE_int32(k, 7, "KMeans K");
 DEFINE_int32(arr_rate, 0, "Arrival rate");
 DEFINE_bool(run_offline, true, "Whether run offline clustering");
 DEFINE_bool(run_eval, true, "Whether run evaluation");
-DEFINE_bool(run_cmm, true, "Whether run CMM evaluation");
+DEFINE_bool(run_cmm, false, "Whether run CMM evaluation");
 DEFINE_bool(run_pur, true, "Whether run Purity evaluation");
 // Benne
 DEFINE_int32(obj, 0, "Objective: 0(balance), 1(accuracy), 2(efficiency)");

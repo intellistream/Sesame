@@ -50,7 +50,7 @@ public:
         res.ds_us  = ds_timer.sum / 1000;
         res.out_us = out_timer.sum / 1000;
         res.ref_us = ref_timer.sum / 1000;
-        res.sum_us = res.win_us + res.ds_us + res.out_us + res.ref_us;
+        res.sum_us = sum_timer.sum / 1000;
         if (et.size() == 5)
         {
             res.on_20  = et[0] / 1e6;

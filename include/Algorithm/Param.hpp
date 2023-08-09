@@ -43,7 +43,8 @@ enum BenneObj
 {
     balance    = 0,
     accuracy   = 1,
-    efficiency = 2
+    efficiency = 2,
+    accuracy_no_migration = 3
 };
 
 struct BenneThreshold
