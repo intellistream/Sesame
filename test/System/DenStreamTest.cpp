@@ -16,6 +16,8 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
+using namespace SESAME;
+
 TEST(System, DenStream)
 {
     // Parse parameters.
@@ -43,5 +45,5 @@ TEST(System, DenStream)
     cmd_params.run_offline  = true;
 
     // Run algorithm producing results.
-    BenchmarkUtils::RunBenchmark(cmd_params);
+    RunBenchmark(cmd_params);
 }

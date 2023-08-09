@@ -16,6 +16,8 @@
 
 #include <gtest/gtest.h>
 
+using namespace SESAME;
+
 TEST(System, DBStream)
 {
     // Parse parameters.
@@ -36,5 +38,5 @@ TEST(System, DBStream)
     cmd_params.time_decay   = false;
     cmd_params.store        = false;
 
-    auto res = BenchmarkUtils::RunBenchmark(cmd_params);
+    auto res = SESAME::RunBenchmark(cmd_params);
 }

@@ -8,28 +8,14 @@
 #ifndef ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 #define ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_
 
-#include "Algorithm/Algorithm.hpp"
-#include "Algorithm/DataStructure/Point.hpp"
+#include "Algorithm/Param.hpp"
 #include "Evaluation/Evaluation.hpp"
-#include "Sinks/DataSink.hpp"
-#include "Sources/DataSource.hpp"
 
-#include <getopt.h>
-#include <cstdio>
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-
-using namespace SESAME;
-
-class BenchmarkUtils
+namespace SESAME
 {
-public:
-    static void loadData(param_t &cmd_params, DataSourcePtr dataSourcePtr);
-    static BenchmarkResultPtr RunBenchmark(param_t &cmd_params);
-};
+
+BenchRes RunBenchmark(param_t &param);
+
+}
 
 #endif  // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

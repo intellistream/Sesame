@@ -40,8 +40,8 @@ TEST(System, SLKMeans)
     cmd_params.run_cmm = true;
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::RunBenchmark(cmd_params);
+    auto res = SESAME::RunBenchmark(cmd_params);
 
-    ASSERT_NEAR(res->purity, 0.4703, 0.03);
-    ASSERT_NEAR(res->cmm, 0.8247, 0.03);
+    ASSERT_NEAR(res.purity, 0.4703, 0.03);
+    ASSERT_NEAR(res.cmm, 0.8247, 0.03);
 }

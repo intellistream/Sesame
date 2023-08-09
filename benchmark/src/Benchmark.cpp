@@ -21,8 +21,6 @@ using namespace std;
 using namespace std::filesystem;
 using namespace SESAME;
 
-BenchmarkResult RunBenchmark(SesameParam &param);
-
 DEFINE_int32(algo, 0, "Algorithm to use");
 DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");
 DEFINE_int32(num_points, 3000, "Number of points");
@@ -150,5 +148,5 @@ int main(int argc, char **argv)
     param.fast_source = true;
     param.store       = false;
 
-    BenchmarkUtils::RunBenchmark(param);
+    RunBenchmark(param);
 }

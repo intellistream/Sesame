@@ -13,6 +13,8 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
+using namespace SESAME;
+
 TEST(System, DStream)
 {
     // Parse parameters.
@@ -34,5 +36,5 @@ TEST(System, DStream)
     cmd_params.algo        = SESAME::DStreamType;
 
     // Run algorithm producing results.
-    BenchmarkUtils::RunBenchmark(cmd_params);
+    RunBenchmark(cmd_params);
 }

@@ -13,6 +13,8 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
+using namespace SESAME;
+
 TEST(System, EDMStream)
 {
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
@@ -39,5 +41,5 @@ TEST(System, EDMStream)
     cmd_params.algo        = SESAME::EDMStreamType;
 
     // Run algorithm producing results.
-    BenchmarkUtils::RunBenchmark(cmd_params);
+    RunBenchmark(cmd_params);
 }

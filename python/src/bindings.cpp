@@ -330,7 +330,7 @@ py::tuple run() {
     // Access the parameters using the global `param` object
     param_t &param = GetGlobalParameters();
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::RunBenchmark(param);
+    auto res = SESAME::RunBenchmark(param);
     res->Print();
     return py::make_tuple(res.purity, res.cmm);
 }

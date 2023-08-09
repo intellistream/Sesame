@@ -16,6 +16,8 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
+using namespace SESAME;
+
 TEST(System, Birch)
 {
     // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
@@ -35,7 +37,7 @@ TEST(System, Birch)
     param.algo        = SESAME::BirchType;
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::RunBenchmark(param);
+    auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.3749, 0.02);
+    ASSERT_NEAR(res.purity, 0.3749, 0.02);
 }
