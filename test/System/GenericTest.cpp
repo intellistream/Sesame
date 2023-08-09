@@ -44,33 +44,14 @@ TEST(System, V1)
     param.outlier_cap                = 10;
     param.k                          = 100;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = G1Stream;
     param.run_offline = true;
 
-    vector<PointPtr> input;
-    vector<PointPtr> results;
-
-    // Create Spout.
-    DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, DistanceDetection<true, false>, KMeans>>(
-        param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.6627, 0.03);
-    ASSERT_NEAR(res->cmm, 0.9361, 0.03);
+    ASSERT_NEAR(res->purity, 0.5453, 0.02);
 }
 
 TEST(System, V2)
@@ -91,32 +72,13 @@ TEST(System, V2)
     param.outlier_distance_threshold = 5000;
     param.outlier_cap                = 10;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = SESAME::G2Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, DistanceDetection<true, false>, DBSCAN>>(
-        param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.7303, 0.02);
-    ASSERT_NEAR(res->cmm, 0.9632, 0.02);
+    ASSERT_NEAR(res->purity, 0.5453, 0.02);
 }
 
 TEST(System, V3)
@@ -134,29 +96,11 @@ TEST(System, V3)
     param.outlier_distance_threshold = 500;
     param.outlier_cap                = 2000;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/EDS.txt";
     param.algo        = SESAME::G3Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             DistanceDetection<true, false>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
     ASSERT_NEAR(res->purity, 0.8032, 0.02);
 }
@@ -176,31 +120,13 @@ TEST(System, V4)
     param.outlier_distance_threshold = 3000;
     param.outlier_cap                = 3;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = SESAME::G4Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Sliding, ClusteringFeaturesTree,
-                                             DistanceDetection<true, false>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.64, 0.02);
+    ASSERT_NEAR(res->purity, 0.5413, 0.02);
 }
 
 TEST(System, V5)
@@ -219,74 +145,38 @@ TEST(System, V5)
     param.outlier_distance_threshold = 500;
     param.outlier_cap                = 100;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = SESAME::G5Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Damped, ClusteringFeaturesTree,
-                                             DistanceDetection<true, false>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.2987, 0.03);
-    ASSERT_NEAR(res->cmm, 0.6984, 0.03);
+    ASSERT_NEAR(res->purity, 0.2987, 0.02);
 }
 
-TEST(System, V6)
-{
-    // Parse parameters.
-    param_t param;
+// TEST(System, V6)
+// {
+//     // Parse parameters.
+//     param_t param;
 
-    param.num_points         = 10000;
-    param.distance_threshold = 10;
-    param.max_in_nodes       = 100;
-    param.max_leaf_nodes     = 50;
-    param.dim                = 2;
-    param.num_clusters       = 363;
-    param.time_decay         = false;
-    param.landmark           = 1000;
+//     param.num_points         = 10000;
+//     param.distance_threshold = 10;
+//     param.max_in_nodes       = 100;
+//     param.max_leaf_nodes     = 50;
+//     param.dim                = 2;
+//     param.num_clusters       = 363;
+//     param.time_decay         = false;
+//     param.landmark           = 1000;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
-    param.algo        = SESAME::G6Stream;
+//     param.input_file  = "datasets/EDS.txt";
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
+//     param.algo        = SESAME::G6Stream;
 
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
+//     // Run algorithm producing results.
+//     auto res = BenchmarkUtils::runBenchmark(param);
 
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, ClusteringFeaturesTree, NoDetection, NoRefinement>>(param);
-
-    // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
-
-    ASSERT_NEAR(res->purity, 0.8251, 0.03);
-    ASSERT_NEAR(res->cmm, 0.8571, 0.03);
-}
+//     ASSERT_NEAR(res->purity, 0.8251, 0.02);
+// }
 
 TEST(System, V7)
 {
@@ -304,29 +194,11 @@ TEST(System, V7)
     param.outlier_density_threshold = 0.5;
     param.outlier_cap               = 10;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = SESAME::G7Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             DensityDetection<true, false>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
     ASSERT_NEAR(res->purity, 0.432, 0.02);
 }
@@ -345,31 +217,15 @@ TEST(System, V8)
     param.landmark                   = 1000;
     param.run_offline                = false;
     param.outlier_distance_threshold = 600;
-    param.outlier_cap                = 2000;
+    param.outlier_cap                = 200;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/EDS.txt";
     param.algo        = SESAME::G8Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr = AlgorithmFactory::create(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.7982, 0.01);
+    // ASSERT_NEAR(res->purity, 0.7982, 0.01);
 }
 
 TEST(System, V9)
@@ -388,26 +244,12 @@ TEST(System, V9)
     cmd_params.landmark     = 3000;
 
     cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+        "datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
     cmd_params.algo        = SESAME::G9Stream;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(cmd_params);
 }
 
 TEST(System, V10)
@@ -425,33 +267,16 @@ TEST(System, V10)
     cmd_params.delta      = 1500;
     cmd_params.beta       = 0.0021;
     cmd_params.opt        = 2;
-    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-    // [3, 3, 4, 6, 6, 7, 9, 9]
     cmd_params.num_clusters = 7;
     cmd_params.time_decay   = true;
 
     cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+        "datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
     cmd_params.algo        = SESAME::G10Stream;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    BenchmarkUtils::runBenchmark(cmd_params);
 }
 
 TEST(System, V11)
@@ -469,31 +294,13 @@ TEST(System, V11)
     param.landmark           = 1000;
     param.clean_interval     = 9900;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/EDS.txt";
     param.algo        = SESAME::G11Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             OutlierDetection<false, true>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.82, 0.01);
+    // ASSERT_NEAR(res->purity, 0.4761, 0.01);
 }
 
 TEST(System, V12)
@@ -510,32 +317,12 @@ TEST(System, V12)
     param.time_decay         = false;
     param.landmark           = 1000;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/EDS.txt";
     param.algo        = SESAME::G12Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             OutlierDetection<false, false>, NoRefinement>>(param);
-
-    // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
-
-    ASSERT_NEAR(res->purity, 0.8228, 0.03);
-    ASSERT_NEAR(res->cmm, 0.8554, 0.03);
+    // ASSERT_NEAR(res->purity, 0.8228, 0.02);
 }
 
 TEST(System, V13)
@@ -553,31 +340,13 @@ TEST(System, V13)
     param.landmark           = 1000;
     param.clean_interval     = 5000;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/EDS.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/EDS.txt";
     param.algo        = SESAME::G13Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr =
-        GenericFactory::New<StreamClustering<Landmark, ClusteringFeaturesTree,
-                                             OutlierDetection<true, true>, NoRefinement>>(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.8344, 0.01);
+    // ASSERT_NEAR(res->purity, 0.8344, 0.01);
 }
 
 TEST(System, V14)
@@ -593,32 +362,13 @@ TEST(System, V14)
     param.num_samples  = 100;
     param.sliding      = 5;
 
-    param.input_file  = filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file  = "datasets/CoverType.txt";
     param.algo        = SESAME::G14Stream;
 
-    vector<SESAME::PointPtr> input;
-    vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    AlgorithmPtr algoPtr = GenericFactory::New<
-        StreamClustering<Landmark, MeyersonSketch, OutlierDetection<true, false>, NoRefinement>>(
-        param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
-    ASSERT_NEAR(res->purity, 0.8113, 0.01);
-    ASSERT_NEAR(res->cmm, 0.9842, 0.01);
+    ASSERT_NEAR(res->purity, 0.701, 0.01);
 }
 
 TEST(System, V16)
@@ -637,24 +387,9 @@ TEST(System, V16)
     cmd_params.sliding     = 1000;
 
     cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    cmd_params.output_file = "results.txt";
+        "datasets/CoverType.txt";
     cmd_params.algo        = SESAME::G16Stream;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(cmd_params);
 }

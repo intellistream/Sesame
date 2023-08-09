@@ -58,15 +58,14 @@ struct BenneThreshold
 struct param_t
 {
     int num_points = 500, dim = 2, num_clusters = 2;
-    int arr_rate;
+    int arr_rate = 0;
     bool time_decay     = false;
     size_t coreset_size = 100;
     int seed            = 1;
     bool fast_source    = false;
     bool store          = true;
 
-    std::string input_file, output_file;
-    std::string bin_dir;
+    std::string input_file = "datasets/CoverType.txt", output_file = "sesame.out";
     AlgoType algo;
 
     int num_last_arr = 60, time_window = 6;  // also used in timer outlier detection
@@ -96,42 +95,36 @@ struct param_t
     size_t clean_interval = 2500;  // also used in timer outlier detection
 
     // used in DStream
-    double cm, cl;
-    double grid_width = 50.0;
+    double cm = 5.0, cl = 0.8;
+    double grid_width = 12.0;
 
     // used in design aspect
-    bool run_offline = false;  // determine whether to run the offline refinement
+    bool run_offline = true;  // determine whether to run the offline refinement
     bool run_eval    = true;
-    bool run_cmm = true, run_pur = true, run_nmi = false;
+    bool run_cmm = false, run_pur = true, run_nmi = false;
     //    bool run_group = true;
     int landmark = 1000;          // this is the index of landmark point[start from 0](determine
                                   // to process the algorithm from which algorithm)
     int sliding = 10;             // since we test the count-based sliding window, this is
                                   // the count number
-    bool detect_outlier = false;  // whether detect outliers
-    double outlier_distance_threshold;  // the max distance of the incoming point
+    double outlier_distance_threshold = 1000;  // the max distance of the incoming point
                                         // to its nearest clusters
-    double outlier_density_threshold;   // the density value of the point to be
+    double outlier_density_threshold = 100;   // the density value of the point to be
                                         // treated as an outlier
-    double neighbor_distance;           // the distance value of the point to judge
+    double neighbor_distance = 200;           // the distance value of the point to judge
                                         // neighborhoods
     int outlier_cap = 5;                // transfer outlier cluster and true cluster
     bool kmeanspp   = true;             // whether use kmeans++ to initialize the centroids
-    int k           = 0;                // number of k in kmeans / kmeanspp
+    int k           = 2;                // number of k in kmeans / kmeanspp
 
     double delta_grid = 0.2;  // The delta parameter used int the grid for guessing the optimum.
     int num_samples   = 100;  // The number of samples used in the grid for guessing
                               // the optimum.
 
-    size_t num_res;
+    size_t num_res = 0;
 
-    ObjType obj;
+    ObjType obj = (ObjType) 0;
     BenneThreshold benne_threshold;
-
-    void Init()
-    {
-
-    }
 
     void Print()
     {

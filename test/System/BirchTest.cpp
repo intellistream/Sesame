@@ -31,27 +31,11 @@ TEST(System, Birch)
     param.landmark           = 1000;
     param.run_cmm            = false;
 
-    param.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
+    param.input_file = "datasets/CoverType.txt";
     param.algo        = SESAME::BirchType;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(param);
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
     ASSERT_NEAR(res->purity, 0.3749, 0.02);
 }

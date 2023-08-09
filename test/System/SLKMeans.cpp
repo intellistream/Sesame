@@ -34,28 +34,13 @@ TEST(System, SLKMeans)
     cmd_params.outlier_cap                = 10;
     cmd_params.seed                       = 10;
 
-    cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    cmd_params.output_file = "results.txt";
+    cmd_params.input_file  = "datasets/CoverType.txt";
     cmd_params.algo        = SESAME::SLKMeansType;
     cmd_params.run_offline = true;
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = GenericFactory::New<SlidingWindowClustering>(cmd_params);
+    cmd_params.run_cmm = true;
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(cmd_params);
 
     ASSERT_NEAR(res->purity, 0.4703, 0.03);
     ASSERT_NEAR(res->cmm, 0.8247, 0.03);

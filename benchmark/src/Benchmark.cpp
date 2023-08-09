@@ -95,10 +95,9 @@ int main(int argc, char **argv)
     sleep(1);
 #endif
     // Parse parameters.
-    param_t param;
     gflags::ParseCommandLineFlags(&argc, &argv, true);
+    param_t param;
     param.algo = (AlgoType)FLAGS_algo;
-    BenchmarkUtils::defaultParam(param);
     param.algo                          = (AlgoType)FLAGS_algo;
     param.input_file                    = FLAGS_input_file;
     param.num_points                    = FLAGS_num_points;
@@ -148,37 +147,8 @@ int main(int argc, char **argv)
     param.benne_threshold.outliers_num  = FLAGS_outliers_num_threshold;
     param.benne_threshold.outliers_dist = FLAGS_outliers_dist_threshold;
 
-    param.output_file = "results.txt";
     param.fast_source = true;
     param.store       = false;
 
-    RunBenchmark(param);
-}
-
-BenchmarkResult RunBenchmark(SesameParam &param)
-{
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(param);
-
-    param.Print();
-
-    // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
-
-    res->Print();
-
-    return *res;
+    BenchmarkUtils::runBenchmark(param);
 }

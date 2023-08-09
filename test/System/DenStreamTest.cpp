@@ -34,7 +34,7 @@ TEST(System, DenStream)
     cmd_params.beta     = 0.25;
     cmd_params.buf_size = 500;
     cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+        "datasets/CoverType.txt";
 
     cmd_params.output_file  = "results.txt";
     cmd_params.algo         = SESAME::DenStreamType;
@@ -42,21 +42,6 @@ TEST(System, DenStream)
     cmd_params.time_decay   = false;
     cmd_params.run_offline  = true;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    BenchmarkUtils::runBenchmark(cmd_params);
 }

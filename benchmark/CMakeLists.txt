@@ -20,7 +20,7 @@ if (BUILD_BENCHMARKS)
     target_link_libraries(benchmark sesame gflags)
     if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/datasets)
         add_custom_target(bench_datasets ALL
-                    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/datasets ${CMAKE_CURRENT_BINARY_DIR}/datasets)
+                    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/../datasets ${CMAKE_CURRENT_BINARY_DIR}/datasets)
         add_dependencies(benchmark bench_datasets)
     endif (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/datasets)
     message("---Done building benchmarks")

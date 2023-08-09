@@ -72,9 +72,8 @@ public:
         GetGlobalParameters().time_interval = 100;
         GetGlobalParameters().offline_time_window = 0;
         GetGlobalParameters().opt = 2;
-        GetGlobalParameters().input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
+        GetGlobalParameters().input_file = "datasets/CoverType.txt";
         GetGlobalParameters().output_file = "results.txt";
-        GetGlobalParameters().detect_outlier = false;
         if (GetGlobalParameters().algo == BirchType) {
             GetGlobalParameters().outlier_cap = std::numeric_limits<int>::min();
         }
@@ -350,7 +349,7 @@ py::tuple run() {
     param.Print();
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param, sourcePtr, sinkPtr, algoPtr);
+    auto res = BenchmarkUtils::runBenchmark(param);
 
     res->Print();
 

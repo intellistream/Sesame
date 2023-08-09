@@ -19,27 +19,6 @@ using namespace SESAME;
 using namespace std::filesystem;
 
 /**
- * @Description: Set the default algorithm StreamKM++ and the default parameters
- * to run the algorithm void -p 1000 -c 10 -d 54 -s 100 -S 10
- * @Param: param: param_t &
- * @Return:
- */
-void BenchmarkUtils::defaultParam(param_t &param)
-{
-    param.input_file = std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    param.output_file = "results.txt";
-    if (param.algo == G1Stream || param.algo == G2Stream || param.algo == DenStreamType ||
-        param.algo == CluStreamType || param.algo == StreamKMeansType ||
-        param.algo == SLKMeansType || param.algo == DBStreamType || param.algo == DStreamType)
-        param.run_offline = true;
-    param.detect_outlier = false;
-    if (param.algo == BirchType)
-    {
-        param.outlier_cap = numeric_limits<int>::min();
-    }
-}
-
-/**
  * @Description: load data from the given dataset and convert the data format
  * into the given point data structure
  * @Param: param: the dataset attribute received from the command line such
@@ -75,10 +54,23 @@ void BenchmarkUtils::loadData(param_t &param, SESAME::DataSourcePtr dataSourcePt
     dataSourcePtr->load(param.num_points, param.dim, data);
     SESAME_INFO("Finished loading input data");
 }
-BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSourcePtr sourcePtr,
-                                                SESAME::DataSinkPtr sinkPtr,
-                                                SESAME::AlgorithmPtr algoPtr)
+BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param)
 {
+    // Create Spout.
+    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
+
+    // Directly load data from file. TODO: configure it to load from external
+    // sensors, e.g., HTTP.
+    BenchmarkUtils::loadData(param, sourcePtr);
+
+    // Create Sink.
+    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
+
+    // Create Algorithm.
+    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(param);
+
+    param.Print();
+
     SESAME::SimpleEngine engine(sourcePtr, sinkPtr,
                                 algoPtr);  // TODO: create multithread engine in future.
 
@@ -119,5 +111,8 @@ BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param, SESAME::DataSour
     engine.stop();
 
     res->num_res = param.num_res;
+
+    res->Print();
+
     return res;
 }
