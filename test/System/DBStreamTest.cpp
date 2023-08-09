@@ -36,5 +36,5 @@ TEST(System, DBStream)
     cmd_params.time_decay   = false;
     cmd_params.store        = false;
 
-    auto res = BenchmarkUtils::runBenchmark(cmd_params);
+    auto res = BenchmarkUtils::RunBenchmark(cmd_params);
 }

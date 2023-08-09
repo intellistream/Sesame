@@ -39,7 +39,7 @@ TEST(System, CluStream)
     cmd_params.algo                = SESAME::CluStreamType;
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(cmd_params);
+    auto res = BenchmarkUtils::RunBenchmark(cmd_params);
 
     ASSERT_NEAR(res->purity, 0.2987, 0.002);
 }

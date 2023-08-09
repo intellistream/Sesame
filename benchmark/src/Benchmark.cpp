@@ -140,7 +140,7 @@ int main(int argc, char **argv)
     param.run_eval                      = FLAGS_run_eval;
     param.run_cmm                       = FLAGS_run_cmm;
     param.run_pur                       = FLAGS_run_pur;
-    param.obj                           = (ObjType)FLAGS_obj;
+    param.obj                           = (BenneObj)FLAGS_obj;
     param.benne_threshold.dim           = FLAGS_dim_threshold;
     param.benne_threshold.queue_size    = FLAGS_queue_size_threshold;
     param.benne_threshold.variance      = FLAGS_variance_threshold;
@@ -150,5 +150,5 @@ int main(int argc, char **argv)
     param.fast_source = true;
     param.store       = false;
 
-    BenchmarkUtils::runBenchmark(param);
+    BenchmarkUtils::RunBenchmark(param);
 }

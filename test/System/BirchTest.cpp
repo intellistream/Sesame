@@ -35,7 +35,7 @@ TEST(System, Birch)
     param.algo        = SESAME::BirchType;
 
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param);
+    auto res = BenchmarkUtils::RunBenchmark(param);
 
     ASSERT_NEAR(res->purity, 0.3749, 0.02);
 }

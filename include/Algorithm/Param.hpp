@@ -39,7 +39,7 @@ enum AlgoType
 
 extern char const *algo_names[64];
 
-enum ObjType
+enum BenneObj
 {
     balance    = 0,
     accuracy   = 1,
@@ -123,7 +123,7 @@ struct param_t
 
     size_t num_res = 0;
 
-    ObjType obj = (ObjType) 0;
+    BenneObj obj = (BenneObj) 0;
     BenneThreshold benne_threshold;
 
     void Print()

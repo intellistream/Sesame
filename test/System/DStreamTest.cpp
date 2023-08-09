@@ -34,5 +34,5 @@ TEST(System, DStream)
     cmd_params.algo        = SESAME::DStreamType;
 
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params);
+    BenchmarkUtils::RunBenchmark(cmd_params);
 }

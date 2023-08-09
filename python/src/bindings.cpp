@@ -327,32 +327,11 @@ private:
 
 py::tuple run() {
     warning();
-
     // Access the parameters using the global `param` object
     param_t &param = GetGlobalParameters();
-
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(param);
-
-    param.Print();
-
     // Run algorithm producing results.
-    auto res = BenchmarkUtils::runBenchmark(param);
-
+    auto res = BenchmarkUtils::RunBenchmark(param);
     res->Print();
-
     return py::make_tuple(res.purity, res.cmm);
 }
 

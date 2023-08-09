@@ -29,7 +29,7 @@ class BenchmarkUtils
 {
 public:
     static void loadData(param_t &cmd_params, DataSourcePtr dataSourcePtr);
-    static BenchmarkResultPtr runBenchmark(param_t &cmd_params);
+    static BenchmarkResultPtr RunBenchmark(param_t &cmd_params);
 };
 
 #endif  // ONLINEMLBENCHMARK_BENCHMARK_SRC_UTIL_BENCHMARKUTILS_HPP_

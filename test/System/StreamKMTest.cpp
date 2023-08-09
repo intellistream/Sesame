@@ -37,5 +37,5 @@ TEST(System, StreamKM)
     cmd_params.run_offline = true;
 
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params);
+    BenchmarkUtils::RunBenchmark(cmd_params);
 }

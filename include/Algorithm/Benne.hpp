@@ -61,7 +61,7 @@ public:
     bool ds_changed = false;
     bool eff_obj    = false;
     AlgorithmPtr algo;
-    ObjType obj;
+    BenneObj obj;
     characteristics chara;
     windowSelection windowSel;
     dataSelection dataSel;

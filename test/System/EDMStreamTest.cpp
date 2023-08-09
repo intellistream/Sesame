@@ -39,5 +39,5 @@ TEST(System, EDMStream)
     cmd_params.algo        = SESAME::EDMStreamType;
 
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params);
+    BenchmarkUtils::RunBenchmark(cmd_params);
 }

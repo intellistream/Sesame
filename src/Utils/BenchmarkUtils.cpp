@@ -18,50 +18,14 @@ using namespace std;
 using namespace SESAME;
 using namespace std::filesystem;
 
-/**
- * @Description: load data from the given dataset and convert the data format
- * into the given point data structure
- * @Param: param: the dataset attribute received from the command line such
- * as p,c,d,s...
- * @Param: input: the vector to store the point list from the dataset
- * @Return: void
- */
-void BenchmarkUtils::loadData(param_t &param, SESAME::DataSourcePtr dataSourcePtr)
-{
-    // Pass input file as a string to DataSource.
-    std::vector<std::string> data;
-    ifstream infile;
-    infile.open(param.input_file);
-    if (infile.is_open() == 0)
-    {
-        std::cerr << "input file not found" << std::endl;
-        exit(1);
-    }
-    SESAME_INFO("Read from the file...");
-
-    // insert the data once per line into the string vector, every string element
-    // represents a data line
-    for (int i = 0; i < param.num_points; i++)
-    {
-        data.emplace_back();
-        getline(infile, data[i]);
-    }
-    SESAME_INFO("Complete reading from the file...");
-    infile.close();
-
-    // convert the string format into point vector, every string represents a
-    // point
-    dataSourcePtr->load(param.num_points, param.dim, data);
-    SESAME_INFO("Finished loading input data");
-}
-BenchmarkResultPtr BenchmarkUtils::runBenchmark(param_t &param)
+BenchmarkResultPtr BenchmarkUtils::RunBenchmark(param_t &param)
 {
     // Create Spout.
     SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
 
     // Directly load data from file. TODO: configure it to load from external
     // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(param, sourcePtr);
+    sourcePtr->load();
 
     // Create Sink.
     SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(param);
