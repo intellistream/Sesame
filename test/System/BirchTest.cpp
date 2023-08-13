@@ -39,5 +39,5 @@ TEST(System, Birch)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.3749, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.3749, 0.02);
 }

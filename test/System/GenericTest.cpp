@@ -51,7 +51,7 @@ TEST(System, V1)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.5453, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.5453, 0.02);
 }
 
 TEST(System, V2)
@@ -78,7 +78,7 @@ TEST(System, V2)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.5453, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.5453, 0.02);
 }
 
 TEST(System, V3)
@@ -102,7 +102,7 @@ TEST(System, V3)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.8032, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.8032, 0.02);
 }
 
 TEST(System, V4)
@@ -126,7 +126,7 @@ TEST(System, V4)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.5413, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.5413, 0.02);
 }
 
 TEST(System, V5)
@@ -151,7 +151,7 @@ TEST(System, V5)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.2987, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.2987, 0.02);
 }
 
 // TEST(System, V6)
@@ -175,7 +175,7 @@ TEST(System, V5)
 //     // Run algorithm producing results.
 //     auto res = SESAME::RunBenchmark(param);
 
-//     ASSERT_NEAR(res.purity, 0.8251, 0.02);
+//     ASSERT_NEAR(res.first.purity, 0.8251, 0.02);
 // }
 
 TEST(System, V7)
@@ -200,7 +200,7 @@ TEST(System, V7)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.432, 0.02);
+    ASSERT_NEAR(res.first.purity, 0.432, 0.02);
 }
 
 TEST(System, V8)
@@ -225,7 +225,7 @@ TEST(System, V8)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    // ASSERT_NEAR(res.purity, 0.7982, 0.01);
+    // ASSERT_NEAR(res.first.purity, 0.7982, 0.01);
 }
 
 TEST(System, V9)
@@ -300,7 +300,7 @@ TEST(System, V11)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    // ASSERT_NEAR(res.purity, 0.4761, 0.01);
+    // ASSERT_NEAR(res.first.purity, 0.4761, 0.01);
 }
 
 TEST(System, V12)
@@ -322,7 +322,7 @@ TEST(System, V12)
 
     auto res = SESAME::RunBenchmark(param);
 
-    // ASSERT_NEAR(res.purity, 0.8228, 0.02);
+    // ASSERT_NEAR(res.first.purity, 0.8228, 0.02);
 }
 
 TEST(System, V13)
@@ -346,7 +346,7 @@ TEST(System, V13)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    // ASSERT_NEAR(res.purity, 0.8344, 0.01);
+    // ASSERT_NEAR(res.first.purity, 0.8344, 0.01);
 }
 
 TEST(System, V14)
@@ -368,7 +368,7 @@ TEST(System, V14)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
 
-    ASSERT_NEAR(res.purity, 0.701, 0.01);
+    ASSERT_NEAR(res.first.purity, 0.701, 0.01);
 }
 
 TEST(System, V16)

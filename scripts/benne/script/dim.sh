@@ -16,6 +16,7 @@ for i in 20 40 60 80 100
 do
 
     export dim=`eval echo \$\{dim$i\}`
+
     ticat ${meta} : ${dim} \
         : join.new algo 0 \
         : join.new max_in_nodes 800 \
@@ -53,10 +54,10 @@ do
 
     ticat ${meta} : ${dim} \
         : join.new algo 4 \
-        : join.new lambda 0.001 \
-        : join.new radius 4 \
-        : join.new clean_interval 400 \
-        : join.new min_weight 0.05 \
+        : join.new lambda 0.1 \
+        : join.new radius 2 \
+        : join.new clean_interval 4 \
+        : join.new min_weight 0.5 \
         : join.new alpha 0.5 \
         : join.new base 1 \
         : join.run run.sesame &
@@ -87,17 +88,17 @@ do
         : join.new sliding 10 \
         : join.run run.sesame &
 
-    ticat ${meta} : ${dim} \
-        : join.new algo 8 \
-        : join.new obj $balance \
-        : join.new landmark 50000 \
-        : join.new queue_size_threshold 100 \
-        : join.new dim_threshold 30 \
-        : join.new variance_threshold 100.0 \
-        : join.new outliers_num_threshold 200 \
-        : join.new outliers_dist_threshold 50.0 \
-        : join.new coreset_size 10 \
-        : join.run run.sesame &
+    # ticat ${meta} : ${dim} \
+    #     : join.new algo 8 \
+    #     : join.new obj $balance \
+    #     : join.new landmark 50000 \
+    #     : join.new queue_size_threshold 100 \
+    #     : join.new dim_threshold 30 \
+    #     : join.new variance_threshold 100.0 \
+    #     : join.new outliers_num_threshold 200 \
+    #     : join.new outliers_dist_threshold 50.0 \
+    #     : join.new coreset_size 10 \
+    #     : join.run run.sesame &
 
     ticat ${meta} : ${dim} \
         : join.new algo 8 \
@@ -122,6 +123,7 @@ do
         : join.new outliers_num_threshold 200 \
         : join.new outliers_dist_threshold 50.0 \
         : join.run run.sesame &
+
     wait
 
 done

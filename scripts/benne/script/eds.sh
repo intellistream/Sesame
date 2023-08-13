@@ -13,26 +13,26 @@ export edso3="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_O.tx
 export eods="join.new input_file $HOME/Sesame/build/benchmark/datasets/EDS_ODS.txt : join.new num_points 45690,100270,150645,200060,245270,339990,342630,345270 : join.new dim 2 : join.new num_clusters 454"
 
 export balance=0
-export accuracy=1
+export accuracy="1,3"
 export efficiency=2
 
 export OMP_NUM_THREADS=8
 
 function run(){
 
-ticat ${meta} : ${eds} \
-    : join.new algo 8 \
-    : join.new obj $balance \
-    : join.new distance_threshold 8 \
-    : join.new landmark 2000 \
-    : join.new queue_size_threshold 10000 \
-    : join.new dim_threshold 10 \
-    : join.new variance_threshold 1000.0 \
-    : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold 50.0 \
-    : join.new coreset_size 10 \
-    : join.new k 1000 \
-    : join.run run.sesame &
+# ticat ${meta} : ${eds} \
+#     : join.new algo 8 \
+#     : join.new obj $balance \
+#     : join.new distance_threshold 8 \
+#     : join.new landmark 2000 \
+#     : join.new queue_size_threshold 10000 \
+#     : join.new dim_threshold 10 \
+#     : join.new variance_threshold 1000.0 \
+#     : join.new outliers_num_threshold 200 \
+#     : join.new outliers_dist_threshold 50.0 \
+#     : join.new coreset_size 10 \
+#     : join.new k 1000 \
+#     : join.run run.sesame &
 
 ticat ${meta} : ${eds} \
     : join.new algo 8 \
@@ -46,7 +46,7 @@ ticat ${meta} : ${eds} \
     : join.run run.sesame &
 
 ticat ${meta} : ${eds} \
-    : join.new algo 8 \
+    : join.new algo 8,36 \
     : join.new obj $efficiency \
     : join.new sliding 2000 \
     : join.new queue_size_threshold 80000 \

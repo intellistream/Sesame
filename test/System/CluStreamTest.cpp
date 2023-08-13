@@ -43,5 +43,5 @@ TEST(System, CluStream)
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(cmd_params);
 
-    ASSERT_NEAR(res.purity, 0.2987, 0.002);
+    ASSERT_NEAR(res.first.purity, 0.2987, 0.002);
 }
