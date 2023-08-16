@@ -38,6 +38,7 @@ enum AlgoType
 };
 
 extern char const *algo_names[64];
+extern char const *benne_suffix[4];
 
 enum BenneObj
 {
@@ -177,7 +178,12 @@ struct param_t
         std::cout << "outliers_dist_threshold: " << benne_threshold.outliers_dist << std::endl;
     }
     std::string Workload() { return std::filesystem::path(input_file).stem(); }
-    std::string Name() { return algo_names[algo]; }
+    std::string Name() { 
+        if (algo == BenneType) {
+            return std::string(algo_names[algo]) + benne_suffix[obj];
+        }
+        return algo_names[algo]; 
+    }
 };
 
 using SesameParam = param_t;

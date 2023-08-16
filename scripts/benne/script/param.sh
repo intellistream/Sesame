@@ -116,12 +116,12 @@ ticat ${meta} : ${cover} \
     : join.run run.sesame &
 
 
-# meta="{bench.tag=extra.out_num} $ori_meta"
+meta="{bench.tag=extra.out_dist} $ori_meta"
 # ticat ${meta} : ${cover} \
 #     : join.new algo 8 \
-#     : join.new obj $accuracy \
-#     : join.new distance_threshold 500 \
-#     : join.new queue_size_threshold 10000 \
+#     : join.new obj $balance \
+#     : join.new landmark 50000 \
+#     : join.new queue_size_threshold 100 \
 #     : join.new dim_threshold 30 \
 #     : join.new variance_threshold 100.0 \
 #     : join.new outliers_num_threshold 200 \
@@ -130,9 +130,9 @@ ticat ${meta} : ${cover} \
 
 # ticat ${meta} : ${cover} \
 #     : join.new algo 8 \
-#     : join.new obj $balance \
-#     : join.new landmark 50000 \
-#     : join.new queue_size_threshold 100 \
+#     : join.new obj $accuracy \
+#     : join.new distance_threshold 500 \
+#     : join.new queue_size_threshold 10000 \
 #     : join.new dim_threshold 30 \
 #     : join.new variance_threshold 100.0 \
 #     : join.new outliers_num_threshold 200 \
@@ -150,7 +150,7 @@ ticat ${meta} : ${cover} \
 #     : join.new outliers_dist_threshold [10,100,10] \
 #     : join.run run.sesame &
 
-meta="{bench.tag=extra.out_dist} $ori_meta"
+meta="{bench.tag=extra.out_num} $ori_meta"
 # ticat ${meta} : ${cover} \
 #     : join.new algo 8 \
 #     : join.new obj $balance \
