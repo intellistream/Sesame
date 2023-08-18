@@ -14,7 +14,7 @@
 using namespace SESAME;
 using namespace std;
 
-double calculateDispersion(vector<SESAME::PointPtr> queue_, SESAME::PointPtr newCenter);
+double calculateDispersion(const vector<SESAME::PointPtr> &queue_, SESAME::PointPtr newCenter);
 
 Benne::Benne(param_t &cmd_params) : kmeans(cmd_params)
 {
@@ -115,11 +115,9 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
          << dec << endl;
     cout << "mig_us: " << mig_timer.sum / 1000 << endl;
     cout << "det_us: " << det_timer.sum / 1000 << endl;
-    assert(centers.size() <= 40000);
-    for (auto &center : centers)
-    {
-        sinkPtr->put(center);
-    }
+    assert(centers.size() <= 50000);
+    for (auto &center: materialized_centers) sinkPtr->put(center);
+    for (auto &center : centers) sinkPtr->put(center);
     algo->RunOffline(sinkPtr);
     sum_timer.Tock();
     win_timer.sum += algo->win_timer.sum;
@@ -128,7 +126,7 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
     ref_timer.sum += algo->ref_timer.sum;
 }
 
-void Benne::Train(const PointPtr input)
+void Benne::Train(const PointPtr &input)
 {
     int highDimData    = 0;
     int outlierNumber  = 0;
@@ -160,8 +158,6 @@ void Benne::Train(const PointPtr input)
         }
     }
     var = calculateDispersion(queue_, newCenter);
-    for (auto &frontElement : queue_)
-    {}
     if (highDimData > queue_.size() * 0.5)
     {
         chara.highDimension = true;
@@ -188,7 +184,7 @@ void Benne::Train(const PointPtr input)
     }
 }
 
-int Benne::Infer(const PointPtr input)
+int Benne::Infer(const PointPtr &input)
 {
     if (obj == accuracy || obj == accuracy_no_migration)
     {
@@ -334,14 +330,16 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     case 0x1412:
     case 0x1402: algo = std::make_shared<V16>(param); break;
     case 0x0312: algo = std::make_shared<V10>(param); break;
-    default: cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl;
+    default: 
+        cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl;
+        exit(-1);
     }
     algo->Init();
     if (obj == efficiency || obj == accuracy_no_migration)
     {
         for (auto &center : temp_centers)
         {
-            centers.push_back(center);
+            materialized_centers.push_back(center);
         }
     }
     else
@@ -353,7 +351,7 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     }
 }
 
-double calculateDispersion(vector<PointPtr> queue_, PointPtr newCenter)
+double calculateDispersion(const vector<PointPtr> &queue_, PointPtr newCenter)
 {
     // calculate dispersion
     PointPtr variance = make_shared<Point>(newCenter->dim);

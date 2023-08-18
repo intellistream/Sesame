@@ -56,7 +56,7 @@ class Benne : public Algorithm
 {
 public:
     std::vector<PointPtr> queue_;
-    std::vector<PointPtr> centers;
+    std::vector<PointPtr> centers, materialized_centers;
     BenneThreshold T;
     bool ds_changed = false;
     AlgorithmPtr algo;
@@ -86,8 +86,8 @@ public:
     void RunOffline(DataSinkPtr sinkPtr) override;
 
 private:
-    void Train(PointPtr point);
-    int Infer(const SESAME::PointPtr input);
+    void Train(const PointPtr &point);
+    int Infer(const SESAME::PointPtr &input);
     void UpdateAlgo(int, int);
 };
 
