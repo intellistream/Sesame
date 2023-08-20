@@ -40,8 +40,8 @@ def real_world_purity(algo_purity):
     plt.yticks([0.2, 0.4, 0.6, 0.8, 1.0])
     plt.ylabel("Purity", fontsize=font_size)
     plt.grid(axis='y', linestyle='--', linewidth=0.5)
-    plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=5, frameon=True,
-                           framealpha=1, edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=5, frameon=True,
+    #                        framealpha=1, edgecolor='black')
     plt.show()
     plt.savefig("jpg/Purity_Real_Existing.jpg",
                 bbox_inches='tight', transparent=True)
@@ -90,8 +90,8 @@ def eds_cmm_comparison(algo_cmm):
     for i in range(len(algo_cmm)):
         plt.plot(ind, algo_cmm[i], '-', markersize=15, color=general_colors[i],
                     marker=markers[i], label=compared_algo_name[i])
-    plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=24, ncol=5, frameon=True,
-                framealpha=1, edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=24, ncol=5, frameon=True,
+    #             framealpha=1, edgecolor='black')
     # plt.show()
     plt.savefig("jpg/EDS_CMM.jpg", bbox_inches='tight', transparent=True)
     plt.savefig("pdf/EDS_CMM.pdf", bbox_inches='tight', transparent=True)
@@ -182,8 +182,8 @@ def dim_purity_comparison(algo_purity):
     plt.yticks([0.4, 0.45, 0.5, 0.55])
     plt.ylabel("Purity", fontsize=font_size)
     plt.grid(axis='y', linestyle='--', linewidth=0.5)
-    plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=5, frameon=True,
-                           framealpha=1, edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=5, frameon=True,
+    #                        framealpha=1, edgecolor='black')
     plt.show()
     plt.savefig("jpg/Purity_Dim.jpg",
                 bbox_inches='tight', transparent=True)
@@ -239,7 +239,7 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
         plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
                size=35)
     plt.xticks(np.arange(20, 120, 20), size=font_size)
-    plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
+    plt.legend(bbox_to_anchor=(0.15, 1.2), loc='upper left', fontsize=24, frameon=True, framealpha=1,
                    edgecolor='black')
 
     ax2 = ax1.twinx()  # this is the important function
@@ -259,12 +259,12 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
 
-    plt.legend(bbox_to_anchor=(0.9, 1.23), loc='upper right', fontsize=24, frameon=True, framealpha=1,
+    plt.legend(bbox_to_anchor=(0.85, 1.2), loc='upper right', fontsize=24, frameon=True, framealpha=1,
                    edgecolor='black')
     # plt.show()
-    plt.savefig("jpg/Config_Queue_" + title +".jpg",
+    plt.savefig("jpg/Config_Outlier_Distance_" + title +".jpg",
                 bbox_inches='tight', transparent=True)
-    plt.savefig("pdf/Config_Queue_" + title +".pdf",
+    plt.savefig("pdf/Config_Outlier_Distance_" + title +".pdf",
                 bbox_inches='tight', transparent=True)
     plt.close()
 
@@ -290,8 +290,8 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
     #     plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
     #            size=35)
     plt.xticks(np.arange(20000, 120000, 20000), size=font_size)
-    plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
-                   edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
+    #                edgecolor='black')
 
     ax2 = ax1.twinx()  # this is the important function
     ax2.plot(config, throughput, linestyle='-', color=colors[1],
@@ -309,9 +309,8 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
-
-    plt.legend(bbox_to_anchor=(0.9, 1.23), loc='upper right', fontsize=24, frameon=True, framealpha=1,
-                   edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.9, 1.23), loc='upper right', fontsize=24, frameon=True, framealpha=1,
+    #                edgecolor='black')
     # plt.show()
     plt.savefig("jpg/Config_Queue_Size_" + title +".jpg",
                 bbox_inches='tight', transparent=True)
@@ -341,8 +340,8 @@ def param_variance(config, purity, throughput, benneAcc=True):
     #     plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
     #            size=35)
     plt.xticks(np.arange(400, 4400, 400), size=font_size)
-    plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
-                   edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
+    #                edgecolor='black')
 
     ax2 = ax1.twinx()  # this is the important function
     ax2.plot(config, throughput, linestyle='-', color=colors[1],
@@ -360,13 +359,12 @@ def param_variance(config, purity, throughput, benneAcc=True):
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
-
-    plt.legend(bbox_to_anchor=(0.9, 1.23), loc='upper right', fontsize=24, frameon=True, framealpha=1,
-                   edgecolor='black')
+    # plt.legend(bbox_to_anchor=(0.9, 1.23), loc='upper right', fontsize=24, frameon=True, framealpha=1,
+    #                edgecolor='black')
     # plt.show()
-    plt.savefig("jpg/Config_Outlier_Distance_" + title +".jpg",
+    plt.savefig("jpg/Config_Variance_" + title +".jpg",
                 bbox_inches='tight', transparent=True)
-    plt.savefig("pdf/Config_Outlier_Distance_" + title +".pdf",
+    plt.savefig("pdf/Config_Variance_" + title +".pdf",
                 bbox_inches='tight', transparent=True)
     plt.close()
 
@@ -467,8 +465,8 @@ def draw_all_pictures(real_world, config_outlier_dist, config_queue_size, config
         eff_purity = config_data.iloc[10:, 3].tolist()
         eff_throughput = config_data.iloc[10:, 4].tolist()
         print('---------Parameter Study of variance threshold of Benne on FCT---------')
-        param_queue_size(config, acc_purity, acc_throughput, benneAcc=True)
-        param_queue_size(config, eff_purity, eff_throughput, benneAcc=False)
+        param_variance(config, acc_purity, acc_throughput, benneAcc=True)
+        param_variance(config, eff_purity, eff_throughput, benneAcc=False)
 
 
 if __name__ == '__main__':
