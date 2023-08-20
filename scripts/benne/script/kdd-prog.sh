@@ -26,14 +26,14 @@ ticat ${meta} : ${kdd99} \
     : join.new algo 8 \
     : join.new obj $accuracy \
     : join.new landmark 50000 \
-    : join.new distance_threshold 500 \
+    : join.new distance_threshold 40 \
     : join.new queue_size_threshold 10000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.new outlier_cap 3 \
-    : join.new clean_interval 10000 \
+    : join.new outlier_cap 2 \
+    : join.new clean_interval 100000 \
     : join.new k 10 \
     : join.run run.sesame &
 
@@ -41,14 +41,14 @@ ticat ${meta} : ${kdd99} \
     : join.new algo 8 \
     : join.new obj $acc_no_mig \
     : join.new landmark 50000 \
-    : join.new distance_threshold 500 \
+    : join.new distance_threshold 40 \
     : join.new queue_size_threshold 10000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
     : join.new outliers_dist_threshold 50.0 \
-    : join.new outlier_cap 3 \
-    : join.new clean_interval 10000 \
+    : join.new outlier_cap 2 \
+    : join.new clean_interval 100000 \
     : join.new k 10 \
     : join.run run.sesame &
 

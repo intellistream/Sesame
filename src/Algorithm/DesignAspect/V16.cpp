@@ -16,7 +16,6 @@ SESAME::V16::V16(param_t &cmd_params)
 {
     this->param  = cmd_params;
     param.lambda = 1;
-    sum_timer.Tick();
     gap     = (int)(param.cm - param.cl);
     dm      = param.cm;
     dl      = param.cl;
@@ -27,7 +26,9 @@ SESAME::V16::V16(param_t &cmd_params)
 
 SESAME::V16::~V16() = default;
 
-void SESAME::V16::Init() {}
+void SESAME::V16::Init() {
+    sum_timer.Tick();
+}
 
 void SESAME::V16::OutputOnline(std::vector<PointPtr> &output)
 {
@@ -82,9 +83,7 @@ void SESAME::V16::calculateGridCoord(PointPtr point)
 
 void SESAME::V16::RunOnline(PointPtr input)
 {
-    win_timer.Tick();
     currentTimeStamp = input->index;
-    win_timer.Tock();
     ds_timer.Tick();
     calculateGridCoord(input);
     GridListUpdate(Coord);  // tempCoord

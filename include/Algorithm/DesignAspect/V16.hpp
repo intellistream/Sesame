@@ -60,7 +60,7 @@ public:
     void Init();
     void RunOnline(PointPtr input) override;
     void RunOffline(DataSinkPtr sinkPtr) override;
-    void OutputOnline(std::vector<PointPtr> &onlineCenters);
+    void OutputOnline(std::vector<PointPtr> &onlineCenters) override;
 
 private:
     void GridListUpdate(const std::vector<int> &coordinate);

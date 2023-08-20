@@ -41,7 +41,7 @@ void Benne::Init()
         dataSel    = Grids;
         outlierSel = NoOD;
         refineSel  = NoRefine;
-        algo       = make_shared<V9>(param);  // problem
+        algo       = make_shared<V16>(param);  // problem
     }
     else
     {
@@ -103,6 +103,7 @@ void Benne::RunOnline(const PointPtr input)
 
 void Benne::RunOffline(DataSinkPtr sinkPtr)
 {
+    on_timer.Add(sum_timer.start);
     cout << "change_count: " << change_count << endl;
     cout << "change_log: '";
     for (auto &p : change_log)
@@ -119,11 +120,11 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
     for (auto &center: materialized_centers) sinkPtr->put(center);
     for (auto &center : centers) sinkPtr->put(center);
     algo->RunOffline(sinkPtr);
-    sum_timer.Tock();
     win_timer.sum += algo->win_timer.sum;
     ds_timer.sum += algo->ds_timer.sum;
     out_timer.sum += algo->out_timer.sum;
     ref_timer.sum += algo->ref_timer.sum;
+    sum_timer.Tock();
 }
 
 void Benne::Train(const PointPtr &input)

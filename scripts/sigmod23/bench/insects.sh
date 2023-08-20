@@ -21,7 +21,7 @@ ticat ${meta} : ${insects} \
     : join.new algo 2 \
     : join.new num_last_arr 20 \
     : join.new time_window 350 \
-    : join.new num_online_clusters 300 \
+    : join.new num_online_clusters 30 \
     : join.new radius 30 \
     : join.new buf_size 500 \
     : join.run run.sesame
