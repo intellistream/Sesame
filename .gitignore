@@ -26,7 +26,8 @@
 /cmake-*
 /debug
 .vscode/
-
+/scripts/benne/jpg/
+/scripts/benne/pdf/
 *.log
 
 datasets/
