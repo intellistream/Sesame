@@ -1,1 +1,1 @@
-SELECT algo, obj, queue_size_threshold, variance_threshold, outliers_num_threshold, purity, qps FROM benne WHERE tag LIKE "extra%" ORDER BY tag, obj, queue_size_threshold, variance_threshold, outliers_num_threshold;
+SELECT tag, algo, obj, queue_size_threshold, variance_threshold, outliers_num_threshold, outliers_dist_threshold, purity, qps FROM benne WHERE tag LIKE "extra%" ORDER BY tag, obj, queue_size_threshold, variance_threshold, outliers_num_threshold, outliers_dist_threshold;
