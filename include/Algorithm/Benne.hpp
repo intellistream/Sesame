@@ -56,7 +56,8 @@ class Benne : public Algorithm
 {
 public:
     std::vector<PointPtr> queue_;
-    std::vector<PointPtr> centers, materialized_centers;
+    std::vector<PointPtr> materialized_centers;
+    // std::vector<PointPtr> centers;
     BenneThreshold T;
     bool ds_changed = false;
     AlgorithmPtr algo;

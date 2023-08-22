@@ -116,9 +116,9 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
          << dec << endl;
     cout << "mig_us: " << mig_timer.sum / 1000 << endl;
     cout << "det_us: " << det_timer.sum / 1000 << endl;
-    assert(centers.size() <= 50000);
+    // assert(centers.size() <= 50000);
     for (auto &center: materialized_centers) sinkPtr->put(center);
-    for (auto &center : centers) sinkPtr->put(center);
+    // for (auto &center : centers) sinkPtr->put(center);
     algo->RunOffline(sinkPtr);
     win_timer.sum += algo->win_timer.sum;
     ds_timer.sum += algo->ds_timer.sum;
@@ -145,7 +145,8 @@ void Benne::Train(const PointPtr &input)
             highDimData++;
         }
         double minDist = DBL_MAX;
-        for (auto &center : centers)
+        temp_centers = algo->OutputOnline();
+        for (auto &center : temp_centers)
         {
             double dist = frontElement->L2Dist(center);
             if (dist < minDist)
@@ -153,7 +154,7 @@ void Benne::Train(const PointPtr &input)
                 minDist = dist;
             }
         }
-        if (minDist > T.outliers_dist)
+        if (minDist > T.outliers_dist && minDist < DBL_MAX)
         {
             outlierNumber++;
         }

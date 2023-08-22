@@ -219,16 +219,16 @@ def dim_throughput_comparison(algo_throughput):
 
 def param_outlier_dist(config, purity, throughput, benneAcc=True):
     fig = plt.figure(figsize=(12.5, 7.5))
-    font_size = 26
+    font_size = 40
     plt.rcParams['font.size'] = font_size
     ax1 = fig.add_subplot(111)
     # plt.grid(axis='y', linestyle='--', linewidth=0.5)
     if benneAcc:
-        plt.xlabel("Outlier Distance Threshold [Benne(Accuracy)]", fontsize=font_size)
+        plt.xlabel("Outlier Distance Threshold", fontsize=font_size)
         colors = benne_acc_colors
         title = "Acc"
     else:
-        plt.xlabel("Outlier Distance Threshold [Benne(Efficiency)]", fontsize=font_size)
+        plt.xlabel("Outlier Distance Threshold", fontsize=font_size)
         colors = benne_eff_colors
         title = "eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
@@ -237,9 +237,11 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
     plt.tick_params(axis='y', size=font_size)
     if min(purity) != max(purity):
         plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
-               size=35)
+               size=font_size)
+    else:
+        plt.yticks(fontsize=font_size)
     plt.xticks(np.arange(20, 120, 20), size=font_size)
-    plt.legend(bbox_to_anchor=(0.15, 1.2), loc='upper left', fontsize=24, frameon=True, framealpha=1,
+    plt.legend(bbox_to_anchor=(0, 1.3), loc='upper left', fontsize=40, frameon=True, framealpha=1,
                    edgecolor='black')
 
     ax2 = ax1.twinx()  # this is the important function
@@ -255,11 +257,13 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
         y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
                        np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
         plt.yticks(y_tick, size=font_size)
+    else:
+        plt.yticks(fontsize=font_size)
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
 
-    plt.legend(bbox_to_anchor=(0.85, 1.2), loc='upper right', fontsize=24, frameon=True, framealpha=1,
+    plt.legend(bbox_to_anchor=(1, 1.3), loc='upper right', fontsize=40, frameon=True, framealpha=1,
                    edgecolor='black')
     # plt.show()
     plt.savefig("jpg/Config_Outlier_Distance_" + title +".jpg",
@@ -270,16 +274,16 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
 
 def param_queue_size(config, purity, throughput, benneAcc=True):
     fig = plt.figure(figsize=(12.5, 7.5))
-    font_size = 26
+    font_size = 40
     plt.rcParams['font.size'] = font_size
     ax1 = fig.add_subplot(111)
     # plt.grid(axis='y', linestyle='--', linewidth=0.5)
     if benneAcc:
-        plt.xlabel("Queue Size Threshold [Benne(Accuracy)]", fontsize=font_size)
+        plt.xlabel("Queue Size Threshold", fontsize=font_size)
         colors = benne_acc_colors
         title = "Acc"
     else:
-        plt.xlabel("Queue Size Threshold [Benne(Efficiency)]", fontsize=font_size)
+        plt.xlabel("Queue Size Threshold", fontsize=font_size)
         colors = benne_eff_colors
         title = "eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
@@ -289,7 +293,8 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
     # if min(purity) != max(purity):
     #     plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
     #            size=35)
-    plt.xticks(np.arange(20000, 120000, 20000), size=font_size)
+    plt.yticks(fontsize=font_size)
+    plt.xticks(np.arange(30000, 120000, 20000), size=font_size)
     # plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
     #                edgecolor='black')
 
@@ -301,11 +306,13 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
     plt.tick_params(axis='y', size=font_size)
     y_magnitude = math.floor(math.log10(max(throughput)))
     y_magnitude = math.pow(10, y_magnitude)
-    interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
-    # if interval != 0:
-    #     y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
-    #                    np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
-    #     plt.yticks(y_tick, size=font_size)
+    interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4 + 16600
+    if interval != 0:
+        y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude) - interval,
+                       np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
+        plt.yticks(y_tick, size=font_size)
+    else:
+        plt.yticks(fontsize=font_size)
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
@@ -320,16 +327,16 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
 
 def param_variance(config, purity, throughput, benneAcc=True):
     fig = plt.figure(figsize=(12.5, 7.5))
-    font_size = 26
+    font_size = 40
     plt.rcParams['font.size'] = font_size
     ax1 = fig.add_subplot(111)
     # plt.grid(axis='y', linestyle='--', linewidth=0.5)
     if benneAcc:
-        plt.xlabel("Outlier Distance Threshold [Benne(Accuracy)]", fontsize=font_size)
+        plt.xlabel("Variance Threshold", fontsize=font_size)
         colors = benne_acc_colors
         title = "Acc"
     else:
-        plt.xlabel("Outlier Distance Threshold [Benne(Efficiency)]", fontsize=font_size)
+        plt.xlabel("Variance Threshold", fontsize=font_size)
         colors = benne_eff_colors
         title = "eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
@@ -339,7 +346,8 @@ def param_variance(config, purity, throughput, benneAcc=True):
     # if min(purity) != max(purity):
     #     plt.yticks(np.arange(min(purity), max(purity) + (max(purity) - min(purity)) / 4, (max(purity) - min(purity)) / 4),
     #            size=35)
-    plt.xticks(np.arange(400, 4400, 400), size=font_size)
+    plt.xticks(np.arange(400, 4400, 800), size=font_size)
+    plt.yticks(fontsize=font_size)
     # plt.legend(bbox_to_anchor=(0.13, 1.23), loc='upper left', fontsize=24, frameon=True, framealpha=1,
     #                edgecolor='black')
 
@@ -352,10 +360,12 @@ def param_variance(config, purity, throughput, benneAcc=True):
     y_magnitude = math.floor(math.log10(max(throughput)))
     y_magnitude = math.pow(10, y_magnitude)
     interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
-    # if interval != 0:
-    #     y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
-    #                    np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
-    #     plt.yticks(y_tick, size=font_size)
+    if interval != 0:
+        y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude) - interval,
+                       np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
+        plt.yticks(y_tick, size=font_size)
+    else:
+        plt.yticks(fontsize=font_size)
     plt.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
     ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
     # ax2.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
