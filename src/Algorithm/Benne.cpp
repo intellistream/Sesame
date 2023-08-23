@@ -145,7 +145,8 @@ void Benne::Train(const PointPtr &input)
             highDimData++;
         }
         double minDist = DBL_MAX;
-        temp_centers = algo->OutputOnline();
+        vector<PointPtr> temp_centers;
+        algo->OutputOnline(temp_centers);
         for (auto &center : temp_centers)
         {
             double dist = frontElement->L2Dist(center);
