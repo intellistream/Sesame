@@ -19,7 +19,7 @@ namespace SESAME
 void AccuracyRes::Evaluate(const param_t &param, const std::vector<PointPtr> &inputs,
                         const std::vector<PointPtr> &predicts)
 {
-    if (param.run_eval && param.num_res > 0 && param.num_res <= 40000)
+    if (param.run_eval && param.num_res > 0 && param.num_res <= 60000)
     {
         Timer pur_timer, cmm_timer, nmi_timer;
         std::cerr << "Accuracy:" << std::endl;

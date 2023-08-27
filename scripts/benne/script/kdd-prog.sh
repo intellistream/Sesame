@@ -27,7 +27,7 @@ ticat ${meta} : ${kdd99} \
     : join.new obj $accuracy \
     : join.new landmark 50000 \
     : join.new distance_threshold 40 \
-    : join.new queue_size_threshold 10000 \
+    : join.new queue_size_threshold 50000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
@@ -42,7 +42,7 @@ ticat ${meta} : ${kdd99} \
     : join.new obj $acc_no_mig \
     : join.new landmark 50000 \
     : join.new distance_threshold 40 \
-    : join.new queue_size_threshold 10000 \
+    : join.new queue_size_threshold 50000 \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \

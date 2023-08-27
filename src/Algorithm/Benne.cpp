@@ -133,6 +133,8 @@ void Benne::Train(const PointPtr &input)
     int outlierNumber  = 0;
     double var         = 0;
     PointPtr newCenter = make_shared<Point>(input->dim);
+    vector<PointPtr> temp_centers;
+    algo->OutputOnline(temp_centers);
     for (auto &frontElement : queue_)
     {
         // Obtain the center of the queue
@@ -145,8 +147,6 @@ void Benne::Train(const PointPtr &input)
             highDimData++;
         }
         double minDist = DBL_MAX;
-        vector<PointPtr> temp_centers;
-        algo->OutputOnline(temp_centers);
         for (auto &center : temp_centers)
         {
             double dist = frontElement->L2Dist(center);
