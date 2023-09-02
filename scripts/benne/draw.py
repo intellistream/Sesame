@@ -20,6 +20,7 @@ general_colors = [(0.717,0.710,0.627), (0.267, 0.459, 0.478), (0.271, 0.165, 0.2
 benne_colors = [(0.984, 0.518, 0.008), (0.569, 0.835, 0.259)]
 benne_acc_colors = ['#c6d900', '#79a701']
 benne_eff_colors = ['#e2b400', '#f58a2c']
+break_down_colors = ['grey', 'salmon', 'green']
 hatches = ['/', '-', 'o', 'x', '+', '.', '*', '|', 'O', '\\']
 markers = ['o', 'x', 'd', '*', 's', '^', 'p', '<', 'H', 'P']
 
@@ -74,7 +75,7 @@ def real_world_throughput(algo_throughput):
     plt.savefig("pdf/Throughput_Real_Existing.pdf",
                 bbox_inches='tight', transparent=True)
     plt.close()
-   
+
 def eds_cmm_comparison(algo_cmm):
     plt.figure(figsize=(10, 4))
     font_size = 26
@@ -178,8 +179,9 @@ def dim_purity_comparison(algo_purity):
                 hatch=hatches[i],
                 label=benne_variant_name[i],
                 edgecolor="k")
-    plt.ylim(0.4, 0.55)
-    plt.yticks([0.4, 0.45, 0.5, 0.55])
+    plt.ylim(0.41, 0.44)
+    plt.yticks([0.41, 0.42, 0.43, 0.44])
+    plt.xlabel('Dimensionality', fontsize=font_size)
     plt.ylabel("Purity", fontsize=font_size)
     plt.grid(axis='y', linestyle='--', linewidth=0.5)
     # plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=5, frameon=True,
@@ -205,6 +207,7 @@ def dim_throughput_comparison(algo_throughput):
                 label=benne_variant_name[i],
                 edgecolor="k")
     plt.ylabel("Throughput", fontsize=font_size)
+    plt.xlabel('Dimensionality', fontsize=font_size)
     plt.grid(axis='y', linestyle='--', linewidth=0.5)
     ax = plt.gca()
     ax.ticklabel_format(style='sci', scilimits=(-1, 2), axis='y')
@@ -378,7 +381,50 @@ def param_variance(config, purity, throughput, benneAcc=True):
                 bbox_inches='tight', transparent=True)
     plt.close()
 
-
+def breakdown(sum, mig, det, benneAcc=True):
+    plt.figure(figsize=(6, 4))
+    font_size = 26
+    plt.rcParams['font.size'] = font_size
+    plt.rc('ytick', labelsize=font_size)
+    if benneAcc:
+        plt.xticks([0.2, 1.2, 2.2, 3.2], real_world_workloads, fontsize=font_size)
+    else:
+        plt.xticks([0.05, 1.05, 2.05, 3.05], real_world_workloads, fontsize=font_size)
+    ind = np.arange(4)
+    width = 0.6
+    if benneAcc:
+        i = 1
+    else:
+        i = 0
+    plt.bar(ind + width * i / 3 + 0.01, mig[i], width / 3, color=break_down_colors[1],
+            hatch=hatches[1],
+            label="Migration",
+            edgecolor="k")
+    plt.bar(ind + width * i / 3 + 0.01, det[i], width / 3, color=break_down_colors[2], bottom=mig[i],
+            hatch=hatches[2],
+            label="Detection",
+            edgecolor="k")
+    plt.bar(ind + width * i / 3 + 0.01, sum[i] - mig[i] - det[i], width / 3, color=break_down_colors[0], bottom=det[i],
+            hatch=hatches[0],
+            label="Clustering",
+            edgecolor="k")
+    # plt.ylim(0.4, 0.55)
+    # plt.yticks([0.4, 0.45, 0.5, 0.55])
+    plt.ylabel("Execution Time", fontsize=font_size)
+    # plt.legend(bbox_to_anchor=(0.5, 1.80), loc=9, borderaxespad=0, fontsize=font_size, ncol=3, frameon=True,
+    #                        framealpha=1, edgecolor='black')
+    plt.show()
+    if benneAcc:
+        plt.savefig(f"jpg/Execution_Time_Acc.jpg",
+                    bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/Execution_Time_Acc.pdf",
+                    bbox_inches='tight', transparent=True)
+    else:
+        plt.savefig(f"jpg/Execution_Time_Eff.jpg",
+                    bbox_inches='tight', transparent=True)
+        plt.savefig("pdf/Execution_Time_Eff.pdf",
+                    bbox_inches='tight', transparent=True)
+    plt.close()
 @click.command()
 @click.option('--real-world', default='raw/real-world.csv', show_default=True)
 @click.option('--config-outlier-dist', default='raw/benne-outliers-num.csv', show_default=True)
@@ -389,9 +435,10 @@ def param_variance(config, purity, throughput, benneAcc=True):
 @click.option('--throughput-eds', default='raw/eds-throughput.csv', show_default=True)
 @click.option('--purity-ods', default='raw/ods-purity.csv', show_default=True)
 @click.option('--throughput-ods', default='raw/ods-throughput.csv', show_default=True)
+@click.option('--break-down', default='raw/breakdown.csv', show_default=True)
 # below are unnecessary currently
 def draw_all_pictures(real_world, config_outlier_dist, config_queue_size, config_var, dim, eds_cmm,
-                      throughput_eds, purity_ods, throughput_ods):
+                      throughput_eds, purity_ods, throughput_ods, break_down):
     if real_world != '':
         real_world_data = pd.read_csv(real_world)
         algo_num = 8 + 2
@@ -477,6 +524,26 @@ def draw_all_pictures(real_world, config_outlier_dist, config_queue_size, config
         print('---------Parameter Study of variance threshold of Benne on FCT---------')
         param_variance(config, acc_purity, acc_throughput, benneAcc=True)
         param_variance(config, eff_purity, eff_throughput, benneAcc=False)
+    if break_down != '':
+        config_data = pd.read_csv(break_down)
+        sum_time = []
+        mig_time = []
+        det_time = []
+        for i in range(4):
+            sum_time.append(config_data.iloc[0][1 + 3 * i])
+            mig_time.append(config_data.iloc[0][2 + 3 * i])
+            det_time.append(config_data.iloc[0][3 + 3 * i])
+        print('---------Execution Time Breakdown on Real-world for Efficiency---------')
+        breakdown(sum_time, mig_time, det_time, benneAcc=False)
+        sum_time = []
+        mig_time = []
+        det_time = []
+        for i in range(4):
+            sum_time.append(config_data.iloc[1][1 + 3 * i])
+            mig_time.append(config_data.iloc[1][2 + 3 * i])
+            det_time.append(config_data.iloc[1][3 + 3 * i])
+        print('---------Execution Time Breakdown on Real-world for Accuracy---------')
+        breakdown(sum_time, mig_time, det_time, benneAcc=True)
 
 
 if __name__ == '__main__':
