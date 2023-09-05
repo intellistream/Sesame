@@ -233,7 +233,7 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
     else:
         plt.xlabel("Outlier Distance Threshold", fontsize=font_size)
         colors = benne_eff_colors
-        title = "eff"
+        title = "Eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
              markersize=18, color=colors[0], label='Purity')
     ax1.set_ylabel('Purity', fontsize=font_size)
@@ -255,10 +255,10 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
     plt.tick_params(axis='y', size=font_size)
     y_magnitude = math.floor(math.log10(max(throughput)))
     y_magnitude = math.pow(10, y_magnitude)
-    interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
+    interval = np.ceil(round((max(throughput))/ y_magnitude, 1) * y_magnitude) / 2
     if interval != 0:
-        y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude),
-                       np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
+        y_tick = np.arange(0,
+                       (np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude)) * 2, interval)
         plt.yticks(y_tick, size=font_size)
     else:
         plt.yticks(fontsize=font_size)
@@ -288,7 +288,7 @@ def param_queue_size(config, purity, throughput, benneAcc=True):
     else:
         plt.xlabel("Queue Size Threshold", fontsize=font_size)
         colors = benne_eff_colors
-        title = "eff"
+        title = "Eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
              markersize=18, color=colors[0], label='Purity')
     ax1.set_ylabel('Purity', fontsize=font_size)
@@ -341,7 +341,7 @@ def param_variance(config, purity, throughput, benneAcc=True):
     else:
         plt.xlabel("Variance Threshold", fontsize=font_size)
         colors = benne_eff_colors
-        title = "eff"
+        title = "Eff"
     ax1.plot(config, purity, linestyle='-', marker='s',
              markersize=18, color=colors[0], label='Purity')
     ax1.set_ylabel('Purity', fontsize=font_size)
@@ -362,10 +362,10 @@ def param_variance(config, purity, throughput, benneAcc=True):
     plt.tick_params(axis='y', size=font_size)
     y_magnitude = math.floor(math.log10(max(throughput)))
     y_magnitude = math.pow(10, y_magnitude)
-    interval = np.ceil(round((max(throughput) - min(throughput))/ y_magnitude, 1) * y_magnitude) / 4
+    interval = np.ceil(round((max(throughput))/ y_magnitude, 1) * y_magnitude) / 2
     if interval != 0:
-        y_tick = np.arange(np.ceil(round(min(throughput) / y_magnitude, 1) * y_magnitude) - interval,
-                       np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude) + interval, interval)
+        y_tick = np.arange(0,
+                       (np.ceil(round(max(throughput) / y_magnitude, 1) * y_magnitude)) * 2, interval)
         plt.yticks(y_tick, size=font_size)
     else:
         plt.yticks(fontsize=font_size)
@@ -381,9 +381,10 @@ def param_variance(config, purity, throughput, benneAcc=True):
                 bbox_inches='tight', transparent=True)
     plt.close()
 
+
 def breakdown(sum, mig, det, benneAcc=True):
     plt.figure(figsize=(6, 4))
-    font_size = 26
+    font_size = 22
     plt.rcParams['font.size'] = font_size
     plt.rc('ytick', labelsize=font_size)
     if benneAcc:
@@ -396,15 +397,16 @@ def breakdown(sum, mig, det, benneAcc=True):
         i = 1
     else:
         i = 0
-    plt.bar(ind + width * i / 3 + 0.01, mig[i], width / 3, color=break_down_colors[1],
+    plt.yscale("log")
+    plt.bar(ind + width * i / 3 - 0.19, mig[i], width / 3, color=break_down_colors[1],
             hatch=hatches[1],
             label="Migration",
             edgecolor="k")
-    plt.bar(ind + width * i / 3 + 0.01, det[i], width / 3, color=break_down_colors[2], bottom=mig[i],
+    plt.bar(ind + width * i / 3 + 0.01, det[i], width / 3, color=break_down_colors[2], 
             hatch=hatches[2],
             label="Detection",
             edgecolor="k")
-    plt.bar(ind + width * i / 3 + 0.01, sum[i] - mig[i] - det[i], width / 3, color=break_down_colors[0], bottom=det[i],
+    plt.bar(ind + width * i / 3 + 0.21, sum[i] - mig[i] - det[i], width / 3, color=break_down_colors[0], 
             hatch=hatches[0],
             label="Clustering",
             edgecolor="k")
@@ -425,6 +427,8 @@ def breakdown(sum, mig, det, benneAcc=True):
         plt.savefig("pdf/Execution_Time_Eff.pdf",
                     bbox_inches='tight', transparent=True)
     plt.close()
+
+
 @click.command()
 @click.option('--real-world', default='raw/real-world.csv', show_default=True)
 @click.option('--config-outlier-dist', default='raw/benne-outliers-num.csv', show_default=True)
