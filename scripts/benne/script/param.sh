@@ -136,7 +136,7 @@ ticat ${meta} : ${cover} \
     : join.new dim_threshold 30 \
     : join.new variance_threshold 100.0 \
     : join.new outliers_num_threshold 200 \
-    : join.new outliers_dist_threshold [10,100,10] \
+    : join.new outliers_dist_threshold [500,700,20] \
     : join.run run.sesame &
 
 ticat ${meta} : ${cover} \

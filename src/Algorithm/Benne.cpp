@@ -112,12 +112,12 @@ void Benne::RunOffline(DataSinkPtr sinkPtr)
     }
     cout << "'" << endl;
     cout << "first_algo: " << hex << first_algo << endl;
-    cout << "final_algo: " << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel)
-         << dec << endl;
+    cout << "final_algo: " << (windowSel << 12 | dataSel << 8 | outlierSel << 4 | refineSel) << dec
+         << endl;
     cout << "mig_us: " << mig_timer.sum / 1000 << endl;
     cout << "det_us: " << det_timer.sum / 1000 << endl;
     // assert(centers.size() <= 50000);
-    for (auto &center: materialized_centers) sinkPtr->put(center);
+    for (auto &center : materialized_centers) sinkPtr->put(center);
     // for (auto &center : centers) sinkPtr->put(center);
     algo->RunOffline(sinkPtr);
     win_timer.sum += algo->win_timer.sum;
@@ -150,7 +150,7 @@ void Benne::Train(const PointPtr &input)
         for (auto &center : temp_centers)
         {
             double dist = frontElement->L2Dist(center);
-            if (dist < minDist)
+            if (dist != 0.0 && dist < minDist)
             {
                 minDist = dist;
             }
@@ -333,9 +333,7 @@ void Benne::UpdateAlgo(int old_algo, int new_algo)
     case 0x1412:
     case 0x1402: algo = std::make_shared<V16>(param); break;
     case 0x0312: algo = std::make_shared<V10>(param); break;
-    default: 
-        cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl;
-        exit(-1);
+    default: cerr << "Error: no such algorithm: " << hex << new_algo << dec << endl; exit(-1);
     }
     algo->Init();
     if (obj == efficiency || obj == accuracy_no_migration)
