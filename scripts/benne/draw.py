@@ -431,7 +431,7 @@ def breakdown(sum, mig, det, benneAcc=True):
 
 @click.command()
 @click.option('--real-world', default='raw/real-world.csv', show_default=True)
-@click.option('--config-outlier-dist', default='raw/benne-outliers-num.csv', show_default=True)
+@click.option('--config-outlier-dist', default='raw/benne-outliers-dist.csv', show_default=True)
 @click.option('--config-queue-size', default='raw/benne-queue-size.csv', show_default=True)
 @click.option('--config-var', default='raw/benne-var.csv', show_default=True)
 @click.option('--dim', default='raw/dim-benne.csv', show_default=True)
