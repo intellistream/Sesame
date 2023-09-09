@@ -243,7 +243,7 @@ def param_outlier_dist(config, purity, throughput, benneAcc=True):
                size=font_size)
     else:
         plt.yticks(fontsize=font_size)
-    plt.xticks(np.arange(20, 120, 20), size=font_size)
+    # plt.xticks([500, 700, 900], ['500(10)', '700(50)', '900(90)'], fontsize=font_size-5)
     plt.legend(bbox_to_anchor=(0, 1.3), loc='upper left', fontsize=40, frameon=True, framealpha=1,
                    edgecolor='black')
 
@@ -500,14 +500,15 @@ def draw_all_pictures(real_world, config_outlier_dist, config_queue_size, config
         dim_throughput_comparison(algo_throughput)
     if config_outlier_dist != '':
         config_data = pd.read_csv(config_outlier_dist)
-        config = config_data.iloc[0:10, 2].tolist()
+        config_purity = config_data.iloc[0:10, 2].tolist()
+        config_throughput = config_data.iloc[10:, 2].tolist()
         acc_purity = config_data.iloc[0:10, 3].tolist()
         acc_throughput = config_data.iloc[0:10, 4].tolist()
         eff_purity = config_data.iloc[10:, 3].tolist()
         eff_throughput = config_data.iloc[10:, 4].tolist()
         print('---------Parameter Study of outlier distance threshold of Benne on FCT---------')
-        param_outlier_dist(config, acc_purity, acc_throughput, benneAcc=True)
-        param_outlier_dist(config, eff_purity, eff_throughput, benneAcc=False)
+        param_outlier_dist(config_purity, acc_purity, acc_throughput, benneAcc=True)
+        param_outlier_dist(config_throughput, eff_purity, eff_throughput, benneAcc=False)
     if config_queue_size != '':
         config_data = pd.read_csv(config_queue_size)
         config = config_data.iloc[0:5, 2].tolist()
