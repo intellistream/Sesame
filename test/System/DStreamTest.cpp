@@ -13,6 +13,8 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Utils/Logger.hpp"
 
+using namespace SESAME;
+
 TEST(System, DStream)
 {
     // Parse parameters.
@@ -30,25 +32,9 @@ TEST(System, DStream)
     cmd_params.time_decay   = false;
 
     cmd_params.input_file =
-        std::filesystem::current_path().generic_string() + "/datasets/CoverType.txt";
-    cmd_params.output_file = "results.txt";
+        "datasets/CoverType.txt";
     cmd_params.algo        = SESAME::DStreamType;
 
-    std::vector<SESAME::PointPtr> input;
-    std::vector<SESAME::PointPtr> results;
-
-    // Create Spout.
-    SESAME::DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(cmd_params);
-    // Directly load data from file. TODO: configure it to load from external
-    // sensors, e.g., HTTP.
-    BenchmarkUtils::loadData(cmd_params, sourcePtr);
-
-    // Create Sink.
-    SESAME::DataSinkPtr sinkPtr = GenericFactory::New<DataSink>(cmd_params);
-
-    // Create Algorithm.
-    SESAME::AlgorithmPtr algoPtr = SESAME::AlgorithmFactory::create(cmd_params);
-
     // Run algorithm producing results.
-    BenchmarkUtils::runBenchmark(cmd_params, sourcePtr, sinkPtr, algoPtr);
+    RunBenchmark(cmd_params);
 }

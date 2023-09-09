@@ -2,7 +2,7 @@
 // Created by 1124a on 2021/8/20.
 //
 #include "Algorithm/OfflineRefinement/DBSCAN.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 
 SESAME::DBSCAN::DBSCAN(unsigned int minPts, float eps)
 {
@@ -39,7 +39,7 @@ void SESAME::DBSCAN::run(std::vector<PointPtr> &input)
     }
 }
 
-void SESAME::DBSCAN::Run(StreamClusteringParam &param, std::vector<PointPtr> &input,
+void SESAME::DBSCAN::Run(SesameParam &param, std::vector<PointPtr> &input,
                          SESAME::DataSinkPtr sinkPtr)
 {
     this->min_points = param.min_points;

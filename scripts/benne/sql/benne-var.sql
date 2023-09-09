@@ -1,0 +1,1 @@
+SELECT algo, obj, variance_threshold, purity, qps FROM benne WHERE tag LIKE "extra.var" ORDER BY tag, obj, variance_threshold;

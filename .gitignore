@@ -26,5 +26,12 @@
 /cmake-*
 /debug
 .vscode/
-
+/scripts/benne/jpg/
+/scripts/benne/pdf/
 *.log
+
+datasets/
+
+*.egg-info/
+*.out
+results.txt

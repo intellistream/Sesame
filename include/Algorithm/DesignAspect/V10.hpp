@@ -16,7 +16,7 @@
 
 namespace SESAME
 {
-class V10Parameter : public AlgorithmParameters
+class V10Parameter : public SesameParam
 {
 public:
     bool isInit = false;
@@ -61,6 +61,7 @@ public:
     void RunOnline(SESAME::PointPtr input) override;
 
     void RunOffline(DataSinkPtr sinkPtr) override;
+    void OutputOnline(std::vector<PointPtr> &onlineCenters) override;
 };
 }  // namespace SESAME
 #endif  // SESAME_INCLUDE_ALGORITHM_DESIGNASPECT_V10_HPP_

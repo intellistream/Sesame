@@ -278,7 +278,7 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid()
     return dataObject;
 }
 
-// calculate centroid of a  cluster
+// calculate centroid of a cluster
 SESAME::PointPtr SESAME::MicroCluster::getCenter()
 {
     PointPtr center = DataStructureFactory::createPoint(dim);

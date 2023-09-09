@@ -1,0 +1,4 @@
+algo,fct.sum_us,fct.mig_us,fct.det_us,kdd.sum_us,kdd.mig_us,kdd.det_us,sensor.sum_us,sensor.mig_us,sensor.det_us,insects.sum_us,insects.mig_us,insects.det_us,eds.sum_us,eds.mig_us,eds.det_us,ods.sum_us,ods.mig_us,ods.det_us
+BenneEff,2416681,12503,76656,24747166,127972,1714438,10539125,0,0,980058,0,142786,473411,2010,214797,148309,1692,1991
+BenneAcc,3297240,18,178894,661779955,23570,5884111,16030480,53,3195481,6504375,17,813818,53362811,849,43208100,7615306,1184,1598667
+BenneAccNoMig,NULL,NULL,NULL,665969349,30789,5782179,NULL,NULL,NULL,NULL,NULL,NULL,52593490,623,42707416,7536771,1125,1566460

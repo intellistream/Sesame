@@ -2,7 +2,7 @@
 #define SLIDING_WINDOW_CLUSTERING_HPP_
 
 #include "Algorithm/Algorithm.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Utils/Random.hpp"
 
 #include <list>

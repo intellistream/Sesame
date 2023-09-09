@@ -24,7 +24,7 @@
 namespace SESAME
 {
 
-class CluStreamParameter : public AlgorithmParameters
+class CluStreamParameter : public SesameParam
 {
 public:
     int num_last_arr;

@@ -40,7 +40,7 @@ private:
     param_t param;
 
 public:
-    void load(int point_number, int dim, std::vector<string> &input);
+    void load();
     bool empty();
     PointPtr get();
     std::vector<PointPtr> getInputs();

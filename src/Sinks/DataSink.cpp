@@ -17,7 +17,7 @@ using namespace SESAME;
 
 DataSink::DataSink(const param_t &param) : param(param)
 {
-    outputQueue = std::make_shared<std::queue<PointPtr>>();
+    outputQueue = std::make_shared<boost::lockfree::spsc_queue<PointPtr>>((size_t)param.num_points);
     threadPtr   = std::make_shared<SingleThread>();
     sourceEnd   = false;
 }

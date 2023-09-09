@@ -14,7 +14,7 @@ namespace SESAME
 {
 
 typedef std::vector<std::vector<MicroClusterPtr>> Clusters;
-class DBStreamParams : public AlgorithmParameters
+class DBStreamParams : public SesameParam
 {
 public:
     double radius;

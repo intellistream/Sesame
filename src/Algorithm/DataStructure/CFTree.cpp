@@ -14,16 +14,9 @@
 
 using namespace std::experimental;
 
-static void log(const string_view &message,
-                const source_location &location = source_location::current())
-{
-    std::cerr << "info:" << location.file_name() << ":" << location.line() << " "
-              << location.function_name() << " " << message << '\n';
-}
-
 namespace SESAME
 {
-CFTree::CFTree(const StreamClusteringParam &param)
+CFTree::CFTree(const SesameParam &param)
     : max_in_nodes(param.max_in_nodes),
       max_leaf_nodes(param.max_leaf_nodes),
       distance_threshold(param.distance_threshold)
@@ -100,7 +93,7 @@ void SESAME::CFNode::setOutlier(bool flag) { this->outlier = flag; }
 
 ClusteringFeaturesTree::~ClusteringFeaturesTree() {}
 
-ClusteringFeaturesTree::ClusteringFeaturesTree(const StreamClusteringParam &param)
+ClusteringFeaturesTree::ClusteringFeaturesTree(const SesameParam &param)
     : dim(param.dim),
       max_in_nodes(param.max_in_nodes),
       max_leaf_nodes(param.max_leaf_nodes),
@@ -416,7 +409,7 @@ std::string ClusteringFeaturesTree::Serialize()
     return s;
 }
 
-ClusteringFeaturesList::ClusteringFeaturesList(const StreamClusteringParam &param)
+ClusteringFeaturesList::ClusteringFeaturesList(const SesameParam &param)
     : dim(param.dim), distance_threshold(param.distance_threshold)
 {}
 

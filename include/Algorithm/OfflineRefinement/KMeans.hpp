@@ -9,7 +9,7 @@
 #define SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_KMEANS_HPP_
 
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Algorithm/OfflineRefinement/OfflineRefinement.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/Logger.hpp"
@@ -29,9 +29,12 @@ class KMeans : public OfflineRefinement
 {
 public:
     KMeans() {}
-    KMeans(const StreamClusteringParam &param) {}
-    void Run(StreamClusteringParam &param, std::vector<PointPtr> &online_centers,
+    KMeans(const SesameParam &param) {}
+    // TODO: use template here
+    void Run(SesameParam &param, std::vector<PointPtr> &online_centers,
              DataSinkPtr sinkPtr);
+    void Run(SesameParam &param, std::vector<PointPtr> &online_centers,
+             std::vector<PointPtr> &results);
     void produceResult(std::vector<std::vector<PointPtr>> &groups, DataSinkPtr sinkPtr);
     void runKMeans(int numberOfCenters, int numberOfInput, std::vector<PointPtr> &centers,
                    std::vector<PointPtr> &input, std::vector<std::vector<PointPtr>> &oldGroups,

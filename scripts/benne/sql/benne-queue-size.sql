@@ -1,0 +1,1 @@
+SELECT algo, obj, queue_size_threshold, purity, qps FROM benne WHERE tag LIKE "extra.queue" ORDER BY tag, obj, queue_size_threshold;

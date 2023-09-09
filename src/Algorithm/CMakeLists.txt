@@ -9,6 +9,7 @@ add_source_sesame(
         SlidingWindowClustering.cpp
         Algorithm.cpp
         AlgorithmFactory.cpp
+        Benne.cpp
 )
 add_subdirectory(DataStructure)
 add_subdirectory(OfflineRefinement)

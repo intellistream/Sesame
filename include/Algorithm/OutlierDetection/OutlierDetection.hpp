@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "Algorithm/DataStructure/CFTree.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 
 namespace SESAME
 {
@@ -23,7 +23,7 @@ public:
     static constexpr bool buffer_enabled = B;
     static constexpr bool timer_enabled  = T;
 
-    OutlierDetection(const StreamClusteringParam &param)
+    OutlierDetection(const SesameParam &param)
         : outlier_cap_(param.outlier_cap), interval_(param.clean_interval)
     {}
     template <NodeConcept N>
@@ -63,7 +63,7 @@ public:
     static constexpr bool buffer_enabled = B;
     static constexpr bool timer_enabled  = T;
 
-    DistanceDetection(const StreamClusteringParam &param)
+    DistanceDetection(const SesameParam &param)
         : outlier_distance_threshold_(param.outlier_distance_threshold),
           outlier_cap_(param.outlier_cap),
           interval_(param.time_interval)
@@ -106,7 +106,7 @@ public:
     static constexpr bool buffer_enabled = B;
     static constexpr bool timer_enabled  = T;
 
-    DensityDetection(const StreamClusteringParam &param)
+    DensityDetection(const SesameParam &param)
         : neighbor_distance_(param.neighbor_distance),
           outlier_density_threshold_(param.outlier_density_threshold),
           outlier_cap_(param.outlier_cap),
@@ -165,7 +165,7 @@ class NoDetection
 public:
     static constexpr bool buffer_enabled = false;
     static constexpr bool timer_enabled  = false;
-    NoDetection(const StreamClusteringParam &param) {}
+    NoDetection(const SesameParam &param) {}
     template <NodeConcept N>
     bool Check(PointPtr point, std::vector<N> &nodes)
     {

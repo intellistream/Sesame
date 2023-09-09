@@ -25,16 +25,38 @@ using namespace std::chrono;
  * @param input
  * @return
  */
-void SESAME::DataSource::load(int point_number, int dim, vector<string> &input)
+void SESAME::DataSource::load()
 {
+    // Pass input file as a string to DataSource.
+    std::vector<std::string> data;
+    ifstream infile;
+    infile.open(param.input_file);
+    if (infile.is_open() == 0)
+    {
+        std::cerr << "input file not found" << std::endl;
+        exit(1);
+    }
+    SESAME_INFO("Read from the file...");
+
+    // insert the data once per line into the string vector, every string element
+    // represents a data line
+    for (int i = 0; i < param.num_points; i++)
+    {
+        data.emplace_back();
+        getline(infile, data[i]);
+    }
+    infile.close();
+
+    // convert the string format into point vector, every string represents a point
+    SESAME_INFO("Finished loading input data");
     // The step used to generate random timestamps
     const int timeStep = 100000;
-    for (int i = 0; i < point_number; i++)
+    for (int i = 0; i < param.num_points; i++)
     {
         int timeStamp = timeStep * i + rand() % timeStep;
         PointPtr point =
-            DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, dim, DEFAULT_COST, timeStamp);
-        auto charData = input[i].data();
+            DataStructureFactory::createPoint(i, DEFAULT_WEIGHT, param.dim, DEFAULT_COST, timeStamp);
+        auto charData = data[i].data();
         // use c_str() to convert string to char * but it's just a temp pointer we
         // have to use strcpy to store it
         const char *sep = " ";
@@ -43,7 +65,7 @@ void SESAME::DataSource::load(int point_number, int dim, vector<string> &input)
         int index       = 0;
         while (feature != nullptr)
         {
-            if (index == dim)
+            if (index == param.dim)
             {
                 point->setClusteringCenter(atoi(feature));
                 if (point->getClusteringCenter() == -1)

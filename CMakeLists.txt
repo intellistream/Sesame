@@ -3,6 +3,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(SESAME CXX)
 
+if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
+
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 include(cmake/macros.cmake)
@@ -19,7 +23,7 @@ message(STATUS "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc
 message(STATUS "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11")
 
 # Set Optimization Flags
-set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -static -march=native")
+set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
 
@@ -58,6 +62,7 @@ if (ENABLE_UNIT_TESTS)
 endif ()
 
 find_package(OpenMP)
+find_package(gflags REQUIRED)
 
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")

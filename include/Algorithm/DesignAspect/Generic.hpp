@@ -20,7 +20,7 @@
 #include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/DesignAspect/Param.hpp"
+#include "Algorithm/Param.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
@@ -61,9 +61,11 @@ public:
     StreamClustering(const param_t &param);
     ~StreamClustering();
     void Init();
+    void Insert(PointPtr);
     void RunOnline(PointPtr input);
     void RunOffline(DataSinkPtr ptr);
     void store(std::string output_file, int dim, std::vector<PointPtr> results);
+    void OutputOnline(std::vector<PointPtr> &centers) override;
 
 private:
     using Node    = typename D::Node;
@@ -79,7 +81,6 @@ private:
     std::vector<PointPtr> online_centers;
     size_t cluster_size_ = 0, outlier_size_ = 0;
     NodePtr InsertOutliers(PointPtr point);
-    void OutputOnline();
 };
 
 template <typename W, typename D, typename O, typename R>
@@ -101,6 +102,12 @@ void StreamClustering<W, D, O, R>::Init()
     r = GenericFactory::New<R>(param);
     d->Init();
     sum_timer.Tick();
+}
+
+template <typename W, typename D, typename O, typename R>
+void StreamClustering<W, D, O, R>::Insert(PointPtr p)
+{
+    d->Insert(p);
 }
 
 template <typename W, typename D, typename O, typename R>
@@ -236,7 +243,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
             out_timer.Tock();
         }
         win_timer.Tick();
-        OutputOnline();
+        OutputOnline(online_centers);
         d = GenericFactory::New<D>(param);
         d->Init();
         outliers_ = {};
@@ -290,7 +297,7 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 {
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
-    OutputOnline();
+    OutputOnline(online_centers);
     std::cout << "cluster_size: " << cluster_size_ << std::endl;
     std::cout << "outlier_size: " << outlier_size_ << std::endl;
     r->Run(param, online_centers, ptr);
@@ -330,8 +337,9 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
 }
 
 template <typename W, typename D, typename O, typename R>
-void StreamClustering<W, D, O, R>::OutputOnline()
+void StreamClustering<W, D, O, R>::OutputOnline(std::vector<PointPtr> &centers)
 {
+    // std::cerr << "Generic OutputOnline: " << d->clusters().size() << std::endl;
     auto clusters = d->clusters();
     cluster_size_ += clusters.size();
     outlier_size_ += outliers_.size();
@@ -342,7 +350,7 @@ void StreamClustering<W, D, O, R>::OutputOnline()
         {
             centroid->feature[j] = clusters[i]->cf.ls[j] / clusters[i]->cf.num;
         }
-        online_centers.push_back(centroid);
+        centers.push_back(centroid);
     }
     for (int i = 0; i < outliers_.size(); ++i)
     {
@@ -351,7 +359,7 @@ void StreamClustering<W, D, O, R>::OutputOnline()
         {
             centroid->feature[j] = outliers_[i]->cf.ls[j] / outliers_[i]->cf.num;
         }
-        online_centers.push_back(centroid);
+        centers.push_back(centroid);
     }
 }
 

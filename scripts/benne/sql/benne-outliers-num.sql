@@ -1,0 +1,1 @@
+SELECT algo, obj, outliers_num_threshold, purity, qps FROM benne WHERE tag LIKE "extra.out_num" ORDER BY tag, obj, outliers_num_threshold;
