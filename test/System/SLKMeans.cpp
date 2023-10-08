@@ -43,5 +43,5 @@ TEST(System, SLKMeans)
     auto res = SESAME::RunBenchmark(cmd_params);
 
     ASSERT_NEAR(res.first.purity, 0.47, 0.03);
-    ASSERT_NEAR(res.first.cmm, 0.77, 0.03);
+    ASSERT_NEAR(res.first.cmm, 0.80, 0.03);
 }

@@ -30,7 +30,8 @@
 /scripts/benne/pdf/
 *.log
 
-datasets/
+benchmark/datasets/
+test/datasets/
 
 *.egg-info/
 *.out
