@@ -3,7 +3,7 @@
 This project aims at building a scalable stream mining library on modern hardware. 
 
 - The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.
-- We welcome your contributions, if you are interested to contribute to the project, please fork and submit a PR. If you have questions, feel free to log an issue or write an email to me: shuhao_zhang AT sutd.edu.sg
+- We welcome your contributions, if you are interested to contribute to the project, please fork and submit a PR. If you have questions, feel free to log an issue.
 
 ## Build Dependency
 - GCC-11 (In our paper, we use gcc-11.2.0)
