@@ -30,8 +30,10 @@ void AccuracyRes::Evaluate(const param_t &param, const std::vector<PointPtr> &in
             purity = Purity::purityCost(inputs, predicts, param.dim, param.time_decay);
         }
         pur_timer.Tock();
-        std::cerr << "\033[1;34mPurity: " << round(purity * 10000) / 10000
+                std::cerr << "\033[1;34mPurity: " << purity
                   << "\033[0m et_s: " << pur_timer.sum / 1e9 << std::endl;
+        // std::cerr << "\033[1;34mPurity: " << round(purity * 10000) / 10000
+        //           << "\033[0m et_s: " << pur_timer.sum / 1e9 << std::endl;
         nmi_timer.Tick();
         if (param.run_nmi)
         {

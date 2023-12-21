@@ -4,6 +4,7 @@
 #include "Utils/BenchmarkUtils.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Engine/SimpleEngine.hpp"
+#include "papi.h"
 
 using namespace std;
 
@@ -13,7 +14,6 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
 {
     // Create Spout.
     DataSourcePtr sourcePtr = GenericFactory::New<DataSource>(param);
-
     // Directly load data from file. TODO: configure it to load from external
     // sensors, e.g., HTTP.
     sourcePtr->load();
@@ -24,7 +24,7 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     // Create Algorithm.
     AlgorithmPtr algoPtr = AlgorithmFactory::create(param);
 
-    param.Print();
+    // param.Print();
 
     SimpleEngine engine(sourcePtr, sinkPtr,
                                 algoPtr);  // TODO: create multithread engine in future.
@@ -54,11 +54,11 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
 
     AccuracyRes acc;
     acc.num_res = param.num_res;
-    acc.Evaluate(param, inputs, predicts);
+    // acc.Evaluate(param, inputs, predicts);
 
     engine.stop();
     perf.Print();
-    acc.Print();
+    // acc.Print();
 
     return make_pair(acc, perf);
 }

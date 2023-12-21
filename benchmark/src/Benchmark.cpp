@@ -21,11 +21,12 @@ using namespace std;
 using namespace std::filesystem;
 using namespace SESAME;
 
-DEFINE_int32(algo, 0, "Algorithm to use");
-DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");
-DEFINE_int32(num_points, 3000, "Number of points");
-DEFINE_int32(dim, 54, "Dimension of points");
-DEFINE_int32(num_clusters, 7, "Number of clusters");
+DEFINE_int32(algo, 0, "Algorithm to use");                                  // You can check the numbers of algos in th file 'Sesame/src/Algorithm/Algorithm.cpp'
+DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");     // This tells the engine which file is used as input
+DEFINE_int32(num_points, 581012, "Number of points");                         // This tells the engine how many lines shall be grasp from the file
+DEFINE_int32(dim, 54, "Dimension of points");                               // This helps to decide the calculation process in some alogs(Grid etc.)
+DEFINE_int32(num_clusters, 7, "Number of clusters");                        // This helps to decide the calculation process in some alogs(AMS etc.)
+// The following configurations are related to some specific algorithms
 // BIRCH
 DEFINE_int32(max_in_nodes, 20, "Maximum number of internal nodes");
 DEFINE_int32(max_leaf_nodes, 40, "Maximum number of leaf nodes");

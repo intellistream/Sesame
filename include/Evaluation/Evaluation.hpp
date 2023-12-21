@@ -26,6 +26,7 @@ struct AccuracyRes
                   const std::vector<PointPtr> &predicts);
     void Print()
     {
+        std::cout << "-----Showing Accuracy Data-----" << std::endl;
         std::cout << "num_res: " << num_res << std::endl;
         std::cout << "cmm: " << cmm << std::endl;
         std::cout << "purity: " << purity << std::endl;
@@ -40,6 +41,7 @@ struct PerfRes
     double lat_us, et_s, qps;
     void Print()
     {
+        std::cout << "-----Showing Performance Data-----" << std::endl;
         std::cout << "win_us: " << win_us << std::endl;
         std::cout << "ds_us: " << ds_us << std::endl;
         std::cout << "out_us: " << out_us << std::endl;

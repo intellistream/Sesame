@@ -9,8 +9,8 @@
 
 namespace SESAME
 {
-char const *algo_names[64] = {[BirchType]        = "Birch",
-                              [StreamKMeansType] = "StreamKMeans",
+char const *algo_names[64] = {[BirchType]        = "Birch",            
+                              [StreamKMeansType] = "StreamKMeans",     
                               [CluStreamType]    = "CluStream",
                               [DenStreamType]    = "DenStream",
                               [DBStreamType]     = "DBStream",

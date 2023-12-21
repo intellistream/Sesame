@@ -1,11 +1,18 @@
 # Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
 
 cmake_minimum_required(VERSION 3.14)
+
+# Set compiler
+set(CMAKE_CXX_COMPILER /usr/local/bin/g++)
+
 project(SESAME CXX)
 
 if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
+
+# Avoid meeting error when using boost
+add_definitions(-DBOOST_TIMER_ENABLE_DEPRECATED)
 
 # Custom CMake find instructions and macros
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
@@ -23,7 +30,7 @@ message(STATUS "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc
 message(STATUS "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11")
 
 # Set Optimization Flags
-set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-g -std=c++2a -Wall -Werror=return-type -lpthread -fopenmp -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
 
@@ -75,12 +82,16 @@ endforeach ()
 add_subdirectory(src)
 
 # Add Library
+# Include papi to the project using absolute path
+link_directories(/home/zijie/usr/lib)
+include_directories(/home/zijie/usr/include)
+
 get_source_sesame(sesame_SOURCE_FILES)
 get_header_sesame(sesame_HEADER_FILES)
 add_library(sesame STATIC ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(sesame PUBLIC "include")
 target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread gflags)
+target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread gflags papi)
 
 #Add benchmarks with command
 add_subdirectory(benchmark)

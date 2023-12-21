@@ -7,6 +7,7 @@
 #include "Engine/SimpleEngine.hpp"
 #include "Utils/Logger.hpp"
 #include "Utils/SPSCQueue.hpp"
+#include "Evaluation/PAPITools.hpp"
 
 #include <boost/progress.hpp>
 
@@ -33,6 +34,12 @@ SESAME::SimpleEngine::SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr,
 
 void SESAME::SimpleEngine::run()
 {
+
+    SESAME::PAPITools tool("in SimpleEngine function run()");
+    tool.AddEvent(SESAME::PAPITools::L3_CACHE_MISS);
+    tool.StartCounting(__FILE__, __LINE__);
+
+
     barrierPtr = UtilityFunctions::createBarrier(3);
     this->sourcePtr->setBarrier(barrierPtr);
     this->sinkPtr->setBarrier(barrierPtr);
@@ -42,6 +49,8 @@ void SESAME::SimpleEngine::run()
 
     // start engine thread(s) for algorithm.
     this->start(sourcePtr, sinkPtr, algoPtr, assignID());
+    tool.StopCounting();
+    tool.DestroyTool();
 
     // start sink thread
     this->sinkPtr->start(assignID());
