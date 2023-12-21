@@ -36,3 +36,6 @@ test/datasets/
 *.egg-info/
 *.out
 results.txt
+
+/benchmark/datasets/CoverType.txt
+/benchmark/datasets/sensor.arff.txt
