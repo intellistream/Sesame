@@ -57,7 +57,7 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     // acc.Evaluate(param, inputs, predicts);
 
     engine.stop();
-    perf.Print();
+    // perf.Print();
     // acc.Print();
 
     return make_pair(acc, perf);
