@@ -13,32 +13,11 @@
 
 namespace SESAME
 {
-    /* For unhalted cpu cycles */
-    const std::string PAPITools::UNHALTED_CORE_CYCLES = "UNHALTED_CORE_CYCLES";
-
-    /* For uops */
-    const std::string PAPITools::UOPS_RETIRED = "UOPS_RETIRED";
-    const std::string PAPITools::UOPS_ISSUED = "UOPS_ISSUED";
-
-    /* For DTLB */
-    const std::string PAPITools::DTLB_MISSES = "PERF_COUNT_HW_CACHE_DTLB:MISS";
-    const std::string PAPITools::DTLB_LOAD_MISSES = "DTLB-LOAD-MISSES";
-    const std::string PAPITools::DTLB_LOAD_PAGE_WALKS = "DTLB_LOAD_MISSES:WALK_ACTIVE";
-    const std::string PAPITools::DTLB_STORE_MISSES = "DTLB-STORE-MISSES";
-    const std::string PAPITools::DTLB_STORE_PAGE_WALKS = "DTLB_STORE_MISSES:WALK_ACTIVE";
-
-    /* For ILD */
-    const std::string PAPITools::ILD_STALL = "ILD_STALL";
-
-    /* For L1 I-Cache */
-    const std::string PAPITools::L1_ICACHE_LOAD_MISSES = "L1-ICACHE-LOAD-MISSES";
-
-    /* For ITLB */
-    const std::string PAPITools::ITLB_MISSES = "ITLB-LOAD-MISSES";
-    const std::string PAPITools::ITLB_MISSES_WALK_CYCLES = "ITLB_MISSES:WALK_ACTIVE";
-
     const std::string PAPITools::IDQ_UOPS_NOT_DELIVERED_CORE = "IDQ_UOPS_NOT_DELIVERED:CORE";
-    const std::string PAPITools::CPU_CLK_UNHALTED_ANY = "CPU_CLK_UNHALTED";     // The candidate machine uses hyper threading
+    const std::string PAPITools::CPU_CLK_UNHALTED = "CPU_CLK_UNHALTED";     // The candidate machine uses hyper threading
+    const std::string PAPITools::UOPS_RETIRED_RETIRE_SLOTS = "UOPS_RETIRED:RETIRE_SLOTS";
+    const std::string PAPITools::UOPS_ISSUED_ANY = "UOPS_ISSUED:ANY";
+    const std::string PAPITools::INT_MISC_RECOVERY_CYCLES = "INT_MISC:RECOVERY_CYCLES";
 
     /* Do initialization function before using any papi object */
     PAPITools::PAPITools(std::string info) {
@@ -134,26 +113,56 @@ namespace SESAME
         std::cout << "-----PAPI Stops Running and Resets-----" << std::endl;
     }
 
-    void PAPITools::StartCountingFrontend(const char* filename, int line) {
+    void PAPITools::StartCountingTMALevel1(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
             return;
         }
-        AddNativeEvent(IDQ_UOPS_NOT_DELIVERED_CORE);
-        AddNativeEvent(CPU_CLK_UNHALTED_ANY);
+        tma_level1 = tma_cata;
+        switch (tma_cata)
+        {
+            case FRONTEND_BOUND:
+                AddNativeEvent(IDQ_UOPS_NOT_DELIVERED_CORE);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case RETIRING:
+                AddNativeEvent(UOPS_RETIRED_RETIRE_SLOTS);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case BAD_SPEC:
+                AddNativeEvent(UOPS_ISSUED_ANY);
+                AddNativeEvent(UOPS_RETIRED_RETIRE_SLOTS);
+                AddNativeEvent(INT_MISC_RECOVERY_CYCLES);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            default:
+                break;
+        }
         allow_adding = false;
         StartCounting(filename, line);
     }
 
-    void PAPITools::StopCountingFrontend() {
+    void PAPITools::StopCountingTMALevel1() {
         if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
         /* Check cascadelakex_metrics.json to find details about calculation */
-        float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
-        float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_ANY_cnt
-        float fe_bound = ( a / ( ( 4 ) * ( ( b / 2 ) ) ) );
-        std::cout << "a: " << a << std::endl;
-        std::cout << "b: " << b << std::endl;
-        std::cout << "Frontend bound: " << fe_bound << std::endl;
+        if (tma_level1 == FRONTEND_BOUND) {
+            float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
+            float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
+            float fe_bound = ( a / ( ( 4 * b ) ) );
+            std::cout << "Frontend bound: " << fe_bound << std::endl;
+        } else if (tma_level1 == RETIRING) {
+            float a = after_value[0] - pre_value[0];  // UOPS_RETIRED_RETIRE_SLOTS+cnt
+            float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
+            float retiring = ( a / ( ( 4 * b ) ) );
+            std::cout << "Retiring: " << retiring << std::endl;
+        } else if (tma_level1 == BAD_SPEC) {
+            float a = after_value[0] - pre_value[0];  // UOPS_ISSUED_ANY_cnt
+            float b = after_value[1] - pre_value[1];  // UOPS_RETIRED_RETIRE_SLOTS_cnt
+            float c = after_value[2] - pre_value[2];  // INT_MISC_RECOVERY_CYCLES_cnt
+            float d = after_value[3] - pre_value[3];  // CPU_CLK_UNHALTED_cnt
+            float bad_spec = ( ( a - ( b ) + ( 4 * c ) ) / ( 4 * d ) );
+            std::cout << "Bad speculation: " << bad_spec << std::endl;
+        }
         DestroyTool();
     }
 }

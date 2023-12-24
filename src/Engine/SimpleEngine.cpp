@@ -75,7 +75,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     // initialization
 
     SESAME::PAPITools tool("in SimpleEngine function run()");
-    tool.StartCountingFrontend(__FILE__, __LINE__);
+    tool.StartCountingTMALevel1(__FILE__, __LINE__, PAPITools::FRONTEND_BOUND);
 
     algoPtr->Init();
 
@@ -123,7 +123,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     ProfilerStop();
 #endif
 
-    tool.StopCountingFrontend();
+    tool.StopCountingTMALevel1();
 
     overallMeter.overallEndMeasure();
     overallMeter.END_MEASURE();

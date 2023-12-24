@@ -21,6 +21,7 @@ namespace SESAME
             long long pre_value[64] = {0};
             long long after_value[64] = {0};
             int eventSet;
+            int tma_level1 = -1;
             bool allow_adding = true;
 
             void InitializePAPI(std::string info);  
@@ -38,22 +39,18 @@ namespace SESAME
             static const int L3_CACHE_MISS = PAPI_L3_TCM;            
 
             /* Native events are listed as follow
-             * Note that you shall use 'AddNativeEvent()' */
-            static const std::string UOPS_RETIRED;
-            static const std::string UOPS_ISSUED;
-            static const std::string DTLB_MISSES;
-            static const std::string DTLB_LOAD_MISSES;
-            static const std::string DTLB_LOAD_PAGE_WALKS;
-            static const std::string DTLB_STORE_MISSES;
-            static const std::string DTLB_STORE_PAGE_WALKS;
-            static const std::string ILD_STALL;
-            static const std::string L1_ICACHE_LOAD_MISSES;
-            static const std::string ITLB_MISSES;
-            static const std::string ITLB_MISSES_WALK_CYCLES;
-            static const std::string UNHALTED_CORE_CYCLES;
-
+             * Note that you shall use 'AddNativeEvent()'
+             * These events can also be used in a set, accroding to TMA */
             static const std::string IDQ_UOPS_NOT_DELIVERED_CORE;
-            static const std::string CPU_CLK_UNHALTED_ANY;
+            static const std::string CPU_CLK_UNHALTED;
+            static const std::string UOPS_RETIRED_RETIRE_SLOTS;
+            static const std::string UOPS_ISSUED_ANY;
+            static const std::string INT_MISC_RECOVERY_CYCLES;
+
+            // The 'static const' members here are used to designate the first level of TMA metrics
+            static const int FRONTEND_BOUND = 1;
+            static const int RETIRING = 2;
+            static const int BAD_SPEC = 3;
 
             PAPITools(std::string info);
             void AddEvent(int event);
@@ -61,8 +58,8 @@ namespace SESAME
             void StartCounting(const char* filename, int line);
             void StopCounting();
             void DestroyTool();
-            void StartCountingFrontend(const char* filename, int line);
-            void StopCountingFrontend();
+            void StartCountingTMALevel1(const char* filename, int line, int tma_cata);
+            void StopCountingTMALevel1();
     };
 }
 
