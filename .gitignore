@@ -38,4 +38,6 @@ test/datasets/
 results.txt
 
 /benchmark/datasets/CoverType.txt
-/benchmark/datasets/sensor.arff.txt
+/benchmark/datasets/sensor.txt
+/build/benchmark/CoverType.txt
+/build/benchmark//sensor.txt

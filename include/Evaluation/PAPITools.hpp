@@ -21,12 +21,19 @@ namespace SESAME
             long long pre_value[64] = {0};
             long long after_value[64] = {0};
             int eventSet;
-            int tma_level1 = -1;
+            int tma_level = -1;                              // Designate the level of tma
+            int tma_level1 = -1, tma_level2 = -1;       // Specific which metric to count
             bool allow_adding = true;
 
             void InitializePAPI(std::string info);  
             void ReadData();
             void PrintInfo();
+
+            /* TMA functions */
+            void StartCountingTMALevel1(const char* filename, int line, int tma_cata);
+            void StopCountingTMALevel1();
+            void StartCountingTMALevel2(const char* filename, int line, int tma_cata);
+            void StopCountingTMALevel2();
 
         public:
             /* The 'static const' members here are used to designate the events
@@ -36,7 +43,7 @@ namespace SESAME
             static const int TOTAL_CYCLE_CNT = PAPI_TOT_CYC;
             static const int L1_DCACHE_MISS = PAPI_L1_DCM;
             static const int L2_CACHE_MISS = PAPI_L2_TCM;
-            static const int L3_CACHE_MISS = PAPI_L3_TCM;            
+            static const int L3_CACHE_MISS = PAPI_L3_TCM;
 
             /* Native events are listed as follow
              * Note that you shall use 'AddNativeEvent()'
@@ -46,11 +53,30 @@ namespace SESAME
             static const std::string UOPS_RETIRED_RETIRE_SLOTS;
             static const std::string UOPS_ISSUED_ANY;
             static const std::string INT_MISC_RECOVERY_CYCLES;
+            static const std::string IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE;
+            static const std::string CYCLE_ACTIVITY_STALLS_MEM_ANY;
+            static const std::string EXE_ACTIVITY_BOUND_ON_STORES;
+            static const std::string CYCLE_ACTIVITY_STALLS_TOTAL;
+            static const std::string EXE_ACTIVITY_1_PORTS_UTIL;
+            static const std::string EXE_ACTIVITY_2_PORTS_UTIL;
 
-            // The 'static const' members here are used to designate the first level of TMA metrics
+            /* The 'static const' members here are used to designate the level of TMA */
+            static const int LEVEL1 = 1;
+            static const int LEVEL2 = 2;
+            static const int LEVEL3 = 3;
+
+            /* The 'static const' members here are used to designate the first level of TMA metrics */
             static const int FRONTEND_BOUND = 1;
             static const int RETIRING = 2;
             static const int BAD_SPEC = 3;
+            static const int BACKEND_BOUND = 4;
+
+            /* The 'static const' members here are used to designate the second level of TMA metrics */
+            static const int FETCH_LATENCY = 1;
+            static const int FETCH_BANDWIDTH = 2;
+            static const int CORE_BOUND_P1 = 3;
+            static const int CORE_BOUND_P2 = 4;
+            static const int CORE_BOUND_P3 = 5;
 
             PAPITools(std::string info);
             void AddEvent(int event);
@@ -58,8 +84,8 @@ namespace SESAME
             void StartCounting(const char* filename, int line);
             void StopCounting();
             void DestroyTool();
-            void StartCountingTMALevel1(const char* filename, int line, int tma_cata);
-            void StopCountingTMALevel1();
+            void StartCountingTMA(const char* filename, int line, int level, int tma_cata);
+            void StopCountingTMA();
     };
 }
 

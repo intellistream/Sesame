@@ -67,6 +67,11 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
                                           AlgorithmPtr algoPtr)
 {
     barrierPtr->arrive_and_wait();  // wait for source and sink.
+
+    SESAME::PAPITools tool("in SimpleEngine function run()");
+    // tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::FETCH_LATENCY)
+    tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::CORE_BOUND_P1);
+
     SESAME_INFO("Algorithm start to process data");
     overallMeter.START_MEASURE();
     overallMeter.overallStartMeasure();
@@ -74,8 +79,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     overallMeter.setInterval(100);
     // initialization
 
-    SESAME::PAPITools tool("in SimpleEngine function run()");
-    tool.StartCountingTMALevel1(__FILE__, __LINE__, PAPITools::FRONTEND_BOUND);
+
 
     algoPtr->Init();
 
@@ -123,7 +127,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     ProfilerStop();
 #endif
 
-    tool.StopCountingTMALevel1();
+    tool.StopCountingTMA();
 
     overallMeter.overallEndMeasure();
     overallMeter.END_MEASURE();
