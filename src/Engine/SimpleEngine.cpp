@@ -70,7 +70,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 
     SESAME::PAPITools tool("in SimpleEngine function run()");
     // tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::FETCH_LATENCY)
-    tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::CORE_BOUND_P1);
+    tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::CORE_BOUND_P3);
 
     SESAME_INFO("Algorithm start to process data");
     overallMeter.START_MEASURE();

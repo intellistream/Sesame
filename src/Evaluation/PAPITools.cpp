@@ -282,13 +282,13 @@ namespace SESAME
             std::cout << "UOPS_ISSUED_ANY_cnt: " << after_value[2] - pre_value[2] << std::endl;
             std::cout << "INT_MISC_RECOVERY_CYCLES_cnt: " << after_value[3] - pre_value[3] << std::endl;
         } else if (tma_level2 == CORE_BOUND_P2) {
-            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt" << after_value[0] - pre_value[0] << std::endl;
-            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt" << after_value[1] - pre_value[1] << std::endl;
-            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt" << after_value[2] - pre_value[2] << std::endl;
+            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt:" << after_value[0] - pre_value[0] << std::endl;
+            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt:" << after_value[1] - pre_value[1] << std::endl;
+            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt:" << after_value[2] - pre_value[2] << std::endl;
         } else if (tma_level2 == CORE_BOUND_P3) {
-            std::cout << "EXE_ACTIVITY_BOUND_ON_STORES_cnt" << after_value[0] - pre_value[0] << std::endl;
-            std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt" << after_value[1] - pre_value[1] << std::endl;
-            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt" << after_value[2] - pre_value[2] << std::endl;
+            std::cout << "EXE_ACTIVITY_BOUND_ON_STORES_cnt:" << after_value[0] - pre_value[0] << std::endl;
+            std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt:" << after_value[1] - pre_value[1] << std::endl;
+            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt:" << after_value[2] - pre_value[2] << std::endl;
         }
         DestroyTool();
     }

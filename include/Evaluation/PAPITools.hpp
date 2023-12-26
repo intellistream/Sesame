@@ -71,12 +71,18 @@ namespace SESAME
             static const int BAD_SPEC = 3;
             static const int BACKEND_BOUND = 4;
 
-            /* The 'static const' members here are used to designate the second level of TMA metrics */
+            /* The 'static const' members here are used to designate the second level of TMA metrics
+             * Note that the events to calculate CORE_BOUND can also used to count MEMORY_BOUND are  */
             static const int FETCH_LATENCY = 1;
             static const int FETCH_BANDWIDTH = 2;
             static const int CORE_BOUND_P1 = 3;
             static const int CORE_BOUND_P2 = 4;
             static const int CORE_BOUND_P3 = 5;
+            static const int MEMORY_BOUND_P1 = 3;
+            static const int MEMORY_BOUND_P2 = 4;
+            static const int MEMORY_BOUND_P3 = 5;
+
+            
 
             PAPITools(std::string info);
             void AddEvent(int event);
