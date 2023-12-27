@@ -22,7 +22,7 @@ namespace SESAME
             long long after_value[64] = {0};
             int eventSet;
             int tma_level = -1;                              // Designate the level of tma
-            int tma_level1 = -1, tma_level2 = -1;       // Specific which metric to count
+            int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1;       // Specific which metric to count
             bool allow_adding = true;
 
             void InitializePAPI(std::string info);  
@@ -34,6 +34,8 @@ namespace SESAME
             void StopCountingTMALevel1();
             void StartCountingTMALevel2(const char* filename, int line, int tma_cata);
             void StopCountingTMALevel2();
+            void StartCountingTMALevel3(const char* filename, int line, int tma_cata);
+            void StopCountingTMALevel3();
 
         public:
             /* The 'static const' members here are used to designate the events
@@ -48,17 +50,26 @@ namespace SESAME
             /* Native events are listed as follow
              * Note that you shall use 'AddNativeEvent()'
              * These events can also be used in a set, accroding to TMA */
-            static const std::string IDQ_UOPS_NOT_DELIVERED_CORE;
             static const std::string CPU_CLK_UNHALTED;
             static const std::string UOPS_RETIRED_RETIRE_SLOTS;
             static const std::string UOPS_ISSUED_ANY;
             static const std::string INT_MISC_RECOVERY_CYCLES;
-            static const std::string IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE;
             static const std::string CYCLE_ACTIVITY_STALLS_MEM_ANY;
-            static const std::string EXE_ACTIVITY_BOUND_ON_STORES;
             static const std::string CYCLE_ACTIVITY_STALLS_TOTAL;
+            static const std::string EXE_ACTIVITY_BOUND_ON_STORES;
             static const std::string EXE_ACTIVITY_1_PORTS_UTIL;
             static const std::string EXE_ACTIVITY_2_PORTS_UTIL;
+            static const std::string EXE_ACTIVITY_EXE_BOUND_0_PORTS;
+            static const std::string ARITH_DIVIDER_ACTIVE;
+            static const std::string CYCLE_ACTIVITY_STALLS_L1D_MISS;
+            static const std::string IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE;
+            static const std::string IDQ_UOPS_NOT_DELIVERED_CORE;
+            static const std::string IDQ_ALL_MITE_CYCLES_ANY_UOPS;
+            static const std::string IDQ_ALL_MITE_CYCLES_4_UOPS;
+            static const std::string IDQ_ALL_DSB_CYCLES_ANY_UOPS;
+            static const std::string IDQ_ALL_DSB_CYCLES_4_UOPS;
+            static const std::string LSD_CYCLES_ACTIVE;
+            static const std::string LSD_CYCLES_4_UOPS;
 
             /* The 'static const' members here are used to designate the level of TMA */
             static const int LEVEL1 = 1;
@@ -82,6 +93,19 @@ namespace SESAME
             static const int MEMORY_BOUND_P2 = 4;
             static const int MEMORY_BOUND_P3 = 5;
 
+            /* The 'static const' members here are used to designate the thrid level of TMA metrics */
+            static const int DIVIDER = 1;
+            static const int PORTS_UTILIZATION_P1 = 2;
+            static const int PORTS_UTILIZATION_P2 = 3;
+            static const int L1_BOUND = 4;
+            static const int L2_BOUND = 5;
+            static const int L3_BOUND = 6;
+            static const int DRAM_BOUND = 7;
+            static const int PMM_BOUND = 8;
+            static const int STORE_BOUND = 9;
+            static const int MITE = 10;
+            static const int DSB = 11;
+            static const int LSD = 12;
             
 
             PAPITools(std::string info);

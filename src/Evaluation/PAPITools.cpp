@@ -12,6 +12,7 @@
 #include <string>
 #include <cassert>
 #include <cstring>
+#include <algorithm>
 
 namespace SESAME
 {
@@ -22,10 +23,19 @@ namespace SESAME
     const std::string PAPITools::INT_MISC_RECOVERY_CYCLES = "INT_MISC:RECOVERY_CYCLES";
     const std::string PAPITools::IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE = "IDQ_UOPS_NOT_DELIVERED:CYCLES_0_UOPS_DELIV_CORE";
     const std::string PAPITools::CYCLE_ACTIVITY_STALLS_MEM_ANY = "CYCLE_ACTIVITY:STALLS_MEM_ANY";
-    const std::string PAPITools::EXE_ACTIVITY_BOUND_ON_STORES = "EXE_ACTIVITY:BOUND_ON_STORES";
     const std::string PAPITools::CYCLE_ACTIVITY_STALLS_TOTAL = "CYCLE_ACTIVITY:STALLS_TOTAL";
+    const std::string PAPITools::EXE_ACTIVITY_EXE_BOUND_0_PORTS = "EXE_ACTIVITY:EXE_BOUND_0_PORTS";
+    const std::string PAPITools::EXE_ACTIVITY_BOUND_ON_STORES = "EXE_ACTIVITY:BOUND_ON_STORES";
     const std::string PAPITools::EXE_ACTIVITY_1_PORTS_UTIL = "EXE_ACTIVITY:1_PORTS_UTIL";
     const std::string PAPITools::EXE_ACTIVITY_2_PORTS_UTIL = "EXE_ACTIVITY:2_PORTS_UTIL";
+    const std::string PAPITools::ARITH_DIVIDER_ACTIVE = "ARITH:DIVIDER_ACTIVE";
+    const std::string PAPITools::CYCLE_ACTIVITY_STALLS_L1D_MISS = "CYCLE_ACTIVITY:STALLS_L1D_MISS";
+    const std::string PAPITools::IDQ_ALL_MITE_CYCLES_ANY_UOPS = "IDQ:ALL_MITE_CYCLES_ANY_UOPS";
+    const std::string PAPITools::IDQ_ALL_MITE_CYCLES_4_UOPS = "IDQ:ALL_MITE_CYCLES_4_UOPS";
+    const std::string PAPITools::IDQ_ALL_DSB_CYCLES_ANY_UOPS = "IDQ:ALL_DSB_CYCLES_ANY_UOPS";
+    const std::string PAPITools::IDQ_ALL_DSB_CYCLES_4_UOPS = "IDQ:ALL_DSB_CYCLES_4_UOPS";
+    const std::string PAPITools::LSD_CYCLES_ACTIVE = "LSD:CYCLES_ACTIVE";
+    const std::string PAPITools::LSD_CYCLES_4_UOPS = "LSD:CYCLES_4_UOPS";
 
     /* Do initialization function before using any papi object */
     /* TODO:Give error information using SESAME_INFO etc. */
@@ -133,6 +143,7 @@ namespace SESAME
                 StartCountingTMALevel2(filename, line, tma_cata);
                 break;
             case LEVEL3:
+                StartCountingTMALevel3(filename, line, tma_cata);
                 break;
             default:
                 break;
@@ -149,12 +160,14 @@ namespace SESAME
                 StopCountingTMALevel2();
                 break;
             case LEVEL3:
+                StopCountingTMALevel3();
                 break;
             default:
                 break;
         }
     }
 
+    /* Use this function to stop counting in TMA level1 */
     void PAPITools::StartCountingTMALevel1(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
@@ -262,19 +275,20 @@ namespace SESAME
         StartCounting(filename, line);
     }
 
+    /* Use this function to stop counting in TMA level2 */
     void PAPITools::StopCountingTMALevel2() {
         if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
         /* Check cascadelakex_metrics.json to find details about calculation */
         if (tma_level2 == FETCH_LATENCY) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
-            float fetch_latency = ( ( 4 ) * a / ( 4 * b ) );
+            float fetch_latency = ( a / b );
             std::cout << "Fetch latency: " << fetch_latency << std::endl;
         } else if (tma_level2 == FETCH_BANDWIDTH) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float c = after_value[2] - pre_value[2];  // IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE_cnt
-            float fetch_bandwidth = ( ( a / ( 4 * b ) ) - ( ( 4 ) * c / ( 4 * b ) ) );
+            float fetch_bandwidth = ( ( a / ( 4 * b ) ) - ( c / b ) );
             std::cout << "Fetch bandwidth: " << fetch_bandwidth << std::endl;
         } else if (tma_level2 == CORE_BOUND_P1) {
             std::cout << "IDQ_UOPS_NOT_DELIVERED_CORE_cnt: " << after_value[0] - pre_value[0] << std::endl;
@@ -289,6 +303,105 @@ namespace SESAME
             std::cout << "EXE_ACTIVITY_BOUND_ON_STORES_cnt:" << after_value[0] - pre_value[0] << std::endl;
             std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt:" << after_value[1] - pre_value[1] << std::endl;
             std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt:" << after_value[2] - pre_value[2] << std::endl;
+        }
+        DestroyTool();
+    }
+
+    /* This function is used to count metrics in the thrid level of TMA */
+    void PAPITools::StartCountingTMALevel3(const char* filename, int line, int tma_cata) {
+        if(!allow_adding) {
+            std::cout << "Opps, this tool is alreay occupied!" << std::endl;
+            return;
+        }
+        tma_level3 = tma_cata;
+        switch (tma_level3) {
+            case DIVIDER: 
+                AddNativeEvent(ARITH_DIVIDER_ACTIVE);               // ARITH_DIVIDER_ACTIVE_cnt
+                AddNativeEvent(CPU_CLK_UNHALTED);                   // CPU_CLK_UNHALTED_cnt
+                break;
+            case PORTS_UTILIZATION_P1:
+                AddNativeEvent(CPU_CLK_UNHALTED);                                        
+                AddNativeEvent(ARITH_DIVIDER_ACTIVE);
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_TOTAL);
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_MEM_ANY);
+                break;
+            case PORTS_UTILIZATION_P2:
+                AddNativeEvent(EXE_ACTIVITY_EXE_BOUND_0_PORTS);
+                AddNativeEvent(EXE_ACTIVITY_1_PORTS_UTIL);
+                AddNativeEvent(EXE_ACTIVITY_2_PORTS_UTIL); 
+                AddNativeEvent(UOPS_RETIRED_RETIRE_SLOTS);
+                break;
+            case L1_BOUND:
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_MEM_ANY);
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_L1D_MISS);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case MITE:
+                AddNativeEvent(IDQ_ALL_MITE_CYCLES_ANY_UOPS);
+                AddNativeEvent(IDQ_ALL_MITE_CYCLES_4_UOPS);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case DSB:
+                AddNativeEvent(IDQ_ALL_DSB_CYCLES_ANY_UOPS);
+                AddNativeEvent(IDQ_ALL_DSB_CYCLES_4_UOPS);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case LSD:
+                AddNativeEvent(LSD_CYCLES_ACTIVE);
+                AddNativeEvent(LSD_CYCLES_4_UOPS);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            default:
+                break;
+        }
+        allow_adding = false;
+        StartCounting(filename, line);
+    }
+
+    /* Use this function to stop counting in TMA level3 */
+    void PAPITools::StopCountingTMALevel3() {  
+        if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
+        /* Check cascadelakex_metrics.json to find details about calculation */ 
+        if (tma_level3 == DIVIDER) {
+            float a = after_value[0] - pre_value[0];    // ARITH_DIVIDER_ACTIVE_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float divider =  ( a / ( b ) );
+            std::cout << "Divider: " << divider << std::endl;
+        } else if (tma_level3 == PORTS_UTILIZATION_P1) {
+            std::cout << "CPU_CLK_UNHALTED_cnt: " << after_value[0] - pre_value[0] << std::endl;
+            std::cout << "ARITH_DIVIDER_ACTIVE_cnt: " << after_value[1] - pre_value[1] << std::endl;
+            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt: " << after_value[2] - pre_value[2] << std::endl;
+            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt: " << after_value[3] - pre_value[3] << std::endl;
+        } else if (tma_level3 == PORTS_UTILIZATION_P2) {
+            std::cout << "EXE_ACTIVITY_EXE_BOUND_0_PORTS_cnt: " << after_value[0] - pre_value[0] << std::endl;
+            std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt: " << after_value[1] - pre_value[1] << std::endl;
+            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt: " << after_value[2] - pre_value[2] << std::endl;
+            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt: " << after_value[3] - pre_value[3] << std::endl;
+        } else if (tma_level3 == L1_BOUND) {
+            float a = after_value[0] - pre_value[0];    // CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt
+            float b = after_value[1] - pre_value[1];    // CYCLE_ACTIVITY_STALLS_L1D_MISS_cnt
+            float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
+            float temp = (a - b) / c;
+            float l1_bound = (temp > 0) ? temp : 0;
+            std::cout << "L1 bound: " << l1_bound << std::endl;
+        } else if (tma_level3 == MITE) {
+            float a = after_value[0] - pre_value[0];    // IDQ_ALL_MITE_CYCLES_ANY_UOPS_cnt
+            float b = after_value[1] - pre_value[1];    // IDQ_ALL_MITE_CYCLES_4_UOPS_cnt
+            float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
+            float mite = (a - b) / c / 2;
+            std::cout << "MITE:" << mite << std::endl;
+        } else if (tma_level3 == DSB) {
+            float a = after_value[0] - pre_value[0];    // IDQ_ALL_DSB_CYCLES_ANY_UOPS_cnt
+            float b = after_value[1] - pre_value[1];    // IDQ_ALL_DSB_CYCLES_4_UOPS_cnt
+            float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
+            float dsb = (a - b) / c / 2;
+            std::cout << "DSB:" << dsb << std::endl;
+        } else if (tma_level3 == LSD) {
+            float a = after_value[0] - pre_value[0];    // LSD_CYCLES_ACTIVE_cnt
+            float b = after_value[1] - pre_value[1];    // LSD_CYCLES_4_UOPS_cnt
+            float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
+            float lsd = (a - b) / c / 2;
+            std::cout << "LSD:" << lsd << std::endl;
         }
         DestroyTool();
     }
