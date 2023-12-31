@@ -128,6 +128,10 @@ struct param_t
     BenneObj obj = (BenneObj) 0;
     BenneThreshold benne_threshold;
 
+    // TMA options
+    int level = 1;
+    int metric = 1;
+
     void Print()
     {
         std::cout << "algo_id: " << algo << std::endl;

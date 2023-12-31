@@ -23,12 +23,14 @@
 using namespace std;
 
 SESAME::SimpleEngine::SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr,
-                                   AlgorithmPtr algoPtr)
+                                   AlgorithmPtr algoPtr, param_t &param)
     : threadID(0)
 {
     this->sourcePtr = std::move(sourcePtr);
     this->sinkPtr   = std::move(sinkPtr);
     this->algoPtr   = std::move(algoPtr);
+    this->TMA_level = param.level;
+    this->TMA_metric = param.metric;
     threadPtr       = std::make_shared<SingleThread>();
 }
 
@@ -70,7 +72,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 
     SESAME::PAPITools tool("in SimpleEngine function run()");
     // tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::FETCH_LATENCY)
-    tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL3, PAPITools::MITE);
+    tool.StartCountingTMA(__FILE__, __LINE__, TMA_level, TMA_metric);
 
     SESAME_INFO("Algorithm start to process data");
     overallMeter.START_MEASURE();

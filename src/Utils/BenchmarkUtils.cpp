@@ -27,7 +27,7 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     // param.Print();
 
     SimpleEngine engine(sourcePtr, sinkPtr,
-                                algoPtr);  // TODO: create multithread engine in future.
+                                algoPtr, param);  // TODO: create multithread engine in future.
     engine.run();
     while (!sinkPtr->isFinished()) usleep(100);
     // wait for sink to stop.

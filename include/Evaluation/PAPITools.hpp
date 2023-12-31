@@ -25,9 +25,12 @@ namespace SESAME
             int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1;       // Specific which metric to count
             bool allow_adding = true;
 
+            /* Assistant functions */
             void InitializePAPI(std::string info);  
             void ReadData();
             void PrintInfo();
+            template <typename type>
+            void WriteFile(const std::string& filename, std::initializer_list<type> values);
 
             /* TMA functions */
             void StartCountingTMALevel1(const char* filename, int line, int tma_cata);
@@ -56,12 +59,14 @@ namespace SESAME
             static const std::string INT_MISC_RECOVERY_CYCLES;
             static const std::string CYCLE_ACTIVITY_STALLS_MEM_ANY;
             static const std::string CYCLE_ACTIVITY_STALLS_TOTAL;
+            static const std::string CYCLE_ACTIVITY_STALLS_L1D_MISS;
+            static const std::string CYCLE_ACTIVITY_STALLS_L2_MISS;
+            static const std::string CYCLE_ACTIVITY_STALLS_L3_MISS;
             static const std::string EXE_ACTIVITY_BOUND_ON_STORES;
             static const std::string EXE_ACTIVITY_1_PORTS_UTIL;
             static const std::string EXE_ACTIVITY_2_PORTS_UTIL;
             static const std::string EXE_ACTIVITY_EXE_BOUND_0_PORTS;
             static const std::string ARITH_DIVIDER_ACTIVE;
-            static const std::string CYCLE_ACTIVITY_STALLS_L1D_MISS;
             static const std::string IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE;
             static const std::string IDQ_UOPS_NOT_DELIVERED_CORE;
             static const std::string IDQ_ALL_MITE_CYCLES_ANY_UOPS;
@@ -70,6 +75,16 @@ namespace SESAME
             static const std::string IDQ_ALL_DSB_CYCLES_4_UOPS;
             static const std::string LSD_CYCLES_ACTIVE;
             static const std::string LSD_CYCLES_4_UOPS;
+            static const std::string MEM_LOAD_RETIRED_L2_HIT;
+            static const std::string MEM_LOAD_RETIRED_FB_HIT;
+            static const std::string MEM_LOAD_RETIRED_L1_MISS;
+            static const std::string MEM_LOAD_L3_MISS_RETIRED_REMOTE_DRAM;
+            static const std::string MEM_LOAD_L3_MISS_RETIRED_LOCAL_DRAM;
+            static const std::string MEM_LOAD_L3_MISS_RETIRED_REMOTE_FWD;
+            static const std::string MEM_LOAD_L3_MISS_RETIRED_REMOTE_HITM;
+            static const std::string MEM_LOAD_RETIRED_LOCAL_PMM;
+            static const std::string MEM_LOAD_L3_MISS_RETIRED_REMOTE_PMM;
+            static const std::string L1D_PEND_MISS_FB_FULL_c1;
 
             /* The 'static const' members here are used to designate the level of TMA */
             static const int LEVEL1 = 1;
@@ -98,14 +113,17 @@ namespace SESAME
             static const int PORTS_UTILIZATION_P1 = 2;
             static const int PORTS_UTILIZATION_P2 = 3;
             static const int L1_BOUND = 4;
-            static const int L2_BOUND = 5;
-            static const int L3_BOUND = 6;
-            static const int DRAM_BOUND = 7;
-            static const int PMM_BOUND = 8;
-            static const int STORE_BOUND = 9;
-            static const int MITE = 10;
-            static const int DSB = 11;
-            static const int LSD = 12;
+            static const int L2_BOUND_P1 = 5;
+            static const int L2_BOUND_P2 = 6;
+            static const int L3_BOUND = 7;
+            static const int DRAM_BOUND_P1 = 8;
+            static const int DRAM_BOUND_P2 = 9;
+            static const int DRAM_BOUND_P3 = 10;
+            static const int PMM_BOUND = 11;
+            static const int STORE_BOUND = 12;
+            static const int MITE = 13;
+            static const int DSB = 14;
+            static const int LSD = 15;
             
 
             PAPITools(std::string info);

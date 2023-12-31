@@ -21,7 +21,7 @@ using namespace std;
 using namespace std::filesystem;
 using namespace SESAME;
 
-DEFINE_int32(algo, 0, "Algorithm to use");                                  // You can check the numbers of algos in th file 'Sesame/src/Algorithm/Algorithm.cpp'
+DEFINE_int32(algo, 7, "Algorithm to use");                                  // You can check the numbers of algos in th file 'Sesame/src/Algorithm/Algorithm.cpp'
 DEFINE_string(input_file, "datasets/CoverType.txt", "Input file path");     // This tells the engine which file is used as input
 DEFINE_int32(num_points, 581012, "Number of points");                         // This tells the engine how many lines shall be grasp from the file
 DEFINE_int32(dim, 54, "Dimension of points");                               // This helps to decide the calculation process in some alogs(Grid etc.)
@@ -80,6 +80,9 @@ DEFINE_int32(dim_threshold, 30, "Benne dimension threshold");
 DEFINE_double(variance_threshold, 100.0, "Benne variance threshold");
 DEFINE_int32(outliers_num_threshold, 200, "Benne outliers threshold");
 DEFINE_double(outliers_dist_threshold, 50.0, "Benne outliers distance threshold");
+// PAPITools
+DEFINE_int32(level, 1, "Assign TMA inspection level");
+DEFINE_int32(metric, 1, "Assign TMA metric");
 
 int main(int argc, char **argv)
 {
@@ -148,6 +151,9 @@ int main(int argc, char **argv)
 
     param.fast_source = true;
     param.store       = false;
+
+    param.level = FLAGS_level;
+    param.metric = FLAGS_metric;
 
     RunBenchmark(param);
 }

@@ -29,10 +29,12 @@ private:
     SingleThreadPtr threadPtr;  // SimpleEngine has only one thread to run algorithm.
     atomic_int threadID;
     TimeMeter overallMeter;
+    int TMA_level;
+    int TMA_metric;
 
 public:
     BarrierPtr barrierPtr;
-    SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
+    SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr, param_t &param);
     //  void createBarrier();
     void run();  // start the engine.
     void runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr, AlgorithmPtr algoPtr);
