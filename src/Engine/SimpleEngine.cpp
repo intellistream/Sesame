@@ -70,9 +70,6 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 {
     barrierPtr->arrive_and_wait();  // wait for source and sink.
 
-    SESAME::PAPITools tool("in SimpleEngine function run()");
-    // tool.StartCountingTMA(__FILE__, __LINE__, PAPITools::LEVEL2, PAPITools::FETCH_LATENCY)
-    tool.StartCountingTMA(__FILE__, __LINE__, TMA_level, TMA_metric);
 
     SESAME_INFO("Algorithm start to process data");
     overallMeter.START_MEASURE();
@@ -81,9 +78,10 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     overallMeter.setInterval(100);
     // initialization
 
-
+    SESAME::PAPITools tool("in SimpleEngine function run()");
 
     algoPtr->Init();
+
 
     boost::progress_display show_progress(algoPtr->param.num_points, std::cerr,
                                           "Online Clustering:\n");
@@ -93,7 +91,6 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
     ProfilerStart(prof.c_str());
 #endif
 
-    // run online clustering
     while (!sourcePtr->sourceEnded())
     {  // continuously processing infinite incoming data streams.
         if (!sourcePtr->empty())
@@ -104,8 +101,11 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
             algoPtr->Count();
             ++show_progress;
             overallMeter.onlineAccEMeasure();
-        }
+        }          
     }
+
+
+    tool.StartCountingTMA(__FILE__, __LINE__, TMA_level, TMA_metric);
     while (!sourcePtr->empty())
     {  // process the remaining data streams after source stops.
         auto item = sourcePtr->get();
@@ -115,8 +115,10 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
         ++show_progress;
         overallMeter.onlineAccEMeasure();
     }
-    overallMeter.onlineEndMeasure();
 
+    tool.StopCountingTMA();
+    overallMeter.onlineEndMeasure();
+    // tool.StopCountingTMA();
     SESAME_INFO("ready to offline clustering");
 
     // run offline clustering
@@ -128,8 +130,6 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 #ifdef GPERF
     ProfilerStop();
 #endif
-
-    tool.StopCountingTMA();
 
     overallMeter.overallEndMeasure();
     overallMeter.END_MEASURE();

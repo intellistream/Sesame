@@ -758,7 +758,7 @@ public:
     FrameworkAlg(FrameworkAlg const &) = delete;
     void operator=(FrameworkAlg const &x) = delete;
 
-    // Processes a point.
+    // Processes a point. This function is called in function RunOnline()
     void process_point(PointPtr point)
     {
         window_handler_.next();

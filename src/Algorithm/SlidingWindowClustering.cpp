@@ -1,5 +1,6 @@
 #include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
+#include "Evaluation/PAPITools.hpp"
 
 #include <cassert>
 
@@ -135,8 +136,10 @@ void SlidingWindowClustering::RunOnline(PointPtr input)
     if (!has_sampled)
     {
         win_timer.Tick();
-        if (samples.size() < param.num_samples * param.sliding) samples.push_back(input);
-        if (samples.size() >= param.num_samples * param.sliding)
+        // 'param.num_samples * param.sliding' was used in both if stmt in the original version
+        int val = param.num_samples * param.sliding;
+        if (samples.size() < val) samples.push_back(input);
+        if (samples.size() >= val)
         {
             const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
                 &r, samples, param.sliding, param.num_samples, param.num_clusters);

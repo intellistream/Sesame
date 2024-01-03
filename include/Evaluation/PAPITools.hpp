@@ -22,12 +22,11 @@ namespace SESAME
             long long after_value[64] = {0};
             int eventSet;
             int tma_level = -1;                              // Designate the level of tma
-            int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1;       // Specific which metric to count
+            int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1, tma_level4 = -1;       // Specific which metric to count
             bool allow_adding = true;
 
             /* Assistant functions */
             void InitializePAPI(std::string info);  
-            void ReadData();
             void PrintInfo();
             template <typename type>
             void WriteFile(const std::string& filename, std::initializer_list<type> values);
@@ -39,6 +38,8 @@ namespace SESAME
             void StopCountingTMALevel2();
             void StartCountingTMALevel3(const char* filename, int line, int tma_cata);
             void StopCountingTMALevel3();
+            void StartCountingTMALevel4(const char* filename, int line, int tma_cata);
+            void StopCountingTMALevel4();
 
         public:
             /* The 'static const' members here are used to designate the events
@@ -57,6 +58,7 @@ namespace SESAME
             static const std::string UOPS_RETIRED_RETIRE_SLOTS;
             static const std::string UOPS_ISSUED_ANY;
             static const std::string INT_MISC_RECOVERY_CYCLES;
+            static const std::string CYCLE_ACTIVITY_CYCLES_MEM_ANY;
             static const std::string CYCLE_ACTIVITY_STALLS_MEM_ANY;
             static const std::string CYCLE_ACTIVITY_STALLS_TOTAL;
             static const std::string CYCLE_ACTIVITY_STALLS_L1D_MISS;
@@ -85,17 +87,31 @@ namespace SESAME
             static const std::string MEM_LOAD_RETIRED_LOCAL_PMM;
             static const std::string MEM_LOAD_L3_MISS_RETIRED_REMOTE_PMM;
             static const std::string L1D_PEND_MISS_FB_FULL_c1;
+            static const std::string L1D_PEND_MISS_PENDING;
+            static const std::string DTLB_LOAD_MISSES_STLB_HIT_c1;
+            static const std::string DTLB_LOAD_MISSES_WALK_ACTIVE;
+            static const std::string LD_BLOCKS_STORE_FORWARD;
+            static const std::string LD_BLOCKS_NO_SR;
+            static const std::string LD_BLOCKS_PARTIAL_ADDRESS_ALIAS;
+            static const std::string MEM_INST_RETIRED_LOCK_LOADS;
+            static const std::string MEM_INST_RETIRED_ALL_STORES;
+            static const std::string L2_RQSTS_ALL_RFO;
+            static const std::string L2_RQSTS_RFO_HIT;
+            static const std::string OFFCORE_REQUESTS_OUTSTANDING_CYCLES_WITH_DEMAND_RFO;
+            
 
             /* The 'static const' members here are used to designate the level of TMA */
             static const int LEVEL1 = 1;
             static const int LEVEL2 = 2;
             static const int LEVEL3 = 3;
+            static const int LEVEL4 = 4;
 
             /* The 'static const' members here are used to designate the first level of TMA metrics */
             static const int FRONTEND_BOUND = 1;
             static const int RETIRING = 2;
             static const int BAD_SPEC = 3;
             static const int BACKEND_BOUND = 4;
+            static const int TOTAL_CLK = 5;
 
             /* The 'static const' members here are used to designate the second level of TMA metrics
              * Note that the events to calculate CORE_BOUND can also used to count MEMORY_BOUND are  */
@@ -104,9 +120,9 @@ namespace SESAME
             static const int CORE_BOUND_P1 = 3;
             static const int CORE_BOUND_P2 = 4;
             static const int CORE_BOUND_P3 = 5;
-            static const int MEMORY_BOUND_P1 = 3;
-            static const int MEMORY_BOUND_P2 = 4;
-            static const int MEMORY_BOUND_P3 = 5;
+            static const int MEMORY_BOUND_P1 = 6;
+            static const int MEMORY_BOUND_P2 = 7;
+            static const int MEMORY_BOUND_P3 = 8;
 
             /* The 'static const' members here are used to designate the thrid level of TMA metrics */
             static const int DIVIDER = 1;
@@ -124,7 +140,15 @@ namespace SESAME
             static const int MITE = 13;
             static const int DSB = 14;
             static const int LSD = 15;
-            
+
+            /* The 'static const' members here are used to designate the forth level of TMA metrics */
+            static const int DTLB_LOAD = 1;
+            static const int STORE_FWD_BLK = 2;
+            static const int LOCK_LATENCY_P1 = 3;
+            static const int LOCK_LATENCY_P2 = 4;
+            static const int SPLIT_LOADS = 5;
+            static const int ALIASING_4K = 6;
+            static const int FB_FULL = 7;
 
             PAPITools(std::string info);
             void AddEvent(int event);
@@ -134,6 +158,7 @@ namespace SESAME
             void DestroyTool();
             void StartCountingTMA(const char* filename, int line, int level, int tma_cata);
             void StopCountingTMA();
+            void ReadData();
     };
 }
 
