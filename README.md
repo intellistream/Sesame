@@ -53,6 +53,8 @@ This project aims at building a scalable stream mining library on modern hardwar
 | EDS       | 45690, 100270, 150645, 200060, 245270 | 2         | 75, 145, 218, 289, 363 |
 | ODS     | 94720,97360,100000                    | 2         | 90, 90, 90 |
 
+You may download the datasets here: https://zenodo.org/records/8210331
+
 ## How to Cite Sesame
 
 * **[SIGMOD 2023]** Xin Wang and Zhengru Wang and Zhenyu Wu and Shuhao Zhang and Xuanhua Shi and Li Lu. Data Stream Clustering: An In-depth Empirical Study, SIGMOD, 2023
