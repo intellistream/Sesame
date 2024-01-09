@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace SESAME
 {
@@ -23,7 +24,8 @@ namespace SESAME
             int eventSet;
             int tma_level = -1;                              // Designate the level of tma
             int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1, tma_level4 = -1;       // Specific which metric to count
-            bool allow_adding = true;
+            bool allow_adding = true, counting = true;
+            int interval = -1, counter = 0;
 
             /* Assistant functions */
             void InitializePAPI(std::string info);  
@@ -32,14 +34,14 @@ namespace SESAME
             void WriteFile(const std::string& filename, std::initializer_list<type> values);
 
             /* TMA functions */
-            void StartCountingTMALevel1(const char* filename, int line, int tma_cata);
-            void StopCountingTMALevel1();
-            void StartCountingTMALevel2(const char* filename, int line, int tma_cata);
-            void StopCountingTMALevel2();
-            void StartCountingTMALevel3(const char* filename, int line, int tma_cata);
-            void StopCountingTMALevel3();
-            void StartCountingTMALevel4(const char* filename, int line, int tma_cata);
-            void StopCountingTMALevel4();
+            void AddingTMALevel1(const char* filename, int line, int tma_cata);
+            void ReadTMALevel1(bool print_info);
+            void AddingTMALevel2(const char* filename, int line, int tma_cata);
+            void ReadTMALevel2(bool print_info);
+            void AddingTMALevel3(const char* filename, int line, int tma_cata);
+            void ReadTMALevel3(bool print_info);
+            void AddingTMALevel4(const char* filename, int line, int tma_cata);
+            void ReadTMALevel4(bool print_info);
 
         public:
             /* The 'static const' members here are used to designate the events
@@ -98,6 +100,9 @@ namespace SESAME
             static const std::string L2_RQSTS_ALL_RFO;
             static const std::string L2_RQSTS_RFO_HIT;
             static const std::string OFFCORE_REQUESTS_OUTSTANDING_CYCLES_WITH_DEMAND_RFO;
+            static const std::string ICACHE_64B_IFTAG_STALL;
+            static const std::string ICACHE_16B_IFDATA_STALL;
+            static const std::string ICACHE_16B_IFDATA_STALL_c1_e1;
             
 
             /* The 'static const' members here are used to designate the level of TMA */
@@ -140,6 +145,12 @@ namespace SESAME
             static const int MITE = 13;
             static const int DSB = 14;
             static const int LSD = 15;
+            static const int ITLB_MISSES = 16;
+            static const int ICACHE_MISSES = 17;
+            static const int BRANCH_RESTEERS = 18;
+            static const int DSB_SWITCHES = 19;
+            static const int LCP = 20;
+            static const int MS_SWITCHES = 21;
 
             /* The 'static const' members here are used to designate the forth level of TMA metrics */
             static const int DTLB_LOAD = 1;
@@ -154,11 +165,18 @@ namespace SESAME
             void AddEvent(int event);
             void AddNativeEvent(std::string event_name);
             void StartCounting(const char* filename, int line);
+            void StartCounting();
+            void IntervalStartCounting();
             void StopCounting();
+            void IntervalStopCounting(bool print_info);
             void DestroyTool();
-            void StartCountingTMA(const char* filename, int line, int level, int tma_cata);
-            void StopCountingTMA();
+            void AddTMAEvents(const char* filename, int line, int level, int tma_cata);
+            void StopCountingTMA(bool print_info);
             void ReadData();
+            void SetInterval(int interval);
+            void ResetCounter();
+            template <typename datatype>
+            void PrintCalculationInfo(std::vector<std::map<std::string, datatype>> values);
     };
 }
 

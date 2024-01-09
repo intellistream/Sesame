@@ -12,7 +12,11 @@
 
 using namespace std;
 
-SESAME::DStream::DStream(param_t &cmd_params) { this->param = cmd_params; }
+SESAME::DStream::DStream(param_t &cmd_params) { 
+    this->param = cmd_params; 
+    tool.SetInterval(param.papi_interval);
+    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
+}
 
 SESAME::DStream::~DStream() = default;
 
@@ -33,6 +37,7 @@ void SESAME::DStream::Init()
 
 void SESAME::DStream::RunOnline(PointPtr input)
 {
+    tool.IntervalStartCounting();
     this->currentTimeStamp = input->getIndex();
     ifReCalculate(input);
     GridListUpdate(Coord);  // tempCoord
@@ -56,12 +61,13 @@ void SESAME::DStream::RunOnline(PointPtr input)
     ds_timer.Tock();
 
     lat_timer.Add(input->toa);
+    tool.IntervalStopCounting(param.papi_print);
 }
 
 void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr)
 {
-    cout << "num_grids: " << NGrids << endl;
-    cout << "gap: " << gap << endl;
+    // cout << "num_grids: " << NGrids << endl;
+    // cout << "gap: " << gap << endl;
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     // SESAME_INFO(" cluster list size "<<clusterList.size());

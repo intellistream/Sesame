@@ -44,7 +44,7 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     }
 
     param.num_res = results.size();
-    std::cerr << "results.size=" << results.size() << std::endl;
+    // std::cerr << "results.size=" << results.size() << std::endl;
 
     // Store results.
     if (param.store)

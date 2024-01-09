@@ -4,10 +4,12 @@
 #include "Algorithm/Algorithm.hpp"
 #include "Algorithm/Param.hpp"
 #include "Utils/Random.hpp"
+#include "Evaluation/PAPITools.hpp"
 
 #include <list>
 #include <optional>
 #include <vector>
+#include <string>
 
 namespace SESAME
 {

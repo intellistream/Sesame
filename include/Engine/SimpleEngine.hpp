@@ -31,6 +31,7 @@ private:
     TimeMeter overallMeter;
     int TMA_level;
     int TMA_metric;
+    int PAPI_interval;
 
 public:
     BarrierPtr barrierPtr;

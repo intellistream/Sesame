@@ -1,8 +1,11 @@
 //
 // Created by tuidan on 2021/8/24.
 //
-#include <Algorithm/Birch.hpp>
-#include <Algorithm/DataStructure/DataStructureFactory.hpp>
+#include "Algorithm/Birch.hpp"
+#include "Algorithm/DataStructure/DataStructureFactory.hpp"
+#include "Evaluation/PAPITools.hpp"
+
+#include <iostream>
 
 void SESAME::Birch::Init()
 {
@@ -17,10 +20,13 @@ void SESAME::Birch::Init()
 
 void SESAME::Birch::RunOnline(const SESAME::PointPtr input)
 {
+    std::cout << "RUNNING" << std::endl;
+    tool.IntervalStartCounting();
     ds_timer.Tick();
     forwardInsert(input);
     ds_timer.Tock();
     lat_timer.Add(input->toa);
+    tool.IntervalStopCounting(param.papi_print);
 }
 
 void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr)
@@ -51,6 +57,8 @@ SESAME::Birch::Birch(param_t &cmd_params)
     this->BirchParam.max_in_nodes       = cmd_params.max_in_nodes;
     this->BirchParam.max_leaf_nodes     = cmd_params.max_leaf_nodes;
     this->BirchParam.distance_threshold = cmd_params.distance_threshold;
+    tool.SetInterval(param.papi_interval);
+    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 SESAME::Birch::~Birch() {}
 // when a new point insert into the CF, update the CF N, LS and SS

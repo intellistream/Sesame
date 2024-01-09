@@ -5,11 +5,12 @@ while [[ "$#" -gt 0 ]]; do
         -metric) metric="$2"; shift ;;
         -times) times="$2"; shift ;;
         -algo) algo="$2"; shift ;;
+        -papi_interval) papi_interval="$2"; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
 
 for ((i=1; i<=$times; i++)); do
-    ./build/benchmark/benchmark -level "$level" -metric "$metric" -algo "$algo"
+    ./build/benchmark/benchmark -level "$level" -metric "$metric" -algo "$algo" -papi_interval "$papi_interval"
 done

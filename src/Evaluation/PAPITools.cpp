@@ -14,6 +14,7 @@
 #include <cstring>
 #include <algorithm>
 #include <fstream>
+#include <map>
 
 namespace SESAME
 {
@@ -61,6 +62,9 @@ namespace SESAME
     const std::string PAPITools::L2_RQSTS_ALL_RFO = "L2_RQSTS:ALL_RFO";
     const std::string PAPITools::L2_RQSTS_RFO_HIT = "L2_RQSTS:RFO_HIT";
     const std::string PAPITools::OFFCORE_REQUESTS_OUTSTANDING_CYCLES_WITH_DEMAND_RFO = "OFFCORE_REQUESTS_OUTSTANDING:CYCLES_WITH_DEMAND_RFO";
+    const std::string PAPITools::ICACHE_64B_IFTAG_STALL = "ICACHE_64B:IFTAG_STALL";
+    const std::string PAPITools::ICACHE_16B_IFDATA_STALL = "ICACHE_16B.IFDATA_STALL";
+    const std::string PAPITools::ICACHE_16B_IFDATA_STALL_c1_e1 = "ICACHE_16B.IFDATA_STALL:c1:e1";
 
 
 
@@ -75,7 +79,7 @@ namespace SESAME
         if (PAPI_thread_init(pthread_self) != PAPI_OK) exit(1); 
         eventSet = PAPI_NULL;  
         if (PAPI_create_eventset(&eventSet) != PAPI_OK) exit(1);
-        std::cout << "-----Finished Intializing " << info << "-----" << std::endl;
+        // std::cout << "-----Finished Intializing " << info << "-----" << std::endl;
     }
 
     /* Add an event to the tool by using 'static int' provides by the PAPITools Class
@@ -126,9 +130,31 @@ namespace SESAME
      * Calling this function will save the current data in function pre_value
      * The values are arranged in the array in the order in which events were added */
     void PAPITools::StartCounting(const char* filename, int line) {
-        std::cout << "-----PAPI Starts Running in file " << filename << " at line " << line << "-----" << std::endl;
+        // std::cout << "-----PAPI Starts Running in file " << filename << " at line " << line << "-----" << std::endl;
         if (PAPI_start(eventSet) != PAPI_OK) exit(-1);
         ReadData();
+    }
+
+    /* Start counting with no args */
+    void PAPITools::StartCounting() {
+        if (PAPI_start(eventSet) != PAPI_OK) exit(-1);
+        ReadData();
+    }
+
+    /* Count with interval, use in loop */
+    void PAPITools::IntervalStartCounting() {
+        if(counter == 0) {
+            StartCounting();
+        }
+        counter++;
+    }
+    
+    /* Count with interval, use in loop */
+    void PAPITools::IntervalStopCounting(bool print_info) {
+        if(counter == interval) {
+            StopCountingTMA(print_info);
+            counter = 0;
+        }
     }
 
     /* Call this funtion to stop collecting statistics for registered events
@@ -136,7 +162,6 @@ namespace SESAME
      * The values are arranged in the array in the order in which events were added */
     void PAPITools::StopCounting() {
         if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
-        PrintInfo();
         DestroyTool();
     }
 
@@ -163,47 +188,48 @@ namespace SESAME
     }
 
     /* Use this funciton to start counting TMA metric quickly */
-    void PAPITools::StartCountingTMA(const char* filename, int line, int level, int tma_cata) {
+    void PAPITools::AddTMAEvents(const char* filename, int line, int level, int tma_cata) {
         tma_level = level;
         switch (level) {
             case LEVEL1:
-                StartCountingTMALevel1(filename, line, tma_cata);
+                AddingTMALevel1(filename, line, tma_cata);
                 break;
             case LEVEL2:
-                StartCountingTMALevel2(filename, line, tma_cata);
+                AddingTMALevel2(filename, line, tma_cata);
                 break;
             case LEVEL3:
-                StartCountingTMALevel3(filename, line, tma_cata);
+                AddingTMALevel3(filename, line, tma_cata);
                 break;
             case LEVEL4:
-                StartCountingTMALevel4(filename, line, tma_cata);
+                AddingTMALevel4(filename, line, tma_cata);
             default:
                 break;
         }
     }
 
     /* Stop TMA calculation */
-    void PAPITools::StopCountingTMA() {
+    void PAPITools::StopCountingTMA(bool print_info) {
         switch (tma_level) {
             case LEVEL1:
-                StopCountingTMALevel1();
+                ReadTMALevel1(print_info);
                 break;
             case LEVEL2:
-                StopCountingTMALevel2();
+                ReadTMALevel2(print_info);
                 break;
             case LEVEL3:
-                StopCountingTMALevel3();
+                ReadTMALevel3(print_info);
                 break;
             case LEVEL4:
-                StopCountingTMALevel4();
+                ReadTMALevel4(print_info);
                 break;
             default:
                 break;
         }
+        if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
     }
 
     /* Use this function to stop counting in TMA level1 */
-    void PAPITools::StartCountingTMALevel1(const char* filename, int line, int tma_cata) {
+    void PAPITools::AddingTMALevel1(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
             return;
@@ -237,18 +263,18 @@ namespace SESAME
                 break;
         }
         allow_adding = false;
-        StartCounting(filename, line);
     }
 
     /* This function is used to count metrics in the first level of TMA */
-    void PAPITools::StopCountingTMALevel1() {
-        if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
+    void PAPITools::ReadTMALevel1(bool print_info) {
         /* Check cascadelakex_metrics.json to find details about calculation */
+        if (PAPI_accum(eventSet, after_value) != PAPI_OK) exit(-1);
+        std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level1 == FRONTEND_BOUND) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float fe_bound = ( a / ( ( 4 * b ) ) );
-            std::cout << "Frontend bound: " << fe_bound << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Frontend bound:", fe_bound}});
             WriteFile("output.txt", {fe_bound});
         } else if(tma_level1 == BACKEND_BOUND){
             float a = after_value[0] - pre_value[0];  // UOPS_ISSUED_ANY_cnt
@@ -256,13 +282,13 @@ namespace SESAME
             float c = after_value[2] - pre_value[2];  // INT_MISC_RECOVERY_CYCLES_cnt
             float d = after_value[3] - pre_value[3];  // CPU_CLK_UNHALTED_cnt
             float be_bound = (1 - ( a / ( 4 *  b ) ) - ( c + ( 4 * d ) ) / ( ( 4 * b ) ) );
-            std::cout << "Backend bound: " << be_bound << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Backend bound:", be_bound}});
             WriteFile("output.txt", {be_bound});
         } else if (tma_level1 == RETIRING) {
             float a = after_value[0] - pre_value[0];  // UOPS_RETIRED_RETIRE_SLOTS_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float retiring = ( a / ( ( 4 * b ) ) );
-            std::cout << "Retiring: " << retiring << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Retiring:", retiring}});
             WriteFile("output.txt", {retiring});
         } else if (tma_level1 == BAD_SPEC) {
             float a = after_value[0] - pre_value[0];  // UOPS_ISSUED_ANY_cnt
@@ -270,18 +296,21 @@ namespace SESAME
             float c = after_value[2] - pre_value[2];  // INT_MISC_RECOVERY_CYCLES_cnt
             float d = after_value[3] - pre_value[3];  // CPU_CLK_UNHALTED_cnt
             float bad_spec = ( a - ( b ) + ( 4 * c ) ) / ( 4 * d );
-            std::cout << "Bad speculation: " << bad_spec << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Bad speculation:", bad_spec}});
             WriteFile("output.txt", {bad_spec});
         } else if (tma_level1 == TOTAL_CLK) {
             long long a = after_value[0] - pre_value[0];  // CPU_CLK_UNHALTED_cnt
-            std::cout << "Total clk: " << a << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Total clk:", a}});
             WriteFile("output.txt", {a});
+        }
+        if (print_info) {
+            PrintCalculationInfo(values_to_print);
         }
     }
 
     /* This function is used to count metrics in the second level of TMA
      * Not all the metrics are support in this func, but it is extendable */
-    void PAPITools::StartCountingTMALevel2(const char* filename, int line, int tma_cata) {
+    void PAPITools::AddingTMALevel2(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
             return;
@@ -334,24 +363,26 @@ namespace SESAME
                 break;
         }
         allow_adding = false;
-        StartCounting(filename, line);
     }
 
     /* Use this function to stop counting in TMA level2 */
-    void PAPITools::StopCountingTMALevel2() {
-        if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
-        /* Check cascadelakex_metrics.json to find details about calculation */
+    void PAPITools::ReadTMALevel2(bool print_info) {
+                /* Check cascadelakex_metrics.json to find details about calculation */
+        if (PAPI_read(eventSet, after_value) != PAPI_OK) exit(-1);
+        std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level2 == FETCH_LATENCY) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float fetch_latency = ( a / b );
-            std::cout << "Fetch latency: " << fetch_latency << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Total clk:", a}});
+            WriteFile("output.txt", {fetch_latency});
         } else if (tma_level2 == FETCH_BANDWIDTH) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float c = after_value[2] - pre_value[2];  // IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE_cnt
             float fetch_bandwidth = ( ( a / ( 4 * b ) ) - ( c / b ) );
-            std::cout << "Fetch bandwidth: " << fetch_bandwidth << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Total clk:", a}});
+            WriteFile("output.txt", {fetch_bandwidth});
         } else if (tma_level2 == CORE_BOUND_P1) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
@@ -396,10 +427,13 @@ namespace SESAME
             std::cout << "INT_MISC_RECOVERY_CYCLES_cnt: " << d << std::endl;
             WriteFile("output.txt", {a, b, c, d});
         }
+        if (print_info) {
+            PrintCalculationInfo(values_to_print);
+        }
     }
 
     /* This function is used to count metrics in the thrid level of TMA */
-    void PAPITools::StartCountingTMALevel3(const char* filename, int line, int tma_cata) {
+    void PAPITools::AddingTMALevel3(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
             return;
@@ -478,17 +512,26 @@ namespace SESAME
                 AddNativeEvent(LSD_CYCLES_4_UOPS);
                 AddNativeEvent(CPU_CLK_UNHALTED);
                 break;
+            case ITLB_MISSES:
+                AddNativeEvent(ICACHE_64B_IFTAG_STALL);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case ICACHE_MISSES:
+                AddNativeEvent(ICACHE_16B_IFDATA_STALL);
+                AddNativeEvent(ICACHE_16B_IFDATA_STALL_c1_e1);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
             default:
                 break;
         }
         allow_adding = false;
-        StartCounting(filename, line);
     }
 
     /* Use this function to stop counting in TMA level3 */
-    void PAPITools::StopCountingTMALevel3() {  
-        if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
+    void PAPITools::ReadTMALevel3(bool print_info) {  
         /* Check cascadelakex_metrics.json to find details about calculation */ 
+        if (PAPI_read(eventSet, after_value) != PAPI_OK) exit(-1);
+        std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level3 == DIVIDER) {
             float a = after_value[0] - pre_value[0];    // ARITH_DIVIDER_ACTIVE_cnt
             float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
@@ -566,29 +609,44 @@ namespace SESAME
             float a = after_value[0] - pre_value[0];    // IDQ_ALL_MITE_CYCLES_ANY_UOPS_cnt
             float b = after_value[1] - pre_value[1];    // IDQ_ALL_MITE_CYCLES_4_UOPS_cnt
             float store_bound = a / b;
-            std::cout << "Store bound:" << store_bound << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"Store bound:", store_bound}});
+            WriteFile("output.txt", {store_bound});
         } else if (tma_level3 == MITE) {
             float a = after_value[0] - pre_value[0];    // IDQ_ALL_MITE_CYCLES_ANY_UOPS_cnt
             float b = after_value[1] - pre_value[1];    // IDQ_ALL_MITE_CYCLES_4_UOPS_cnt
             float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
             float mite = (a - b) / c / 2;
-            std::cout << "MITE:" << mite << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"MITE:", mite}});
+            WriteFile("output.txt", {mite});
         } else if (tma_level3 == DSB) {
             float a = after_value[0] - pre_value[0];    // IDQ_ALL_DSB_CYCLES_ANY_UOPS_cnt
             float b = after_value[1] - pre_value[1];    // IDQ_ALL_DSB_CYCLES_4_UOPS_cnt
             float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
             float dsb = (a - b) / c / 2;
-            std::cout << "DSB:" << dsb << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"DSB:", dsb}});
+            WriteFile("output.txt", {dsb});
         } else if (tma_level3 == LSD) {
             float a = after_value[0] - pre_value[0];    // LSD_CYCLES_ACTIVE_cnt
             float b = after_value[1] - pre_value[1];    // LSD_CYCLES_4_UOPS_cnt
             float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
             float lsd = (a - b) / c / 2;
-            std::cout << "LSD:" << lsd << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"LSD:", lsd}});
+            WriteFile("output.txt", {lsd});
+        } else if (tma_level3 == ITLB_MISSES) {
+            float a = after_value[0] - pre_value[0];    // ICACHE_64B_IFTAG_STALL_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float itlb_misses = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"ITLB misses:", itlb_misses}});
+            WriteFile("output.txt", {itlb_misses});
+        } else if (tma_level3 == ICACHE_MISSES) {
+
+        }
+        if (print_info) {
+            PrintCalculationInfo(values_to_print);
         }
     }
 
-    void PAPITools::StartCountingTMALevel4(const char* filename, int line, int tma_cata) {
+    void PAPITools::AddingTMALevel4(const char* filename, int line, int tma_cata) {
         if(!allow_adding) {
             std::cout << "Opps, this tool is alreay occupied!" << std::endl;
             return;
@@ -634,13 +692,13 @@ namespace SESAME
                 break;
         }
         allow_adding = false;
-        StartCounting(filename, line);
     }
 
     /* Use this function to stop counting in TMA level4 */
-    void PAPITools::StopCountingTMALevel4() {
-     if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
+    void PAPITools::ReadTMALevel4(bool print_info) {
+     if (PAPI_read(eventSet, after_value) != PAPI_OK) exit(-1);
         /* Check cascadelakex_metrics.json to find details about calculation */ 
+        std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level4 == DTLB_LOAD) {
             long long a = after_value[0] - pre_value[0];    // DTLB_LOAD_MISSES_STLB_HIT_c1_cnt
             long long b = after_value[1] - pre_value[1];    // DTLB_LOAD_MISSES_WALK_ACTIVE_cnt
@@ -695,11 +753,13 @@ namespace SESAME
             std::cout << "L1D_PEND_MISS_FB_FULL_c1: " << d << std::endl;
             WriteFile("output.txt", {a, b, c, d});
         }
+        if(print_info) {
+            PrintCalculationInfo(values_to_print);
+        }
     }
 
     template <typename type>
     void PAPITools::WriteFile(const std::string& filename, std::initializer_list<type> values) {
-        std::cout << "Writing" << std::endl;
         std::ofstream outfile(filename, std::ios::app);
         if (outfile.is_open()) {
             for (const type& value : values) {
@@ -709,6 +769,23 @@ namespace SESAME
             outfile.close();
         } else {
             std::cout << "Cannot open the file " << filename << std::endl;
+        }
+    }
+
+    void PAPITools::SetInterval(int interval) {
+        this->interval = interval;
+    }
+
+    void PAPITools::ResetCounter() {
+        this->counter = 0;
+    }
+
+    template <typename datatype>
+    void PAPITools::PrintCalculationInfo(std::vector<std::map<std::string, datatype>> values) {
+        for(auto ele: values) {
+            for (auto it = ele.begin(); it != ele.end(); it++) { 
+                std::cout << it -> first << " " << it -> second << std::endl;
+            }
         }
     }
 }

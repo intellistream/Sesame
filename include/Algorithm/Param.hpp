@@ -131,6 +131,8 @@ struct param_t
     // TMA options
     int level = 1;
     int metric = 1;
+    int papi_interval = 1;
+    bool papi_print = false;
 
     void Print()
     {

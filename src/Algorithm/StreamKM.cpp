@@ -37,10 +37,12 @@ void SESAME::StreamKM::Init()
  */
 void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input)
 {
+    tool.IntervalStartCounting();
     ds_timer.Tick();
     this->window->insertPoint(input);
     ds_timer.Tock();
     lat_timer.Add(input->toa);
+    tool.IntervalStopCounting(param.papi_print);
 }
 
 /**
@@ -99,6 +101,8 @@ SESAME::StreamKM::StreamKM(param_t &cmd_params)
     this->StreamKMParam.windowSize   = cmd_params.coreset_size;
     this->StreamKMParam.seed         = cmd_params.seed;
     this->StreamKMParam.dim          = cmd_params.dim;
+    tool.SetInterval(param.papi_interval);
+    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 SESAME::StreamKM::~StreamKM() {}
 

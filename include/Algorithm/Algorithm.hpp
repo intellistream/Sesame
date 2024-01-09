@@ -11,6 +11,7 @@
 #include "Algorithm/DataStructure/Point.hpp"
 #include "Algorithm/Param.hpp"
 #include "Evaluation/Evaluation.hpp"
+#include "Evaluation/PAPITools.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Timer/Timer.hpp"
 
@@ -19,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -42,6 +44,7 @@ public:
     Timer win_timer, ds_timer, out_timer, ref_timer, sum_timer, lat_timer, on_timer;
     param_t param;
     int cnt = 0;
+    PAPITools tool = PAPITools("Create PAPI tool");
     std::vector<int64> et;
     PerfRes GetPerf()
     {

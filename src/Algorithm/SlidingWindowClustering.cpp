@@ -3,12 +3,15 @@
 #include "Evaluation/PAPITools.hpp"
 
 #include <cassert>
+#include <iostream>
 
 namespace SESAME
 {
 SlidingWindowClustering::SlidingWindowClustering(param_t &cmd_params) : r(cmd_params.seed)
 {
     this->param = cmd_params;
+    tool.SetInterval(param.papi_interval);
+    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 
 SlidingWindowClustering::~SlidingWindowClustering() {}
@@ -132,6 +135,7 @@ std::pair<double, double> guess_optimum_range_bounds(Random *r, const vector<Poi
 
 void SlidingWindowClustering::RunOnline(PointPtr input)
 {
+    tool.IntervalStartCounting();
     ++count;
     if (!has_sampled)
     {
@@ -160,6 +164,7 @@ void SlidingWindowClustering::RunOnline(PointPtr input)
         ds_timer.Tock();
     }
     lat_timer.Add(input->toa);
+    tool.IntervalStopCounting(param.papi_print);
 }
 
 void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr)

@@ -31,6 +31,7 @@ SESAME::SimpleEngine::SimpleEngine(DataSourcePtr sourcePtr, DataSinkPtr sinkPtr,
     this->algoPtr   = std::move(algoPtr);
     this->TMA_level = param.level;
     this->TMA_metric = param.metric;
+    this->PAPI_interval = param.papi_interval;
     threadPtr       = std::make_shared<SingleThread>();
 }
 
@@ -73,52 +74,63 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 
     SESAME_INFO("Algorithm start to process data");
     overallMeter.START_MEASURE();
-    overallMeter.overallStartMeasure();
+    // overallMeter.overallStartMeasure();
     // We set observing interval for cumulative time: every 100 tuples
-    overallMeter.setInterval(100);
+    // overallMeter.setInterval(100);
     // initialization
 
-    SESAME::PAPITools tool("in SimpleEngine function run()");
+
 
     algoPtr->Init();
 
 
-    boost::progress_display show_progress(algoPtr->param.num_points, std::cerr,
-                                          "Online Clustering:\n");
+    // boost::progress_display show_progress(algoPtr->param.num_points, std::cerr,
+    //                                       "Online Clustering:\n");
 
 #ifdef GPERF
     std::string prof = "/tmp/" + algoPtr->param.Workload() + "." + algoPtr->param.Name() + ".prof";
     ProfilerStart(prof.c_str());
 #endif
 
+
+    SESAME::PAPITools tool("in SimpleEngine function run()");
+    tool.AddTMAEvents(__FILE__, __LINE__, TMA_level, TMA_metric);
+    tool.SetInterval(PAPI_interval);
+
     while (!sourcePtr->sourceEnded())
     {  // continuously processing infinite incoming data streams.
         if (!sourcePtr->empty())
         {
             auto item = sourcePtr->get();
-            overallMeter.onlineAccMeasure();
-            algoPtr->RunOnline(item->copy());
+            // overallMeter.onlineAccMeasure();
+            PointPtr p = item->copy();
+            // tool.IntervalStartCounting();
+            algoPtr->RunOnline(p);
+            // tool.IntervalStopCounting();
             algoPtr->Count();
-            ++show_progress;
-            overallMeter.onlineAccEMeasure();
-        }          
+            // ++show_progress;
+            // overallMeter.onlineAccEMeasure();
+        }       
     }
 
 
-    tool.StartCountingTMA(__FILE__, __LINE__, TMA_level, TMA_metric);
+
     while (!sourcePtr->empty())
     {  // process the remaining data streams after source stops.
         auto item = sourcePtr->get();
-        overallMeter.onlineAccMeasure();
+        // overallMeter.onlineAccMeasure();
+        // PointPtr p = 
+        // tool.StartCounting();
         algoPtr->RunOnline(item->copy());
-        algoPtr->Count();
-        ++show_progress;
-        overallMeter.onlineAccEMeasure();
+        // tool.StopCountingTMA();
+        // ++show_progress;
+        // overallMeter.onlineAccEMeasure();
     }
+        
 
-    tool.StopCountingTMA();
+
     overallMeter.onlineEndMeasure();
-    // tool.StopCountingTMA();
+
     SESAME_INFO("ready to offline clustering");
 
     // run offline clustering
