@@ -1,0 +1,26 @@
+{
+    "DenStreamType": {
+        "Ports util 0": 0.0544, 
+        "Ports util 1": 0.2111, 
+        "Ports util 2": 0.2117, 
+        "Ports util 3m": 0.2076
+    }, 
+    "EDMStreamType": {
+        "Ports util 0": 0.1051, 
+        "Ports util 1": 0.1877, 
+        "Ports util 2": 0.1788, 
+        "Ports util 3m": 0.1788
+    }, 
+    "DBStreamType": {
+        "Ports util 0": 0.0836, 
+        "Ports util 1": 0.1984, 
+        "Ports util 2": 0.2169, 
+        "Ports util 3m": 0.2177
+    }, 
+    "DStreamType": {
+        "Ports util 0": 0.0413, 
+        "Ports util 1": 0.2424, 
+        "Ports util 2": 0.2493, 
+        "Ports util 3m": 0.2504
+    }
+}

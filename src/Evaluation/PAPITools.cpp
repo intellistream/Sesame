@@ -15,14 +15,18 @@
 #include <algorithm>
 #include <fstream>
 #include <map>
+#include <chrono>
 
 namespace SESAME
 {
     const std::string PAPITools::IDQ_UOPS_NOT_DELIVERED_CORE = "IDQ_UOPS_NOT_DELIVERED:CORE";
-    const std::string PAPITools::CPU_CLK_UNHALTED = "CPU_CLK_UNHALTED";     // The candidate machine uses hyper threading
+    const std::string PAPITools::CPU_CLK_UNHALTED = "CPU_CLK_UNHALTED";
     const std::string PAPITools::UOPS_RETIRED_RETIRE_SLOTS = "UOPS_RETIRED:RETIRE_SLOTS";
-    const std::string PAPITools::UOPS_ISSUED_ANY = "UOPS_ISSUED:ANY"; 
+    const std::string PAPITools::UOPS_ISSUED_ANY = "UOPS_ISSUED:ANY";
+    const std::string PAPITools::UOPS_EXECUTED_CORE_CYCLES_NONE = "UOPS_EXECUTED:CORE_CYCLES_NONE"; 
+    const std::string PAPITools::UOPS_EXECUTED_CORE_CYCLES_GE_3 = "UOPS_EXECUTED:CORE_CYCLES_GE_3";
     const std::string PAPITools::INT_MISC_RECOVERY_CYCLES = "INT_MISC:RECOVERY_CYCLES";
+    const std::string PAPITools::INT_MISC_CLEAR_RESTEER_CYCLES = "INT_MISC.CLEAR_RESTEER_CYCLES";
     const std::string PAPITools::IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE = "IDQ_UOPS_NOT_DELIVERED:CYCLES_0_UOPS_DELIV_CORE";
     const std::string PAPITools::CYCLE_ACTIVITY_CYCLES_MEM_ANY = "CYCLE_ACTIVITY:CYCLES_MEM_ANY";
     const std::string PAPITools::CYCLE_ACTIVITY_STALLS_MEM_ANY = "CYCLE_ACTIVITY:STALLS_MEM_ANY";
@@ -39,6 +43,7 @@ namespace SESAME
     const std::string PAPITools::IDQ_ALL_MITE_CYCLES_4_UOPS = "IDQ:ALL_MITE_CYCLES_4_UOPS";
     const std::string PAPITools::IDQ_ALL_DSB_CYCLES_ANY_UOPS = "IDQ:ALL_DSB_CYCLES_ANY_UOPS";
     const std::string PAPITools::IDQ_ALL_DSB_CYCLES_4_UOPS = "IDQ:ALL_DSB_CYCLES_4_UOPS";
+    const std::string PAPITools::IDQ_MS_SWITCHES = "IDQ:MS_SWITCHES";
     const std::string PAPITools::LSD_CYCLES_ACTIVE = "LSD:CYCLES_ACTIVE";
     const std::string PAPITools::LSD_CYCLES_4_UOPS = "LSD:CYCLES_4_UOPS";
     const std::string PAPITools::MEM_LOAD_RETIRED_L2_HIT = "MEM_LOAD_RETIRED:L2_HIT";
@@ -63,9 +68,11 @@ namespace SESAME
     const std::string PAPITools::L2_RQSTS_RFO_HIT = "L2_RQSTS:RFO_HIT";
     const std::string PAPITools::OFFCORE_REQUESTS_OUTSTANDING_CYCLES_WITH_DEMAND_RFO = "OFFCORE_REQUESTS_OUTSTANDING:CYCLES_WITH_DEMAND_RFO";
     const std::string PAPITools::ICACHE_64B_IFTAG_STALL = "ICACHE_64B:IFTAG_STALL";
-    const std::string PAPITools::ICACHE_16B_IFDATA_STALL = "ICACHE_16B.IFDATA_STALL";
-    const std::string PAPITools::ICACHE_16B_IFDATA_STALL_c1_e1 = "ICACHE_16B.IFDATA_STALL:c1:e1";
-
+    const std::string PAPITools::ICACHE_16B_IFDATA_STALL = "ICACHE_16B:IFDATA_STALL";
+    const std::string PAPITools::ICACHE_16B_IFDATA_STALL_c1_e1 = "ICACHE_16B:IFDATA_STALL:c=1:e=1";
+    const std::string PAPITools::BACLEARS_ANY = "BACLEARS:ANY";
+    const std::string PAPITools::DSB2MITE_SWITCHES_PENALTY_CYCLES = "DSB2MITE_SWITCHES:PENALTY_CYCLES";
+    const std::string PAPITools::ILD_STALL_LCP = "ILD_STALL:LCP";
 
 
     /* Do initialization function before using any papi object */
@@ -138,13 +145,19 @@ namespace SESAME
     /* Start counting with no args */
     void PAPITools::StartCounting() {
         if (PAPI_start(eventSet) != PAPI_OK) exit(-1);
-        ReadData();
+        if (PAPI_read(eventSet, pre_value) != PAPI_OK) exit(-1);
+        // std::cout << pre_value[0] << " ";
     }
 
     /* Count with interval, use in loop */
     void PAPITools::IntervalStartCounting() {
         if(counter == 0) {
-            StartCounting();
+            if (PAPI_start(eventSet) != PAPI_OK) {
+                std::cout << "Failed to start" << std::endl;
+                exit(-1);
+            }
+            if (PAPI_read(eventSet, pre_value) != PAPI_OK) exit(-1);
+            start = std::chrono::high_resolution_clock::now();
         }
         counter++;
     }
@@ -154,6 +167,9 @@ namespace SESAME
         if(counter == interval) {
             StopCountingTMA(print_info);
             counter = 0;
+            end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end - start;
+            std::cout << "Time:" << duration.count() << " sec" << std::endl;
         }
     }
 
@@ -168,7 +184,8 @@ namespace SESAME
     /* This function is used to read data */
     void PAPITools::ReadData() {
         if (PAPI_read(eventSet, pre_value) != PAPI_OK) exit(-1);
-    }
+        std::cout << pre_value[0] << " ";
+     }
 
     /* This function is used to print the colletced data
      * The data is arranged in the order in which events were added */
@@ -226,6 +243,10 @@ namespace SESAME
                 break;
         }
         if (PAPI_stop(eventSet, after_value) != PAPI_OK) exit(-1);
+        for (int i = 0;i < 64;i++) {
+            pre_value[i] = 0;
+            after_value[i] = 0;
+        }
     }
 
     /* Use this function to stop counting in TMA level1 */
@@ -268,12 +289,15 @@ namespace SESAME
     /* This function is used to count metrics in the first level of TMA */
     void PAPITools::ReadTMALevel1(bool print_info) {
         /* Check cascadelakex_metrics.json to find details about calculation */
-        if (PAPI_accum(eventSet, after_value) != PAPI_OK) exit(-1);
+        // std::cout << after_value[0] << " ";
+        if (PAPI_read(eventSet, after_value) != PAPI_OK) exit(-1);
+        // std::cout << after_value[0] << " ";
         std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level1 == FRONTEND_BOUND) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float fe_bound = ( a / ( ( 4 * b ) ) );
+            std::cout << a << " ";
             values_to_print.emplace_back(std::map<std::string, float>{{"Frontend bound:", fe_bound}});
             WriteFile("output.txt", {fe_bound});
         } else if(tma_level1 == BACKEND_BOUND){
@@ -367,13 +391,14 @@ namespace SESAME
 
     /* Use this function to stop counting in TMA level2 */
     void PAPITools::ReadTMALevel2(bool print_info) {
-                /* Check cascadelakex_metrics.json to find details about calculation */
+        /* Check cascadelakex_metrics.json to find details about calculation */
         if (PAPI_read(eventSet, after_value) != PAPI_OK) exit(-1);
         std::vector<std::map<std::string, float>> values_to_print;
         if (tma_level2 == FETCH_LATENCY) {
             float a = after_value[0] - pre_value[0];  // IDQ_UOPS_NOT_DELIVERED_CYCLES_0_UOPS_DELIV_CORE_cnt
             float b = after_value[1] - pre_value[1];  // CPU_CLK_UNHALTED_cnt
             float fetch_latency = ( a / b );
+            // std::cout << a  << std::endl;
             values_to_print.emplace_back(std::map<std::string, float>{{"Total clk:", a}});
             WriteFile("output.txt", {fetch_latency});
         } else if (tma_level2 == FETCH_BANDWIDTH) {
@@ -386,45 +411,45 @@ namespace SESAME
         } else if (tma_level2 == CORE_BOUND_P1) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
-            std::cout << "IDQ_UOPS_NOT_DELIVERED_CORE_cnt: " << a << std::endl;
-            std::cout << "CPU_CLK_UNHALTED_cnt: " << b << std::endl;
-            std::cout << "UOPS_ISSUED_ANY_cnt: " << c << std::endl;
-            std::cout << "INT_MISC_RECOVERY_CYCLES_cnt: " << d << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"IDQ_UOPS_NOT_DELIVERED_CORE_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CPU_CLK_UNHALTED_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"UOPS_ISSUED_ANY_cnt:", c}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"INT_MISC_RECOVERY_CYCLES_cnt:", d}});
             WriteFile("output.txt", {a, b, c, d});
         } else if (tma_level2 == CORE_BOUND_P2) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2];
-            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt:" << a << std::endl;
-            std::cout << "EXE_ACTIVITY_BOUND_ON_STORES_cnt:" << b << std::endl;
-            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt:" << c << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_BOUND_ON_STORES_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_TOTAL_cnt:", c}});
             WriteFile("output.txt", {a, b, c});
         } else if (tma_level2 == CORE_BOUND_P3) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2];
-            std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt:" << a << std::endl;
-            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt:" << b << std::endl;
-            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt:" << c << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_1_PORTS_UTIL_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"UOPS_RETIRED_RETIRE_SLOTS_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_2_PORTS_UTIL_cnt:", c}});
             WriteFile("output.txt", {a, b, c});
         } else if (tma_level2 == MEMORY_BOUND_P1) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
-            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt: " << a << std::endl;
-            std::cout << "EXE_ACTIVITY_BOUND_ON_STORES_cnt: " << b << std::endl;
-            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt: " << c << std::endl;
-            std::cout << "INT_MISC_RECOVERY_CYCLES_cnt: " << d << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_BOUND_ON_STORES_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_TOTAL_cnt:", c}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"INT_MISC_RECOVERY_CYCLES_cnt:", d}});
             WriteFile("output.txt", {a, b, c, d});
         } else if (tma_level2 == MEMORY_BOUND_P2) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
-            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt: " << a << std::endl;
-            std::cout << "CPU_CLK_UNHALTED_cnt: " << b << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"UOPS_RETIRED_RETIRE_SLOTS_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CPU_CLK_UNHALTED_cnt: ", b}});
             WriteFile("output.txt", {a, b});
         } else if (tma_level2 == MEMORY_BOUND_P3) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
-            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt: " << a << std::endl;
-            std::cout << "IDQ_UOPS_NOT_DELIVERED_CORE_cnt: " << b << std::endl;
-            std::cout << "UOPS_ISSUED_ANY_cnt: " << c << std::endl;
-            std::cout << "INT_MISC_RECOVERY_CYCLES_cnt: " << d << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_2_PORTS_UTIL_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"IDQ_UOPS_NOT_DELIVERED_CORE_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"UOPS_ISSUED_ANY_cnt:", c}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"INT_MISC_RECOVERY_CYCLES_cnt:", d}});
             WriteFile("output.txt", {a, b, c, d});
         }
         if (print_info) {
@@ -445,16 +470,16 @@ namespace SESAME
                 AddNativeEvent(CPU_CLK_UNHALTED);
                 break;
             case PORTS_UTILIZATION_P1:
-                AddNativeEvent(CPU_CLK_UNHALTED);                                        
+                AddNativeEvent(EXE_ACTIVITY_EXE_BOUND_0_PORTS);
+                AddNativeEvent(EXE_ACTIVITY_1_PORTS_UTIL);
+                AddNativeEvent(UOPS_RETIRED_RETIRE_SLOTS);
+                AddNativeEvent(CPU_CLK_UNHALTED);   
+                break;
+            case PORTS_UTILIZATION_P2:
+                AddNativeEvent(EXE_ACTIVITY_2_PORTS_UTIL);                             
                 AddNativeEvent(ARITH_DIVIDER_ACTIVE);
                 AddNativeEvent(CYCLE_ACTIVITY_STALLS_TOTAL);
                 AddNativeEvent(CYCLE_ACTIVITY_STALLS_MEM_ANY);
-                break;
-            case PORTS_UTILIZATION_P2:
-                AddNativeEvent(EXE_ACTIVITY_EXE_BOUND_0_PORTS);
-                AddNativeEvent(EXE_ACTIVITY_1_PORTS_UTIL);
-                AddNativeEvent(EXE_ACTIVITY_2_PORTS_UTIL); 
-                AddNativeEvent(UOPS_RETIRED_RETIRE_SLOTS);
                 break;
             case L1_BOUND:
                 AddNativeEvent(CYCLE_ACTIVITY_STALLS_MEM_ANY);
@@ -521,6 +546,23 @@ namespace SESAME
                 AddNativeEvent(ICACHE_16B_IFDATA_STALL_c1_e1);
                 AddNativeEvent(CPU_CLK_UNHALTED);
                 break;
+            case BRANCH_RESTEERS:
+                AddNativeEvent(INT_MISC_CLEAR_RESTEER_CYCLES);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                AddNativeEvent(BACLEARS_ANY);
+                break;
+            case DSB_SWITCHES:
+                AddNativeEvent(DSB2MITE_SWITCHES_PENALTY_CYCLES);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case LCP:
+                AddNativeEvent(ILD_STALL_LCP);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case MS_SWITCHES:
+                AddNativeEvent(IDQ_MS_SWITCHES);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
             default:
                 break;
         }
@@ -541,18 +583,18 @@ namespace SESAME
         } else if (tma_level3 == PORTS_UTILIZATION_P1) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
-            std::cout << "CPU_CLK_UNHALTED_cnt: " << a << std::endl;
-            std::cout << "ARITH_DIVIDER_ACTIVE_cnt: " << b << std::endl;
-            std::cout << "CYCLE_ACTIVITY_STALLS_TOTAL_cnt: " << c << std::endl;
-            std::cout << "CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt: " << d << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_EXE_BOUND_0_PORTS_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_1_PORTS_UTIL_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"UOPS_RETIRED_RETIRE_SLOTS_cnt:", c}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CPU_CLK_UNHALTED_cnt:", d}});
             WriteFile("output.txt", {a, b, c, d});
         } else if (tma_level3 == PORTS_UTILIZATION_P2) {
             long long a = after_value[0] - pre_value[0], b = after_value[1] - pre_value[1];
             long long c = after_value[2] - pre_value[2], d = after_value[3] - pre_value[3];
-            std::cout << "EXE_ACTIVITY_EXE_BOUND_0_PORTS_cnt: " << a << std::endl;
-            std::cout << "EXE_ACTIVITY_1_PORTS_UTIL_cnt: " << b << std::endl;
-            std::cout << "EXE_ACTIVITY_2_PORTS_UTIL_cnt: " << c << std::endl;
-            std::cout << "UOPS_RETIRED_RETIRE_SLOTS_cnt: " << d << std::endl;
+            values_to_print.emplace_back(std::map<std::string, float>{{"EXE_ACTIVITY_2_PORTS_UTIL_cnt:", a}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"ARITH_DIVIDER_ACTIVE_cnt:", b}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_TOTAL_cnt:", c}});
+            values_to_print.emplace_back(std::map<std::string, float>{{"CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt:", d}});
             WriteFile("output.txt", {a, b, c, d});
         } else if (tma_level3 == L1_BOUND) {
             float a = after_value[0] - pre_value[0];    // CYCLE_ACTIVITY_STALLS_MEM_ANY_cnt
@@ -639,7 +681,37 @@ namespace SESAME
             values_to_print.emplace_back(std::map<std::string, float>{{"ITLB misses:", itlb_misses}});
             WriteFile("output.txt", {itlb_misses});
         } else if (tma_level3 == ICACHE_MISSES) {
-
+            float a = after_value[0] - pre_value[0];    // ICACHE_16B_IFDATA_STALL_cnt
+            float b = after_value[1] - pre_value[1];    // ICACHE_16B_IFDATA_STALL_c1_e1_cnt
+            float c = after_value[2] - pre_value[2];    // CPU_CLK_UNHALTED_cnt
+            float icache_misses = ( ( a + 2 * b ) / ( c ) );
+            values_to_print.emplace_back(std::map<std::string, float>{{"ICACHE misses:", icache_misses}});
+            WriteFile("output.txt", {icache_misses});
+        } else if (tma_level3 == BRANCH_RESTEERS) {
+            float a = after_value[0] - pre_value[0];    // INT_MISC_CLEAR_RESTEER_CYCLES_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float c = after_value[2] - pre_value[2];    // BACLEARS_ANY_cnt
+            float branch_resteers = ( a / ( b ) + ( ( 9 ) * c / ( b ) ) );
+            values_to_print.emplace_back(std::map<std::string, float>{{"Branch resteers misses:", branch_resteers}});
+            WriteFile("output.txt", {branch_resteers});
+        } else if (tma_level3 == DSB_SWITCHES) {
+            float a = after_value[0] - pre_value[0];    // DSB2MITE_SWITCHES_PENALTY_CYCLES_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float dsb_switches = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"DSB switches:", dsb_switches}});
+            WriteFile("output.txt", {dsb_switches});
+        } else if (tma_level3 == LCP) {
+            float a = after_value[0] - pre_value[0];    // ILD_STALL_LCP_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float lcp = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"LCP:", lcp}});
+            WriteFile("output.txt", {lcp});
+        } else if (tma_level3 == MS_SWITCHES) {
+            float a = after_value[0] - pre_value[0];    // IDQ_MS_SWITCHES_cnt
+            float b = after_value[1] - pre_value[1];    // CPU_CLK_UNHALTED_cnt
+            float ms_switches = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"MS switches:", ms_switches}});
+            WriteFile("output.txt", {ms_switches});
         }
         if (print_info) {
             PrintCalculationInfo(values_to_print);
@@ -687,6 +759,23 @@ namespace SESAME
                 AddNativeEvent(MEM_LOAD_RETIRED_L1_MISS);
                 AddNativeEvent(MEM_LOAD_RETIRED_FB_HIT);
                 AddNativeEvent(L1D_PEND_MISS_FB_FULL_c1);
+                break;
+            case PORTS_UTILIZED_0:
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_TOTAL);
+                AddNativeEvent(CYCLE_ACTIVITY_STALLS_MEM_ANY);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case PORTS_UTILIZED_1:
+                AddNativeEvent(EXE_ACTIVITY_1_PORTS_UTIL);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case PORTS_UTILIZED_2:
+                AddNativeEvent(EXE_ACTIVITY_2_PORTS_UTIL);
+                AddNativeEvent(CPU_CLK_UNHALTED);
+                break;
+            case PORTS_UTILIZED_3M:
+                AddNativeEvent(UOPS_EXECUTED_CORE_CYCLES_GE_3);
+                AddNativeEvent(CPU_CLK_UNHALTED);
                 break;
             default:
                 break;
@@ -752,6 +841,31 @@ namespace SESAME
             std::cout << "MEM_LOAD_RETIRED_FB_HIT_cnt: " << c << std::endl;
             std::cout << "L1D_PEND_MISS_FB_FULL_c1: " << d << std::endl;
             WriteFile("output.txt", {a, b, c, d});
+        } else if (tma_level4 == PORTS_UTILIZED_0) {
+            float a = after_value[0] - pre_value[0];
+            float b = after_value[1] - pre_value[1];
+            float c = after_value[2] - pre_value[2];
+            float ports_utilized_0 = ( ( a - b ) / ( ( c ) ) );
+            values_to_print.emplace_back(std::map<std::string, float>{{"Ports utilized 0:", ports_utilized_0}});
+            WriteFile("output.txt", {ports_utilized_0});
+        } else if (tma_level4 == PORTS_UTILIZED_1) {
+            float a = after_value[0] - pre_value[0];
+            float b = after_value[1] - pre_value[1];
+            float ports_utilized_1 = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"Ports utilized 1:", ports_utilized_1}});
+            WriteFile("output.txt", {ports_utilized_1});
+        } else if (tma_level4 == PORTS_UTILIZED_2) {
+            float a = after_value[0] - pre_value[0];
+            float b = after_value[1] - pre_value[1];
+            float ports_utilized_2 = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"Ports utilized 2:", ports_utilized_2}});
+            WriteFile("output.txt", {ports_utilized_2});
+        } else if (tma_level4 == PORTS_UTILIZED_3M) {
+            float a = after_value[0] - pre_value[0];
+            float b = after_value[1] - pre_value[1];
+            float ports_utilized_3m = ( a / b );
+            values_to_print.emplace_back(std::map<std::string, float>{{"Ports utilized 3m:", ports_utilized_3m}});
+            WriteFile("output.txt", {ports_utilized_3m});
         }
         if(print_info) {
             PrintCalculationInfo(values_to_print);

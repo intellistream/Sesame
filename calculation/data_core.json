@@ -1,0 +1,18 @@
+{
+    "DenStreamType": {
+        "Divider": 0.1476, 
+        "Ports utilizations": 0.3024
+    }, 
+    "EDMStreamType": {
+        "Divider": 0.0025, 
+        "Ports utilizations": 0.282
+    }, 
+    "DBStreamType": {
+        "Divider": 0.0057, 
+        "Ports utilizations": 0.3254
+    }, 
+    "DStreamType": {
+        "Divider": 0.0782, 
+        "Ports utilizations": 0.3551
+    }
+}

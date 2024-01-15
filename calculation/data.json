@@ -1,0 +1,38 @@
+{
+    "DenStreamType": {
+        "ITLB misses": 0.5005266666666667, 
+        "ICACHE misses": 0.30351875, 
+        "Branch resteers": 0.06080555555555554, 
+        "MS switches": 0.02672142857142857
+    }, 
+    "EDMStreamType": {
+        "ITLB misses": 0.5466, 
+        "ICACHE misses": 0.3062923076923077, 
+        "Branch resteers": 0.06741666666666667, 
+        "MS switches": 0.025645
+    }, 
+    "StreamKMeansType": {
+        "ITLB misses": 0.5285625, 
+        "ICACHE misses": 0.297975, 
+        "Branch resteers": 0.07517142857142857, 
+        "MS switches": 0.026030434782608695
+    }, 
+    "DBStreamType": {
+        "ITLB misses": 0.536511111111111, 
+        "ICACHE misses": 0.30768823529411765, 
+        "Branch resteers": 0.059431250000000005, 
+        "MS switches": 0.02651
+    }, 
+    "SLKMeansType": {
+        "ITLB misses": 0.55019, 
+        "ICACHE misses": 0.2978833333333333, 
+        "Branch resteers": 0.08636666666666666, 
+        "MS switches": 0.0260875
+    }, 
+    "DStreamType": {
+        "ITLB misses": 0.5382714285714286, 
+        "ICACHE misses": 0.30532857142857145, 
+        "Branch resteers": 0.062224999999999996, 
+        "MS switches": 0.024871428571428572
+    }
+}

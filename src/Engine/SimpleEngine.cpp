@@ -19,6 +19,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <chrono>
 
 using namespace std;
 
@@ -93,10 +94,14 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 #endif
 
 
+    auto start = std::chrono::high_resolution_clock::now();
+
+    
     SESAME::PAPITools tool("in SimpleEngine function run()");
     tool.AddTMAEvents(__FILE__, __LINE__, TMA_level, TMA_metric);
     tool.SetInterval(PAPI_interval);
-
+    algoPtr->SetPAPI(&tool);
+    // tool.StartCounting();
     while (!sourcePtr->sourceEnded())
     {  // continuously processing infinite incoming data streams.
         if (!sourcePtr->empty())
@@ -106,7 +111,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
             PointPtr p = item->copy();
             // tool.IntervalStartCounting();
             algoPtr->RunOnline(p);
-            // tool.IntervalStopCounting();
+            // tool.IntervalStopCounting(false);
             algoPtr->Count();
             // ++show_progress;
             // overallMeter.onlineAccEMeasure();
@@ -126,10 +131,12 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
         // ++show_progress;
         // overallMeter.onlineAccEMeasure();
     }
-        
-
+    // tool.StopCountingTMA(false);
 
     overallMeter.onlineEndMeasure();
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Total execution time: " << duration.count() << " sec" << std::endl;
 
     SESAME_INFO("ready to offline clustering");
 

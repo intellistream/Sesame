@@ -10,8 +10,6 @@ namespace SESAME
 SlidingWindowClustering::SlidingWindowClustering(param_t &cmd_params) : r(cmd_params.seed)
 {
     this->param = cmd_params;
-    tool.SetInterval(param.papi_interval);
-    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 
 SlidingWindowClustering::~SlidingWindowClustering() {}
@@ -135,7 +133,7 @@ std::pair<double, double> guess_optimum_range_bounds(Random *r, const vector<Poi
 
 void SlidingWindowClustering::RunOnline(PointPtr input)
 {
-    tool.IntervalStartCounting();
+    tool->IntervalStartCounting();
     ++count;
     if (!has_sampled)
     {
@@ -148,7 +146,8 @@ void SlidingWindowClustering::RunOnline(PointPtr input)
             const auto &[lower_bound, upper_bound] = guess_optimum_range_bounds(
                 &r, samples, param.sliding, param.num_samples, param.num_clusters);
             framework = GenericFactory::New<FrameworkAlg<KMeansSummary>>(
-                &r, param.sliding, param.num_clusters, param.delta_grid, lower_bound, upper_bound);
+                &r, param.sliding, param.num_clusters, param.delta_grid, lower_bound, upper_bound, param);
+            framework->SetPAPI(tool);
             for (auto p : samples)
             {
                 framework->process_point(p);
@@ -164,7 +163,7 @@ void SlidingWindowClustering::RunOnline(PointPtr input)
         ds_timer.Tock();
     }
     lat_timer.Add(input->toa);
-    tool.IntervalStopCounting(param.papi_print);
+    tool->IntervalStopCounting(param.papi_print);
 }
 
 void SlidingWindowClustering::RunOffline(DataSinkPtr sinkPtr)

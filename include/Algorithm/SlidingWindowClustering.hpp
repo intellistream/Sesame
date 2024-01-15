@@ -734,7 +734,7 @@ class FrameworkAlg
 {
 public:
     FrameworkAlg(Random *r, int64_t window, int32_t k, double delta, double begin_grid,
-                 double end_grid)
+                 double end_grid, param_t param)
         : r(r),
           window_(window),
           k_(k),
@@ -755,10 +755,17 @@ public:
                 OneThresholdsPairSummaryAlg<SummaryAlg>(r, window_, k_, lambda));
             lambda *= (1 + delta);
         }
+        this->param = param;
     }
     // Disllow copy and assign.
     FrameworkAlg(FrameworkAlg const &) = delete;
     void operator=(FrameworkAlg const &x) = delete;
+    PAPITools *tool;
+    param_t param;
+
+    void SetPAPI(PAPITools *tool) {
+        this->tool = tool;
+    }
 
     // Processes a point. This function is called in function RunOnline()
     void process_point(PointPtr point)

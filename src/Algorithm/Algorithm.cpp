@@ -69,4 +69,8 @@ void Algorithm::Store(std::string output_file, int dim, std::vector<PointPtr> re
     fclose(out);
 }
 
+void Algorithm::SetPAPI(PAPITools *tool) {
+    this->tool = tool;
+}
+
 }  // namespace SESAME

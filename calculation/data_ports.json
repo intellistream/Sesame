@@ -1,0 +1,14 @@
+{
+    "DenStreamType": {
+        "Divider": 0.0148
+    }, 
+    "EDMStreamType": {
+        "Divider": 0.0306
+    }, 
+    "DBStreamType": {
+        "Divider": 0.0194
+    }, 
+    "DStreamType": {
+        "Divider": 0.0125
+    }
+}

@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <chrono>
 
 namespace SESAME
 {
@@ -19,9 +20,11 @@ namespace SESAME
     {
         private:
             std::vector<std::string> events;
-            long long pre_value[64] = {0};
+            std::chrono::_V2::system_clock::time_point start, end;
+
+            
             long long after_value[64] = {0};
-            int eventSet;
+            
             int tma_level = -1;                              // Designate the level of tma
             int tma_level1 = -1, tma_level2 = -1, tma_level3 = -1, tma_level4 = -1;       // Specific which metric to count
             bool allow_adding = true, counting = true;
@@ -44,6 +47,8 @@ namespace SESAME
             void ReadTMALevel4(bool print_info);
 
         public:
+        int eventSet;
+        long long pre_value[64] = {0};
             /* The 'static const' members here are used to designate the events
              * These members include preset events and native events
              * Note that some events are unable to work together */
@@ -59,6 +64,8 @@ namespace SESAME
             static const std::string CPU_CLK_UNHALTED;
             static const std::string UOPS_RETIRED_RETIRE_SLOTS;
             static const std::string UOPS_ISSUED_ANY;
+            static const std::string UOPS_EXECUTED_CORE_CYCLES_NONE;
+            static const std::string UOPS_EXECUTED_CORE_CYCLES_GE_3;
             static const std::string INT_MISC_RECOVERY_CYCLES;
             static const std::string CYCLE_ACTIVITY_CYCLES_MEM_ANY;
             static const std::string CYCLE_ACTIVITY_STALLS_MEM_ANY;
@@ -77,6 +84,8 @@ namespace SESAME
             static const std::string IDQ_ALL_MITE_CYCLES_4_UOPS;
             static const std::string IDQ_ALL_DSB_CYCLES_ANY_UOPS;
             static const std::string IDQ_ALL_DSB_CYCLES_4_UOPS;
+            static const std::string IDQ_MS_SWITCHES;
+            static const std::string ILD_STALL_LCP;
             static const std::string LSD_CYCLES_ACTIVE;
             static const std::string LSD_CYCLES_4_UOPS;
             static const std::string MEM_LOAD_RETIRED_L2_HIT;
@@ -103,6 +112,9 @@ namespace SESAME
             static const std::string ICACHE_64B_IFTAG_STALL;
             static const std::string ICACHE_16B_IFDATA_STALL;
             static const std::string ICACHE_16B_IFDATA_STALL_c1_e1;
+            static const std::string INT_MISC_CLEAR_RESTEER_CYCLES;
+            static const std::string BACLEARS_ANY;
+            static const std::string DSB2MITE_SWITCHES_PENALTY_CYCLES;
             
 
             /* The 'static const' members here are used to designate the level of TMA */
@@ -160,6 +172,10 @@ namespace SESAME
             static const int SPLIT_LOADS = 5;
             static const int ALIASING_4K = 6;
             static const int FB_FULL = 7;
+            static const int PORTS_UTILIZED_0 = 8;
+            static const int PORTS_UTILIZED_1 = 9;
+            static const int PORTS_UTILIZED_2 = 10;
+            static const int PORTS_UTILIZED_3M = 11;
 
             PAPITools(std::string info);
             void AddEvent(int event);

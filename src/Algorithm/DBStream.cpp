@@ -26,8 +26,6 @@ SESAME::DBStream::DBStream(param_t &cmd_params)
     this->dbStreamParams.min_weight     = cmd_params.min_weight;
     this->dbStreamParams.alpha          = cmd_params.alpha;
     this->dbStreamParams.base           = cmd_params.base;
-    tool.SetInterval(param.papi_interval);
-    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 SESAME::DBStream::~DBStream() = default;
 
@@ -61,7 +59,7 @@ void SESAME::DBStream::Init()
  */
 void SESAME::DBStream::RunOnline(PointPtr input)
 {
-    tool.IntervalStartCounting();
+    tool->IntervalStartCounting();
     if (!this->isInitial)
     {
         // SESAME_INFO("Start initialize...");
@@ -76,7 +74,7 @@ void SESAME::DBStream::RunOnline(PointPtr input)
         lastArrivingTime0 = pointArrivingTime0;
     }
     lat_timer.Add(input->toa);
-    tool.IntervalStopCounting(param.papi_print);
+    tool->IntervalStopCounting(param.papi_print);
 }
 
 void SESAME::DBStream::RunOffline(DataSinkPtr sinkPtr)

@@ -18,8 +18,6 @@ SESAME::DenStream::DenStream(param_t &cmd_params)
     this->denStreamParams.mu           = cmd_params.mu;
     this->denStreamParams.beta         = cmd_params.beta;
     this->denStreamParams.buf_sizeSize = cmd_params.buf_size;
-    tool.SetInterval(param.papi_interval);
-    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 SESAME::DenStream::~DenStream() {}
 
@@ -85,7 +83,7 @@ void SESAME::DenStream::Init()
 }
 void SESAME::DenStream::RunOnline(PointPtr in)
 {
-    tool.IntervalStartCounting();
+    tool->IntervalStartCounting();
     PointPtr input = in;
 
     if (!this->isInitial)
@@ -148,7 +146,7 @@ void SESAME::DenStream::RunOnline(PointPtr in)
         this->lastPointTime = this->pointArrivingTime;
     }
     lat_timer.Add(input->toa);
-    tool.IntervalStopCounting(param.papi_print);
+    tool->IntervalStopCounting(param.papi_print);
 }
 
 void SESAME::DenStream::merge(PointPtr dataPoint)

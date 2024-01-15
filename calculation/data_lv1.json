@@ -1,0 +1,22 @@
+{
+    "EDMStreamType": {
+        "Memory bound": 0.2554, 
+        "Core bound": 0.2775
+    }, 
+    "DBStreamType": {
+        "Memory bound": 0.1756, 
+        "Core bound": 0.269
+    }, 
+    "StreamKMeansType": {
+        "Memory bound": 0.1278, 
+        "Core bound": 0.1994
+    }, 
+    "SLKMeansType": {
+        "Memory bound": 0.4545, 
+        "Core bound": 0.1812
+    }, 
+    "DStreamType": {
+        "Memory bound": 0.1393, 
+        "Core bound": 0.2565
+    }
+}

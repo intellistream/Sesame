@@ -23,7 +23,7 @@ using namespace SESAME;
 
 DEFINE_int32(algo, 0, "Algorithm to use");                                  // You can check the numbers of algos in th file 'Sesame/src/Algorithm/Algorithm.cpp'
 DEFINE_string(input_file, "./datasets/CoverType.txt", "Input file path");     // This tells the engine which file is used as input
-DEFINE_int32(num_points, 500000, "Number of points");                         // This tells the engine how many lines shall be grasp from the file
+DEFINE_int32(num_points, 1000000, "Number of points");                         // This tells the engine how many lines shall be grasp from the file
 DEFINE_int32(dim, 54, "Dimension of points");                               // This helps to decide the calculation process in some alogs(Grid etc.)
 DEFINE_int32(num_clusters, 7, "Number of clusters");                        // This helps to decide the calculation process in some alogs(AMS etc.)
 // The following configurations are related to some specific algorithms

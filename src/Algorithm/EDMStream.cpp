@@ -16,8 +16,6 @@ SESAME::EDMStream::EDMStream(param_t &cmd_params)
     this->EDMParam.radius     = cmd_params.radius;
     this->EDMParam.minDelta   = cmd_params.delta;
     this->EDMParam.opt        = cmd_params.opt;
-    tool.SetInterval(param.papi_interval);
-    tool.AddTMAEvents(__FILE__, __LINE__, param.level, param.metric);
 }
 
 SESAME::EDMStream::~EDMStream(){};
@@ -143,9 +141,10 @@ void SESAME::EDMStream::CountNode(const SESAME::DPNodePtr &node, int &num)
         }
     }
 }
+
 void SESAME::EDMStream::RunOnline(SESAME::PointPtr input)
 {
-    tool.IntervalStartCounting();
+    tool->IntervalStartCounting();
     double curTime = input->index;
     auto c         = retrive(input, this->EDMParam.opt, curTime);
     if (input->getIndex() % 100 == 0 && this->EDMParam.isInit)
@@ -159,7 +158,7 @@ void SESAME::EDMStream::RunOnline(SESAME::PointPtr input)
         out_timer.Tock();
     }
     lat_timer.Add(input->toa);
-    tool.IntervalStopCounting(param.papi_print);
+    tool->IntervalStopCounting(param.papi_print);
 }
 void SESAME::EDMStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
 {
