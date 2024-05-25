@@ -15,12 +15,6 @@ include(cmake/default.cmake)
 # C++ Standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#gcc 10 g++10
-message(STATUS "sudo add-apt-repository 'deb http://mirrors.kernel.org/ubuntu hirsute main universe'")
-message(STATUS "sudo apt-get update")
-message(STATUS "sudo apt install gcc-11 g++-11")
-message(STATUS "sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11")
-message(STATUS "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11")
 
 # Set Optimization Flags
 set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -march=native")
@@ -41,10 +35,10 @@ message(STATUS "CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE}")
 
-option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
-message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
+option(ENABLE_TESTS "Enable unit tests" ON)
+message(STATUS "Enable testing: ${ENABLE_TESTS}")
 
-if (ENABLE_UNIT_TESTS)
+if (ENABLE_TESTS)
     enable_testing()
     # Google Test
     include(FetchContent)
@@ -63,6 +57,7 @@ endif ()
 
 find_package(OpenMP)
 find_package(gflags REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
 
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")
@@ -90,3 +85,10 @@ add_subdirectory(test)
 
 install(DIRECTORY "include" DESTINATION "/sesame" COMPONENT SESAME)
 
+option(ENABLE_PYTHON "Enable Python bindings" OFF)
+message(STATUS "Enable Python bindings: ${ENABLE_PYTHON}")
+if (ENABLE_PYTHON)
+    add_subdirectory(third_party/pybind11)
+    pybind11_add_module(sesame_python python/src/birch.cpp)
+    target_link_libraries(sesame_python PRIVATE sesame)
+endif ()
