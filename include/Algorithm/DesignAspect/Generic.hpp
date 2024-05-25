@@ -84,16 +84,19 @@ private:
 };
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::~StreamClustering()
 {}
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params)
 {
     param = cmd_params;
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::Init()
 {
     w = GenericFactory::New<W>(param);
@@ -105,12 +108,14 @@ void StreamClustering<W, D, O, R>::Init()
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::Insert(PointPtr p)
 {
     d->Insert(p);
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 {
     constexpr bool has_delete           = requires(W & w) { w.Delete(); };
@@ -293,6 +298,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 {
     on_timer.Add(sum_timer.start);
@@ -306,6 +312,7 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point)
 {
     if (outliers_.empty())
@@ -337,6 +344,7 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
 }
 
 template <typename W, typename D, typename O, typename R>
+requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::OutputOnline(std::vector<PointPtr> &centers)
 {
     // std::cerr << "Generic OutputOnline: " << d->clusters().size() << std::endl;

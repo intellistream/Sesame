@@ -15,6 +15,7 @@
 #include <memory>
 #include <ranges>
 #include <vector>
+#include <functional>
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
