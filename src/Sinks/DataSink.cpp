@@ -71,8 +71,6 @@ bool DataSink::stop()
     }
     else
     {
-        SESAME_INFO("DataSink "
-                    << ": Thread is not joinable" << threadPtr->getID());
         return false;
     }
     return true;
@@ -80,7 +78,7 @@ bool DataSink::stop()
 
 void DataSink::put(PointPtr resultPtr) { outputQueue->push(resultPtr); }
 
-std::vector<PointPtr> DataSink::getResults() { return output; }
+std::vector<PointPtr>& DataSink::getResults() { return output; }
 
 void DataSink::setBarrier(BarrierPtr barrierPtr) { this->barrierPtr = barrierPtr; }
 

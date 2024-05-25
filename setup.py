@@ -6,6 +6,7 @@ from pathlib import Path
 
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
+from pybind11.setup_helpers import Pybind11Extension
 
 __version__ = "0.1.0"
 
@@ -19,6 +20,7 @@ PLAT_TO_CMAKE = {
 
 # get cpu cores
 os.environ["CMAKE_BUILD_PARALLEL_LEVEL"] = str(os.cpu_count() // 2)
+
 
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
