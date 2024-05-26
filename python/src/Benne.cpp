@@ -12,12 +12,12 @@ using namespace SESAME;
 using namespace std;
 namespace py = pybind11;
 
-class Birch {
+class Benne {
 public:
-  Birch(double threshold, int branching_factor, int n_clusters, int dim)
+  Benne(double threshold, int branching_factor, int n_clusters, int dim)
       : threshold(threshold), branching_factor(branching_factor),
         n_clusters(n_clusters), dim(dim) {
-    param.algo = AlgoType::BirchType;
+    param.algo = AlgoType::BenneType;
     param.distance_threshold = threshold;
     param.landmark = 10;
     param.max_in_nodes = branching_factor;
@@ -119,15 +119,15 @@ private:
 };
 
 PYBIND11_MODULE(sesame_python, m) {
-  py::class_<Birch>(m, "Birch")
+  py::class_<Benne>(m, "Benne")
       .def(py::init<double, int, int, int>(), py::arg("threshold") = 0.5,
            py::arg("branching_factor") = 50, py::arg("n_clusters") = 3,
            py::arg("dim") = 2)
-      .def("fit", &Birch::fit)
-      .def("fit_predict", &Birch::fit_predict)
-      .def("get_params", &Birch::get_params)
-      .def("partial_fit", &Birch::partial_fit)
-      .def("predict", &Birch::predict)
-      .def("set_output", &Birch::set_output)
-      .def("set_params", &Birch::set_params);
+      .def("fit", &Benne::fit)
+      .def("fit_predict", &Benne::fit_predict)
+      .def("get_params", &Benne::get_params)
+      .def("partial_fit", &Benne::partial_fit)
+      .def("predict", &Benne::predict)
+      .def("set_output", &Benne::set_output)
+      .def("set_params", &Benne::set_params);
 }
