@@ -1,18 +1,13 @@
-import benne
+#!python3
 
-# Create an instance of Parameters
-params = benne.Param()
+from sesame_python import Birch
 
-# Get and set the algorithm
-algorithm = params.algo
+X = [[0, 1], [0.3, 1], [-0.3, 1], [0, -1], [0.3, -1], [-0.3, -1]]
 
-print("Current algorithm:", algorithm)
-params.algo = benne.AlgoType.BIRCH
-params.input_file = "/home/shaun/Sesame/datasets/CoverType.txt"
+brc = Birch(
+    n_clusters=2,
+    dim=2,
+    threshold=0.5,
+)
 
-# ... Continue getting and setting other parameters
-# Accessing docstring
-print(benne.Param.algo.__doc__)
-
-# Run the SESAME algorithm
-benne.run()
+print(brc.fit_predict(X))

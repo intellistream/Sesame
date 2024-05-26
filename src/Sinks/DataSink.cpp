@@ -67,22 +67,19 @@ bool DataSink::stop()
     {
         SESAME_INFO("DataSink::stop try to join threads=" << threadPtr->getID());
         threadPtr->join();
-        threadPtr.reset();
+        // threadPtr.reset();
+        return true;
     }
-    else
-    {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 void DataSink::put(PointPtr resultPtr) { outputQueue->push(resultPtr); }
 
-std::vector<PointPtr>& DataSink::getResults() { return output; }
+std::vector<PointPtr> &DataSink::getResults() { return output; }
 
 void DataSink::setBarrier(BarrierPtr barrierPtr) { this->barrierPtr = barrierPtr; }
 
-DataSink::~DataSink() { stop(); }
+DataSink::~DataSink() { Ended(); stop(); }
 
 void DataSink::Ended() { this->sourceEnd = true; }
 

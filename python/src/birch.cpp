@@ -27,6 +27,9 @@ public:
         param.dim                = dim;
         algo                     = AlgorithmFactory::create(param);
         sinkPtr                  = GenericFactory::New<DataSink>(param);
+        auto barrierPtr          = UtilityFunctions::createBarrier(1);
+        sinkPtr->setBarrier(barrierPtr);
+        sinkPtr->start(0);
         algo->Init();
     }
 
@@ -83,7 +86,7 @@ public:
         std::vector<int> labels;
         for (auto& point : predicts)
         {
-            labels.push_back(point->index);
+            labels.push_back(point->clu_id);
         }
         return py::array_t<int>(labels.size(), labels.data());
     }
