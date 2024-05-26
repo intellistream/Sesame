@@ -129,7 +129,7 @@ public:
     ClusteringFeatures cf;
     TreePtr tree;
 
-    Node(TreePtr tree, int d = 0) : tree(tree), dim(d), cf(d) {};
+    Node(TreePtr tree, int d = 0) : tree(tree), dim(d), cf(d) {}
     Node(TreePtr tree, PointPtr p) : Node(tree, p->getDimension()) {
       Update(p);
     }
@@ -239,7 +239,7 @@ public:
     const int dim;
     ClusteringFeatures cf;
 
-    Node(int d = 0) : dim(d), cf(d) {};
+    Node(int d = 0) : dim(d), cf(d) {}
     Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
     Node(ListPtr l, PointPtr p) : Node(p) {}
     ~Node() = default;
