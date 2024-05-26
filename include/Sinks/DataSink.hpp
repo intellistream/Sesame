@@ -20,33 +20,31 @@
 #include <string>
 #include <vector>
 
-namespace SESAME
-{
+namespace SESAME {
 class DataSink;
 typedef std::shared_ptr<DataSink> DataSinkPtr;
 
-class DataSink
-{
+class DataSink {
 private:
-    std::vector<PointPtr> output;
-    std::shared_ptr<boost::lockfree::spsc_queue<PointPtr>> outputQueue;
-    SingleThreadPtr threadPtr;
-    std::atomic_bool sourceEnd;
-    std::atomic_bool finished;
-    BarrierPtr barrierPtr;
-    param_t param;
+  std::vector<PointPtr> output;
+  std::shared_ptr<boost::lockfree::spsc_queue<PointPtr>> outputQueue;
+  SingleThreadPtr threadPtr;
+  std::atomic_bool sourceEnd;
+  std::atomic_bool finished;
+  BarrierPtr barrierPtr;
+  param_t param;
 
 public:
-    DataSink(const param_t &);
-    ~DataSink();
-    void put(PointPtr resultPtr);
-    void runningRoutine();
-    bool start(int id);
-    bool stop();
-    void Ended();
-    bool isFinished();
-    std::vector<PointPtr> &getResults();
-    void setBarrier(BarrierPtr barrierPtr);
+  DataSink(const param_t &);
+  ~DataSink();
+  void put(PointPtr resultPtr);
+  void runningRoutine();
+  bool start(int id);
+  bool stop();
+  void Ended();
+  bool isFinished();
+  std::vector<PointPtr> &getResults();
+  void setBarrier(BarrierPtr barrierPtr);
 };
-}  // namespace SESAME
-#endif  // SESAME_INCLUDE_SINKS_DATASINK_HPP_
+} // namespace SESAME
+#endif // SESAME_INCLUDE_SINKS_DATASINK_HPP_

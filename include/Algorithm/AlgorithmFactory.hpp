@@ -11,12 +11,10 @@
 #include <Algorithm/Algorithm.hpp>
 #include <Utils/BenchmarkUtils.hpp>
 
-namespace SESAME
-{
-class AlgorithmFactory
-{
+namespace SESAME {
+class AlgorithmFactory {
 public:
-    static SESAME::AlgorithmPtr create(param_t &cmd_params);
+  static SESAME::AlgorithmPtr create(param_t &cmd_params);
 };
-}  // namespace SESAME
-#endif  // SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_
+} // namespace SESAME
+#endif // SESAME_SRC_ALGORITHM_ALGORITHMFACTORY_HPP_

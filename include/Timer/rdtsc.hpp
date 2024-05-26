@@ -26,38 +26,36 @@ extern "C" {
 #endif
 
 #if !defined(__i386__) && !defined(__x86_64__) && !defined(__sparc__)
-#    warning No supported architecture found -- timers will return junk.
+#warning No supported architecture found -- timers will return junk.
 #endif
 
-static __inline__ uint64_t curtick()
-{
-    uint64_t tick;
+static __inline__ uint64_t curtick() {
+  uint64_t tick;
 #if defined(__i386__)
-    unsigned long lo, hi;
-    __asm__ __volatile__(".byte 0x0f, 0x31" : "=a"(lo), "=d"(hi));
-    tick = (uint64_t)hi << 32 | lo;
+  unsigned long lo, hi;
+  __asm__ __volatile__(".byte 0x0f, 0x31" : "=a"(lo), "=d"(hi));
+  tick = (uint64_t)hi << 32 | lo;
 #elif defined(__x86_64__)
-    unsigned long lo, hi;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    tick = (uint64_t)hi << 32 | lo;
+  unsigned long lo, hi;
+  __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+  tick = (uint64_t)hi << 32 | lo;
 #elif defined(__sparc__)
-    __asm__ __volatile__("rd %%tick, %0" : "=r"(tick));
+  __asm__ __volatile__("rd %%tick, %0" : "=r"(tick));
 #endif
-    return tick;
+  return tick;
 }
 
 static __inline__ void startTimer(uint64_t *t) { *t = curtick(); }
 
 static __inline__ void stopTimer(uint64_t *t) { *t = curtick() - *t; }
 
-static __inline__ void accTimer(uint64_t *pretimer, uint64_t *acctimer)
-{
-    *acctimer += curtick() - *pretimer;
+static __inline__ void accTimer(uint64_t *pretimer, uint64_t *acctimer) {
+  *acctimer += curtick() - *pretimer;
 }
 
-static __inline__ void accTimerMulti(uint64_t *pretimer, uint64_t *acctimer, int multiplier)
-{
-    *acctimer += (curtick() - *pretimer) * multiplier;
+static __inline__ void accTimerMulti(uint64_t *pretimer, uint64_t *acctimer,
+                                     int multiplier) {
+  *acctimer += (curtick() - *pretimer) * multiplier;
 }
 #ifdef __cplusplus
 }

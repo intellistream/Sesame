@@ -6,14 +6,13 @@
 #define SESAME_INCLUDE_EVALUATION_NMI_HPP_
 #include <Algorithm/DataStructure/Point.hpp>
 #include <vector>
-namespace SESAME
-{
+namespace SESAME {
 
-class NMI
-{
+class NMI {
 public:
-    static double Evaluate(const std::vector<PointPtr> &inputs,
-                           const std::vector<PointPtr> &predicts, int gt_size, int predict_size);
+  static double Evaluate(const std::vector<PointPtr> &inputs,
+                         const std::vector<PointPtr> &predicts, int gt_size,
+                         int predict_size);
 };
-}  // namespace SESAME
-#endif  // SESAME_INCLUDE_EVALUATION_NMI_HPP_
+} // namespace SESAME
+#endif // SESAME_INCLUDE_EVALUATION_NMI_HPP_

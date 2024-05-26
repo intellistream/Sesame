@@ -34,61 +34,65 @@
  * "SPARSE" label and still store them in the grid_list rather than deleting
  * them. So we still treat it as using outlier buffer
  * */
-namespace SESAME
-{
+namespace SESAME {
 
-typedef std::unordered_map<DensityGrid, CharacteristicVector, GridKeyHash, EqualGrid> HashMap;
-class V9 : public Algorithm
-{
+typedef std::unordered_map<DensityGrid, CharacteristicVector, GridKeyHash,
+                           EqualGrid>
+    HashMap;
+class V9 : public Algorithm {
 public:
-    int currentTimeStamp = 0;
-    int lastLandmark     = 0;
-    int gap;    // Time gap between calls to the offline component
-    double dm;  // Density threshold for dense grids; controlled by cm
-    double dl;  //  Density threshold for sparse grids; controlled by cl
-    HashMap gridList;
-    // Store the deleted sporadic grids: <coordinate, deleteTime>
-    std::vector<GridCluster> clusterList;     // A list of all Grid Clusters
-    std::vector<GridCluster> newClusterList;  // A list of grid clusters used when
-                                              // re-clustering an existing cluster.
-    std::vector<double> minVals;              // The minimum value seen for a numerical dim;
-                                              // used to calculate N
-    std::vector<double> maxVals;              // The maximum value seen for a numerical dim;
-                                              // used to calculate N
-    bool init = false;
-    std::vector<int> Coord;
-    std::vector<PointPtr> onlineCenters;
-    int q = 0;
+  int currentTimeStamp = 0;
+  int lastLandmark = 0;
+  int gap;   // Time gap between calls to the offline component
+  double dm; // Density threshold for dense grids; controlled by cm
+  double dl; //  Density threshold for sparse grids; controlled by cl
+  HashMap gridList;
+  // Store the deleted sporadic grids: <coordinate, deleteTime>
+  std::vector<GridCluster> clusterList;    // A list of all Grid Clusters
+  std::vector<GridCluster> newClusterList; // A list of grid clusters used when
+                                           // re-clustering an existing cluster.
+  std::vector<double> minVals; // The minimum value seen for a numerical dim;
+                               // used to calculate N
+  std::vector<double> maxVals; // The maximum value seen for a numerical dim;
+                               // used to calculate N
+  bool init = false;
+  std::vector<int> Coord;
+  std::vector<PointPtr> onlineCenters;
+  int q = 0;
 
-    V9(param_t &cmd_params);
-    ~V9();
-    void Init();
-    void RunOnline(PointPtr input) override;
-    void RunOffline(DataSinkPtr sinkPtr) override;
+  V9(param_t &cmd_params);
+  ~V9();
+  void Init();
+  void RunOnline(PointPtr input) override;
+  void RunOffline(DataSinkPtr sinkPtr) override;
 
 private:
-    void GridListUpdate(const std::vector<int> &coordinate);
-    void initialClustering();
-    void adjustClustering();
-    bool adjustLabels();
-    bool inspectChangedGrids();
-    void calculateGridCoord(PointPtr point);
-    HashMap adjustForSparseGrid(const DensityGrid &grid, CharacteristicVector characteristicVec,
-                                int gridClass);
-    HashMap adjustForDenseGrid(const DensityGrid &grid, CharacteristicVector characteristicVec,
-                               int gridClass);
-    HashMap adjustForTransitionalGrid(const DensityGrid &grid,
-                                      CharacteristicVector characteristicVec, int gridClass);
-    HashMap reCluster(GridCluster &gridCluster);
-    HashMap adjustNewLabels(const HashMap &newGridList);
-    void mergeClusters(int smallCluster, int bigCluster);
-    void cleanClusters();
-    HashMap cleanNewClusters(HashMap newGridList);
-    HashMap mergeNewClusters(HashMap newGridList, int smallCluster, int bigCluster);
-    void updateGridListDensity();
-    static void mergeGridList(HashMap &gridList, const HashMap &otherList);
-    bool checkIfSporadic(CharacteristicVector characteristicVec);
-    void removeSporadic();
+  void GridListUpdate(const std::vector<int> &coordinate);
+  void initialClustering();
+  void adjustClustering();
+  bool adjustLabels();
+  bool inspectChangedGrids();
+  void calculateGridCoord(PointPtr point);
+  HashMap adjustForSparseGrid(const DensityGrid &grid,
+                              CharacteristicVector characteristicVec,
+                              int gridClass);
+  HashMap adjustForDenseGrid(const DensityGrid &grid,
+                             CharacteristicVector characteristicVec,
+                             int gridClass);
+  HashMap adjustForTransitionalGrid(const DensityGrid &grid,
+                                    CharacteristicVector characteristicVec,
+                                    int gridClass);
+  HashMap reCluster(GridCluster &gridCluster);
+  HashMap adjustNewLabels(const HashMap &newGridList);
+  void mergeClusters(int smallCluster, int bigCluster);
+  void cleanClusters();
+  HashMap cleanNewClusters(HashMap newGridList);
+  HashMap mergeNewClusters(HashMap newGridList, int smallCluster,
+                           int bigCluster);
+  void updateGridListDensity();
+  static void mergeGridList(HashMap &gridList, const HashMap &otherList);
+  bool checkIfSporadic(CharacteristicVector characteristicVec);
+  void removeSporadic();
 };
-}  // namespace SESAME
-#endif  // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_
+} // namespace SESAME
+#endif // COVERTBIRCH_FILE_INCLUDE_ALGORITHM_DESIGNASPECT_V9_HPP_

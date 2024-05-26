@@ -18,31 +18,30 @@
 
 using namespace SESAME;
 
-TEST(System, DenStream)
-{
-    // Parse parameters.
+TEST(System, DenStream) {
+  // Parse parameters.
 
-    // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
-    // [3, 3, 4, 6, 6, 7, 9, 9]
-    param_t cmd_params;
-    cmd_params.num_points = 3000;
-    cmd_params.dim        = 54;
-    cmd_params.min_points = 10;
-    cmd_params.epsilon    = 20;  // 0.1
+  // [529, 999, 1270, 1624, 2001, 2435, 2648, 3000]
+  // [3, 3, 4, 6, 6, 7, 9, 9]
+  param_t cmd_params;
+  cmd_params.num_points = 3000;
+  cmd_params.dim = 54;
+  cmd_params.min_points = 10;
+  cmd_params.epsilon = 20; // 0.1
 
-    cmd_params.base       = 2;
-    cmd_params.lambda     = 0.25;
-    cmd_params.mu         = 5;
-    cmd_params.beta       = 0.25;
-    cmd_params.buf_size   = 500;
-    cmd_params.input_file = "datasets/CoverType.txt";
+  cmd_params.base = 2;
+  cmd_params.lambda = 0.25;
+  cmd_params.mu = 5;
+  cmd_params.beta = 0.25;
+  cmd_params.buf_size = 500;
+  cmd_params.input_file = "datasets/CoverType.txt";
 
-    cmd_params.output_file  = "results.txt";
-    cmd_params.algo         = SESAME::DenStreamType;
-    cmd_params.num_clusters = 7;
-    cmd_params.time_decay   = false;
-    cmd_params.run_offline  = true;
+  cmd_params.output_file = "results.txt";
+  cmd_params.algo = SESAME::DenStreamType;
+  cmd_params.num_clusters = 7;
+  cmd_params.time_decay = false;
+  cmd_params.run_offline = true;
 
-    // Run algorithm producing results.
-    RunBenchmark(cmd_params);
+  // Run algorithm producing results.
+  RunBenchmark(cmd_params);
 }

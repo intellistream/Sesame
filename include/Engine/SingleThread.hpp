@@ -11,23 +11,21 @@
 #include <functional>
 #include <memory>
 
-namespace SESAME
-{
+namespace SESAME {
 class SingleThread;
 typedef std::shared_ptr<SingleThread> SingleThreadPtr;
 
-class SingleThread
-{
+class SingleThread {
 private:
-    std::shared_ptr<std::thread> ThreadPtr;
-    int id;
+  std::shared_ptr<std::thread> ThreadPtr;
+  int id;
 
 public:
-    void construct(std::function<void(void)> fun, int id);
-    void join();
-    int getID();
-    int setID(int id);
+  void construct(std::function<void(void)> fun, int id);
+  void join();
+  int getID();
+  int setID(int id);
 };
-}  // namespace SESAME
+} // namespace SESAME
 
-#endif  // SESAME_SRC_ENGINE_THREAD_HPP_
+#endif // SESAME_SRC_ENGINE_THREAD_HPP_
