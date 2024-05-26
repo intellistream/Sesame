@@ -118,7 +118,7 @@ private:
   DataSinkPtr sinkPtr;
 };
 
-PYBIND11_MODULE(sesame_python, m) {
+PYBIND11_MODULE(pysame, m) {
   py::class_<Benne>(m, "Benne")
       .def(py::init<double, int, int, int>(), py::arg("threshold") = 0.5,
            py::arg("branching_factor") = 50, py::arg("n_clusters") = 3,

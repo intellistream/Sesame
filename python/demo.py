@@ -1,6 +1,6 @@
 #!python3
 
-from sesame_python import Birch
+from pysame import Birch
 
 X = [[0, 1], [0.3, 1], [-0.3, 1], [0, -1], [0.3, -1], [-0.3, -1]]
 

@@ -131,13 +131,13 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    name="sesame_python",
+    name="pysame",
     version=__version__,
     author="Shuhao Zhang",
     url="https://github.com/intellistream/Sesame",
     description="Stream clustering algorithms on modern hardware",
     long_description="This project aims at building a scalable stream mining library on modern hardware. The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.",
-    ext_modules=[CMakeExtension("sesame_python")],
+    ext_modules=[CMakeExtension("pysame")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     python_requires=">=3.7",

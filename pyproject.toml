@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "pybind11>=2.12.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sesame-python"
+name = "pysame"
 version = "0.1.0"
 authors = [{ name = "Zhengru Wang", email = "wangshaun@outlook.com" }]
 description = "Stream clustering algorithms on modern hardware"
