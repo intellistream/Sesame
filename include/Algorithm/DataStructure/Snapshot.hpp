@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/16.
@@ -34,13 +35,13 @@ public:
     QueueSnapshotPtr: Data Structure representing order ith snapshots list
     QueueOrderSnapshotPtr: Data Structure representing orders
     **/
-    Snapshot(MicroClusters& otherMicroClusters, int elapsedTime);
+    Snapshot(MicroClusters &otherMicroClusters, int elapsedTime);
     ~Snapshot();
     static SnapshotPtr findSnapshot(QueueOrderSnapshot orderSnapShots, int landmarkTime,
                                     int currentElapsedTime, unsigned int currentOrder);
 
     static SnapshotPtr substractSnapshot(SnapshotPtr snapshotCurrent,
-                                         const SnapshotPtr& snapshotLandmark,
+                                         const SnapshotPtr &snapshotLandmark,
                                          unsigned int num_clusters);
 
     SnapshotPtr copy();

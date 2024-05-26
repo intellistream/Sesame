@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/16.
@@ -40,8 +41,8 @@ public:
     int lastUpdateTime;
     bool visited;
 
-    // TODO 1. Need to subtract Base class of CF vector when all cf-vector based-algorithms have
-    // been implemented
+    // TODO 1. Need to subtract Base class of CF vector when all cf-vector
+    // based-algorithms have been implemented
     //  2.this may need to modify in the future (All algorithms used this,
     //  e.g.DenStream,CluStream,DenStream,DBStream,SWEM =.=)
 
@@ -50,8 +51,9 @@ public:
 
     ~MicroCluster();
     void Init(PointPtr datapoint, int timestamp);
-    void insert(PointPtr datapoint, int timestamp);                       // Used in CluStream
-    bool insert(PointPtr datapoint, double decayFactor, double epsilon);  // DenStream
+    void insert(PointPtr datapoint, int timestamp);  // Used in CluStream
+    bool insert(PointPtr datapoint, double decayFactor,
+                double epsilon);      // DenStream
     void insert(PointPtr datapoint);  // DBStream //, double decayFactor
     void merge(MicroClusterPtr other);
     void subtractClusterVector(MicroClusterPtr other);

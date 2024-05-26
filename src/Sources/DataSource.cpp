@@ -47,7 +47,8 @@ void SESAME::DataSource::load()
     }
     infile.close();
 
-    // convert the string format into point vector, every string represents a point
+    // convert the string format into point vector, every string represents a
+    // point
     SESAME_INFO("Finished loading input data");
     // The step used to generate random timestamps
     const int timeStep = 100000;

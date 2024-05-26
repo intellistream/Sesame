@@ -39,7 +39,7 @@ public:
 
         if (buf.ndim != 2) throw std::runtime_error("numpy.ndarray dims must be 2!");
 
-        double* ptr = static_cast<double*>(buf.ptr);
+        double *ptr = static_cast<double *>(buf.ptr);
 
         auto num_elements = buf.shape[0] * buf.shape[1];
         auto num_vectors  = num_elements / dim;
@@ -62,7 +62,7 @@ public:
 
         if (buf.ndim != 2) throw std::runtime_error("numpy.ndarray dims must be 2!");
 
-        double* ptr = static_cast<double*>(buf.ptr);
+        double *ptr = static_cast<double *>(buf.ptr);
 
         auto num_elements = buf.shape[0] * buf.shape[1];
         auto num_vectors  = num_elements / dim;
@@ -78,13 +78,13 @@ public:
         }
 
         algo->RunOffline(sinkPtr);
-        std::vector<PointPtr>&results = sinkPtr->getResults(), predicts;
+        std::vector<PointPtr> &results = sinkPtr->getResults(), predicts;
         UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
         // cout << "results size: " << results.size() << endl;
         // cout << "inputs size: " << inputs.size() << endl;
         // cout << "predicts size: " << predicts.size() << endl;
         std::vector<int> labels;
-        for (auto& point : predicts)
+        for (auto &point : predicts)
         {
             labels.push_back(point->clu_id);
         }

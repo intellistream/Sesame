@@ -281,18 +281,17 @@ public:
         sketches_.at(best_pos).solution(window_begin, centers_solution, cost_solution);
     }
 
-    // This class implements the well-known meyerson sketch for k-means with all the
-    // bookkeping needed for the sliding window algorithm. This class implements a
-    // single sketch.
+    // This class implements the well-known meyerson sketch for k-means with all
+    // the bookkeping needed for the sliding window algorithm. This class
+    // implements a single sketch.
     class MeyersonSketch
     {
     public:
         // max_num_centers is the maximum number of centers allowed in the sketch.
-        // denominator_prob is the denominator in the probability of selecting a point
-        // as center.
-        // epsilon_multiplicities is the epsilon factor used in the estimate of the
-        // multiplicites of the centers. k is the target number of centers. gen is a
-        // random source.
+        // denominator_prob is the denominator in the probability of selecting a
+        // point as center. epsilon_multiplicities is the epsilon factor used in the
+        // estimate of the multiplicites of the centers. k is the target number of
+        // centers. gen is a random source.
         MeyersonSketch(Random *r, const double max_num_centers, const double denominator_prob,
                        const double epsilon_multiplicities, const int32_t k)
             : r(r),
@@ -376,8 +375,8 @@ public:
             }
         }
 
-        // Returns the estimate of the multiplicities of the centers assigned after a
-        // certain time.
+        // Returns the estimate of the multiplicities of the centers assigned after
+        // a certain time.
         void weighted_centers(const int after_time, std::vector<PointPtr> *centers,
                               std::vector<double> *weights)
         {
@@ -620,7 +619,8 @@ public:
         vector<ApproxTimeCountKeeper> costs_sum_sq_dist_;
         Random *r;
 
-        // Used to avoid recomputation if the solution has not significantly changed.
+        // Used to avoid recomputation if the solution has not significantly
+        // changed.
         mutable std::optional<double> precomputed_cost;
         mutable std::optional<std::vector<PointPtr>> precomputed_solution;
         mutable vector<double> last_precomputed_0_multiplicities_;

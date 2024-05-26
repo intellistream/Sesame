@@ -5,18 +5,19 @@
 #include <Utils/Logger.hpp>
 
 SESAME::DensityGrid::DensityGrid() {}
-SESAME::DensityGrid::DensityGrid(const std::vector<int>& coordin)
+SESAME::DensityGrid::DensityGrid(const std::vector<int> &coordin)
     : dims(coordin.size()), coordinates(coordin), isVisited(false)
 {}
 
-SESAME::DensityGrid::DensityGrid(DensityGrid const& grid)
+SESAME::DensityGrid::DensityGrid(DensityGrid const &grid)
     : dims(grid.dims), coordinates(grid.coordinates), isVisited(false)
 {}
 
 /**
- * Generates a vector of neighbours for this density grid by varying each coordinate
- * by one in either direction. Does not test whether the generated neighbours are valid as
- * DensityGrid is not aware of the number of partitions in each dim.
+ * Generates a vector of neighbours for this density grid by varying each
+ * coordinate by one in either direction. Does not test whether the generated
+ * neighbours are valid as DensityGrid is not aware of the number of partitions
+ * in each dim.
  *
  * @return a vector of neighbours for this density grid
  */
@@ -43,9 +44,11 @@ std::vector<SESAME::DensityGrid> SESAME::DensityGrid::getNeighbours() const
 }
 
 /**
- * Provides the probability of the argument instance belonging to the density grid in question.
+ * Provides the probability of the argument instance belonging to the density
+ * grid in question.
  *
- * @return 1.0 if the instance equals the density grid's coordinates; 0.0 otherwise.
+ * @return 1.0 if the instance equals the density grid's coordinates; 0.0
+ * otherwise.
  */
 
 double SESAME::DensityGrid::getInclusionProbability(Point point)
@@ -57,7 +60,7 @@ double SESAME::DensityGrid::getInclusionProbability(Point point)
     return 1.0;
 }
 
-bool SESAME::DensityGrid::operator==(DensityGrid& gridOther) const
+bool SESAME::DensityGrid::operator==(DensityGrid &gridOther) const
 {
     if (this == &gridOther)
     {

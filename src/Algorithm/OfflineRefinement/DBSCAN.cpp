@@ -145,8 +145,8 @@ bool SESAME::DBSCAN::judgeCorePoint(PointPtr &point, PointPtr &other)
     return corePoint;
 }
 
-// TODO: whether to output the noise data? In our implementation, we output the noise data since it
-// is still a cluster
+// TODO: whether to output the noise data? In our implementation, we output the
+// noise data since it is still a cluster
 void SESAME::DBSCAN::produceResult(std::vector<PointPtr> &input, SESAME::DataSinkPtr sinkPtr)
 {
     for (auto el : input)

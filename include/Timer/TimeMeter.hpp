@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 #ifndef SESAME_SRC_TIMER_CYCLEMETER_HPP_
 #define SESAME_SRC_TIMER_CYCLEMETER_HPP_
@@ -23,8 +24,8 @@ struct T_TIMER
     struct timespec start, end, overallPre;
     /**
      * accumulate for data point coming
-     * online_increment_timer_pre: start of accumulate online timer ( start of every xx s)
-     * online_timer: end of the online increment part
+     * online_increment_timer_pre: start of accumulate online timer ( start of
+     * every xx s) online_timer: end of the online increment part
      * */
     timespec online_increment_timer_pre, onlineAccTimer, online_timer;
 
@@ -36,30 +37,31 @@ struct T_TIMER
 
     /**
      *  accumulate for data point coming
-     *  dataInsertTimer_pre: start of accumulated data insertion timer ( start of every xx s)
-     *  dataInsertTimer: end of the online increment part
+     *  dataInsertTimer_pre: start of accumulated data insertion timer ( start of
+     *every xx s) dataInsertTimer: end of the online increment part
      **/
 
     timespec dataInsertTimer_pre, dataInsertTimer;  // accumulate.
 
     /**
      *  accumulate for data point coming
-     *  clusterUpdateTimer_pre: start of accumulated cluster update timer ( start of every xx s)
-     *  clusterUpdateTimer: end of the cluster update part
+     *  clusterUpdateTimer_pre: start of accumulated cluster update timer ( start
+     *of every xx s) clusterUpdateTimer: end of the cluster update part
      **/
     timespec clusterUpdateTimer_pre, clusterUpdateTimer;  // accumulate.
     /**
      *  accumulate for data point coming
-     *  outlierDetectionTimer_pre: start of accumulated outlier Detection timer ( start of every xx
-     *s) outlierDetectionTimer: end of the outlier Detection part
+     *  outlierDetectionTimer_pre: start of accumulated outlier Detection timer (
+     *start of every xx s) outlierDetectionTimer: end of the outlier Detection
+     *part
      **/
 
     timespec outlierDetectionTimer_pre, outlierDetectionTimer;  // accumulate.
 
     /**
      *  accumulate for data point coming
-     *  pruneTimer_pre: start of accumulated prune timer (when every periodical prune function
-     *starts) pruneTimer: end of the prune part
+     *  pruneTimer_pre: start of accumulated prune timer (when every periodical
+     *prune function starts) pruneTimer: end of the prune part
      **/
 
     timespec pruneTimer_pre, pruneTimer;  // accumulate.
@@ -69,9 +71,11 @@ struct T_TIMER
      *  pruneTimer_pre: start of accumulated snapshot timer
      *  pruneTimer: end of the snapshot part
      **/
-    timespec snapshotTimer_pre, snapshotTimer;  // accumulate (Special for CluStream key design)
+    timespec snapshotTimer_pre,
+        snapshotTimer;  // accumulate (Special for CluStream key design)
     timespec finalCluster_pre,
-        finalClusterTimer;  // accumulate (Special for online or periodical forming final cluster)
+        finalClusterTimer;  // accumulate (Special for online or periodical forming
+                            // final cluster)
 
     /**
      * refinementStart: Start of refinement part
@@ -107,16 +111,18 @@ struct T_TIMER
     int periodicalCluCnt = 0;
 
     /*
-    uint64_t overall_timer, online_increment_timer_pre, online_increment_timer;//accumulate for data
-    point coming, uint64_t online_timer; uint64_t initialTimer = 0;//initialTimer_pre = 0, uint64_t
-    dataInsertTimer_pre = 0, dataInsertTimer = 0;//accumulate. uint64_t conceptDriftTimer_pre = 0,
-    conceptDriftTimer = 0;//accumulate. uint64_t outlierDetectionTimer_pre = 0,
-    outlierDetectionTimer = 0;//accumulate. uint64_t pruneTimer_pre = 0, pruneTimer =
-    0;//accumulate. uint64_t snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for
-    CluStream key design) uint64_t refinementTimer = 0;//offline refinement std::vector<uint64_t>
-    recordOverall; std::vector<uint64_t> recordInsert; std::vector<uint64_t> recordConceptDrift;
-    std::vector<uint64_t> recordOutlierDetection;
-    std::vector<int32_t> recordID;
+    uint64_t overall_timer, online_increment_timer_pre,
+    online_increment_timer;//accumulate for data point coming, uint64_t
+    online_timer; uint64_t initialTimer = 0;//initialTimer_pre = 0, uint64_t
+    dataInsertTimer_pre = 0, dataInsertTimer = 0;//accumulate. uint64_t
+    conceptDriftTimer_pre = 0, conceptDriftTimer = 0;//accumulate. uint64_t
+    outlierDetectionTimer_pre = 0, outlierDetectionTimer = 0;//accumulate.
+    uint64_t pruneTimer_pre = 0, pruneTimer = 0;//accumulate. uint64_t
+    snapshotTimer_pre = 0, snapshotTimer = 0;//accumulate(Special for CluStream
+    key design) uint64_t refinementTimer = 0;//offline refinement
+    std::vector<uint64_t> recordOverall; std::vector<uint64_t> recordInsert;
+    std::vector<uint64_t> recordConceptDrift; std::vector<uint64_t>
+    recordOutlierDetection; std::vector<int32_t> recordID;
      */
 #endif
 };
@@ -249,7 +255,8 @@ public:
     void breakdown_global(bool initial, bool snapshot, bool outlierBuffer,
                           bool refine);  // int64_t total_results,
     /** print out the execution time statistics of stream clustering algorithms */
-    void printTime(bool initial, bool snapshot, bool outlierBuffer, bool finalCluster);  //
+    void printTime(bool initial, bool snapshot, bool outlierBuffer,
+                   bool finalCluster);  //
     void printCumulative();
     // TODO the code below will be removed later
     /*

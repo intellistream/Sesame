@@ -153,14 +153,16 @@ void SESAME::DenStream::merge(PointPtr dataPoint)
     if (!this->pMicroClusters.empty())
     {
         index = mergeToMicroCluster(dataPoint, this->pMicroClusters);
-        //  std::cout<<"Merge into PMC! "<<pMicroClusters.size()<<","<< index<<","<<std::endl;
+        //  std::cout<<"Merge into PMC! "<<pMicroClusters.size()<<","<<
+        //  index<<","<<std::endl;
     }
 
     if (!index && !this->oMicroClusters.empty())
     {
         // Time measurement inside the mergeToOMicroCluster function
         index = mergeToOMicroCluster(dataPoint, this->oMicroClusters);
-        // std::cout<<"Merge into OMC! "<<oMicroClusters.size()<<","<< index<<","<<std::endl;
+        // std::cout<<"Merge into OMC! "<<oMicroClusters.size()<<","<<
+        // index<<","<<std::endl;
     }
 
     out_timer.Tick();

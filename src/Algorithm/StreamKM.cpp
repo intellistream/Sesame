@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by tuidan on 2021/7/21.
@@ -29,11 +30,11 @@ void SESAME::StreamKM::Init()
 }
 
 /**
- * @Description: build the landmark Window, insert the data point and construct the coreset tree if
- * the window is full
+ * @Description: build the landmark Window, insert the data point and construct
+ * the coreset tree if the window is full
  * @Param:
- * @Return: although void, but actually we store the output result(with computed clustering center)
- * into this->streamingCoreset
+ * @Return: although void, but actually we store the output result(with computed
+ * clustering center) into this->streamingCoreset
  */
 void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input)
 {
@@ -44,8 +45,8 @@ void SESAME::StreamKM::RunOnline(const SESAME::PointPtr input)
 }
 
 /**
- * @Description: we run offline KMeans++ algorithm 5 times using the final m coreset
- * points(this->streamingCoreset)[m>k]
+ * @Description: we run offline KMeans++ algorithm 5 times using the final m
+ * coreset points(this->streamingCoreset)[m>k]
  * @param num_clusters
  * @param coreset_size
  * @param dim
@@ -111,8 +112,8 @@ void SESAME::LandmarkWindow::CoresetTree::unionTreeCoreset(int k, int n_1, int n
     //  SESAME_DEBUG("Computing coreset...");
     // total number of points
     int n = n_1 + n_2;
-    // choose the first centre (each point has the same probability of being choosen)
-    // stores, how many centres have been choosen yet
+    // choose the first centre (each point has the same probability of being
+    // choosen) stores, how many centres have been choosen yet
     int choosenPoints = 0;
     // only choose from the n-i points not already choosen
     int j = UtilityFunctions::genrand_int31() % (n - choosenPoints);
@@ -127,7 +128,8 @@ void SESAME::LandmarkWindow::CoresetTree::unionTreeCoreset(int k, int n_1, int n
         j                      = j - n_1;
         centres[choosenPoints] = setB[j]->copy();  // TODO: ???? why re-set setB[j]?
     }
-    //  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct treeNode));
+    //  struct treeNode *root = (struct treeNode *) malloc(sizeof(struct
+    //  treeNode));
     TreeNodePtr root = DataStructureFactory::createTreeNode();
     constructRoot(root, setA, setB, n_1, n_2, centres[choosenPoints], choosenPoints);
     choosenPoints = 1;
@@ -494,7 +496,8 @@ double SESAME::LandmarkWindow::CoresetTree::treeNodeCostOfPoint(TreeNodePtr node
 }
 
 /**
- * computes the hypothetical cost if the node would be split with new centers centreA, centreB
+ * computes the hypothetical cost if the node would be split with new centers
+ * centreA, centreB
  * @param node
  * @param centreA
  * @param centreB
@@ -583,8 +586,8 @@ double SESAME::LandmarkWindow::CoresetTree::treeNodeSplitCost(TreeNodePtr node, 
 }
 
 /**
-splits the parent node and creates two child nodes (one with the old centre and one with the new
-one)
+splits the parent node and creates two child nodes (one with the old centre and
+one with the new one)
 **/
 void SESAME::LandmarkWindow::CoresetTree::split(TreeNodePtr parent, PointPtr newCentre,
                                                 int newCentreIndex)
@@ -592,7 +595,8 @@ void SESAME::LandmarkWindow::CoresetTree::split(TreeNodePtr parent, PointPtr new
     // loop counter variable
     int i = 0;
 
-    // 1. Counts how many points belong to the new and how many points belong to the old centre
+    // 1. Counts how many points belong to the new and how many points belong to
+    // the old centre
     int nOld = 0;
     int nNew = 0;
     for (i = 0; i < parent->n; i++)

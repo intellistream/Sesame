@@ -221,8 +221,8 @@ bool SESAME::V9::adjustLabels()
     // a. For each cluster c
     for (GridCluster &gridCluster : this->clusterList)
     {
-        // // SESAME_INFO("Adjusting from cluster "<<gridCluster.clusterLabel<<", standby...");
-        // b. for each grid, dg, of c
+        // // SESAME_INFO("Adjusting from cluster "<<gridCluster.clusterLabel<<",
+        // standby..."); b. for each grid, dg, of c
         for (auto gridIter = gridCluster.grids.begin(); gridIter != gridCluster.grids.end();
              gridIter++)
         {
@@ -246,12 +246,12 @@ bool SESAME::V9::adjustLabels()
                             CharacteristicVector characteristicVec2 = it2->second;
                             int class1                              = characteristicVec1.label;
                             int class2                              = characteristicVec2.label;
-                            // ...and if neighbouring grid isn't already in the same cluster as
-                            // grid...
+                            // ...and if neighbouring grid isn't already in the same cluster
+                            // as grid...
                             if (class1 != class2)
                             {
-                                // If neighbouring grid is in cluster c', merge c and c' into the
-                                // larger of the two
+                                // If neighbouring grid is in cluster c', merge c and c' into
+                                // the larger of the two
                                 if (class2 != NO_CLASS)
                                 {
                                     if (this->clusterList.at(class1).grids.size() <
@@ -286,8 +286,9 @@ bool SESAME::V9::adjustLabels()
 }
 
 /**
- * Iterates through grid_list and updates the density for each density grid therein.
- * Also marks each density grid as unvisited for this call to adjustClustering.
+ * Iterates through grid_list and updates the density for each density grid
+ * therein. Also marks each density grid as unvisited for this call to
+ * adjustClustering.
  */
 void SESAME::V9::updateGridListDensity()
 {
@@ -317,9 +318,9 @@ void SESAME::V9::adjustClustering()
 }
 
 /**
- * Inspects each density grid in grid_list whose attribute has changed since the last
- * call to adjustClustering. Implements lines 3/4/7/19 of the procedure given in Figure
- * 4 of Chen and Tu 2007.
+ * Inspects each density grid in grid_list whose attribute has changed since the
+ * last call to adjustClustering. Implements lines 3/4/7/19 of the procedure
+ * given in Figure 4 of Chen and Tu 2007.
  *
  * @return TRUE if any grids are updated; FALSE otherwise.
  */
@@ -348,8 +349,8 @@ bool SESAME::V9::inspectChangedGrids()
         ++gridIter;
         a++;
     }
-    // If there are grids in new grid list, update the corresponding grids in grid_list and clean up
-    // the cluster list
+    // If there are grids in new grid list, update the corresponding grids in
+    // grid_list and clean up the cluster list
     if (!newGridList.empty())
     {
         mergeGridList(this->gridList, newGridList);
@@ -361,8 +362,8 @@ bool SESAME::V9::inspectChangedGrids()
 }
 
 /**
- * Adjusts the clustering of a sparse density grid. Implements lines 5 and 6 from Figure 4 of Chen
- * and Tu 2007.
+ * Adjusts the clustering of a sparse density grid. Implements lines 5 and 6
+ * from Figure 4 of Chen and Tu 2007.
  *
  * @param dg the sparse density grid being adjusted
  * @param cv the characteristic vector of dg
@@ -394,13 +395,12 @@ SESAME::HashMap SESAME::V9::adjustForSparseGrid(const DensityGrid &grid,
 }
 
 /**
- * Reclusters a grid cluster into two (or more) constituent clusters when it has been identified
- * that the original cluster
- * is no longer a grid group. It does so by echoing the initial clustering procedure
- * over only those grids in gc.
+ * Reclusters a grid cluster into two (or more) constituent clusters when it has
+ * been identified that the original cluster is no longer a grid group. It does
+ * so by echoing the initial clustering procedure over only those grids in gc.
  * @param gridCluster the grid cluster to be re clustered
- * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after
- * this iteration
+ * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids
+ * for update after this iteration
  */
 SESAME::HashMap SESAME::V9::reCluster(GridCluster &gridCluster)
 {
@@ -408,7 +408,8 @@ SESAME::HashMap SESAME::V9::reCluster(GridCluster &gridCluster)
     HashMap newGridList;
     auto gcIter = gridCluster.grids.begin();
     // // SESAME_INFO("ReCluster called for cluster "<<gridCluster.clusterLabel);
-    // Assign every dense grid in gc to its own cluster, assign all other grids to NO_CLASS
+    // Assign every dense grid in gc to its own cluster, assign all other grids to
+    // NO_CLASS
     while (gcIter != gridCluster.grids.end())
     {
         DensityGrid grid                             = gcIter->first;
@@ -475,12 +476,13 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
                         int class1 = characteristicVec1.label;
                         int class2 = characteristicVec2.label;
 
-                        // ...and if neighbourGrid isn't already in the same cluster as dg...
+                        // ...and if neighbourGrid isn't already in the same cluster as
+                        // dg...
                         if (class1 != class2)
                         {
                             GridCluster cluster1 = newClusterList.at(class1);
-                            // If dgprime is in cluster c', merge c and c' into the larger of the
-                            // two
+                            // If dgprime is in cluster c', merge c and c' into the larger of
+                            // the two
                             if (class2 != NO_CLASS)
                             {
                                 GridCluster cluster2 = newClusterList.at(class2);
@@ -494,8 +496,8 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
 
                                 return gridListAdjusted;
                             }
-                            // If neighbourGrid is transitional and outside of cluster, assign it to
-                            // cluster
+                            // If neighbourGrid is transitional and outside of cluster, assign
+                            // it to cluster
                             else if (characteristicVec2.isTransitional(dm, dl))
                             {
                                 characteristicVec2.label = class1;
@@ -515,8 +517,8 @@ SESAME::HashMap SESAME::V9::adjustNewLabels(const SESAME::HashMap &newGridList)
 }
 
 /**
- * Adjusts the clustering of a dense density grid. Implements lines 8 through 18 from Figure 4 of
- * Chen and Tu 2007.
+ * Adjusts the clustering of a dense density grid. Implements lines 8 through 18
+ * from Figure 4 of Chen and Tu 2007.
  *
  * @param grid the dense density grid being adjusted
  * @param characteristicVec the characteristic vector of dg
@@ -528,7 +530,8 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
                                                CharacteristicVector characteristicVec,
                                                int gridClass)
 {
-    // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
+    // Among all neighbours of dg, find the grid h whose cluster ch has the
+    // largest size
     GridCluster gridCluster;           // The cluster, ch, of h
     DensityGrid gridChosen(grid);      // The chosen grid h, whose cluster ch has the largest size
     double ChosenGridSize = -1.0;      // The size of gridCluster, the largest cluster
@@ -594,7 +597,8 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
         else if (this->gridList.at(gridChosen).attribute == TRANSITIONAL)
         {
             //  // SESAME_INFO("h is transitional.");
-            // If dg is labelled as no class and if h is an outside grid if dg is added to ch
+            // If dg is labelled as no class and if h is an outside grid if dg is
+            // added to ch
             if (gridClass == NO_CLASS && !gridCluster.isInside(gridChosen, grid))
             {
                 characteristicVec.label = hChosenClass;
@@ -626,9 +630,9 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
             }
         }
     }
-    // If dgClass is dense and not in a cluster, and none if its neighbours are in a cluster,
-    // put it in its own new cluster and search the neighbourhood for transitional or dense
-    // grids to add
+    // If dgClass is dense and not in a cluster, and none if its neighbours are in
+    // a cluster, put it in its own new cluster and search the neighbourhood for
+    // transitional or dense grids to add
     else if (gridClass == NO_CLASS)
     {
         int newClass  = (int)this->clusterList.size();
@@ -641,8 +645,9 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
             newGridList.find(grid)->second = characteristicVec;
         else
             newGridList.insert(std::make_pair(grid, characteristicVec));
-        // Iterate through the neighbourhood until no more transitional neighbours can be added
-        // (dense neighbours will add themselves as part of their adjust process)
+        // Iterate through the neighbourhood until no more transitional neighbours
+        // can be added (dense neighbours will add themselves as part of their
+        // adjust process)
         for (DensityGrid &dghprime : grid.getNeighbours())
         {
             if (this->gridList.find(dghprime) != this->gridList.end() &&
@@ -664,22 +669,22 @@ SESAME::HashMap SESAME::V9::adjustForDenseGrid(const DensityGrid &grid,
 }
 
 /**
- * Adjusts the clustering of a transitional density grid. Implements lines 20 and 21 from Figure 4
- * of Chen and Tu 2007.
+ * Adjusts the clustering of a transitional density grid. Implements lines 20
+ * and 21 from Figure 4 of Chen and Tu 2007.
  *
  * @param dg the dense density grid being adjusted
  * @param cv the characteristic vector of dg
  * @param dgClass the cluster to which dg belonged
  *
- * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids for update after
- * this iteration
+ * @return a HashMap<DensityGrid, CharacteristicVector> containing density grids
+ * for update after this iteration
  */
 SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
                                                       CharacteristicVector characteristicVec,
                                                       int gridClass)
 {
-    // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
-    // and satisfies that dg would be an outside grid if added to it
+    // Among all neighbours of dg, find the grid h whose cluster ch has the
+    // largest size and satisfies that dg would be an outside grid if added to it
     GridCluster gridCluster;      // The cluster, ch, of h
     double hChosenSize = 0.0;     // The size of ch, the largest cluster
     DensityGrid neighbourGrid;    // The neighbour of dg being considered
@@ -734,8 +739,9 @@ SESAME::HashMap SESAME::V9::adjustForTransitionalGrid(const DensityGrid &grid,
 SESAME::HashMap SESAME::V9::mergeNewClusters(SESAME::HashMap newGridList, int smallCluster,
                                              int bigCluster)
 {
-    // System.out.println("Merge new clusters "+smallCluster+" and "+bigCluster+".");
-    // Iterate through the density grids in grid_list to find those which are in highClass
+    // System.out.println("Merge new clusters "+smallCluster+" and
+    // "+bigCluster+"."); Iterate through the density grids in grid_list to find
+    // those which are in highClass
     for (HashMap::iterator gridIter = newGridList.begin(); gridIter != gridList.end(); gridIter++)
     {
         DensityGrid grid                       = gridIter->first;
@@ -771,7 +777,8 @@ SESAME::HashMap SESAME::V9::mergeNewClusters(SESAME::HashMap newGridList, int sm
 void SESAME::V9::mergeClusters(int smallCluster, int bigCluster)
 {
     // SESAME_INFO("Merge clusters "<<smallCluster<<" and "<<bigCluster<<".");
-    // Iterate through the density grids in grid_list to find those which are in highClass
+    // Iterate through the density grids in grid_list to find those which are in
+    // highClass
     for (auto gridIter = gridList.begin(); gridIter != gridList.end(); gridIter++)
     {
         // Assign density grids in smallCluster to bigCluster
@@ -847,8 +854,8 @@ SESAME::HashMap SESAME::V9::cleanNewClusters(SESAME::HashMap newGridList)
 // TODO stop right here and confused about get()
 
 /**
- * Iterates through cluster_list to ensure that all empty clusters have been removed and
- * that all cluster IDs match the cluster's index in cluster_list.
+ * Iterates through cluster_list to ensure that all empty clusters have been
+ * removed and that all cluster IDs match the cluster's index in cluster_list.
  */
 
 void SESAME::V9::cleanClusters()
@@ -954,7 +961,8 @@ void SESAME::V9::removeSporadic()
     }
     mergeGridList(gridList, newGridList);
 
-    // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from grid_list.");
+    // SESAME_INFO(" - Removed "<<removeGridList.size()<<" grids from
+    // grid_list.");
     for (DensityGrid &sporadicGrid : removeGridList)
     {
         this->gridList.erase(sporadicGrid);
@@ -977,10 +985,11 @@ void SESAME::V9::removeSporadic()
 }
 
 /**
- * Determines whether a sparse density grid is sporadic using rules S1 and S2 of Chen and Tu 2007
+ * Determines whether a sparse density grid is sporadic using rules S1 and S2 of
+ * Chen and Tu 2007
  *
- * @param characteristicVec - the CharacteristicVector of the density grid being assessed for
- * sporadicity
+ * @param characteristicVec - the CharacteristicVector of the density grid being
+ * assessed for sporadicity
  */
 bool SESAME::V9::checkIfSporadic(CharacteristicVector characteristicVec)
 {

@@ -17,7 +17,8 @@ void SESAME::ConnectedRegions::connection(std::vector<MicroClusterPtr> &microClu
     for (iterW = weightedAdjacencyList.begin(); iterW != weightedAdjacencyList.end(); iterW++)
     {
         //  std::cout<<" cluster 1 weight "<<iterW->first.microCluster1->weight
-        //  <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min is
+        //  <<", cluster 2 weight "<<iterW->first.microCluster2->weight<<"weight min
+        //  is
         //  "<<min_weight<<std::endl;
         if (iterW->first.microCluster1->weight >= min_weight &&
             iterW->first.microCluster2->weight >= min_weight)
@@ -42,10 +43,10 @@ void SESAME::ConnectedRegions::connection(std::vector<MicroClusterPtr> &microClu
     findConnectedComponents(microClusters);
 }
 /**
- * @Description:  insert vertices and entries into connectivity graph when micro cluster pair
- * connectivity value greater than the intersection threshold
- * if the graph has testing micro cluster, add connected strong MC in the corresponding entries
- * else, create new V,E into the graph
+ * @Description:  insert vertices and entries into connectivity graph when micro
+ * cluster pair connectivity value greater than the intersection threshold if
+ * the graph has testing micro cluster, add connected strong MC in the
+ * corresponding entries else, create new V,E into the graph
  * @Param: connectivity graph, micro cluster 1 and 2
  * @Return: void
  */
@@ -74,7 +75,8 @@ void SESAME::ConnectedRegions::insertIntoGraph(const std::vector<MicroClusterPtr
 {
     if (connecvtivityGraphId.find(microClusterId) == connecvtivityGraphId.end())
     {
-        // std::cerr << "INSERT micro cluster id is " << microClusterId << std::endl;
+        // std::cerr << "INSERT micro cluster id is " << microClusterId <<
+        // std::endl;
         auto microCluster = std::find_if(
             microClusters.begin(), microClusters.end(),
             [&](const MicroClusterPtr &mc) { return mc->id.front() == microClusterId; });
@@ -88,7 +90,8 @@ void SESAME::ConnectedRegions::findConnectedComponents(
     const std::vector<SESAME::MicroClusterPtr> &microClusters)
 {
     unordered_map<int, std::vector<int>>::iterator iter;
-    // This variable just for indicating the id of micro cluster which forming macro clusters
+    // This variable just for indicating the id of micro cluster which forming
+    // macro clusters
     for (iter = connecvtivityGraphId.begin(); iter != connecvtivityGraphId.end(); iter++)
     {
         std::vector<int> idList;
@@ -152,8 +155,8 @@ std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink()
         }
         points.push_back(point);
         //  std::stringstream results;
-        // std::copy(centroid.begin(),centroid.end(),std::ostream_iterator<double>(results, " "));
-        // SESAME_INFO("The NO."<<iter<<" Centroid is "<<results.str());
+        // std::copy(centroid.begin(),centroid.end(),std::ostream_iterator<double>(results,
+        // " ")); SESAME_INFO("The NO."<<iter<<" Centroid is "<<results.str());
     }
     return points;
 }

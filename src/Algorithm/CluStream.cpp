@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/16.
@@ -67,7 +68,8 @@ void SESAME::CluStream::initOffline(vector<PointPtr> &initData, vector<PointPtr>
  * first determine closest clusters to the data,
  * then judge whether it locates into the maximum boundary of this micro cluster
  * 1. data object fits into closest micro cluster;
- * 2. data does not fit in any cluster,  delete oldest one & create a new cluster;
+ * 2. data does not fit in any cluster,  delete oldest one & create a new
+ * cluster;
  * 3.  merge two closest clusters & create a new cluster.
  * @Param: data: input data object
  * @Return: store the output result(with computed clustering center) into ???
@@ -234,9 +236,11 @@ void SESAME::CluStream::Init()
 
 /**
  * @Description: online clustering of Clustream,
- * insert every data object and cluster them incrementally,it has three conditions:
+ * insert every data object and cluster them incrementally,it has three
+ * conditions:
  * 1. data object fits into closest micro cluster;
- * 2. data does not fit in any cluster,  delete oldest one & create a new cluster;
+ * 2. data does not fit in any cluster,  delete oldest one & create a new
+ * cluster;
  * 3.  merge two closest clusters & create a new cluster.
  * @Param:dimension: dimension of data object
  * pointNumber: total number of data objects collected in workload
@@ -332,8 +336,9 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
     vector<PointPtr> TransformedSnapshot;
     microClusterToPoint(subtractMiroCluster->microClusters, TransformedSnapshot);
 
-    // SESAME_INFO("offline Cluster Number " << this->CluStreamParam.num_offline_clusters << "Total
-    // number of p: " << TransformedSnapshot.size());
+    // SESAME_INFO("offline Cluster Number " <<
+    // this->CluStreamParam.num_offline_clusters << "Total number of p: " <<
+    // TransformedSnapshot.size());
 
     std::vector<PointPtr> centers;
     std::vector<std::vector<PointPtr>> oldGroups, newGroups;
@@ -341,8 +346,8 @@ void SESAME::CluStream::RunOffline(SESAME::DataSinkPtr sinkPtr)
     this->kmeans->Run(param, centers, sinkPtr);
     // this->kmeans->runKMeans(this->CluStreamParam.num_offline_clusters,
     // this->CluStreamParam.num_clusters,centers,
-    //                         TransformedSnapshot, oldGroups, newGroups, this->CluStreamParam.seed,
-    //                         true);
+    //                         TransformedSnapshot, oldGroups, newGroups,
+    //                         this->CluStreamParam.seed, true);
     // Count overall time
 
     // store the result input output

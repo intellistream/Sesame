@@ -22,8 +22,8 @@ public:
     /**
      * For each dim, its space Si, i =1, ··· ,d is divided into pi partitions as
      * Si = Si,1 U Si,2 U ··· U Si,pi
-     * A density grid g that is composed of S1,j1 ×S2,j2 ···×Sd,jd , ji =1, ...,pi,
-     * has coordinates (j1,j2, ··· ,jd).
+     * A density grid g that is composed of S1,j1 ×S2,j2 ···×Sd,jd , ji =1,
+     * ...,pi, has coordinates (j1,j2, ··· ,jd).
      */
     std::vector<int> coordinates;
     /**
@@ -32,8 +32,8 @@ public:
     int dims;
 
     /**
-     * Flag denoting whether this density grid has been inspected during the adjustClustering()
-     * step of D-Stream.
+     * Flag denoting whether this density grid has been inspected during the
+     * adjustClustering() step of D-Stream.
      */
     bool isVisited;
     /**
@@ -51,18 +51,21 @@ public:
      */
     DensityGrid(DensityGrid const &grid);
     /**
-     * Generates a vector of neighbours for this density grid by varying each coordinate
-     * by one in either direction. Does not test whether the generated neighbours are valid as
-     * DensityGrid is not aware of the number of partitions in each dim.
+     * Generates a vector of neighbours for this density grid by varying each
+     * coordinate by one in either direction. Does not test whether the generated
+     * neighbours are valid as DensityGrid is not aware of the number of
+     * partitions in each dim.
      *
      * @return a vector of neighbours for this density grid
      */
     std::vector<DensityGrid> getNeighbours() const;
 
     /**
-     * Provides the probability of the argument instance belonging to the density grid in question.
+     * Provides the probability of the argument instance belonging to the density
+     * grid in question.
      *
-     * @return 1.0 if the instance equals the density grid's coordinates; 0.0 otherwise.
+     * @return 1.0 if the instance equals the density grid's coordinates; 0.0
+     * otherwise.
      */
 
     double getInclusionProbability(Point point);

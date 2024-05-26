@@ -18,7 +18,7 @@ double SESAME::CF::getLSItem(int index) const { return this->getLS().at(index); 
 
 double SESAME::CF::getSSItem(int index) const { return this->getSS().at(index); }
 
-void SESAME::CF::setLS(std::vector<double>& newLs)
+void SESAME::CF::setLS(std::vector<double> &newLs)
 {
     if (this->getLS().empty())
     {
@@ -44,7 +44,7 @@ void SESAME::CF::setLS(std::vector<double>& newLs)
     }
 }
 
-void SESAME::CF::setSS(std::vector<double>& newSs)
+void SESAME::CF::setSS(std::vector<double> &newSs)
 {
     if (this->getSS().empty())
     {

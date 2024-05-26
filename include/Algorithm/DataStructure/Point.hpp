@@ -35,7 +35,7 @@ public:
     clock_t toa;                  // time of arrival
     std::vector<double> feature;  // TODO: need to think how to remove * here.
     Point(int dim, int index = -1, double weight = 1.0, double cost = 0.0, int timestamp = 0);
-    double* data() { return feature.data(); }
+    double *data() { return feature.data(); }
     PointPtr copy();
     void setCost(double c);
     double getCost() const;

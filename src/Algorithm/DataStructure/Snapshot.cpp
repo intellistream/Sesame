@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/16.
@@ -8,7 +9,7 @@
 #include <Algorithm/DataStructure/Snapshot.hpp>
 #include <Utils/Logger.hpp>
 
-SESAME::Snapshot::Snapshot(MicroClusters& otherMicroClusters, int elapsedTime)
+SESAME::Snapshot::Snapshot(MicroClusters &otherMicroClusters, int elapsedTime)
 {
     this->elapsedTime = elapsedTime;
     for (int a = 0; a < otherMicroClusters.size(); a++)
@@ -39,10 +40,10 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapS
                 tempMinDistance = elapsedTimeSnapshot;
                 finalOrder      = i;
                 indexSnapshot   = a;
-                //        SESAME_INFO(" this one Elapsed Time is "<< elapsedTimeSnapshot<<",elapsed
-                //        time is "<<tempMinDistance);
-                // SESAME_INFO(" in order  "<< finalOrder<<",  "<<tempMinDistance<<"th snapshots
-                // shared ptr");
+                //        SESAME_INFO(" this one Elapsed Time is "<<
+                //        elapsedTimeSnapshot<<",elapsed time is "<<tempMinDistance);
+                // SESAME_INFO(" in order  "<< finalOrder<<",  "<<tempMinDistance<<"th
+                // snapshots shared ptr");
             }
         }
         i++;
@@ -52,14 +53,16 @@ SESAME::SnapshotPtr SESAME::Snapshot::findSnapshot(QueueOrderSnapshot orderSnapS
         orderSnapShots[finalOrder][indexSnapshot]->microClusters,
         orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
     // SESAME_INFO("close landmark "<< tempMinDistance);
-    // SESAME_INFO("just for contrast : "<< orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
+    // SESAME_INFO("just for contrast : "<<
+    // orderSnapShots[finalOrder][indexSnapshot]->elapsedTime);
     return nearestSnapshot;
 }
 SESAME::SnapshotPtr SESAME::Snapshot::substractSnapshot(SnapshotPtr snapshotCurrent,
-                                                        const SnapshotPtr& snapshotLandmark,
+                                                        const SnapshotPtr &snapshotLandmark,
                                                         unsigned int num_clusters)
 {
-    //  SESAME_INFO("Start substract "<<snapshotCurrent->elapsedTime<<" LANDMARK ET
+    //  SESAME_INFO("Start substract "<<snapshotCurrent->elapsedTime<<" LANDMARK
+    //  ET
     //  "<<snapshotLandmark->elapsedTime);
     for (unsigned int i = 0; i < num_clusters; i++)
     {  // If the micro cluster raised from merging

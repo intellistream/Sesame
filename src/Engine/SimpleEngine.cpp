@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 19/07/2021.
@@ -85,7 +86,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
 
     // run online clustering
     while (!sourcePtr->sourceEnded())
-    {  // continuously processing infinite incoming data streams.
+    {  // continuously processing infinite
+       // incoming data streams.
         if (!sourcePtr->empty())
         {
             auto item = sourcePtr->get();
@@ -97,7 +99,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr, DataSinkPtr s
         }
     }
     while (!sourcePtr->empty())
-    {  // process the remaining data streams after source stops.
+    {  // process the remaining data streams after
+       // source stops.
         auto item = sourcePtr->get();
         overallMeter.onlineAccMeasure();
         algoPtr->RunOnline(item->copy());

@@ -25,7 +25,8 @@ public:
     int updateTime;
 
     /**
-     * tm : last time when g is removed from grid_list as a sporadic grid (if ever).
+     * tm : last time when g is removed from grid_list as a sporadic grid (if
+     * ever).
      */
     int removeTime;
 
@@ -50,8 +51,8 @@ public:
     int attribute;
 
     /**
-     * time stamp at which the grid's density was last updated (including initial and adjust
-     * clustering)
+     * time stamp at which the grid's density was last updated (including initial
+     * and adjust clustering)
      */
     int densityUpdateTime;
 

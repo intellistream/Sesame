@@ -15,21 +15,24 @@
 
 #include <omp.h>
 
-/* This algorithm is composed by landmark window + Grids + Outlier detection with buffer + no
- * refinement Note: we have removed all of the unnecessary modules since subsituting damped window
- * with the landmark one makes the algorithm much more simple
- * 1. the dm, dl, gap under landmark window is unchanged, which is cm, cl, cm - cl, following the
- * assumption and calculation equation of 25 in DStream paper (equation 11 is not needed since the
- * weight will not decay in landmark window).
- * 2. the removeSporadic and checkIfSporadic function can be removed since the algorithm does not
- * use outlier detection with timer
- * 3. at this time, we donnot need to recalculate the parameter and thus ifReCalculate and
- * reCalculateParameter function can also be removed
- * 4. we remove outlier_density_thresholdFunction function and set lambda = = 1 for transfer
- * convenience. Even if the weight is updated it is still the same.
- * 5. In original DStream, it does not specifically set a buffer to store the outlier grid, however,
- * it separate those outlier with the normal grid using a "SPARSE" label and still store them in the
- * grid_list rather than deleting them. So we still treat it as using outlier buffer
+/* This algorithm is composed by landmark window + Grids + Outlier detection
+ * with buffer + no refinement Note: we have removed all of the unnecessary
+ * modules since subsituting damped window with the landmark one makes the
+ * algorithm much more simple
+ * 1. the dm, dl, gap under landmark window is unchanged, which is cm, cl, cm -
+ * cl, following the assumption and calculation equation of 25 in DStream paper
+ * (equation 11 is not needed since the weight will not decay in landmark
+ * window).
+ * 2. the removeSporadic and checkIfSporadic function can be removed since the
+ * algorithm does not use outlier detection with timer
+ * 3. at this time, we donnot need to recalculate the parameter and thus
+ * ifReCalculate and reCalculateParameter function can also be removed
+ * 4. we remove outlier_density_thresholdFunction function and set lambda = = 1
+ * for transfer convenience. Even if the weight is updated it is still the same.
+ * 5. In original DStream, it does not specifically set a buffer to store the
+ * outlier grid, however, it separate those outlier with the normal grid using a
+ * "SPARSE" label and still store them in the grid_list rather than deleting
+ * them. So we still treat it as using outlier buffer
  * */
 namespace SESAME
 {
@@ -44,11 +47,13 @@ public:
     double dl;  //  Density threshold for sparse grids; controlled by cl
     HashMap gridList;
     // Store the deleted sporadic grids: <coordinate, deleteTime>
-    std::vector<GridCluster> clusterList;  // A list of all Grid Clusters
-    std::vector<GridCluster>
-        newClusterList;  // A list of grid clusters used when re-clustering an existing cluster.
-    std::vector<double> minVals;  // The minimum value seen for a numerical dim; used to calculate N
-    std::vector<double> maxVals;  // The maximum value seen for a numerical dim; used to calculate N
+    std::vector<GridCluster> clusterList;     // A list of all Grid Clusters
+    std::vector<GridCluster> newClusterList;  // A list of grid clusters used when
+                                              // re-clustering an existing cluster.
+    std::vector<double> minVals;              // The minimum value seen for a numerical dim;
+                                              // used to calculate N
+    std::vector<double> maxVals;              // The maximum value seen for a numerical dim;
+                                              // used to calculate N
     bool init = false;
     std::vector<int> Coord;
     std::vector<PointPtr> onlineCenters;

@@ -25,12 +25,12 @@ public:
     /**
      * @param grid the density grid to add to the cluster
      */
-    void addGrid(const DensityGrid& grid);
+    void addGrid(const DensityGrid &grid);
 
     /**
      * @param dg the density grid to remove from the cluster
      */
-    void removeGrid(const DensityGrid& grid);
+    void removeGrid(const DensityGrid &grid);
 
     /**
      * @param gridClus the GridCluster to be absorbed into this cluster
@@ -38,8 +38,8 @@ public:
     void absorbCluster(GridCluster gridCluster);
     /**
      * Inside Grids are defined in Definition 3.5 of Chen and Tu 2007 as:
-     * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g has
-     * neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
+     * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g
+     * has neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
      * in G.Otherwise g is an outside grid in G.
      *
      * @param grid the density grid to label as being inside or out
@@ -49,8 +49,8 @@ public:
 
     /**
      * Inside Grids are defined in Definition 3.5 of Chen and Tu 2007 as:
-     * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g has
-     * neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
+     * Consider a grid group G and a grid g ∈ G, suppose g =(j1, ··· ,jd), if g
+     * has neighboring grids in every dim i =1, ·· · ,d, then g is an inside grid
      * in G. Otherwise g is an outside grid in G.
      *
      * @param grid the density grid being labelled as inside or outside
@@ -62,28 +62,30 @@ public:
     /**
      * add a grid into grids, if exists, update value, if not, insert
      */
-    void putHashGrid(HashGrids grids1, const DensityGrid& g, bool inside);
+    void putHashGrid(HashGrids grids1, const DensityGrid &g, bool inside);
 
     /**
-     * Tests a grid cluster for connectedness according to Definition 3.4, Grid Group, from
-     * Chen and Tu 2007.
+     * Tests a grid cluster for connectedness according to Definition 3.4, Grid
+     * Group, from Chen and Tu 2007.
      *
-     * Selects one density grid in the grid cluster as a starting point and iterates repeatedly
-     * through its neighbours until no more density grids in the grid cluster can be visited.
+     * Selects one density grid in the grid cluster as a starting point and
+     * iterates repeatedly through its neighbours until no more density grids in
+     * the grid cluster can be visited.
      *
-     * @return TRUE if the cluster represent one single grid group; FALSE otherwise.
+     * @return TRUE if the cluster represent one single grid group; FALSE
+     * otherwise.
      */
 
     bool isConnected();
 
     /**
-     * Iterates through the DensityGrids in the cluster and calculates the inclusion probability for
-     * each.
+     * Iterates through the DensityGrids in the cluster and calculates the
+     * inclusion probability for each.
      *
      * @return 1.0 if instance matches any of the density grids; 0.0 otherwise.
      */
     double getInclusionProb(Point point);
-    bool operator==(GridCluster& Other) const;
+    bool operator==(GridCluster &Other) const;
 };
 
 }  // namespace SESAME

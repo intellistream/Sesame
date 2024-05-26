@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 20/07/2021.
@@ -10,7 +11,8 @@
 #include <Utils/Logger.hpp>
 
 /**
- * @Description: First step: select k elements randomly in input as initial clustering centers
+ * @Description: First step: select k elements randomly in input as initial
+ * clustering centers
  */
 
 void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
@@ -52,7 +54,8 @@ void SESAME::KMeans::randomSelectCenters(int numberOfCenters, int numberOfInput,
 }
 
 /**
- * @Description: select the k initial centers from the function determined by point weight
+ * @Description: select the k initial centers from the function determined by
+ * point weight
  */
 
 void SESAME::KMeans::selectCentersFromWeight(int numberOfCenters, int numberOfInput,
@@ -184,7 +187,8 @@ void SESAME::KMeans::groupPointsByCenters(int numberOfCenters, int numberOfInput
 }
 
 /**
- * @Description: Third Step: choose new clustering center from group points again
+ * @Description: Third Step: choose new clustering center from group points
+ * again
  */
 
 void SESAME::KMeans::adjustClusteringCenters(std::vector<PointPtr> &centers,
@@ -197,7 +201,8 @@ void SESAME::KMeans::adjustClusteringCenters(std::vector<PointPtr> &centers,
 }
 
 /**
- * @Description: refresh group,replace the old one with the new one and clean up the new group
+ * @Description: refresh group,replace the old one with the new one and clean up
+ * the new group
  */
 
 void SESAME::KMeans::refreshGroup(std::vector<std::vector<PointPtr>> &oldGroups,
@@ -210,7 +215,8 @@ void SESAME::KMeans::refreshGroup(std::vector<std::vector<PointPtr>> &oldGroups,
 }
 
 /**
- * @Description: if the old groups equals the new ones, set flagToStop to true to stop KMeans
+ * @Description: if the old groups equals the new ones, set flagToStop to true
+ * to stop KMeans
  */
 
 void SESAME::KMeans::checkStopStatus(bool &flag, std::vector<std::vector<PointPtr>> &oldGroups,

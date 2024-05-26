@@ -70,7 +70,8 @@ struct param_t
     std::string input_file = "datasets/CoverType.txt", output_file = "sesame.out";
     AlgoType algo;
 
-    int num_last_arr = 60, time_window = 6;  // also used in timer outlier detection
+    int num_last_arr        = 60,
+        time_window         = 6;  // also used in timer outlier detection
     size_t time_interval    = 100;
     int num_online_clusters = 10;
 
@@ -109,10 +110,10 @@ struct param_t
                           // to process the algorithm from which algorithm)
     int sliding = 10;     // since we test the count-based sliding window, this is
                           // the count number
-    double outlier_distance_threshold = 1000;  // the max distance of the incoming point
-                                               // to its nearest clusters
-    double outlier_density_threshold = 100;    // the density value of the point to be
-                                               // treated as an outlier
+    double outlier_distance_threshold = 1000;  // the max distance of the incoming
+                                               // point to its nearest clusters
+    double outlier_density_threshold = 100;    // the density value of the point to
+                                               // be treated as an outlier
     double neighbor_distance = 200;            // the distance value of the point to judge
                                                // neighborhoods
     int outlier_cap = 5;                       // transfer outlier cluster and true cluster

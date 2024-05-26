@@ -83,8 +83,8 @@ void SESAME::CharacteristicVector::UpdateAllDensity(int NowTime, double decayFac
         this->attribute = DENSE;
     else
         this->attribute = TRANSITIONAL;
-    // Evaluate whether the density grid attribute has changed and set the attChange flag
-    // accordingly
+    // Evaluate whether the density grid attribute has changed and set the
+    // attChange flag accordingly
     if (this->attribute == lastAtt)
         this->attChange = false;
     else
@@ -107,8 +107,8 @@ void SESAME::CharacteristicVector::UpdateAllDensity(int NowTime, double dl, doub
         this->attribute = DENSE;
     else
         this->attribute = TRANSITIONAL;
-    // Evaluate whether the density grid attribute has changed and set the attChange flag
-    // accordingly
+    // Evaluate whether the density grid attribute has changed and set the
+    // attChange flag accordingly
     if (this->attribute == lastAtt)
         this->attChange = false;
     else

@@ -40,8 +40,8 @@ public:
     public:
         CoresetTree(const param_t &param) : param(param) {}
         /**
-         * initalizes root as a treenode with the union of setA and setB as pointset and centre as
-         * centre
+         * initalizes root as a treenode with the union of setA and setB as pointset
+         * and centre as centre
          * @param root
          * @param setA
          * @param setB
@@ -64,8 +64,8 @@ public:
         bool isLeaf(TreeNodePtr node);
 
         /**
-         * Computes the target function value of the n points of the treenode. Differs from the
-         * function "targetFunctionValue" in three things:
+         * Computes the target function value of the n points of the treenode.
+         * Differs from the function "targetFunctionValue" in three things:
          * 1. only the centre of the treenode is used as a centre
          * 2. works on arrays of pointers instead on arrays of points
          * 3. stores the cost in the treenode

@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 #include <Timer/TimeMeter.hpp>
 #include <Utils/Logger.hpp>
@@ -82,8 +83,8 @@ long SESAME::TimeMeter::MeterOnlineUSEC()
  * Online Accumulate time calculate:
  * onlineAccMeasure: measure the start of Accumulate online part
  * onlineEndMeasure:  measure the end of Accumulate online part
- * MeterOnlineAccUSEC: calculate the current elapsed time of online part and push the result
- * every Interval second
+ * MeterOnlineAccUSEC: calculate the current elapsed time of online part and
+ * push the result every Interval second
  * */
 // start of online part
 void SESAME::TimeMeter::onlineAccMeasure()
@@ -141,8 +142,8 @@ void SESAME::TimeMeter::MeterClusterUpdateAccUSEC()
 {
     onlineClusterUpdateTime += MeterUSEC(timer.clusterUpdateTimer_pre, timer.clusterUpdateTimer);
     // if(InsertJudge)
-    // SESAME_INFO("Update ! Concept drift IS <<"<<onlineClusterUpdateTime/1000L <<"ms");
-    // timer.recordConceptDrift.push_back(onlineClusterUpdateTime);
+    // SESAME_INFO("Update ! Concept drift IS <<"<<onlineClusterUpdateTime/1000L
+    // <<"ms"); timer.recordConceptDrift.push_back(onlineClusterUpdateTime);
 }
 long SESAME::TimeMeter::MeterClusterUpdateUSEC() { return onlineClusterUpdateTime; }
 
@@ -162,7 +163,8 @@ void SESAME::TimeMeter::MeterOutlierDetectionAccUSEC()
     outlierDetectionTime += MeterUSEC(timer.outlierDetectionTimer_pre, timer.outlierDetectionTimer);
     //  if(InsertJudge)
     // {
-    // SESAME_INFO("Update ! Outlier detection IS <<"<<outlierDetectionTime/1000L <<"ms");
+    // SESAME_INFO("Update ! Outlier detection IS <<"<<outlierDetectionTime/1000L
+    // <<"ms");
     //   timer.recordOutlierDetection.push_back(outlierDetectionTime);
     // }
 }

@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 19/07/2021.
@@ -8,11 +9,9 @@
 #define SESAME_INCLUDE_APIS_APIS_H_
 
 using namespace std;
-namespace SESAME
-{
+namespace SESAME {
 
-class APIs
-{};
-}  // namespace SESAME
+class APIs {};
+} // namespace SESAME
 
-#endif  // SESAME_INCLUDE_APIS_APIS_H_
+#endif // SESAME_INCLUDE_APIS_APIS_H_

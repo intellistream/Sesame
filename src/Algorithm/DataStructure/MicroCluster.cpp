@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by 1124a on 2021/8/16.
@@ -22,7 +23,8 @@ SESAME::MicroCluster::MicroCluster(int dim, int id)
     visited              = false;
 }
 
-// Create MC, only initialization, only used for DBStream as it has user-defined fixed radius
+// Create MC, only initialization, only used for DBStream as it has user-defined
+// fixed radius
 SESAME::MicroCluster::MicroCluster(int dim, int id, PointPtr dataPoint, double radius)
 {
     this->dim = dim;
@@ -103,7 +105,8 @@ double SESAME::MicroCluster::getDistance(PointPtr datapoint)
     this->distance = calCentroidDistance(datapoint);
     return this->distance;
 }
-// Often Used only in DBStream TODO this just a note, need to delete or detailed explain later
+// Often Used only in DBStream TODO this just a note, need to delete or detailed
+// explain later
 double SESAME::MicroCluster::getDistance(MicroClusterPtr other)
 {
     double temp = 0, dist = 0;
@@ -329,7 +332,8 @@ SESAME::dataPoint SESAME::MicroCluster::getVarianceVector()
     return datapoint;
 }
 
-// calculate the distance between input data point and centroid of micro-clusters
+// calculate the distance between input data point and centroid of
+// micro-clusters
 
 double SESAME::MicroCluster::calCentroidDistance(PointPtr datapoint)
 {

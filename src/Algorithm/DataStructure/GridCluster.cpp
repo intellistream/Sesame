@@ -25,7 +25,7 @@ SESAME::GridCluster::GridCluster(HashGrids hashMap, int label)
  * @param grid the density grid to add to the cluster
  */
 
-void SESAME::GridCluster::addGrid(const DensityGrid& grid)
+void SESAME::GridCluster::addGrid(const DensityGrid &grid)
 {
     bool inside = isInside(grid);
     auto it1    = grids.find(grid);
@@ -34,7 +34,7 @@ void SESAME::GridCluster::addGrid(const DensityGrid& grid)
     else
         grids.insert(std::make_pair(grid, inside));
     // Iterate on grids and judge whether they are inside grids or not
-    for (auto& grid_iter : this->grids)
+    for (auto &grid_iter : this->grids)
     {
         bool inside2U = grid_iter.second;
         if (!inside2U)
@@ -48,7 +48,7 @@ void SESAME::GridCluster::addGrid(const DensityGrid& grid)
 /**
  * @param dg the density grid to remove from the cluster
  */
-void SESAME::GridCluster::removeGrid(const DensityGrid& grid) { this->grids.erase(grid); }
+void SESAME::GridCluster::removeGrid(const DensityGrid &grid) { this->grids.erase(grid); }
 
 /**
  * @param gridClus the GridCluster to be absorbed into this cluster
@@ -70,7 +70,8 @@ void SESAME::GridCluster::absorbCluster(GridCluster gridCluster)
         grid++;
     }
     // SESAME_INFO("...density grids added");
-    // Determine which density grids in this.grids are 'inside' and which are 'outside'
+    // Determine which density grids in this.grids are 'inside' and which are
+    // 'outside'
     auto thisGrid = this->grids.begin();  // mod
     while (thisGrid != this->grids.end())
     {
@@ -127,11 +128,12 @@ bool SESAME::GridCluster::isInside(DensityGrid grid, DensityGrid other)
     return true;
 }
 /**
- * Tests a grid cluster for connectedness according to Definition 3.4, Grid Group, from
- * Chen and Tu 2007.
+ * Tests a grid cluster for connectedness according to Definition 3.4, Grid
+ * Group, from Chen and Tu 2007.
  *
- * Selects one density grid in the grid cluster as a starting point and iterates repeatedly
- * through its neighbours until no more density grids in the grid cluster can be visited.
+ * Selects one density grid in the grid cluster as a starting point and iterates
+ * repeatedly through its neighbours until no more density grids in the grid
+ * cluster can be visited.
  *
  * @return TRUE if the cluster represent one single grid group; FALSE otherwise.
  */
@@ -186,15 +188,16 @@ bool SESAME::GridCluster::isConnected()
     }
     else
     {
-        // SESAME_INFO("The cluster is no longer connected. "<<this.visited.size()<<" of
+        // SESAME_INFO("The cluster is no longer connected.
+        // "<<this.visited.size()<<" of
         // "+this.grids.size()+" reached.");
         return false;
     }
 }
 
 /**
- * Iterates through the DensityGrids in the cluster and calculates the inclusion probability for
- * each.
+ * Iterates through the DensityGrids in the cluster and calculates the inclusion
+ * probability for each.
  *
  * @return 1.0 if instance matches any of the density grids; 0.0 otherwise.
  */
@@ -210,7 +213,7 @@ double SESAME::GridCluster::getInclusionProb(Point point)
     return 0.0;
 }
 
-bool SESAME::GridCluster::operator==(GridCluster& other) const
+bool SESAME::GridCluster::operator==(GridCluster &other) const
 {
     bool equal = false;
     if (clusterLabel == other.clusterLabel && grids.size() == other.grids.size() &&
@@ -219,7 +222,7 @@ bool SESAME::GridCluster::operator==(GridCluster& other) const
     return equal;
 }
 
-void SESAME::GridCluster::putHashGrid(HashGrids grids1, const DensityGrid& g, bool inside)
+void SESAME::GridCluster::putHashGrid(HashGrids grids1, const DensityGrid &g, bool inside)
 {
     auto it1 = grids1.find(g);
     if (it1 != grids1.end())

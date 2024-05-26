@@ -34,4 +34,5 @@ void SESAME::Euclidean::euclideanCost(int numberOfPoints, int numberOfCenters, i
     }
     kmeansoverall += mincost;
     SESAME_DEBUG("EuclideanCost:" << kmeansoverall);
-}  // EuclideanCost, defined in StreamKM++: A clustering algorithm for data streams
+}  // EuclideanCost, defined in StreamKM++: A clustering algorithm for data
+   // streams
