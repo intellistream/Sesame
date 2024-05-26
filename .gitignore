@@ -37,6 +37,4 @@ test/datasets/
 
 *.egg-info/
 *.out
-results.txt
-
-datasets/*.txt
+*.txt

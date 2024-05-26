@@ -176,8 +176,7 @@ bool SESAME::DataSource::stop()
     }
     else
     {
-        SESAME_DEBUG("DataSource "
-                     << ": Thread is not joinable");
+        SESAME_DEBUG("DataSource: Thread is not joinable");
         return false;
     }
     return true;

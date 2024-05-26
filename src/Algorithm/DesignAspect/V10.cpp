@@ -21,8 +21,6 @@ SESAME::V10::V10(param_t &cmd_params)
     sum_timer.Tick();
 }
 
-SESAME::V10::~V10() {};
-
 void SESAME::V10::Init()
 {
     this->cache =
