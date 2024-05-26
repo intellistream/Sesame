@@ -4,10 +4,10 @@
 
 #include <Algorithm/DataStructure/DPTree.hpp>
 #include <Utils/Logger.hpp>
+#include <algorithm>
 #include <cfloat>
 #include <cmath>
 #include <unordered_set>
-#include <algorithm>
 
 using namespace std;
 
