@@ -61,12 +61,17 @@ FetchContent_Declare(
   URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz
   URL_MD5 893b5203b862eb9bbd08553e24ff146a
   DOWNLOAD_NO_EXTRACT FALSE
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(Boost)
 
+set(GFLAGS_BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(GFLAGS_BUILD_gflags_nothreads_LIB ON)
+set(GFLAGS_BUILD_gflags_LIB OFF CACHE BOOL "")
+add_subdirectory(third_party/gflags)
+
 find_package(OpenMP)
-find_package(gflags REQUIRED CONFIG PATHS third_party/gflags)
 
 # Print all used include directories
 message(STATUS "INCLUDE_DIRS:")
@@ -84,7 +89,8 @@ get_header_sesame(sesame_HEADER_FILES)
 add_library(sesame SHARED ${sesame_SOURCE_FILES} ${sesame_HEADER_FILES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(sesame PUBLIC "include")
 target_include_directories(sesame PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread gflags Boost::timer Boost::lockfree)
+target_link_libraries(sesame PUBLIC ${LIBRARIES} pthread Boost::timer Boost::lockfree)
+target_link_libraries(sesame PRIVATE gflags)
 
 #Add benchmarks with command
 add_subdirectory(benchmark)
