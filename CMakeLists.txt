@@ -89,10 +89,10 @@ option(ENABLE_PYTHON "Enable Python bindings" OFF)
 message(STATUS "Enable Python bindings: ${ENABLE_PYTHON}")
 if (ENABLE_PYTHON)
     add_subdirectory(third_party/pybind11)
-    pybind11_add_module(sesame_python python/src/Birch.cpp)
-    target_include_directories(sesame_python PRIVATE "include")
-    target_link_libraries(sesame_python PUBLIC sesame)
-    set_target_properties(sesame_python PROPERTIES 
+    pybind11_add_module(pysame python/src/Birch.cpp)
+    target_include_directories(pysame PRIVATE "include")
+    target_link_libraries(pysame PUBLIC sesame)
+    set_target_properties(pysame PROPERTIES 
         BUILD_RPATH "\$ORIGIN/"
         INSTALL_RPATH "\$ORIGIN/"
     )
