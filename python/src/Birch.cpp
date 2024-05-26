@@ -80,9 +80,9 @@ public:
         algo->RunOffline(sinkPtr);
         std::vector<PointPtr>&results = sinkPtr->getResults(), predicts;
         UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
-        cout << "results size: " << results.size() << endl;
-        cout << "inputs size: " << inputs.size() << endl;
-        cout << "predicts size: " << predicts.size() << endl;
+        // cout << "results size: " << results.size() << endl;
+        // cout << "inputs size: " << inputs.size() << endl;
+        // cout << "predicts size: " << predicts.size() << endl;
         std::vector<int> labels;
         for (auto& point : predicts)
         {

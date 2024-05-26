@@ -47,9 +47,9 @@ char const *algo_names[64] = {[BirchType]        = "Birch",
                               [G15Stream]        = "G15",
                               [G16Stream]        = "G16"};
 
-char const *benne_suffix[4] = {[balance]    = "Bal",
-                               [accuracy]   = "Acc",
-                               [efficiency] = "Eff",
+char const *benne_suffix[4] = {[balance]               = "Bal",
+                               [accuracy]              = "Acc",
+                               [efficiency]            = "Eff",
                                [accuracy_no_migration] = "AccNoMig"};
 
 void Algorithm::Store(std::string output_file, int dim, std::vector<PointPtr> result)

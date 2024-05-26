@@ -53,5 +53,3 @@ IndentPPDirectives: AfterHash
 
 # Include blocks style
 IncludeBlocks: Preserve
-
-KeepEmptyLinesAtTheStartOfBlocks: false
