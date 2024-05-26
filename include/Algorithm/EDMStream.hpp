@@ -43,7 +43,6 @@ public:
   std::unordered_set<ClusterPtr> clusters;
 
   EDMStream(param_t &cmd_params);
-  ~EDMStream();
   void Init() override;
   void setMinDelta(double minDelta);
   void CountNode(const SESAME::DPNodePtr &node, int &num);

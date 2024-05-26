@@ -44,7 +44,6 @@ public:
   std::unordered_set<ClusterPtr> clusters;
 
   V10(param_t &cmd_params);
-  ~V10();
   void Init() override;
   void setMinDelta(double minDelta);
   void CountNode(const SESAME::DPNodePtr &node, int &num);
