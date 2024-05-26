@@ -38,3 +38,4 @@ test/datasets/
 *.egg-info/
 *.out
 *.txt
+/dist/

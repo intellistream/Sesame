@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set Optimization Flags
-set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -lpthread -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -Werror=return-type -fconcepts-diagnostics-depth=2 -fopenmp -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
 
@@ -91,5 +91,9 @@ if (ENABLE_PYTHON)
     add_subdirectory(third_party/pybind11)
     pybind11_add_module(sesame_python python/src/Birch.cpp)
     target_include_directories(sesame_python PRIVATE "include")
-    target_link_libraries(sesame_python PRIVATE sesame)
+    target_link_libraries(sesame_python PUBLIC sesame)
+    set_target_properties(sesame_python PROPERTIES 
+        BUILD_RPATH "\$ORIGIN/"
+        INSTALL_RPATH "\$ORIGIN/"
+    )
 endif ()

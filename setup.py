@@ -19,7 +19,7 @@ PLAT_TO_CMAKE = {
 }
 
 # get cpu cores
-os.environ["CMAKE_BUILD_PARALLEL_LEVEL"] = str(os.cpu_count() // 2)
+os.environ["CMAKE_BUILD_PARALLEL_LEVEL"] = str(os.cpu_count() // 2 + 1)
 
 
 # A CMakeExtension needs a sourcedir instead of a file list.
@@ -141,4 +141,5 @@ setup(
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     python_requires=">=3.7",
+    include_package_data=False,
 )
