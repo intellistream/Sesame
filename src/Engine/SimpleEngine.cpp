@@ -9,7 +9,7 @@
 #include "Utils/Logger.hpp"
 #include "Utils/SPSCQueue.hpp"
 
-#include <boost/progress.hpp>
+#include <boost/timer/progress_display.hpp>
 
 #ifdef GPERF
 #include <gperftools/profiler.h>
@@ -73,7 +73,7 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   algoPtr->Init();
 
-  boost::progress_display show_progress(algoPtr->param.num_points, std::cerr,
+  boost::timer::progress_display show_progress(algoPtr->param.num_points, std::cerr,
                                         "Online Clustering:\n");
 
 #ifdef GPERF
