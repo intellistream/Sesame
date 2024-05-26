@@ -41,8 +41,7 @@ public:
 };
 
 template <typename T>
-concept NodeConcept = requires(T t)
-{
+concept NodeConcept = requires(T t) {
     t->Centroid();
     t->cf.num;
     t->index;

@@ -126,7 +126,8 @@ void SESAME::DBStream::update(PointPtr dataPoint)
     {
         ds_timer.Tick();
         microClusterIndex++;
-        MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(dbStreamParams.dim, microClusterIndex, dataPoint, dbStreamParams.radius);
+        MicroClusterPtr newMicroCluster = SESAME::DataStructureFactory::createMicroCluster(
+            dbStreamParams.dim, microClusterIndex, dataPoint, dbStreamParams.radius);
         microClusters.push_back(newMicroCluster);
         microClusterNN.push_back(newMicroCluster);
         ds_timer.Tock();

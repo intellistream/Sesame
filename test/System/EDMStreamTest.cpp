@@ -36,9 +36,8 @@ TEST(System, EDMStream)
     cmd_params.num_clusters = 7;
     cmd_params.time_decay   = true;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
-    cmd_params.algo        = SESAME::EDMStreamType;
+    cmd_params.input_file = "datasets/CoverType.txt";
+    cmd_params.algo       = SESAME::EDMStreamType;
 
     // Run algorithm producing results.
     RunBenchmark(cmd_params);

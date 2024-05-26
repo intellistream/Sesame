@@ -30,13 +30,12 @@ TEST(System, DenStream)
     cmd_params.min_points = 10;
     cmd_params.epsilon    = 20;  // 0.1
 
-    cmd_params.base     = 2;
-    cmd_params.lambda   = 0.25;
-    cmd_params.mu       = 5;
-    cmd_params.beta     = 0.25;
-    cmd_params.buf_size = 500;
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
+    cmd_params.base       = 2;
+    cmd_params.lambda     = 0.25;
+    cmd_params.mu         = 5;
+    cmd_params.beta       = 0.25;
+    cmd_params.buf_size   = 500;
+    cmd_params.input_file = "datasets/CoverType.txt";
 
     cmd_params.output_file  = "results.txt";
     cmd_params.algo         = SESAME::DenStreamType;

@@ -5,8 +5,8 @@
 //
 
 #include <Algorithm/DataStructure/DataStructureFactory.hpp>
-#include <Algorithm/Param.hpp>
 #include <Algorithm/OfflineRefinement/KMeans.hpp>
+#include <Algorithm/Param.hpp>
 #include <Utils/Logger.hpp>
 
 /**

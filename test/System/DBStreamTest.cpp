@@ -32,11 +32,11 @@ TEST(System, DBStream)
     cmd_params.clean_interval = 400;
     cmd_params.min_weight     = 0.5;
     cmd_params.alpha          = 0.2;
-    cmd_params.input_file  = "datasets/CoverType.txt";
-    cmd_params.algo        = SESAME::DBStreamType;
-    cmd_params.num_clusters = 363;
-    cmd_params.time_decay   = false;
-    cmd_params.store        = false;
+    cmd_params.input_file     = "datasets/CoverType.txt";
+    cmd_params.algo           = SESAME::DBStreamType;
+    cmd_params.num_clusters   = 363;
+    cmd_params.time_decay     = false;
+    cmd_params.store          = false;
 
     auto res = SESAME::RunBenchmark(cmd_params);
 }

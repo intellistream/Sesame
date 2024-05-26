@@ -21,7 +21,7 @@ SESAME::V10::V10(param_t &cmd_params)
     sum_timer.Tick();
 }
 
-SESAME::V10::~V10(){};
+SESAME::V10::~V10() {};
 
 void SESAME::V10::Init()
 {
@@ -52,11 +52,10 @@ void SESAME::V10::OutputOnline(std::vector<PointPtr> &output)
             PointPtr center = cell->GetCenter();
             center->setClusteringCenter(clu++);
             center->setOutlier(false);
-            output.push_back(center->copy());        
+            output.push_back(center->copy());
         }
     }
 }
-
 
 void SESAME::V10::setMinDelta(double minDelta)
 {

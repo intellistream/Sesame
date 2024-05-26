@@ -34,7 +34,7 @@ TEST(System, Birch)
     param.run_cmm            = false;
 
     param.input_file = "datasets/CoverType.txt";
-    param.algo        = SESAME::BirchType;
+    param.algo       = SESAME::BirchType;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);

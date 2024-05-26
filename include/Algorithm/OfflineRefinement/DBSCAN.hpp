@@ -4,8 +4,8 @@
 #ifndef SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_
 #define SESAME_INCLUDE_ALGORITHM_OFFLINECLUSTERING_DBSCAN_HPP_
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/Param.hpp"
 #include "Algorithm/OfflineRefinement/OfflineRefinement.hpp"
+#include "Algorithm/Param.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/UtilityFunctions.hpp"
 
@@ -21,7 +21,7 @@
 namespace SESAME
 {
 
-//#define BORDER_POINT 2
+// #define BORDER_POINT 2
 class DBSCAN : public OfflineRefinement
 {
 public:

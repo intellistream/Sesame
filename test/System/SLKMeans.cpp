@@ -37,7 +37,7 @@ TEST(System, SLKMeans)
     cmd_params.input_file  = "datasets/CoverType.txt";
     cmd_params.algo        = SESAME::SLKMeansType;
     cmd_params.run_offline = true;
-    cmd_params.run_cmm = true;
+    cmd_params.run_cmm     = true;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(cmd_params);

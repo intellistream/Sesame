@@ -18,7 +18,7 @@ SESAME::EDMStream::EDMStream(param_t &cmd_params)
     this->EDMParam.opt        = cmd_params.opt;
 }
 
-SESAME::EDMStream::~EDMStream(){};
+SESAME::EDMStream::~EDMStream() {};
 
 void SESAME::EDMStream::Init()
 {

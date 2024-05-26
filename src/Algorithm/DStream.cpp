@@ -235,8 +235,7 @@ void SESAME::DStream::initialClustering()
     //       the label of the largest cluster
     //    e. Else if h is transitional, assign it to c
     //    f. While changes can be made
-    while (adjustLabels())
-        ;  // while changes are being made
+    while (adjustLabels());  // while changes are being made
 }
 /**
  * Makes first change available to it by following the steps:
@@ -349,8 +348,7 @@ void SESAME::DStream::adjustClustering()
     //    a. If dg is sparse
     //    b. If dg is dense
     //    c. If dg is transitional
-    while (inspectChangedGrids())
-        ;
+    while (inspectChangedGrids());
 }
 
 /**

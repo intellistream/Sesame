@@ -17,7 +17,7 @@
 namespace SESAME
 {
 void AccuracyRes::Evaluate(const param_t &param, const std::vector<PointPtr> &inputs,
-                        const std::vector<PointPtr> &predicts)
+                           const std::vector<PointPtr> &predicts)
 {
     if (param.run_eval && param.num_res > 0 && param.num_res <= 60000)
     {
@@ -52,7 +52,8 @@ void AccuracyRes::Evaluate(const param_t &param, const std::vector<PointPtr> &in
         std::cerr << "\033[1;34mCMM: " << round(cmm * 10000) / 10000
                   << "\033[0m et_s: " << cmm_timer.sum / 1e9 << std::endl;
     }
-    else {
+    else
+    {
         std::cerr << "skip evaluation" << std::endl;
     }
 }

@@ -10,12 +10,12 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <functional>
 #include <iostream>
 #include <limits>
 #include <memory>
 #include <ranges>
 #include <vector>
-#include <functional>
 
 #include "Algorithm/DataStructure/FeatureVector.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
@@ -135,7 +135,7 @@ public:
         ClusteringFeatures cf;
         TreePtr tree;
 
-        Node(TreePtr tree, int d = 0) : tree(tree), dim(d), cf(d){};
+        Node(TreePtr tree, int d = 0) : tree(tree), dim(d), cf(d) {};
         Node(TreePtr tree, PointPtr p) : Node(tree, p->getDimension()) { Update(p); }
         ~Node() = default;
         void RemoveChild(NodePtr child)
@@ -257,7 +257,7 @@ public:
         const int dim;
         ClusteringFeatures cf;
 
-        Node(int d = 0) : dim(d), cf(d){};
+        Node(int d = 0) : dim(d), cf(d) {};
         Node(PointPtr p) : Node(p->getDimension()) { Update(p); }
         Node(ListPtr l, PointPtr p) : Node(p) {}
         ~Node() = default;

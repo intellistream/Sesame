@@ -79,7 +79,11 @@ std::vector<PointPtr> &DataSink::getResults() { return output; }
 
 void DataSink::setBarrier(BarrierPtr barrierPtr) { this->barrierPtr = barrierPtr; }
 
-DataSink::~DataSink() { Ended(); stop(); }
+DataSink::~DataSink()
+{
+    Ended();
+    stop();
+}
 
 void DataSink::Ended() { this->sourceEnd = true; }
 

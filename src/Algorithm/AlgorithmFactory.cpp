@@ -7,6 +7,7 @@
 
 #include "Algorithm/AlgorithmFactory.hpp"
 
+#include "Algorithm/Benne.hpp"
 #include "Algorithm/Birch.hpp"
 #include "Algorithm/CluStream.hpp"
 #include "Algorithm/DBStream.hpp"
@@ -16,13 +17,12 @@
 #include "Algorithm/DenStream.hpp"
 #include "Algorithm/DesignAspect/Generic.hpp"
 #include "Algorithm/DesignAspect/V10.hpp"
-#include "Algorithm/DesignAspect/V9.hpp"
 #include "Algorithm/DesignAspect/V16.hpp"
+#include "Algorithm/DesignAspect/V9.hpp"
 #include "Algorithm/EDMStream.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
 #include "Algorithm/SlidingWindowClustering.hpp"
 #include "Algorithm/StreamKM.hpp"
-#include "Algorithm/Benne.hpp"
 
 namespace SESAME
 {

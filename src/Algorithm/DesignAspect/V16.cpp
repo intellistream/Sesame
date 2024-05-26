@@ -16,19 +16,17 @@ SESAME::V16::V16(param_t &cmd_params)
 {
     this->param  = cmd_params;
     param.lambda = 1;
-    gap     = (int)(param.cm - param.cl);
-    dm      = param.cm;
-    dl      = param.cl;
-    minVals = std::vector<double>(param.dim, DBL_MAX);
-    maxVals = std::vector<double>(param.dim, DBL_MIN);
-    Coord   = std::vector<int>(param.dim, 0);
+    gap          = (int)(param.cm - param.cl);
+    dm           = param.cm;
+    dl           = param.cl;
+    minVals      = std::vector<double>(param.dim, DBL_MAX);
+    maxVals      = std::vector<double>(param.dim, DBL_MIN);
+    Coord        = std::vector<int>(param.dim, 0);
 }
 
 SESAME::V16::~V16() = default;
 
-void SESAME::V16::Init() {
-    sum_timer.Tick();
-}
+void SESAME::V16::Init() { sum_timer.Tick(); }
 
 void SESAME::V16::OutputOnline(std::vector<PointPtr> &output)
 {
@@ -61,7 +59,6 @@ void SESAME::V16::OutputOnline(std::vector<PointPtr> &output)
         point->setClusteringCenter(cluID++);
         output.push_back(point);
     }
-    
 }
 
 void SESAME::V16::calculateGridCoord(PointPtr point)
@@ -97,7 +94,7 @@ void SESAME::V16::RunOnline(PointPtr input)
         removeSporadic();
         adjustClustering();
     }
-    if(windowGrid.size() == param.sliding + 1)
+    if (windowGrid.size() == param.sliding + 1)
     {
         RemoveWindowPointFromGrid();
     }
@@ -106,7 +103,7 @@ void SESAME::V16::RunOnline(PointPtr input)
 }
 
 void SESAME::V16::RunOffline(DataSinkPtr sinkPtr)
-{ 
+{
     on_timer.Add(sum_timer.start);
     ref_timer.Tick();
     int cluID = 0;
@@ -169,13 +166,12 @@ void SESAME::V16::GridListUpdate(const std::vector<int> &coordinate)
 void SESAME::V16::RemoveWindowPointFromGrid()
 {
     auto grid = windowGrid[0];
-    auto it = this->gridList.find(grid);
+    auto it   = this->gridList.find(grid);
     if (it != gridList.end())
     {
         it->second.gridDensity -= 1.0;
     }
 }
-
 
 /**
  * Implements the procedure given in Figure 3 of Chen and Tu 2007
@@ -218,8 +214,7 @@ void SESAME::V16::initialClustering()
     //       the label of the largest cluster
     //    e. Else if h is transitional, assign it to c
     //    f. While changes can be made
-    while (adjustLabels())
-        ;  // while changes are being made
+    while (adjustLabels());  // while changes are being made
 }
 /**
  * Makes first change available to it by following the steps:
@@ -328,8 +323,7 @@ void SESAME::V16::adjustClustering()
     //    a. If dg is sparse
     //    b. If dg is dense
     //    c. If dg is transitional
-    while (inspectChangedGrids())
-        ;
+    while (inspectChangedGrids());
 }
 
 /**
@@ -387,8 +381,8 @@ bool SESAME::V16::inspectChangedGrids()
  * @return a HashMap containing density grids for update after this iteration
  */
 SESAME::HashMap SESAME::V16::adjustForSparseGrid(const DensityGrid &grid,
-                                                CharacteristicVector characteristicVec,
-                                                int gridClass)
+                                                 CharacteristicVector characteristicVec,
+                                                 int gridClass)
 {
     HashMap newGridList;
     if (gridClass != NO_CLASS)
@@ -541,8 +535,8 @@ SESAME::HashMap SESAME::V16::adjustNewLabels(const SESAME::HashMap &newGridList)
  * @return a HashMapcontaining density grids for update after this iteration
  */
 SESAME::HashMap SESAME::V16::adjustForDenseGrid(const DensityGrid &grid,
-                                               CharacteristicVector characteristicVec,
-                                               int gridClass)
+                                                CharacteristicVector characteristicVec,
+                                                int gridClass)
 {
     // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
     GridCluster gridCluster;           // The cluster, ch, of h
@@ -691,8 +685,8 @@ SESAME::HashMap SESAME::V16::adjustForDenseGrid(const DensityGrid &grid,
  * this iteration
  */
 SESAME::HashMap SESAME::V16::adjustForTransitionalGrid(const DensityGrid &grid,
-                                                      CharacteristicVector characteristicVec,
-                                                      int gridClass)
+                                                       CharacteristicVector characteristicVec,
+                                                       int gridClass)
 {
     // Among all neighbours of dg, find the grid h whose cluster ch has the largest size
     // and satisfies that dg would be an outside grid if added to it
@@ -748,7 +742,7 @@ SESAME::HashMap SESAME::V16::adjustForTransitionalGrid(const DensityGrid &grid,
 }
 
 SESAME::HashMap SESAME::V16::mergeNewClusters(SESAME::HashMap newGridList, int smallCluster,
-                                             int bigCluster)
+                                              int bigCluster)
 {
     // System.out.println("Merge new clusters "+smallCluster+" and "+bigCluster+".");
     // Iterate through the density grids in grid_list to find those which are in highClass

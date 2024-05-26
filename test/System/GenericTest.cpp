@@ -72,8 +72,8 @@ TEST(System, V2)
     param.outlier_distance_threshold = 5000;
     param.outlier_cap                = 10;
 
-    param.input_file  = "datasets/CoverType.txt";
-    param.algo        = SESAME::G2Stream;
+    param.input_file = "datasets/CoverType.txt";
+    param.algo       = SESAME::G2Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -96,8 +96,8 @@ TEST(System, V3)
     param.outlier_distance_threshold = 500;
     param.outlier_cap                = 2000;
 
-    param.input_file  = "datasets/EDS.txt";
-    param.algo        = SESAME::G3Stream;
+    param.input_file = "datasets/EDS.txt";
+    param.algo       = SESAME::G3Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -120,8 +120,8 @@ TEST(System, V4)
     param.outlier_distance_threshold = 3000;
     param.outlier_cap                = 3;
 
-    param.input_file  = "datasets/CoverType.txt";
-    param.algo        = SESAME::G4Stream;
+    param.input_file = "datasets/CoverType.txt";
+    param.algo       = SESAME::G4Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -145,8 +145,8 @@ TEST(System, V5)
     param.outlier_distance_threshold = 500;
     param.outlier_cap                = 100;
 
-    param.input_file  = "datasets/CoverType.txt";
-    param.algo        = SESAME::G5Stream;
+    param.input_file = "datasets/CoverType.txt";
+    param.algo       = SESAME::G5Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -194,8 +194,8 @@ TEST(System, V7)
     param.outlier_density_threshold = 0.5;
     param.outlier_cap               = 10;
 
-    param.input_file  = "datasets/CoverType.txt";
-    param.algo        = SESAME::G7Stream;
+    param.input_file = "datasets/CoverType.txt";
+    param.algo       = SESAME::G7Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -219,8 +219,8 @@ TEST(System, V8)
     param.outlier_distance_threshold = 600;
     param.outlier_cap                = 200;
 
-    param.input_file  = "datasets/EDS.txt";
-    param.algo        = SESAME::G8Stream;
+    param.input_file = "datasets/EDS.txt";
+    param.algo       = SESAME::G8Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -243,8 +243,7 @@ TEST(System, V9)
     cmd_params.time_decay   = false;
     cmd_params.landmark     = 3000;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
+    cmd_params.input_file  = "datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
     cmd_params.algo        = SESAME::G9Stream;
 
@@ -258,20 +257,19 @@ TEST(System, V10)
     // [3, 3, 4, 6, 6, 7, 9, 9]
     // Parse parameters.
     param_t cmd_params;
-    cmd_params.num_points = 8000;
-    cmd_params.dim        = 54;
-    cmd_params.alpha      = 0.998;
-    cmd_params.landmark   = 1000;
-    cmd_params.num_cache  = 1000;
-    cmd_params.radius     = 250;  // 220
-    cmd_params.delta      = 1500;
-    cmd_params.beta       = 0.0021;
-    cmd_params.opt        = 2;
+    cmd_params.num_points   = 8000;
+    cmd_params.dim          = 54;
+    cmd_params.alpha        = 0.998;
+    cmd_params.landmark     = 1000;
+    cmd_params.num_cache    = 1000;
+    cmd_params.radius       = 250;  // 220
+    cmd_params.delta        = 1500;
+    cmd_params.beta         = 0.0021;
+    cmd_params.opt          = 2;
     cmd_params.num_clusters = 7;
     cmd_params.time_decay   = true;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
+    cmd_params.input_file  = "datasets/CoverType.txt";
     cmd_params.output_file = "results.txt";
     cmd_params.algo        = SESAME::G10Stream;
 
@@ -294,8 +292,8 @@ TEST(System, V11)
     param.landmark           = 1000;
     param.clean_interval     = 9900;
 
-    param.input_file  = "datasets/EDS.txt";
-    param.algo        = SESAME::G11Stream;
+    param.input_file = "datasets/EDS.txt";
+    param.algo       = SESAME::G11Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -317,8 +315,8 @@ TEST(System, V12)
     param.time_decay         = false;
     param.landmark           = 1000;
 
-    param.input_file  = "datasets/EDS.txt";
-    param.algo        = SESAME::G12Stream;
+    param.input_file = "datasets/EDS.txt";
+    param.algo       = SESAME::G12Stream;
 
     auto res = SESAME::RunBenchmark(param);
 
@@ -340,8 +338,8 @@ TEST(System, V13)
     param.landmark           = 1000;
     param.clean_interval     = 5000;
 
-    param.input_file  = "datasets/EDS.txt";
-    param.algo        = SESAME::G13Stream;
+    param.input_file = "datasets/EDS.txt";
+    param.algo       = SESAME::G13Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -362,8 +360,8 @@ TEST(System, V14)
     param.num_samples  = 100;
     param.sliding      = 5;
 
-    param.input_file  = "datasets/CoverType.txt";
-    param.algo        = SESAME::G14Stream;
+    param.input_file = "datasets/CoverType.txt";
+    param.algo       = SESAME::G14Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(param);
@@ -384,11 +382,10 @@ TEST(System, V16)
     cmd_params.grid_width   = 50;
     cmd_params.num_clusters = 7;
     cmd_params.time_decay   = false;
-    cmd_params.sliding     = 1000;
+    cmd_params.sliding      = 1000;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
-    cmd_params.algo        = SESAME::G16Stream;
+    cmd_params.input_file = "datasets/CoverType.txt";
+    cmd_params.algo       = SESAME::G16Stream;
 
     // Run algorithm producing results.
     auto res = SESAME::RunBenchmark(cmd_params);

@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     // Parse parameters.
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     param_t param;
-    param.algo = (AlgoType)FLAGS_algo;
+    param.algo                          = (AlgoType)FLAGS_algo;
     param.algo                          = (AlgoType)FLAGS_algo;
     param.input_file                    = FLAGS_input_file;
     param.num_points                    = FLAGS_num_points;

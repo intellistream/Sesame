@@ -1,13 +1,14 @@
-#include "Algorithm/DataStructure/GenericFactory.hpp"
-#include "Sources/DataSource.hpp"
-#include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
+#include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Engine/SimpleEngine.hpp"
+#include "Sinks/DataSink.hpp"
+#include "Sources/DataSource.hpp"
 
 using namespace std;
 
-namespace SESAME{
+namespace SESAME
+{
 
 std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
 {
@@ -27,7 +28,7 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     param.Print();
 
     SimpleEngine engine(sourcePtr, sinkPtr,
-                                algoPtr);  // TODO: create multithread engine in future.
+                        algoPtr);  // TODO: create multithread engine in future.
     engine.run();
     while (!sinkPtr->isFinished()) usleep(100);
     // wait for sink to stop.
@@ -63,4 +64,4 @@ std::pair<AccuracyRes, PerfRes> RunBenchmark(param_t &param)
     return make_pair(acc, perf);
 }
 
-}
+}  // namespace SESAME

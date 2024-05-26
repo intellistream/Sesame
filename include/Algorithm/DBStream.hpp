@@ -21,7 +21,7 @@ public:
     double lambda;
     int clean_interval;  // Time gap
     double min_weight;   // minimum weight
-    double alpha;        //α, intersection factor
+    double alpha;        // α, intersection factor
     double base;         // base of decay function
 };
 

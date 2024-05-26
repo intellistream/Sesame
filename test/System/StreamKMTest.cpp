@@ -33,8 +33,7 @@ TEST(System, StreamKM)
     cmd_params.k            = 7;
     cmd_params.time_decay   = false;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
+    cmd_params.input_file  = "datasets/CoverType.txt";
     cmd_params.algo        = SESAME::StreamKMeansType;
     cmd_params.run_offline = true;
 

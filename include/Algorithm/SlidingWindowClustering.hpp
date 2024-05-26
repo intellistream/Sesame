@@ -755,7 +755,7 @@ public:
         }
     }
     // Disllow copy and assign.
-    FrameworkAlg(FrameworkAlg const &) = delete;
+    FrameworkAlg(FrameworkAlg const &)    = delete;
     void operator=(FrameworkAlg const &x) = delete;
 
     // Processes a point.

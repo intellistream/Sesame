@@ -31,9 +31,8 @@ TEST(System, DStream)
     cmd_params.num_clusters = 7;
     cmd_params.time_decay   = false;
 
-    cmd_params.input_file =
-        "datasets/CoverType.txt";
-    cmd_params.algo        = SESAME::DStreamType;
+    cmd_params.input_file = "datasets/CoverType.txt";
+    cmd_params.algo       = SESAME::DStreamType;
 
     // Run algorithm producing results.
     RunBenchmark(cmd_params);

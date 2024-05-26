@@ -44,7 +44,7 @@ public:
     bool stop();
     void Ended();
     bool isFinished();
-    std::vector<PointPtr>& getResults();
+    std::vector<PointPtr> &getResults();
     void setBarrier(BarrierPtr barrierPtr);
 };
 }  // namespace SESAME

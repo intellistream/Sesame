@@ -20,41 +20,30 @@
 #include "Algorithm/DataStructure/CoresetTree.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 #include "Algorithm/DataStructure/Point.hpp"
-#include "Algorithm/Param.hpp"
 #include "Algorithm/OutlierDetection/OutlierDetection.hpp"
+#include "Algorithm/Param.hpp"
 #include "Sinks/DataSink.hpp"
 #include "Utils/BenchmarkUtils.hpp"
 
 namespace SESAME
 {
 template <typename W, typename D, typename O, typename R>
-concept StreamClusteringConcept = requires
-{
-    requires requires(W w, PointPtr p)
-    {
-        {
-            w.Add(p)
-            } -> std::same_as<bool>;
+concept StreamClusteringConcept = requires {
+    requires requires(W w, PointPtr p) {
+        { w.Add(p) } -> std::same_as<bool>;
     };
-    requires requires(D d, PointPtr p)
-    {
-        {
-            d.Insert(p)
-            } -> std::same_as<typename D::NodePtr>;
+    requires requires(D d, PointPtr p) {
+        { d.Insert(p) } -> std::same_as<typename D::NodePtr>;
     };
-    requires requires(O o, PointPtr p, typename D::NodePtr n, std::vector<typename D::NodePtr> & vn)
-    {
-        {
-            o.Check(p, vn)
-            } -> std::same_as<bool>;
-        {
-            o.Check(n)
-            } -> std::same_as<bool>;
+    requires requires(O o, PointPtr p, typename D::NodePtr n,
+                      std::vector<typename D::NodePtr> &vn) {
+        { o.Check(p, vn) } -> std::same_as<bool>;
+        { o.Check(n) } -> std::same_as<bool>;
     };
 };
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 class StreamClustering : public Algorithm
 {
 public:
@@ -84,19 +73,19 @@ private:
 };
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::~StreamClustering()
 {}
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::StreamClustering(const param_t &cmd_params)
 {
     param = cmd_params;
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::Init()
 {
     w = GenericFactory::New<W>(param);
@@ -108,18 +97,18 @@ void StreamClustering<W, D, O, R>::Init()
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::Insert(PointPtr p)
 {
     d->Insert(p);
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 {
-    constexpr bool has_delete           = requires(W & w) { w.Delete(); };
-    constexpr bool has_update           = requires(W & w, NodePtr node) { w.Update(node); };
+    constexpr bool has_delete           = requires(W &w) { w.Delete(); };
+    constexpr bool has_update           = requires(W &w, NodePtr node) { w.Update(node); };
     constexpr bool buffer_enabled       = O::buffer_enabled;
     constexpr bool timer_enabled        = O::timer_enabled;
     constexpr bool no_outlier_detection = std::is_same<O, NoDetection>::value;
@@ -298,7 +287,7 @@ void StreamClustering<W, D, O, R>::RunOnline(PointPtr input)
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 {
     on_timer.Add(sum_timer.start);
@@ -312,7 +301,7 @@ void StreamClustering<W, D, O, R>::RunOffline(DataSinkPtr ptr)
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutliers(PointPtr point)
 {
     if (outliers_.empty())
@@ -344,7 +333,7 @@ StreamClustering<W, D, O, R>::NodePtr StreamClustering<W, D, O, R>::InsertOutlie
 }
 
 template <typename W, typename D, typename O, typename R>
-requires StreamClusteringConcept<W, D, O, R>
+    requires StreamClusteringConcept<W, D, O, R>
 void StreamClustering<W, D, O, R>::OutputOnline(std::vector<PointPtr> &centers)
 {
     // std::cerr << "Generic OutputOnline: " << d->clusters().size() << std::endl;

@@ -3,8 +3,8 @@
 
 #include <filesystem>
 #include <iostream>
-#include <string>
 #include <memory>
+#include <string>
 
 namespace SESAME
 {
@@ -42,9 +42,9 @@ extern char const *benne_suffix[4];
 
 enum BenneObj
 {
-    balance    = 0,
-    accuracy   = 1,
-    efficiency = 2,
+    balance               = 0,
+    accuracy              = 1,
+    efficiency            = 2,
     accuracy_no_migration = 3
 };
 
@@ -60,7 +60,7 @@ struct BenneThreshold
 struct param_t
 {
     int num_points = 500, dim = 2, num_clusters = 2;
-    int arr_rate = 0;
+    int arr_rate        = 0;
     bool time_decay     = false;
     size_t coreset_size = 100;
     int seed            = 1;
@@ -71,7 +71,7 @@ struct param_t
     AlgoType algo;
 
     int num_last_arr = 60, time_window = 6;  // also used in timer outlier detection
-    size_t time_interval = 100;
+    size_t time_interval    = 100;
     int num_online_clusters = 10;
 
     int buf_size = 500, offline_time_window = 100;
@@ -82,14 +82,14 @@ struct param_t
 
     // used in DBSCAN
     unsigned int min_points = 10;
-    double epsilon = 50;
+    double epsilon          = 50;
 
     // used in DenStream(unique)
     double base = 2, lambda = 1, mu = 7;
     double beta = 0.0021;  // Also used in DStream, but different meaning
 
     // EDMStream
-    double delta = 10;
+    double delta  = 10;
     int num_cache = 100, opt = 2;
 
     // used in DBStream
@@ -105,19 +105,19 @@ struct param_t
     bool run_eval    = true;
     bool run_cmm = false, run_pur = true, run_nmi = false;
     //    bool run_group = true;
-    int landmark = 1000;          // this is the index of landmark point[start from 0](determine
-                                  // to process the algorithm from which algorithm)
-    int sliding = 10;             // since we test the count-based sliding window, this is
-                                  // the count number
+    int landmark = 1000;  // this is the index of landmark point[start from 0](determine
+                          // to process the algorithm from which algorithm)
+    int sliding = 10;     // since we test the count-based sliding window, this is
+                          // the count number
     double outlier_distance_threshold = 1000;  // the max distance of the incoming point
-                                        // to its nearest clusters
-    double outlier_density_threshold = 100;   // the density value of the point to be
-                                        // treated as an outlier
-    double neighbor_distance = 200;           // the distance value of the point to judge
-                                        // neighborhoods
-    int outlier_cap = 5;                // transfer outlier cluster and true cluster
-    bool kmeanspp   = true;             // whether use kmeans++ to initialize the centroids
-    int k           = 2;                // number of k in kmeans / kmeanspp
+                                               // to its nearest clusters
+    double outlier_density_threshold = 100;    // the density value of the point to be
+                                               // treated as an outlier
+    double neighbor_distance = 200;            // the distance value of the point to judge
+                                               // neighborhoods
+    int outlier_cap = 5;                       // transfer outlier cluster and true cluster
+    bool kmeanspp   = true;                    // whether use kmeans++ to initialize the centroids
+    int k           = 2;                       // number of k in kmeans / kmeanspp
 
     double delta_grid = 0.2;  // The delta parameter used int the grid for guessing the optimum.
     int num_samples   = 100;  // The number of samples used in the grid for guessing
@@ -125,7 +125,7 @@ struct param_t
 
     size_t num_res = 0;
 
-    BenneObj obj = (BenneObj) 0;
+    BenneObj obj = (BenneObj)0;
     BenneThreshold benne_threshold;
 
     void Print()
@@ -178,11 +178,13 @@ struct param_t
         std::cout << "outliers_dist_threshold: " << benne_threshold.outliers_dist << std::endl;
     }
     std::string Workload() { return std::filesystem::path(input_file).stem(); }
-    std::string Name() { 
-        if (algo == BenneType) {
+    std::string Name()
+    {
+        if (algo == BenneType)
+        {
             return std::string(algo_names[algo]) + benne_suffix[obj];
         }
-        return algo_names[algo]; 
+        return algo_names[algo];
     }
 };
 
