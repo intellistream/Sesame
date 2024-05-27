@@ -53,7 +53,7 @@ if (ENABLE_TESTS)
 endif ()
 
 
-set(Boost_DEBUG 1)
+# set(Boost_DEBUG 1)
 set(BOOST_INCLUDE_LIBRARIES timer lockfree)
 set(BOOST_ENABLE_CMAKE ON)
 FetchContent_Declare(

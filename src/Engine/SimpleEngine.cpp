@@ -73,8 +73,8 @@ void SESAME::SimpleEngine::runningRoutine(DataSourcePtr sourcePtr,
 
   algoPtr->Init();
 
-  boost::timer::progress_display show_progress(algoPtr->param.num_points, std::cerr,
-                                        "Online Clustering:\n");
+  boost::timer::progress_display show_progress(
+      algoPtr->param.num_points, std::cerr, "Online Clustering:\n");
 
 #ifdef GPERF
   std::string prof = "/tmp/" + algoPtr->param.Workload() + "." +
