@@ -61,7 +61,6 @@ FetchContent_Declare(
   URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz
   URL_MD5 893b5203b862eb9bbd08553e24ff146a
   DOWNLOAD_NO_EXTRACT FALSE
-  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
   EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(Boost)
@@ -104,7 +103,7 @@ option(ENABLE_PYTHON "Enable Python bindings" OFF)
 message(STATUS "Enable Python bindings: ${ENABLE_PYTHON}")
 if (ENABLE_PYTHON)
     add_subdirectory(third_party/pybind11)
-    pybind11_add_module(pysame python/src/Birch.cpp)
+    pybind11_add_module(pysame python/src/Pysame.cpp)
     target_include_directories(pysame PRIVATE "include")
     target_link_libraries(pysame PUBLIC sesame)
     set_target_properties(pysame PROPERTIES 

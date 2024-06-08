@@ -1,3 +1,6 @@
+#ifndef SESAME_PYTHON_INCLUDE_BENNE_HPP_
+#define SESAME_PYTHON_INCLUDE_BENNE_HPP_
+
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
@@ -6,18 +9,19 @@
 #include "Algorithm/DataStructure/GenericFactory.hpp"
 
 #include <iostream>
+#include <vector>
 
 using namespace pybind11::literals;
 using namespace SESAME;
 using namespace std;
 namespace py = pybind11;
 
-class Birch {
+class Benne {
 public:
-  Birch(double threshold, int branching_factor, int n_clusters, int dim)
+  Benne(double threshold, int branching_factor, int n_clusters, int dim)
       : threshold(threshold), branching_factor(branching_factor),
         n_clusters(n_clusters), dim(dim) {
-    param.algo = AlgoType::BirchType;
+    param.algo = AlgoType::BenneType;
     param.distance_threshold = threshold;
     param.landmark = 10;
     param.max_in_nodes = branching_factor;
@@ -64,10 +68,7 @@ public:
     auto num_vectors = num_elements / dim;
     for (int i = 0; i < num_vectors; i++) {
       SESAME::PointPtr point =
-          std::make_shared<SESAME::Point>(dim, id++, 1.0, 0.0, 0);
-      for (int j = 0; j < dim; j++) {
-        point->data()[j] = ptr[i * dim + j];
-      }
+          std::make_shared<SESAME::Point>(dim, id++, ptr + i * dim);
       inputs.push_back(point);
       algo->RunOnline(point);
     }
@@ -96,7 +97,30 @@ public:
   }
 
   py::array_t<int> predict(py::array_t<double> X) {
-    throw std::runtime_error("Not supported");
+    py::buffer_info buf = X.request();
+
+    if (buf.ndim != 2)
+      throw std::runtime_error("numpy.ndarray dims must be 2!");
+
+    double *ptr = static_cast<double *>(buf.ptr);
+
+    vector<PointPtr> inputs;
+
+    auto num_elements = buf.shape[0] * buf.shape[1];
+    auto num_vectors = num_elements / dim;
+    for (int i = 0; i < num_vectors; i++) {
+      SESAME::PointPtr point =
+          std::make_shared<SESAME::Point>(dim, id++, ptr + i * dim);
+      inputs.push_back(point);
+    }
+    algo->RunOffline(sinkPtr);
+    std::vector<PointPtr> &results = sinkPtr->getResults(), predicts;
+    UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
+    std::vector<int> labels;
+    for (auto &point : predicts) {
+      labels.push_back(point->clu_id);
+    }
+    return py::array_t<int>(labels.size(), labels.data());
   }
 
   void set_output(bool output) { throw std::runtime_error("Not supported"); }
@@ -118,16 +142,4 @@ private:
   DataSinkPtr sinkPtr;
 };
 
-PYBIND11_MODULE(pysame, m) {
-  py::class_<Birch>(m, "Birch")
-      .def(py::init<double, int, int, int>(), py::arg("threshold") = 0.5,
-           py::arg("branching_factor") = 50, py::arg("n_clusters") = 3,
-           py::arg("dim") = 2)
-      .def("fit", &Birch::fit)
-      .def("fit_predict", &Birch::fit_predict)
-      .def("get_params", &Birch::get_params)
-      .def("partial_fit", &Birch::partial_fit)
-      .def("predict", &Birch::predict)
-      .def("set_output", &Birch::set_output)
-      .def("set_params", &Birch::set_params);
-}
+#endif // SESAME_PYTHON_INCLUDE_BENNE_HPP_
