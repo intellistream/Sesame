@@ -19,9 +19,9 @@ struct Point;
 typedef std::shared_ptr<Point> PointPtr;
 
 struct Point {
-  uint64 index;    // 1,2,3,4,5....
-  fp64 weight = 1; // considering the outdated effect
-  fp64 cost;
+  uint64 index;      // 1,2,3,4,5....
+  fp64 weight = 1.0; // considering the outdated effect
+  fp64 cost = 0.0;
   fp64 min_dist;
   fp64 knn = 0.0, conn = 1.0;
   bool outlier = false;
@@ -31,8 +31,7 @@ struct Point {
   clock_t toa;       // time of arrival
   uint64 timestamp;  // the time stamp of the data point
   std::vector<feature_t> feature;
-  Point(int dim, int index = -1, double weight = 1.0, double cost = 0.0,
-        int timestamp = 0);
+  Point(uint32 dim = 0, uint64 index = 0, feature_t *feature = nullptr);
   fp64 *data() { return feature.data(); }
   PointPtr copy();
   int getIndex() const;

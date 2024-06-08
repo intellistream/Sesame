@@ -34,7 +34,7 @@ void SESAME::V16::OutputOnline(std::vector<PointPtr> &output) {
     output.push_back(point);
   }
   for (auto iter = 0; iter != this->clusterList.size(); iter++) {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+    PointPtr point = GenericFactory::New<Point>(param.dim, iter);
     auto count = 0;
     for (auto &iterGrid : this->clusterList.at(iter).grids) {
       for (int iterDim = 0; iterDim < param.dim; iterDim++) {
@@ -98,7 +98,7 @@ void SESAME::V16::RunOffline(DataSinkPtr sinkPtr) {
     sinkPtr->put(point);
   }
   for (auto iter = 0; iter != this->clusterList.size(); iter++) {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+    PointPtr point = GenericFactory::New<Point>(param.dim, iter);
     auto count = 0;
     for (auto &iterGrid : this->clusterList.at(iter).grids) {
       for (int iterDim = 0; iterDim < param.dim; iterDim++) {

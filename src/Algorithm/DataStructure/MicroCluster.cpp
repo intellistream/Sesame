@@ -255,7 +255,7 @@ SESAME::dataPoint SESAME::MicroCluster::getCentroid() {
 
 // calculate centroid of a cluster
 SESAME::PointPtr SESAME::MicroCluster::getCenter() {
-  PointPtr center = DataStructureFactory::createPoint(dim);
+  PointPtr center = GenericFactory::New<Point>(dim);
   for (int i = 0; i < centroid.size(); i++)
     center->setFeatureItem(LS[i] / weight, i);
   return center;

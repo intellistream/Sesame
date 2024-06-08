@@ -123,8 +123,8 @@ std::vector<SESAME::PointPtr> SESAME::ConnectedRegions::ResultsToDataSink() {
   std::vector<SESAME::PointPtr> points;
   for (auto iter = 0; iter != finalClusters.size();
        iter++) { // initialize pseudo point of macro clusters
-    PointPtr point = DataStructureFactory::createPoint(
-        iter, 0, finalClusters.at(iter).front()->dim, 0);
+    PointPtr point =
+        GenericFactory::New<Point>(finalClusters.at(iter).front()->dim, iter);
     // This is just for testing, need to delete
     std::vector<double> centroid(finalClusters.at(iter).front()->dim, 0);
     // TODO maybe wrong ;so dizzy

@@ -51,8 +51,8 @@ void SESAME::DataSource::load() {
   const int timeStep = 100000;
   for (int i = 0; i < param.num_points; i++) {
     int timeStamp = timeStep * i + rand() % timeStep;
-    PointPtr point = DataStructureFactory::createPoint(
-        i, DEFAULT_WEIGHT, param.dim, DEFAULT_COST, timeStamp);
+    PointPtr point = GenericFactory::New<Point>(param.dim, i);
+    point->timestamp = timeStamp;
     auto charData = data[i].data();
     // use c_str() to convert string to char * but it's just a temp pointer we
     // have to use strcpy to store it

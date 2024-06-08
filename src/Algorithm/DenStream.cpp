@@ -251,9 +251,9 @@ void SESAME::DenStream::microClusterToPoint(
     std::vector<MicroClusterPtr> &microClusters, vector<PointPtr> &points) {
   for (std::vector<MicroClusterPtr>::size_type i = 0; i < microClusters.size();
        i++) {
-    PointPtr point = DataStructureFactory::createPoint(
-        i, microClusters.at(i)->weight, microClusters.at(i)->centroid.size(),
-        0);
+    PointPtr point =
+        GenericFactory::New<Point>(microClusters.at(i)->centroid.size(), i);
+    point->weight = microClusters.at(i)->weight;
     for (int j = 0; j < microClusters.at(i)->centroid.size(); j++)
       point->setFeatureItem(microClusters[i]->centroid[j], j);
     points.push_back(point);

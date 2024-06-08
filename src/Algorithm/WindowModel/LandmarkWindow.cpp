@@ -24,8 +24,8 @@ void SESAME::LandmarkWindow::initWindow(int num) {
     vector<PointPtr> p_list;
     vector<PointPtr> s_list;
     for (int j = 0; j < num; j++) {
-      p_list.push_back(DataStructureFactory::createPoint(0, 0, 0, 0, 0));
-      s_list.push_back(DataStructureFactory::createPoint(0, 0, 0, 0, 0));
+      p_list.push_back(GenericFactory::New<Point>());
+      s_list.push_back(GenericFactory::New<Point>());
     }
     blankWindow.points = p_list;
     blankWindow.spillover = s_list;

@@ -193,8 +193,9 @@ void SESAME::CluStream::microClusterToPoint(
     std::vector<MicroClusterPtr> &microClusters,
     vector<PointPtr> &points) const {
   for (int i = 0; i < this->CluStreamParam.num_clusters; i++) {
-    PointPtr point = DataStructureFactory::createPoint(
-        i, microClusters[i]->weight, microClusters[i]->centroid.size(), 0);
+    PointPtr point =
+        GenericFactory::New<Point>(microClusters[i]->centroid.size(), i);
+    point->weight = microClusters[i]->weight;
     for (SESAME::dataPoint::size_type j = 0;
          j < microClusters[i]->centroid.size(); j++)
       point->setFeatureItem(microClusters[i]->centroid[j], j);

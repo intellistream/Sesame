@@ -27,12 +27,6 @@ namespace SESAME {
 
 class DataStructureFactory {
 public:
-  static PointPtr createPoint(int dim);
-  static PointPtr createPoint(int index, double weight, int dim, double cost,
-                              int timestamp);
-  static PointPtr createPoint(int index, double weight, int dim, double cost);
-  static void clearPoint(PointPtr point);
-
   static TreeNodePtr createTreeNode();
   static void clearTreeNode(TreeNodePtr treeNode);
   static MicroClusterPtr createMicroCluster(int dim, int id);

@@ -25,8 +25,7 @@ void SESAME::Birch::RunOffline(DataSinkPtr sinkPtr) {
   on_timer.Add(sum_timer.start);
   ref_timer.Tick();
   for (int i = 0; i < this->leafNodes.size(); i++) {
-    PointPtr centroid =
-        DataStructureFactory::createPoint(i, 1, BirchParam.dim, 0);
+    PointPtr centroid = GenericFactory::New<Point>(BirchParam.dim, i);
     for (int j = 0; j < BirchParam.dim; j++) {
       centroid->setFeatureItem(this->leafNodes[i]->getCF()->getLS().at(j) /
                                    this->leafNodes[i]->getCF()->getN(),

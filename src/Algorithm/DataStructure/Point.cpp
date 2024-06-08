@@ -9,18 +9,16 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstring>
 #include <immintrin.h>
 
 namespace SESAME {
 
-Point::Point(int dim, int index, double weight, double cost, int timestamp)
-    : feature((dim + 3) / 4 * 4, 0.0) {
-  this->index = index;
-  this->weight = weight;
-  this->dim = dim;
-  this->cost = cost;
-  this->clu_id = -1;
-  this->outlier = false;
+Point::Point(uint32 dim, uint64 index, feature_t *feature)
+    : dim(dim), index(index), feature((dim + 3) / 4 * 4, 0.0) {
+  if (feature != nullptr) {
+    memcpy(this->feature.data(), feature, dim * sizeof(feature_t));
+  }
 }
 
 int Point::getIndex() const { return this->index; }

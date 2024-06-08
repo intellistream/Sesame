@@ -14,28 +14,6 @@ void SESAME::DataStructureFactory::clearTreeNode(SESAME::TreeNodePtr treeNode) {
   treeNode.reset();
 }
 
-SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int dim) {
-  return std::make_shared<Point>(dim);
-}
-
-SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index,
-                                                           double weight,
-                                                           int dim,
-                                                           double cost) {
-  return std::make_shared<Point>(dim, index, weight, cost);
-}
-
-SESAME::PointPtr SESAME::DataStructureFactory::createPoint(int index,
-                                                           double weight,
-                                                           int dim, double cost,
-                                                           int timestamp) {
-  return std::make_shared<Point>(dim, index, weight, cost, timestamp);
-}
-
-void SESAME::DataStructureFactory::clearPoint(SESAME::PointPtr point) {
-  point.reset();
-}
-
 SESAME::MicroClusterPtr
 SESAME::DataStructureFactory::createMicroCluster(int dim, int id) {
   return std::make_shared<SESAME::MicroCluster>(dim, id);

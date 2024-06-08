@@ -340,19 +340,15 @@ SESAME::LandmarkWindow::CoresetTree::chooseCentre(TreeNodePtr node) {
 
   // stores the nodecost if node is split with the best centre
   double minCost = node->cost;
-  PointPtr bestCentre = DataStructureFactory::createPoint(param.dim);
+  PointPtr bestCentre = GenericFactory::New<Point>(param.dim);
 
-  // loop counter variable
-  int i;
-  int j;
-
-  for (j = 0; j < times; j++) {
+  for (int j = 0; j < times; j++) {
     // sum of the relativ cost of the points
     double sum = 0.0;
     // random number between 0 and 1
     double random = UtilityFunctions::genrand_real3();
 
-    for (i = 0; i < node->n; i++) {
+    for (int i = 0; i < node->n; i++) {
       sum += treeNodeCostOfPoint(node, node->points[i]) / node->cost;
       if (sum >= random) {
         if (node->points[i]->getWeight() == 0.0) {

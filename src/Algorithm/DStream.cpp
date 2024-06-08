@@ -62,7 +62,7 @@ void SESAME::DStream::RunOffline(DataSinkPtr sinkPtr) {
   // SESAME_INFO(" cluster list size "<<clusterList.size());
   int cluID = 0;
   for (auto iter = 0; iter != this->clusterList.size(); iter++) {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+    PointPtr point = GenericFactory::New<Point>(param.dim, iter);
     auto count = 0;
     for (auto &iterGrid : this->clusterList.at(iter).grids) {
       for (int iterDim = 0; iterDim < param.dim; iterDim++) {

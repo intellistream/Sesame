@@ -46,7 +46,7 @@ void SESAME::V9::RunOnline(PointPtr input) {
   if (input->getIndex() != 0 and input->getIndex() % param.landmark == 0) {
     lastLandmark = input->getIndex();
     for (auto iter = 0; iter != this->clusterList.size(); iter++) {
-      PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+      PointPtr point = GenericFactory::New<Point>(param.dim, iter);
       auto count = 0;
       for (auto &iterGrid : this->clusterList.at(iter).grids) {
         for (int iterDim = 0; iterDim < param.dim; iterDim++) {
@@ -102,7 +102,7 @@ void SESAME::V9::RunOffline(DataSinkPtr sinkPtr) {
     sinkPtr->put(point);
   }
   for (auto iter = 0; iter != this->clusterList.size(); iter++) {
-    PointPtr point = DataStructureFactory::createPoint(iter, 0, param.dim, 0);
+    PointPtr point = GenericFactory::New<Point>(param.dim, iter);
     auto count = 0;
     for (auto &iterGrid : this->clusterList.at(iter).grids) {
       for (int iterDim = 0; iterDim < param.dim; iterDim++) {
