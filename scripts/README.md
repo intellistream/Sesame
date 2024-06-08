@@ -71,11 +71,3 @@ beta = 0.2, epsilon = 16, mu = 10, lambda = 0.25, base = 2 (fixed), buf_sizeSize
 
 **G9:**  同DStream, 新加landmark范围: 1000 / 2000 / 4000 / 8000 / 16000 / 32000 / 50000 / 100000, cm范围全部修改成[20, 10, 100], cl范围修改成[2,2,10]
 
-
-
-#### Potential Problem
-
-1. G1的k在每个数据集上直接设置成10000
-2. G9的purity出现0和Null
-3. G8在KDD，sensor和Insects上的purity能不能调的更高一点？要都比birch高
-4. G4为啥FCT上0

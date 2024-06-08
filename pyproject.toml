@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "pybind11>=2.12.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysame"
+version = "0.1.0"
+authors = [{ name = "Zhengru Wang", email = "wangshaun@outlook.com" }]
+description = "Stream clustering algorithms on modern hardware"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/intellistream/Sesame"
+Issues = "https://github.com/intellistream/Sesame/issues"

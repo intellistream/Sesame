@@ -1,4 +1,5 @@
-// Copyright (C) 2021 by the IntelliStream team (https://github.com/intellistream)
+// Copyright (C) 2021 by the IntelliStream team
+// (https://github.com/intellistream)
 
 //
 // Created by Shuhao Zhang on 15/8/2021.
@@ -9,13 +10,11 @@
 
 #include <Sources/DataSource.hpp>
 
-namespace SESAME
-{
-class DataSourceFactory
-{
+namespace SESAME {
+class DataSourceFactory {
 public:
-    static SESAME::DataSourcePtr create();
+  static SESAME::DataSourcePtr create();
 };
-}  // namespace SESAME
+} // namespace SESAME
 
-#endif  // SESAME_DATASOURCEFACTORY_H
+#endif // SESAME_DATASOURCEFACTORY_H

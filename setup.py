@@ -1,142 +1,145 @@
 import os
-import distutils.ccompiler
-import distutils.sysconfig
-import setuptools
-import shlex
+import re
 import subprocess
-from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
-from distutils.errors import CompileError, LinkError
 import sys
+from pathlib import Path
 
-__version__ = '0.0.1'
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
+from pybind11.setup_helpers import Pybind11Extension
 
-# list of all sources files
-sources = [
-    "src/Timer/TimeMeter.cpp",
-    "src/Utils/BenchmarkUtils.cpp",
-    "src/Utils/UtilityFunctions.cpp",
-    "src/Evaluation/Euclidean.cpp",
-    "src/Evaluation/NMI.cpp",
-    "src/Evaluation/CMM.cpp",
-    "src/Evaluation/Purity.cpp",
-    "src/Evaluation/Evaluation.cpp",
-    "src/Sinks/DataSink.cpp",
-    "src/Sources/DataSource.cpp",
-    "src/Engine/Engine.cpp",
-    "src/Engine/SimpleEngine.cpp",
-    "src/Engine/SingleThread.cpp",
-    "src/APIs/APIs.cpp",
-    "src/Algorithm/DesignAspect/V9.cpp",
-    "src/Algorithm/DesignAspect/V10.cpp",
-    "src/Algorithm/DesignAspect/V16.cpp",
-    "src/Algorithm/Benne.cpp",
-    "src/Algorithm/WindowModel/LandmarkWindow.cpp",
-    "src/Algorithm/WindowModel/DampedWindow.cpp",
-    "src/Algorithm/WindowModel/WindowModel.cpp",
-    "src/Algorithm/WindowModel/WindowFactory.cpp",
-    "src/Algorithm/OfflineRefinement/OfflineRefinement.cpp",
-    "src/Algorithm/OfflineRefinement/KMeans.cpp",
-    "src/Algorithm/OfflineRefinement/DBSCAN.cpp",
-    "src/Algorithm/OfflineRefinement/ConnectedRegions.cpp",
-    "src/Algorithm/DataStructure/Point.cpp",
-    "src/Algorithm/DataStructure/TreeNode.cpp",
-    "src/Algorithm/DataStructure/CoresetTree.cpp",
-    "src/Algorithm/DataStructure/MicroCluster.cpp",
-    "src/Algorithm/DataStructure/Snapshot.cpp",
-    "src/Algorithm/DataStructure/WeightedAdjacencyList.cpp",
-    "src/Algorithm/DataStructure/DataStructureFactory.cpp",
-    "src/Algorithm/DataStructure/CFTree.cpp",
-    "src/Algorithm/DataStructure/DPTree.cpp",
-    "src/Algorithm/DataStructure/DPNode.cpp",
-    "src/Algorithm/DataStructure/Cache.cpp",
-    "src/Algorithm/DataStructure/OutlierResevoir.cpp",
-    "src/Algorithm/DataStructure/FeatureVector.cpp",
-    "src/Algorithm/DataStructure/CharacteristicsVector.cpp",
-    "src/Algorithm/DataStructure/DensityGrid.cpp",
-    "src/Algorithm/DataStructure/GridCluster.cpp",
-    "src/Algorithm/DataStructure/MeyersonSketch.cpp",
-    "src/Algorithm/StreamKM.cpp",
-    "src/Algorithm/CluStream.cpp",
-    "src/Algorithm/Birch.cpp",
-    "src/Algorithm/DenStream.cpp",
-    "src/Algorithm/EDMStream.cpp",
-    "src/Algorithm/DBStream.cpp",
-    "src/Algorithm/DStream.cpp",
-    "src/Algorithm/SlidingWindowClustering.cpp",
-    "src/Algorithm/Algorithm.cpp",
-    "src/Algorithm/AlgorithmFactory.cpp",
-    "benchmark/src/Benchmark.cpp",
-    "python/src/bindings.cpp"
-]
+__version__ = "0.1.0"
 
-# list of all include directories
-include_dirs = [
-    "src",
-    "include"
-]
+# Convert distutils Windows platform specifiers to CMake -A arguments
+PLAT_TO_CMAKE = {
+    "win32": "Win32",
+    "win-amd64": "x64",
+    "win-arm32": "ARM",
+    "win-arm64": "ARM64",
+}
 
-os.environ["CC"] = "g++"
-os.environ["CXX"] = "g++"
+# get cpu cores
+os.environ["CMAKE_BUILD_PARALLEL_LEVEL"] = str(os.cpu_count() // 2 + 1)
 
-extension = Extension(
-    "benne",
-    sources=sources,
-    include_dirs=include_dirs,
-    library_dirs=['/usr/lib/x86_64-linux-gnu/'],
-    language="c++",
-    extra_compile_args=[
-        "-std=c++20",
-        "-Wall",
-        "-Werror=return-type",
-        "-fconcepts-diagnostics-depth=2",
-        "-fopenmp",
-        "-march=native",
-        "-Wno-ignored-qualifiers",
-        "-Wno-sign-compare",
-        "-O3",
-        "-DNDEBUG",
-        "-fPIC",
-        "-rdynamic"
-    ],
-    extra_link_args=['-fopenmp'],  # explicitly link libomp
-    libraries=['gflags', 'gomp', '/usr/lib/x86_64-linux-gnu/libgomp.so.1'],  # Use 'gomp' and 'omp'
-)
 
-class CustomBuildExtCommand(build_ext):
-    """A custom build extension for adding compiler-specific options."""
-    c_opts = {
-        'msvc': ['/EHsc'],
-        'unix': [],
-    }
+# A CMakeExtension needs a sourcedir instead of a file list.
+# The name must be the _single_ output extension from the CMake build.
+# If you need multiple extensions, see scikit-build.
+class CMakeExtension(Extension):
+    def __init__(self, name: str, sourcedir: str = "") -> None:
+        super().__init__(name, sources=[])
+        self.sourcedir = os.fspath(Path(sourcedir).resolve())
 
-    if sys.platform == 'darwin':
-        c_opts['unix'] += ['-stdlib=libc++', '-mmacosx-version-min=10.7', '-lomp']
 
-    def build_extensions(self):
-        ct = self.compiler.compiler_type
-        opts = self.c_opts.get(ct, [])
-        if ct == 'unix':
-            opts.append('-DVERSION_INFO="%s"' % self.distribution.get_version())
-            opts.append('-fopenmp')
-            opts.append('-std=c++20')
-            opts.append('-march=native')
-            # get output of python3 -m pybind11 --includes
-            # and split it into a list of include directories
-            opts.extend(shlex.split(
-                subprocess.getoutput('python3 -m pybind11 --includes')))
-        for ext in self.extensions:
-            ext.extra_compile_args = opts
-        build_ext.build_extensions(self)
+class CMakeBuild(build_ext):
+    def build_extension(self, ext: CMakeExtension) -> None:
+        # Must be in this form due to bug in .resolve() only fixed in Python 3.10+
+        ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
+        extdir = ext_fullpath.parent.resolve()
+
+        # Using this requires trailing slash for auto-detection & inclusion of
+        # auxiliary "native" libs
+
+        debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
+        cfg = "Debug" if debug else "Release"
+
+        # CMake lets you override the generator - we need to check this.
+        # Can be set with Conda-Build, for example.
+        cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+
+        # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
+        # SESAME_VERSION_INFO shows you how to pass a value into the C++ code
+        # from Python.
+        cmake_args = [
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
+            f"-DENABLE_PYTHON=ON",
+        ]
+        build_args = []
+        # Adding CMake arguments set as environment variable
+        # (needed e.g. to build for ARM OSx on conda-forge)
+        if "CMAKE_ARGS" in os.environ:
+            cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
+
+        # In this example, we pass in the version to C++. You might not need to.
+        cmake_args += [f"-DSESAME_VERSION_INFO={self.distribution.get_version()}"]
+
+        if self.compiler.compiler_type != "msvc":
+            # Using Ninja-build since it a) is available as a wheel and b)
+            # multithreads automatically. MSVC would require all variables be
+            # exported for Ninja to pick it up, which is a little tricky to do.
+            # Users can override the generator with CMAKE_GENERATOR in CMake
+            # 3.15+.
+            if not cmake_generator or cmake_generator == "Ninja":
+                try:
+                    import ninja
+
+                    ninja_executable_path = Path(ninja.BIN_DIR) / "ninja"
+                    cmake_args += [
+                        "-GNinja",
+                        f"-DCMAKE_MAKE_PROGRAM:FILEPATH={ninja_executable_path}",
+                    ]
+                except ImportError:
+                    pass
+
+        else:
+            # Single config generators are handled "normally"
+            single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
+
+            # CMake allows an arch-in-generator style for backward compatibility
+            contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
+
+            # Specify the arch if using MSVC generator, but only if it doesn't
+            # contain a backward-compatibility arch spec already in the
+            # generator name.
+            if not single_config and not contains_arch:
+                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+
+            # Multi-config generators have a different way to specify configs
+            if not single_config:
+                cmake_args += [
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                ]
+                build_args += ["--config", cfg]
+
+        if sys.platform.startswith("darwin"):
+            # Cross-compile support for macOS - respect ARCHFLAGS if set
+            archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+            if archs:
+                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
+
+        # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
+        # across all generators.
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
+            # self.parallel is a Python 3 only way to set parallel jobs by hand
+            # using -j in the build_ext call, not supported by pip or PyPA-build.
+            if hasattr(self, "parallel") and self.parallel:
+                # CMake 3.12+ only.
+                build_args += [f"-j{self.parallel}"]
+
+        build_temp = Path(self.build_temp) / ext.name
+        if not build_temp.exists():
+            build_temp.mkdir(parents=True)
+
+        subprocess.run(
+            ["cmake", ext.sourcedir, *cmake_args], cwd=build_temp, check=True
+        )
+        subprocess.run(
+            ["cmake", "--build", ".", *build_args], cwd=build_temp, check=True
+        )
+
 
 setup(
-    name='benne',
+    name="pysame",
     version=__version__,
-    author='Shuhao',
-    url='https://github.com/intellistream/Sesame',
-    description='Benne using pybind11',
-    long_description='This project aims at building a scalable stream mining library on modern hardware. The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.',
-    ext_modules=[extension],
-    cmdclass={'build_ext': CustomBuildExtCommand},
+    author="Shuhao Zhang",
+    url="https://github.com/intellistream/Sesame",
+    description="Stream clustering algorithms on modern hardware",
+    long_description="This project aims at building a scalable stream mining library on modern hardware. The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.",
+    ext_modules=[CMakeExtension("pysame")],
+    cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    python_requires=">=3.7",
+    include_package_data=False,
 )

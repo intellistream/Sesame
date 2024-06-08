@@ -11,6 +11,8 @@
 *.iml
 .DS_Store
 /practice/Clustream/cmake-build-debug/
+*.pyc
+*.tmp
 
 /cmake-build-debug/*
 /cmake-build-release/*
@@ -35,4 +37,6 @@ test/datasets/
 
 *.egg-info/
 *.out
-results.txt
+*.txt
+*.whl
+/dist/

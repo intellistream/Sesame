@@ -57,7 +57,9 @@ DEFINE_int32(num_last_arr, 2, "Number of last arrive");
 DEFINE_int32(time_window, 50, "Time window");
 DEFINE_int32(num_online_clusters, 80, "Number of online clusters");
 // SL-KMeans
-DEFINE_double(delta_grid, 0.2, "The delta parameter used int the grid for guessing the optimum.");
+DEFINE_double(
+    delta_grid, 0.2,
+    "The delta parameter used int the grid for guessing the optimum.");
 DEFINE_int32(num_samples, 10, "Number of samples");
 // Generic
 DEFINE_int32(landmark, 10000, "Landmark");
@@ -78,75 +80,75 @@ DEFINE_int32(queue_size_threshold, 10000, "Benne queue size threshold");
 DEFINE_int32(dim_threshold, 30, "Benne dimension threshold");
 DEFINE_double(variance_threshold, 100.0, "Benne variance threshold");
 DEFINE_int32(outliers_num_threshold, 200, "Benne outliers threshold");
-DEFINE_double(outliers_dist_threshold, 50.0, "Benne outliers distance threshold");
+DEFINE_double(outliers_dist_threshold, 50.0,
+              "Benne outliers distance threshold");
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 #ifndef NDEBUG
-    std::cerr << "\033[1;31m#####################################################"
-                 "#######\n"
-              << "#                                                          #\n"
-              << "#           DON'T run benchmark in debug mode.             #\n"
-              << "#                                                          #\n"
-              << "############################################################"
-                 "\033[0m\n";
-    sleep(1);
+  std::cerr << "\033[1;31m#####################################################"
+               "#######\n"
+            << "#                                                          #\n"
+            << "#           DON'T run benchmark in debug mode.             #\n"
+            << "#                                                          #\n"
+            << "############################################################"
+               "\033[0m\n";
+  sleep(1);
 #endif
-    // Parse parameters.
-    gflags::ParseCommandLineFlags(&argc, &argv, true);
-    param_t param;
-    param.algo = (AlgoType)FLAGS_algo;
-    param.algo                          = (AlgoType)FLAGS_algo;
-    param.input_file                    = FLAGS_input_file;
-    param.num_points                    = FLAGS_num_points;
-    param.dim                           = FLAGS_dim;
-    param.num_clusters                  = FLAGS_num_clusters;
-    param.max_in_nodes                  = FLAGS_max_in_nodes;
-    param.max_leaf_nodes                = FLAGS_max_leaf_nodes;
-    param.distance_threshold            = FLAGS_distance_threshold;
-    param.seed                          = FLAGS_seed;
-    param.coreset_size                  = FLAGS_coreset_size;
-    param.radius                        = FLAGS_radius;
-    param.delta                         = FLAGS_delta;
-    param.beta                          = FLAGS_beta;
-    param.buf_size                      = FLAGS_buf_size;
-    param.alpha                         = FLAGS_alpha;
-    param.lambda                        = FLAGS_lambda;
-    param.clean_interval                = FLAGS_clean_interval;
-    param.min_weight                    = FLAGS_min_weight;
-    param.base                          = FLAGS_base;
-    param.cm                            = FLAGS_cm;
-    param.cl                            = FLAGS_cl;
-    param.grid_width                    = FLAGS_grid_width;
-    param.min_points                    = FLAGS_min_points;
-    param.epsilon                       = FLAGS_epsilon;
-    param.mu                            = FLAGS_mu;
-    param.num_last_arr                  = FLAGS_num_last_arr;
-    param.time_window                   = FLAGS_time_window;
-    param.num_online_clusters           = FLAGS_num_online_clusters;
-    param.delta_grid                    = FLAGS_delta_grid;
-    param.num_samples                   = FLAGS_num_samples;
-    param.landmark                      = FLAGS_landmark;
-    param.sliding                       = FLAGS_sliding;
-    param.outlier_distance_threshold    = FLAGS_outlier_distance_threshold;
-    param.outlier_cap                   = FLAGS_outlier_cap;
-    param.outlier_density_threshold     = FLAGS_outlier_density_threshold;
-    param.neighbor_distance             = FLAGS_neighbor_distance;
-    param.k                             = FLAGS_k;
-    param.arr_rate                      = FLAGS_arr_rate;
-    param.run_offline                   = FLAGS_run_offline;
-    param.run_eval                      = FLAGS_run_eval;
-    param.run_cmm                       = FLAGS_run_cmm;
-    param.run_pur                       = FLAGS_run_pur;
-    param.obj                           = (BenneObj)FLAGS_obj;
-    param.benne_threshold.dim           = FLAGS_dim_threshold;
-    param.benne_threshold.queue_size    = FLAGS_queue_size_threshold;
-    param.benne_threshold.variance      = FLAGS_variance_threshold;
-    param.benne_threshold.outliers_num  = FLAGS_outliers_num_threshold;
-    param.benne_threshold.outliers_dist = FLAGS_outliers_dist_threshold;
+  // Parse parameters.
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+  param_t param;
+  param.algo = (AlgoType)FLAGS_algo;
+  param.algo = (AlgoType)FLAGS_algo;
+  param.input_file = FLAGS_input_file;
+  param.num_points = FLAGS_num_points;
+  param.dim = FLAGS_dim;
+  param.num_clusters = FLAGS_num_clusters;
+  param.max_in_nodes = FLAGS_max_in_nodes;
+  param.max_leaf_nodes = FLAGS_max_leaf_nodes;
+  param.distance_threshold = FLAGS_distance_threshold;
+  param.seed = FLAGS_seed;
+  param.coreset_size = FLAGS_coreset_size;
+  param.radius = FLAGS_radius;
+  param.delta = FLAGS_delta;
+  param.beta = FLAGS_beta;
+  param.buf_size = FLAGS_buf_size;
+  param.alpha = FLAGS_alpha;
+  param.lambda = FLAGS_lambda;
+  param.clean_interval = FLAGS_clean_interval;
+  param.min_weight = FLAGS_min_weight;
+  param.base = FLAGS_base;
+  param.cm = FLAGS_cm;
+  param.cl = FLAGS_cl;
+  param.grid_width = FLAGS_grid_width;
+  param.min_points = FLAGS_min_points;
+  param.epsilon = FLAGS_epsilon;
+  param.mu = FLAGS_mu;
+  param.num_last_arr = FLAGS_num_last_arr;
+  param.time_window = FLAGS_time_window;
+  param.num_online_clusters = FLAGS_num_online_clusters;
+  param.delta_grid = FLAGS_delta_grid;
+  param.num_samples = FLAGS_num_samples;
+  param.landmark = FLAGS_landmark;
+  param.sliding = FLAGS_sliding;
+  param.outlier_distance_threshold = FLAGS_outlier_distance_threshold;
+  param.outlier_cap = FLAGS_outlier_cap;
+  param.outlier_density_threshold = FLAGS_outlier_density_threshold;
+  param.neighbor_distance = FLAGS_neighbor_distance;
+  param.k = FLAGS_k;
+  param.arr_rate = FLAGS_arr_rate;
+  param.run_offline = FLAGS_run_offline;
+  param.run_eval = FLAGS_run_eval;
+  param.run_cmm = FLAGS_run_cmm;
+  param.run_pur = FLAGS_run_pur;
+  param.obj = (BenneObj)FLAGS_obj;
+  param.benne_threshold.dim = FLAGS_dim_threshold;
+  param.benne_threshold.queue_size = FLAGS_queue_size_threshold;
+  param.benne_threshold.variance = FLAGS_variance_threshold;
+  param.benne_threshold.outliers_num = FLAGS_outliers_num_threshold;
+  param.benne_threshold.outliers_dist = FLAGS_outliers_dist_threshold;
 
-    param.fast_source = true;
-    param.store       = false;
+  param.fast_source = true;
+  param.store = false;
 
-    RunBenchmark(param);
+  RunBenchmark(param);
 }
