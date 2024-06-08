@@ -117,11 +117,10 @@ void SESAME::DataSource::runningRoutine() {
     }
   } else {
     for (PointPtr &p : this->input) {
-      int timestamp = p->getTimeStamp();
       auto now = high_resolution_clock::now();
-      if (timestamp > duration_cast<nanoseconds>(now - start).count()) {
+      if (p->timestamp > duration_cast<nanoseconds>(now - start).count()) {
         std::this_thread::sleep_for(nanoseconds(
-            timestamp - duration_cast<nanoseconds>(now - start).count()));
+            p->timestamp - duration_cast<nanoseconds>(now - start).count()));
       }
       // Wait until (currentTime - startTime) >= timestamp to push point
       p->toa = std::chrono::high_resolution_clock::now();

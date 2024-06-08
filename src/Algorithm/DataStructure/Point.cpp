@@ -20,7 +20,6 @@ Point::Point(int dim, int index, double weight, double cost, int timestamp)
   this->dim = dim;
   this->cost = cost;
   this->clu_id = -1;
-  this->timestamp = timestamp;
   this->outlier = false;
 }
 
@@ -41,14 +40,6 @@ void Point::setFeatureItem(double feature, int index) {
 int Point::getClusteringCenter() const { return this->clu_id; }
 
 void Point::setClusteringCenter(int index) { this->clu_id = index; }
-
-void Point::setCost(double c) { this->cost = c; }
-
-double Point::getCost() const { return this->cost; }
-
-void Point::setTimeStamp(int t) { this->timestamp = t; }
-
-int Point::getTimeStamp() const { return this->timestamp; }
 
 /**
  * @param source
