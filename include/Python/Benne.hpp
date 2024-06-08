@@ -18,42 +18,43 @@ namespace py = pybind11;
 
 class Benne {
 public:
-  Benne(double threshold, int branching_factor, int n_clusters, int dim)
-      : threshold(threshold), branching_factor(branching_factor),
-        n_clusters(n_clusters), dim(dim) {
+  Benne(int dim, int n_clusters, double threshold, int queue_size_threshold,
+        int dim_threshold, double variance_threshold,
+        int outliers_num_threshold, double outliers_dist_threshold)
+      : dim(dim), n_clusters(n_clusters), distance_threshold(threshold),
+        queue_size_threshold(queue_size_threshold),
+        dim_threshold(dim_threshold), variance_threshold(variance_threshold),
+        outliers_num_threshold(outliers_num_threshold),
+        outliers_dist_threshold(outliers_dist_threshold) {
     param.algo = AlgoType::BenneType;
-    param.distance_threshold = threshold;
     param.landmark = 10;
-    param.max_in_nodes = branching_factor;
-    param.max_leaf_nodes = branching_factor;
     param.num_clusters = n_clusters;
     param.dim = dim;
+    param.coreset_size = 2;
+    param.distance_threshold = distance_threshold;
+    param.benne_threshold.queue_size = queue_size_threshold;
+    param.benne_threshold.dim = dim_threshold;
+    param.benne_threshold.variance = variance_threshold;
+    param.benne_threshold.outliers_num = outliers_num_threshold;
+    param.benne_threshold.outliers_dist = outliers_dist_threshold;
     algo = AlgorithmFactory::create(param);
     sinkPtr = GenericFactory::New<DataSink>(param);
-    auto barrierPtr = UtilityFunctions::createBarrier(1);
+    auto barrierPtr = GenericFactory::New<barrier<>>(1);
     sinkPtr->setBarrier(barrierPtr);
     sinkPtr->start(0);
     algo->Init();
   }
 
-  void fit(py::array_t<double> X) {
-    py::buffer_info buf = X.request();
+  Benne &fit(py::array_t<double> X) {
+    algo = AlgorithmFactory::create(param);
+    sinkPtr = GenericFactory::New<DataSink>(param);
+    auto barrierPtr = GenericFactory::New<barrier<>>(1);
+    sinkPtr->setBarrier(barrierPtr);
+    sinkPtr->start(0);
+    algo->Init();
 
-    if (buf.ndim != 2)
-      throw std::runtime_error("numpy.ndarray dims must be 2!");
-
-    double *ptr = static_cast<double *>(buf.ptr);
-
-    auto num_elements = buf.shape[0] * buf.shape[1];
-    auto num_vectors = num_elements / dim;
-    for (int i = 0; i < num_vectors; i++) {
-      SESAME::PointPtr point = std::make_shared<SESAME::Point>(dim, id++);
-      for (int j = 0; j < dim; j++) {
-        point->data()[j] = ptr[i * dim + j];
-      }
-      algo->RunOnline(point);
-    }
-    return;
+    partial_fit(X);
+    return *this;
   }
 
   py::array_t<int> fit_predict(py::array_t<double> X) {
@@ -67,8 +68,7 @@ public:
     auto num_elements = buf.shape[0] * buf.shape[1];
     auto num_vectors = num_elements / dim;
     for (int i = 0; i < num_vectors; i++) {
-      SESAME::PointPtr point =
-          std::make_shared<SESAME::Point>(dim, id++, ptr + i * dim);
+      PointPtr point = std::make_shared<Point>(dim, id++, ptr + i * dim);
       inputs.push_back(point);
       algo->RunOnline(point);
     }
@@ -76,9 +76,6 @@ public:
     algo->RunOffline(sinkPtr);
     std::vector<PointPtr> &results = sinkPtr->getResults(), predicts;
     UtilityFunctions::groupByCenters(inputs, results, predicts, param.dim);
-    // cout << "results size: " << results.size() << endl;
-    // cout << "inputs size: " << inputs.size() << endl;
-    // cout << "predicts size: " << predicts.size() << endl;
     std::vector<int> labels;
     for (auto &point : predicts) {
       labels.push_back(point->clu_id);
@@ -87,13 +84,30 @@ public:
   }
 
   py::dict get_params() {
-    return py::dict("threshold"_a = threshold,
-                    "branching_factor"_a = branching_factor,
+    return py::dict("distance_threshold"_a = distance_threshold,
+                    "queue_size_threshold"_a = queue_size_threshold,
+                    "dim_threshold"_a = dim_threshold,
+                    "variance_threshold"_a = variance_threshold,
+                    "outliers_num_threshold"_a = outliers_num_threshold,
+                    "outliers_dist_threshold"_a = outliers_dist_threshold,
                     "n_clusters"_a = n_clusters);
   }
 
-  void partial_fit(py::array_t<double> X) {
-    throw std::runtime_error("Not supported");
+  Benne &partial_fit(py::array_t<double> X) {
+    py::buffer_info buf = X.request();
+
+    if (buf.ndim != 2)
+      throw std::runtime_error("numpy.ndarray dims must be 2!");
+
+    double *ptr = static_cast<double *>(buf.ptr);
+
+    auto num_elements = buf.shape[0] * buf.shape[1];
+    auto num_vectors = num_elements / dim;
+    for (int i = 0; i < num_vectors; i++) {
+      PointPtr point = std::make_shared<Point>(dim, id++, ptr + i * dim);
+      algo->RunOnline(point);
+    }
+    return *this;
   }
 
   py::array_t<int> predict(py::array_t<double> X) {
@@ -130,11 +144,14 @@ public:
   }
 
 private:
-  double threshold;
-  int branching_factor;
-  int n_clusters;
+  double distance_threshold = 0.5;
+  int queue_size_threshold = 1;
+  int dim_threshold = 30;
+  double variance_threshold = 100.0;
+  int outliers_num_threshold = 200;
+  double outliers_dist_threshold = 50.0;
+  int n_clusters = 2;
   int dim;
-  bool output;
   uint64_t id = 0;
   SESAME::SesameParam param;
   SESAME::AlgorithmPtr algo;

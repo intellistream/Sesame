@@ -15,7 +15,7 @@ namespace py = pybind11;
 
 class Birch {
 public:
-  Birch(double threshold, int branching_factor, int n_clusters, int dim)
+  Birch(int dim, int n_clusters, double threshold, int branching_factor)
       : threshold(threshold), branching_factor(branching_factor),
         n_clusters(n_clusters), dim(dim) {
     param.algo = AlgoType::BirchType;
