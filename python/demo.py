@@ -1,6 +1,6 @@
 #!python3
 
-from pysame import Birch
+from pysame import Benne, Birch
 # from sklearn.cluster import Birch
 
 X = [[0, 1], [0.3, 1], [-0.3, 1], [0, -1], [0.3, -1], [-0.3, -1]]

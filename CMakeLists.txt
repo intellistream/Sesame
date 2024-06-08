@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set Optimization Flags
 set(CMAKE_CXX_FLAGS "-g -std=c++20 -Wall -fconcepts-diagnostics-depth=2 -fopenmp -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DNO_RACE_CHECK -DSESAME_DEBUG_MODE=1 -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-Wno-ignored-qualifiers -Wno-sign-compare -O3 -DNDEBUG -flto=auto")
 
 # Set LOGGING_LEVEL Flag
 if (SESAME_LOGGING_LEVEL)
