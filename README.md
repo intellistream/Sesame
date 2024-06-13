@@ -1,14 +1,87 @@
 # Sesame
 
-This project aims at building a scalable stream mining library on modern hardware. 
+[![version](https://img.shields.io/github/v/release/intellistream/Sesame?color=green)](https://github.com/intellistream/Sesame/releases)
+[![version](https://img.shields.io/badge/cpp-c%2B%2B20-red)](https://github.com/intellistream/Sesame)
+[![pyversion](https://img.shields.io/pypi/pyversions/pysame.svg?color=)](https://pypi.org/project/pysame/)
+[![os](https://img.shields.io/badge/os-linux-yellow)](https://github.com/intellistream/Sesame)
+[![PyPI - License](https://img.shields.io/pypi/l/pysame.svg?color=orange)](https://github.com/intellistream/Sesame/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8210331.svg)](https://zenodo.org/records/8210331)
 
-- The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.
-- We welcome your contributions, if you are interested to contribute to the project, please fork and submit a PR. If you have questions, feel free to log an issue.
+## About
 
-## Build Dependency
-- GCC-11 (In our paper, we use gcc-11.2.0)
-- Boost: 1.78.0 [Link](https://github.com/boostorg/boost)
-- GFLAGS: 2.2.0 [Link](https://github.com/gflags/gflags/blob/master/INSTALL.md)
+Sesame is scalable stream mining library on modern hardware written in C++
+
+
+By now Sesame contains several representative real-world stream clustering algorithms and synthetic algorithms
+
+## Quick Start
+
+### Installation
+```bash
+pip3 install pysame
+```
+
+### Python Example
+
+```python
+#!python3
+
+from pysame import Benne, Birch, BenneObj
+
+X = [[0, 1], [0.3, 1], [-0.3, 1], [0, -1], [0.3, -1], [-0.3, -1]]
+
+# run birch algorithm
+brc = Birch(
+    n_clusters=2,
+    dim=2,
+    distance_threshold=0.5,
+)
+print(brc.partial_fit(X).predict(X))
+
+# run benne algorithm
+bne = Benne(
+    n_clusters=2,
+    dim=2,
+    distance_threshold=0.5,
+    obj=BenneObj.accuracy,
+)
+print(bne.partial_fit(X).predict(X))
+```
+
+## Build Sesame
+
+### Prerequisites
+- gcc 12 or lator
+- cmake 3.14 or later
+- [boost](https://github.com/boostorg/boost)
+- [gflags](https://github.com/gflags/gflags)
+
+### Checkout Source Code
+```bash
+git clone https://github.com/intellistream/Sesame --recursive --depth=1
+cd Sesame
+```
+
+### Build
+```bash
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+```
+
+### Run Tests
+Download the datasets from [Zenodo](https://zenodo.org/records/8210331) and put them in the `datasets` directory:
+```bash
+cd Sesame/datasets
+pip3 install zenodo_get
+zenodo_get 8210331
+```
+Run the tests:
+```bash
+cd Sesame/build/test
+./google_test
+```
 
 ## Real-world algorithms
 
@@ -53,7 +126,7 @@ This project aims at building a scalable stream mining library on modern hardwar
 | EDS       | 45690, 100270, 150645, 200060, 245270 | 2         | 75, 145, 218, 289, 363 |
 | ODS     | 94720,97360,100000                    | 2         | 90, 90, 90 |
 
-You may download the datasets here: https://zenodo.org/records/8210331
+Datasets can download from zenodo: https://zenodo.org/records/8210331
 
 ## How to Cite Sesame
 
@@ -75,7 +148,7 @@ You may download the datasets here: https://zenodo.org/records/8210331
 	pdf          = {papers/Sesame.pdf},
 	code         = {https://github.com/intellistream/Sesame},
 	doi	         = {10.1145/3589307},
-        url          = {https://doi.org/10.1145/3589307}
+    url          = {https://doi.org/10.1145/3589307}
 }
 ```
 
