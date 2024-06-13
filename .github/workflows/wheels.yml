@@ -2,6 +2,10 @@ name: Build
 
 on: [push, pull_request]
 
+env:
+    # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+    BUILD_TYPE: Release
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -12,6 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required  if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html? highlight=cmake_build_type
+        run: |
+          git submodule update --init --recursive
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
