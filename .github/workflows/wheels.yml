@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-python@v5
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.19.0
+        run: python -m pip install cibuildwheel==2.19.0 --break-system-packages
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
