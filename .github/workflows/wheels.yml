@@ -85,7 +85,7 @@ jobs:
           merge-multiple: true
 
       - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          user: __token__   
-          password: ${{ secrets.PYPI_PASSWORD }}
+        # with:
+        #   repository-url: https://test.pypi.org/legacy/
+        #   user: __token__   
+        #   password: ${{ secrets.PYPI_PASSWORD }}
