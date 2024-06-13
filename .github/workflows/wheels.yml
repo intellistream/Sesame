@@ -26,7 +26,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew update
-          brew install gcc-13
+          brew install gcc@13
       - name: Configure CMake
         run: |
           git submodule update --init --recursive
