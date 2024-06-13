@@ -9,6 +9,8 @@ on:
 env:
     # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
     BUILD_TYPE: Release
+    CC: gcc
+    CXX: g++
 
 jobs:
   build_wheels:
@@ -20,9 +22,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install gcc-13
       - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required  if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html? highlight=cmake_build_type
         run: |
           git submodule update --init --recursive
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
