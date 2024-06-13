@@ -15,9 +15,10 @@ namespace py = pybind11;
 
 class Birch {
 public:
-  Birch(int dim, int n_clusters, double distance_threshold, int branching_factor)
-      : distance_threshold(distance_threshold), branching_factor(branching_factor),
-        n_clusters(n_clusters), dim(dim) {
+  Birch(int dim, int n_clusters, double distance_threshold,
+        int branching_factor)
+      : distance_threshold(distance_threshold),
+        branching_factor(branching_factor), n_clusters(n_clusters), dim(dim) {
     param.algo = AlgoType::BirchType;
     param.distance_threshold = distance_threshold;
     param.landmark = 10;
