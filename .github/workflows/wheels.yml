@@ -11,6 +11,8 @@ env:
     BUILD_TYPE: Release
     CC: gcc
     CXX: g++
+    CIBW_BUILD: cp39-manylinux_x86_64 cp310-manylinux_x86_64 cp311-manylinux_x86_64 cp312-manylinux_x86_64 cp313-manylinux_x86_64
+    CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_28_x86_64
 
 jobs:
   build_wheels:
@@ -18,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-13, macos-14]
+        os: [ubuntu-24.04]
 
     steps:
       - uses: actions/checkout@v4
