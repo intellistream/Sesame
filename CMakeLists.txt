@@ -73,6 +73,7 @@ set(GFLAGS_BUILD_gflags_LIB OFF CACHE BOOL "")
 # for darwin
 if (APPLE)
     set(GFLAGS_INTTYPES_FORMAT "C99" CACHE STRING "")
+endif ()
 add_subdirectory(third_party/gflags)
 
 find_package(OpenMP)
