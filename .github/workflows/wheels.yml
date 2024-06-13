@@ -30,7 +30,7 @@ jobs:
       - name: Configure CMake
         run: |
           git submodule update --init --recursive
-          cmake -DCMAKE_CXX_COMPILER=$CXX -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
