@@ -7,6 +7,7 @@
 #include "Algorithm/Algorithm.hpp"
 #include "Algorithm/AlgorithmFactory.hpp"
 #include "Algorithm/DataStructure/GenericFactory.hpp"
+#include "Algorithm/Param.hpp"
 
 #include <iostream>
 #include <vector>
@@ -18,10 +19,11 @@ namespace py = pybind11;
 
 class Benne {
 public:
-  Benne(int dim, int n_clusters, double threshold, int queue_size_threshold,
-        int dim_threshold, double variance_threshold,
+  Benne(int dim, int n_clusters, int obj, double distance_threshold,
+        int queue_size_threshold, int dim_threshold, double variance_threshold,
         int outliers_num_threshold, double outliers_dist_threshold)
-      : dim(dim), n_clusters(n_clusters), distance_threshold(threshold),
+      : dim(dim), n_clusters(n_clusters), obj((BenneObj)obj),
+        distance_threshold(distance_threshold),
         queue_size_threshold(queue_size_threshold),
         dim_threshold(dim_threshold), variance_threshold(variance_threshold),
         outliers_num_threshold(outliers_num_threshold),
@@ -31,6 +33,7 @@ public:
     param.num_clusters = n_clusters;
     param.dim = dim;
     param.coreset_size = 2;
+    param.obj = (BenneObj)obj;
     param.distance_threshold = distance_threshold;
     param.benne_threshold.queue_size = queue_size_threshold;
     param.benne_threshold.dim = dim_threshold;
@@ -150,6 +153,7 @@ private:
   double variance_threshold = 100.0;
   int outliers_num_threshold = 200;
   double outliers_dist_threshold = 50.0;
+  BenneObj obj;
   int n_clusters = 2;
   int dim;
   uint64_t id = 0;

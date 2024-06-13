@@ -13,6 +13,8 @@ include(cmake/macros.cmake)
 include(cmake/default.cmake)
 include(FetchContent)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # C++ Standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -68,6 +70,10 @@ FetchContent_MakeAvailable(Boost)
 set(GFLAGS_BUILD_SHARED_LIBS OFF CACHE BOOL "")
 set(GFLAGS_BUILD_gflags_nothreads_LIB ON)
 set(GFLAGS_BUILD_gflags_LIB OFF CACHE BOOL "")
+# for darwin
+if (APPLE)
+    set(GFLAGS_INTTYPES_FORMAT "C99" CACHE STRING "")
+endif ()
 add_subdirectory(third_party/gflags)
 
 find_package(OpenMP)
