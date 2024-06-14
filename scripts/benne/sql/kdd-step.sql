@@ -1,0 +1,1 @@
+SELECT workload, algo, num_points, purity, qps FROM benne WHERE tag="step.kdd.real" ORDER BY algo_id, obj, num_points;
