@@ -2,8 +2,8 @@
 ### Prerequisites
 - gcc 12 or latr
 - cmake 3.14 or later
-- [boost](https://github.com/boostorg/boost)
-- [gflags](https://github.com/gflags/gflags)
+- boost
+- gflags
 ### Build
 ```bash
 mkdir build
