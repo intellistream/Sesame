@@ -11,6 +11,12 @@ which ticat
 
 export bench_id=2024
 
+# run $meta_cmd -e "SHOW DATABASES;" until it works
+while true; do
+    $meta_cmd -e "SHOW DATABASES;" 2>/dev/null && break
+    sleep 3
+done
+
 sh_files=$(ls script/)
 for sh in ${sh_files[@]}; do
     echo "running $sh..."
