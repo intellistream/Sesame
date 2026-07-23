@@ -134,7 +134,7 @@ setup(
     name="pysame",
     version=__version__,
     author="Shuhao Zhang",
-    url="https://github.com/intellistream/Sesame",
+    url="https://github.com/DataSysResearch/Sesame",
     description="Stream clustering algorithms on modern hardware",
     long_description="This project aims at building a scalable stream mining library on modern hardware. The repo contains currently several representative real-world stream clustering algorithms and several synthetic algorithms.",
     ext_modules=[CMakeExtension("pysame")],
