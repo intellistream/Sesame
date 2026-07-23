@@ -1,10 +1,10 @@
 # Sesame
 
-[![version](https://img.shields.io/github/v/release/intellistream/Sesame?color=green)](https://github.com/intellistream/Sesame/releases)
-[![version](https://img.shields.io/badge/cpp-c%2B%2B20-red)](https://github.com/intellistream/Sesame)
+[![version](https://img.shields.io/github/v/release/DataSysResearch/Sesame?color=green)](https://github.com/DataSysResearch/Sesame/releases)
+[![version](https://img.shields.io/badge/cpp-c%2B%2B20-red)](https://github.com/DataSysResearch/Sesame)
 [![pyversion](https://img.shields.io/pypi/pyversions/pysame.svg?color=)](https://pypi.org/project/pysame/)
-[![os](https://img.shields.io/badge/os-linux-yellow)](https://github.com/intellistream/Sesame)
-[![PyPI - License](https://img.shields.io/pypi/l/pysame.svg?color=orange)](https://github.com/intellistream/Sesame/blob/main/LICENSE)
+[![os](https://img.shields.io/badge/os-linux-yellow)](https://github.com/DataSysResearch/Sesame)
+[![PyPI - License](https://img.shields.io/pypi/l/pysame.svg?color=orange)](https://github.com/DataSysResearch/Sesame/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8210331.svg)](https://zenodo.org/records/8210331)
 
 ## About
@@ -58,7 +58,7 @@ print(bne.partial_fit(X).predict(X))
 
 ### Checkout Source Code
 ```bash
-git clone https://github.com/intellistream/Sesame --recursive --depth=1
+git clone https://github.com/DataSysResearch/Sesame --recursive --depth=1
 cd Sesame
 ```
 
@@ -146,9 +146,8 @@ Datasets can download from zenodo: https://zenodo.org/records/8210331
 	bibtex_show  = {true},
 	selected     = {true},
 	pdf          = {papers/Sesame.pdf},
-	code         = {https://github.com/intellistream/Sesame},
+	code         = {https://github.com/DataSysResearch/Sesame},
 	doi	         = {10.1145/3589307},
     url          = {https://doi.org/10.1145/3589307}
 }
 ```
-
